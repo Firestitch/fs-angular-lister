@@ -1,0 +1,130 @@
+<div class="lister">
+
+    <div class="header">
+
+        <md-input-container flex="20" ng-repeat="filter in filters">
+            <label>{{filter.label}}</label>
+
+            <md-select ng-model="filter.model" ng-if="filter.type == 'select'">
+                <md-option
+                    ng-repeat="(item, label) in filter.values"
+                    value="{{item}}"
+                >
+                    {{label}}
+                </md-option>
+            </md-select>
+
+<!--             <md-icon
+                ng-if="filter.type == 'text' && filter.icon"
+                md-icon-set="material-icons">
+                    {{filter.icon}}
+            </md-icon> -->
+            <input
+                ng-if="filter.type == 'text'"
+                ng-model="filter.model"
+                ng-model-options="{debounce: 300}"
+                aria-label="{{filter.label}}" />
+
+        </md-input-container>
+
+        <md-input-container flex="20" ng-repeat="filter in columnFilters">
+            <label>{{filter.label}}</label>
+            <md-select ng-model="filter.model">
+                <md-option
+                    ng-repeat="(item, label) in filter.values"
+                    value="{{item}}"
+                >
+                    {{label}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+
+        <span flex></span>
+<!--
+        <md-button
+            ng-if="!!conf.adder"
+            ng-href="{{conf.adder.href}}"
+            ng-click="conf.adder.handler($event)"
+            class="md-raised md-accent adder"
+        >
+            {{conf.adder.title}}
+        </md-button>
+
+    -->
+    </div>
+
+    <div class="lister-table">
+        <div class="lister-head">
+            <div class="lister-row">
+                <div class="lister-col" ng-repeat="col in conf.columns track by $index">{{col.title}}</div>
+                <div class="lister-col" ng-if="conf.actions"></div>
+            </div>
+        </div>
+        <div class="lister-body">
+            <div class="lister-row" ng-repeat="row in rows">
+                <div class="lister-col" ng-repeat="col in row track by $index" compile="col.value" class="{{col.class}}"></div>
+
+                <div class="lister-col lister-actions" ng-if="conf.actions.length==1">
+                    <md-button ng-repeat="action in conf.actions track by $index" ng-click="action.click(row)" class="md-icon-button">                    
+                        <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
+                     </md-button>
+                </div>
+
+                <div class="lister-col lister-actions" ng-if="conf.actions.length>1">
+                    <md-menu>
+                     <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
+                        <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
+                     </md-button>
+                     <md-menu-content>
+                        <md-menu-item ng-repeat="action in conf.actions track by $index">
+                            <md-button ng-click="action.click(row)">
+                                <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{action.icon}}</md-icon>
+                                {{action.label}}
+                            </md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                    </md-menu>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+
+        <div class="records">
+            <p>{{paging.records}} Records</p>
+        </div>
+
+        <div class="limits">
+            <md-input-container>
+                <label>Show</label>
+                <md-select ng-model="paging.limit" md-on-close="load()">
+                    <md-option
+                        ng-repeat="limit in conf.limits"
+                        value="{{limit}}">
+                        {{limit}} records
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+
+        <ul class="paging" ng-if="paging.pages>1">
+            <li ng-class="{ disabled : paging.page == 1 }">
+                <a href="javascript:;" ng-click="page(1)">&laquo;</a>
+            </li>
+            <li ng-class="{ disabled : paging.page == 1 }" class="ng-scope">
+                <a href="" ng-click="page(paging.page - 1)" class="ng-binding">‹</a>
+            </li>
+            <li ng-repeat="number in [] | listerRange:paging.pages" ng-class="{ active : paging.page == (number + 1), disabled : number == '...' }">
+                <a href="" ng-click="page(number + 1)">{{ number + 1}}</a>
+            </li>
+
+            <li ng-class="{ disabled : paging.page == paging.pages }" class="ng-scope">
+                <a href="" ng-click="page(paging.page + 1)" class="ng-binding">›</a>
+            </li>
+            <li ng-class="{ disabled : paging.page == paging.pages }">
+                <a href="" ng-click="page(paging.pages)">&raquo;</a>
+            </li>
+        </ul>
+    </div>
+</div>
