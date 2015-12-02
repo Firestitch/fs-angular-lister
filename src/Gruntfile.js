@@ -15,6 +15,10 @@ module.exports = function(grunt) {
         // Time how long tasks take. Can help when optimizing build times
         require('time-grunt')(grunt);
 
+        grunt.loadNpmTasks('grunt-ngdoc');
+        grunt.loadNpmTasks('grunt-angular-templates');
+        grunt.loadNpmTasks('grunt-contrib-concat');
+
         var modRewrite = require('connect-modrewrite');
 
         // Configurable paths for the application
@@ -56,7 +60,11 @@ module.exports = function(grunt) {
                             '.tmp/styles/{,*/}*.css',
                             '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                         ]
-                    }
+                    },
+                    ngdocs: {
+                        files: ['app/scripts/{,*/}*.js'],
+                        tasks: ['ngdocs']
+                    },
                 },
 
                 template: {
@@ -81,7 +89,23 @@ module.exports = function(grunt) {
                     }
                 },
                 
+                ngtemplates: {
+                    directives: {
+                        cwd:    'app',
+                        src:    'views/directives/lister.html',
+                        dest:   '.tmp/template.js'
+                    }
+                },
 
+                concat: {
+                    options: {
+                     
+                    },
+                    build: {
+                      src: ['app/scripts/directives/lister.js','.tmp/template.js'],
+                      dest: '../dist/lister.js',
+                    },
+                },
 
                 // The actual grunt server settings
                 connect: {
@@ -113,6 +137,14 @@ module.exports = function(grunt) {
                             port: 9002,
                             hostname: 'localhost',
                             base: '<%= yeoman.dist %>'
+                        }
+                    },
+                    docs: {
+                        options: {
+                            port: 9001,
+                            hostname: 'localhost',
+                            base: 'docs/',
+                            open: true
                         }
                     }
                 },
@@ -335,43 +367,13 @@ module.exports = function(grunt) {
 
                 // Copies remaining files to places other tasks can use
                 copy: {
-                    dist: {
+                    build: {
                         files: [{
                                 expand: true,
                                 dot: true,
-                                cwd: '<%= yeoman.app %>',
-                                dest: '<%= yeoman.dist %>',
-                                src: [
-                                    '*.*',
-                                    '.htaccess',
-                                    '*.html',
-                                    'views/**/*.html',
-                                    'images/{,*/}*.{webp}',
-                                    'fonts/**/*'
-                                ]
-                            }, {
-                                expand: true,
-                                cwd: '.tmp/images',
-                                dest: '<%= yeoman.dist %>/images',
-                                src: ['generated/*']
-                            }, {
-                                expand: true,
-                                dot: true,
-                                cwd: 'bower_components/bootstrap/dist',
-                                src: ['fonts/*.*'],
-                                dest: '<%= yeoman.dist %>'
-                            }, {
-                                expand: true,
-                                dot: true,
-                                cwd: 'bower_components/font-awesome',
-                                src: ['fonts/*.*'],
-                                dest: '<%= yeoman.dist %>'
-                            }, {
-                                expand: true,
-                                dot: true,
-                                cwd: 'bower_components/material-design-icons/iconfont',
-                                src: ['*.*'],
-                                dest: '<%= yeoman.dist %>/iconfont'
+                                cwd: 'app/scripts/directives',
+                                src: ['lister.js'],
+                                dest: '../dist/'
                             }
                         ]
                     },
@@ -480,18 +482,25 @@ module.exports = function(grunt) {
                             }
                         }
                     }
-                }
-            });
+                },
 
-            grunt.registerTask('builder', '', function(target) {
-                return grunt.task.run(['prompt:builder']);
+                ngdocs: {
+                  options: {
+                    dest: 'docs',
+                    html5Mode: false,
+                    startPage: '/',
+                    title: "Lister Documentation",
+                    titleLink: "/",
+                    bestMatch: true,
+                  
+                  },
+                  all: ['<%= yeoman.app %>/scripts/{,*/}*.js']
+                }          
             });
+    
+            grunt.registerTask('doc', '', function() {
 
-            grunt.registerTask('dgeni', 'Generate docs via dgeni.', function() {
-              var Dgeni = require('dgeni');
-              var done = this.async();
-              var dgeni = new Dgeni([require('./docs/index')]);
-              dgeni.generate().then(done);
+                 return grunt.task.run(["ngdocs","connect:docs:keepalive","watch"]);
             });
 
             grunt.registerTask('serve', 'Compile then start a connect web server', function(target) {
@@ -570,49 +579,7 @@ module.exports = function(grunt) {
             });
 
             grunt.registerTask('build', 'Compile', function(target) {
-
-                if (arguments.length === 0) {
-                    grunt.log.error('Please specify a target to build. Options: build:development, build:staging, build:production');
-                    return false;
-                }
-
-                var tasks = [   'clean:dist',
-                                'ngconstant:' + target,
-                                'wiredep'
-                            ];
-
-                //If --nomin is detected then do not minify the js and css
-                if (grunt.option('nomin') || target=='development') {
-                    tasks = grunt.util._.union(tasks, ['useminPrepareDev',
-                        'concurrent:dist',
-                        'autoprefixer',
-                        'concat',
-                        'ngAnnotate',
-                        'copy:dist',
-                        //'cdnify',
-                        'filerev',
-                        'usemin',
-                        'clean:cleanup',
-                        //'template'
-                    ]);
-                } else {
-                    tasks = grunt.util._.union(tasks, ['useminPrepare',
-                        'concurrent:dist',
-                        'autoprefixer',
-                        'concat',
-                        'ngAnnotate',
-                        'copy:dist',
-                        //'cdnify',                        
-                        'uglify',
-                        'cssmin',
-                        'filerev',
-                        'usemin',
-                        'htmlmin',
-                        'clean:cleanup',
-                        //'template'                                
-                    ]);
-                }
-
-                return grunt.task.run(tasks);
+                return grunt.task.run([ 'ngtemplates:directives',
+                                        'concat:build']);
             });
         };
