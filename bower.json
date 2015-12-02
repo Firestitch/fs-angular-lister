@@ -3,6 +3,7 @@
   "description": "A directive that manages lists and added paging, sorting, actions and lots more",
   "main": [
     "dist/lister.js"
+    "dist/lister.scss"
   ],
   "authors": [
     "Firestitch Inc."

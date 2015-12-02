@@ -1,0 +1,119 @@
+.lister {    
+
+    .lister-table {
+
+        display: table;
+        width: 100%;
+
+        .lister-col {
+            display: table-cell;
+        }
+
+        .lister-row {
+            display: table-row;
+        }
+
+        .lister-body {
+            display: table-row-group;
+        }
+
+        .lister-head {
+
+            display: table-header-group;
+            
+            .lister-col {
+                
+                border-bottom: 2px solid #ddd;
+                color: #999;
+                font-size: 14px;
+                padding: 8px;
+
+                &.sorting {
+                    background-image: none;
+                }
+            }
+        }
+
+        .lister-body {
+
+            .lister-row:hover .lister-col {
+                background-color: #f6f6f6;
+            }
+
+            .lister-col {
+                padding: 8px 10px;
+                border-top: 1px solid #ddd;
+
+                &.menu {
+                    padding: 3px;
+                }                
+            }
+            
+            .lister-row:last-child .lister-col {
+                border-bottom: 2px solid #ddd;
+            }
+        }
+
+        .dt-center {
+            text-align: center;
+        }
+
+        .dt-left {
+            text-align: left;
+        }
+
+        .dt-right {
+            text-align: right;
+        }
+    }
+
+
+    .paging {
+        text-align: center;
+        
+        li {
+            display: inline-block;
+        
+            a {
+                box-sizing: border-box;
+                display: inline-block;
+                min-width: 1.5em;
+                padding: 0.5em 1em;
+                margin-left: 2px;
+                text-align: center;
+                cursor: pointer;
+                color: #333;
+                border: 1px solid transparent;
+                border-radius: 2px;
+                list-style: none;
+                text-decoration: none;
+
+            }
+
+            &.disabled a {
+                pointer-events: none;
+                cursor: default;
+                color: #ccc;
+            }
+
+
+            &.active a {
+                font-weight: bold;
+            }
+        }
+    }
+
+    .records {
+        float: left;
+    }
+
+    .limits {
+        float: right;
+    }
+
+    .lister-actions {
+        width: 1%;
+        white-space: nowrap;
+    }
+
+}

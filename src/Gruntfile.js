@@ -110,11 +110,11 @@ module.exports = function(grunt) {
                 // The actual grunt server settings
                 connect: {
                     options: {
-                        livereload: 35729
+                        livereload: 35730
                     },
                     local: {
                         options: {
-                            port: 9000,
+                            port: 9090,
                             hostname: 'localhost',
                             open: true,
                             base: [
@@ -130,13 +130,6 @@ module.exports = function(grunt) {
                                 ];
 
                             }
-                        }
-                    },
-                    dist: {
-                        options: {
-                            port: 9002,
-                            hostname: 'localhost',
-                            base: '<%= yeoman.dist %>'
                         }
                     },
                     docs: {
@@ -371,8 +364,8 @@ module.exports = function(grunt) {
                         files: [{
                                 expand: true,
                                 dot: true,
-                                cwd: 'app/scripts/directives',
-                                src: ['lister.js'],
+                                cwd: 'app/styles/directives',
+                                src: ['_lister.scss'],
                                 dest: '../dist/'
                             }
                         ]
@@ -579,7 +572,8 @@ module.exports = function(grunt) {
             });
 
             grunt.registerTask('build', 'Compile', function(target) {
-                return grunt.task.run([ 'ngtemplates:directives',
+                return grunt.task.run([ 'copy:build',
+                                        'ngtemplates:directives',
                                         'concat:build']);
             });
         };

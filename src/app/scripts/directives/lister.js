@@ -155,7 +155,7 @@
             }];
 
         return {
-            templateUrl: './views/directives/lister.html',
+            templateUrl: 'views/directives/lister.html',
             restrict: 'E',            
             scope: {
                 lsOptions: '=',
