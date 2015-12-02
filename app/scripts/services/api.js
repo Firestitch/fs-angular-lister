@@ -1,17 +1,6 @@
 (function () {
     'use strict';
 
-    /**
-     * @ngdoc service
-     * @name app.apiService
-     * @description
-     * # apiService
-     * Factory in the app.
-     *
-     * conifg
-     *    urlencoded = true/false
-     *
-     */
     angular.module('app')
     .factory('apiService', function ($http, $httpParamSerializer, sessionService, configService, alertService, $location) {
         var service = {

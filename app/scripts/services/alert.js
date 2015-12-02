@@ -1,15 +1,5 @@
 (function () {
     'use strict';
-
-    /* jshint latedef:nofunc */
-
-    /**
-     * @ngdoc service
-     * @name app.alertService
-     * @description
-     * # alertService
-     * Factory in the app.
-     */
     angular.module('app')
     .factory('alertService', function ($timeout) {
         var service = {

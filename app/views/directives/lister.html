@@ -40,43 +40,33 @@
         </md-input-container>
 
         <span flex></span>
-<!--
-        <md-button
-            ng-if="!!conf.adder"
-            ng-href="{{conf.adder.href}}"
-            ng-click="conf.adder.handler($event)"
-            class="md-raised md-accent adder"
-        >
-            {{conf.adder.title}}
-        </md-button>
 
-    -->
     </div>
 
     <div class="lister-table">
         <div class="lister-head">
             <div class="lister-row">
-                <div class="lister-col" ng-repeat="col in conf.columns track by $index">{{col.title}}</div>
-                <div class="lister-col" ng-if="conf.actions"></div>
+                <div class="lister-col" ng-repeat="col in options.columns track by $index">{{col.title}}</div>
+                <div class="lister-col" ng-if="options.actions"></div>
             </div>
         </div>
         <div class="lister-body">
             <div class="lister-row" ng-repeat="row in rows">
                 <div class="lister-col" ng-repeat="col in row track by $index" compile="col.value" class="{{col.class}}"></div>
 
-                <div class="lister-col lister-actions" ng-if="conf.actions.length==1">
-                    <md-button ng-repeat="action in conf.actions track by $index" ng-click="action.click(row)" class="md-icon-button">                    
+                <div class="lister-col lister-actions" ng-if="options.actions.length==1">
+                    <md-button ng-repeat="action in options.actions track by $index" ng-click="action.click(row)" class="md-icon-button">                    
                         <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
                      </md-button>
                 </div>
 
-                <div class="lister-col lister-actions" ng-if="conf.actions.length>1">
+                <div class="lister-col lister-actions" ng-if="options.actions.length>1">
                     <md-menu>
                      <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
                         <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
                      </md-button>
                      <md-menu-content>
-                        <md-menu-item ng-repeat="action in conf.actions track by $index">
+                        <md-menu-item ng-repeat="action in options.actions track by $index">
                             <md-button ng-click="action.click(row)">
                                 <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{action.icon}}</md-icon>
                                 {{action.label}}
@@ -100,7 +90,7 @@
                 <label>Show</label>
                 <md-select ng-model="paging.limit" md-on-close="load()">
                     <md-option
-                        ng-repeat="limit in conf.limits"
+                        ng-repeat="limit in options.limits"
                         value="{{limit}}">
                         {{limit}} records
                     </md-option>

@@ -1,14 +1,8 @@
 'use strict';
 
-/**
- * @ngdoc function
- * @name app.controller:Trade_categoriesCtrl
- * @description
- * # Trade_category
- * Controller of the app
- */
+
 angular.module('app')
-  .controller('ListerCtrl', function ($scope, DummyService) {
+  .controller('ListerrCtrl', function ($scope, DummyService) {
 
     $scope.click = click;
     $scope.listerInstance = {};
@@ -40,7 +34,6 @@
         },
         actions: [
             {
-                label: 'Edit',
                 click: function(data, event) {
                     alert("Edit Action Click: " + JSON.stringify(data));
                 }

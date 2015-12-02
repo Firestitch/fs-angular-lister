@@ -1,14 +1,5 @@
 'use strict';
 
-/**
- * @ngdoc overview
- * @name app
- * @description
- * # app
- *
- * Main module of the application.
- */
-
 angular
 .module('app', [
     'config',
@@ -24,7 +15,7 @@ angular
     $routeProvider
     .when('/lister', {
         templateUrl: 'views/lister.html',
-        controller: 'ListerCtrl',       
+        controller: 'ListerrCtrl',       
     })
 
     .when('/404', {
@@ -37,6 +28,6 @@ angular
     $cryptoProvider.setCryptographyKey('abc123');
 
 })
-.run(function (historyService, Pollyfills, appService, $rootScope, alertService, $route) {
+.run(function () {
 
 });

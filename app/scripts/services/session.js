@@ -1,16 +1,6 @@
 (function () {
     'use strict';
 
-    /* jshint latedef:nofunc */
-
-    /**
-     * @ngdoc service
-     * @name app.sessionService
-     * @description
-     * # sessionService
-     * Factory in the app.
-     */
-
     angular.module('app')
     .service('sessionService', function (storeService) {
         var service = {

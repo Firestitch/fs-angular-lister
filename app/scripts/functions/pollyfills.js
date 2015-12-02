@@ -2,13 +2,6 @@
 (function () {
     'use strict';
 
-    /**
-     * @ngdoc service
-     * @name app.Pollyfills
-     * @description
-     * # Pollyfills
-     * Factory in the app.
-     */
     angular.module('app')
     .factory('Pollyfills', Pollyfills);
 
