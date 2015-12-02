@@ -64,8 +64,8 @@
                     }
                     ```
      */
-
-    angular.module('app')
+    
+    angular.module('lister',[])
     .directive('lister', function ($compile, $sce) {
 
             /**

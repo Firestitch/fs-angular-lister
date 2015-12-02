@@ -9,7 +9,8 @@
   ],
   "license": "MIT",
   "ignore": [
-    "src"
+    "src",
+    ".gitignore"
   ],
   "private": false
 }
