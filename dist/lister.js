@@ -49,7 +49,17 @@
                 `className` — A css class name that is appened to the column element
             </td>
         </tr>
-
+        <tr>
+            <td>filters</td><td><a href="" class="label type-hint type-hint-array">array</a></td>
+            <td>Defines the filters found above the lister table<br><br>
+                `name` — the name in the query object passed to the fetch data process<br>
+                `type` — select (single selection dropdown) or text (one line input box)<br>
+                `label` — The label of the interface
+                `values` — An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.<br>
+                `default` — Sets the default filter value                
+            </td>
+        </tr>
+        
         </tbody></table>
      * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive functions.
                     ```html
@@ -81,14 +91,18 @@
                 options.limits = options.limits ? options.limits : [5, 10, 25, 50, 100];
                 options.limit = options.limit ? options.limit : options.limits[0];
                 options.actions = options.actions || [];
+                options.filters = options.filters || [];
 
+                angular.forEach(options.filters,function(filter) {                    
+                    filter.model = filter.default;
+                });
 
-
-                $scope.rows = [];
+                $scope.data = [];
                 $scope.options = options;
                 $scope.paging = { records: 0, page: 1, pages: 0, limit: options.limit };                
                 $scope.load = load;
                 $scope.page = page;
+                $scope.filters = options.filters;
                                
                 /**
                  * @ngdoc method
@@ -99,13 +113,17 @@
                 function load() {
                     var query = {};
 
+                    angular.forEach($scope.filters,function(filter) {
+                        if(filter.model!==null && filter.model!='__all')
+                            query[filter.name] = filter.model;
+                    });
+
                     query.page = $scope.paging.page;
                     query.limit = $scope.paging.limit;
 
                     log("Calling data()", query);
                     options.data(query, dataCallback);     
                 }
-
            
                  function page(page) {
                     $scope.paging.page = page;
@@ -115,22 +133,21 @@
                 function dataCallback(data,paging) {
                     log("dataCallback()",data,paging);
 
-                    $scope.rows = [];
-                    angular.forEach(data,function(item) { 
+                    $scope.data = [];
+                    angular.forEach(data,function(object) { 
 
-                        var row = [];
+                        var cols = [];
                         angular.forEach(options.columns,function(col) { 
                             
                             var value = "";
                            
                             if(col.value)
-                                value = col.value(item);
+                                value = col.value(object);
 
-                            row.push({ value: value, "class": col.className, data: item });
+                            cols.push({ value: value, "class": col.className, data: object });
                         });
 
-                        $scope.rows.push(row);
-
+                        $scope.data.push({ cols: cols, object: object });
                     });
                     
                     if(paging) {
@@ -202,9 +219,6 @@
     });    
 
 })();
-
-
-
 angular.module('lister').run(['$templateCache', function($templateCache) {
   'use strict';
 
@@ -217,13 +231,13 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "        <md-input-container flex=\"20\" ng-repeat=\"filter in filters\">\r" +
+    "        <md-input-container ng-repeat=\"filter in filters\">\r" +
     "\n" +
     "            <label>{{filter.label}}</label>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "            <md-select ng-model=\"filter.model\" ng-if=\"filter.type == 'select'\">\r" +
+    "            <md-select ng-model=\"filter.model\" ng-if=\"filter.type == 'select'\" md-on-close=\"load()\">\r" +
     "\n" +
     "                <md-option\r" +
     "\n" +
@@ -267,34 +281,6 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "        <md-input-container flex=\"20\" ng-repeat=\"filter in columnFilters\">\r" +
-    "\n" +
-    "            <label>{{filter.label}}</label>\r" +
-    "\n" +
-    "            <md-select ng-model=\"filter.model\">\r" +
-    "\n" +
-    "                <md-option\r" +
-    "\n" +
-    "                    ng-repeat=\"(item, label) in filter.values\"\r" +
-    "\n" +
-    "                    value=\"{{item}}\"\r" +
-    "\n" +
-    "                >\r" +
-    "\n" +
-    "                    {{label}}\r" +
-    "\n" +
-    "                </md-option>\r" +
-    "\n" +
-    "            </md-select>\r" +
-    "\n" +
-    "        </md-input-container>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <span flex></span>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
     "    </div>\r" +
     "\n" +
     "\r" +
@@ -315,15 +301,15 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"lister-body\">\r" +
     "\n" +
-    "            <div class=\"lister-row\" ng-repeat=\"row in rows\">\r" +
+    "            <div class=\"lister-row\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event)\">\r" +
     "\n" +
-    "                <div class=\"lister-col\" ng-repeat=\"col in row track by $index\" compile=\"col.value\" class=\"{{col.class}}\"></div>\r" +
+    "                <div class=\"lister-col\" ng-repeat=\"col in item.cols track by $index\" compile=\"col.value\" class=\"{{col.class}}\"></div>\r" +
     "\n" +
     "\r" +
     "\n" +
     "                <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length==1\">\r" +
     "\n" +
-    "                    <md-button ng-repeat=\"action in options.actions track by $index\" ng-click=\"action.click(row)\" class=\"md-icon-button\">                    \r" +
+    "                    <md-button ng-repeat=\"action in options.actions track by $index\" ng-click=\"action.click(item.object,$event)\" class=\"md-icon-button\">\r" +
     "\n" +
     "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
     "\n" +
@@ -347,7 +333,7 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "                        <md-menu-item ng-repeat=\"action in options.actions track by $index\">\r" +
     "\n" +
-    "                            <md-button ng-click=\"action.click(row)\">\r" +
+    "                            <md-button ng-click=\"action.click(item.object,$event)\">\r" +
     "\n" +
     "                                <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{action.icon}}</md-icon>\r" +
     "\n" +

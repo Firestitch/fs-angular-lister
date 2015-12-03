@@ -49,7 +49,17 @@
                 `className` — A css class name that is appened to the column element
             </td>
         </tr>
-
+        <tr>
+            <td>filters</td><td><a href="" class="label type-hint type-hint-array">array</a></td>
+            <td>Defines the filters found above the lister table<br><br>
+                `name` — the name in the query object passed to the fetch data process<br>
+                `type` — select (single selection dropdown) or text (one line input box)<br>
+                `label` — The label of the interface
+                `values` — An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.<br>
+                `default` — Sets the default filter value                
+            </td>
+        </tr>
+        
         </tbody></table>
      * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive functions.
                     ```html
@@ -81,14 +91,18 @@
                 options.limits = options.limits ? options.limits : [5, 10, 25, 50, 100];
                 options.limit = options.limit ? options.limit : options.limits[0];
                 options.actions = options.actions || [];
+                options.filters = options.filters || [];
 
+                angular.forEach(options.filters,function(filter) {                    
+                    filter.model = filter.default;
+                });
 
-
-                $scope.rows = [];
+                $scope.data = [];
                 $scope.options = options;
                 $scope.paging = { records: 0, page: 1, pages: 0, limit: options.limit };                
                 $scope.load = load;
                 $scope.page = page;
+                $scope.filters = options.filters;
                                
                 /**
                  * @ngdoc method
@@ -99,13 +113,17 @@
                 function load() {
                     var query = {};
 
+                    angular.forEach($scope.filters,function(filter) {
+                        if(filter.model!==null && filter.model!='__all')
+                            query[filter.name] = filter.model;
+                    });
+
                     query.page = $scope.paging.page;
                     query.limit = $scope.paging.limit;
 
                     log("Calling data()", query);
                     options.data(query, dataCallback);     
                 }
-
            
                  function page(page) {
                     $scope.paging.page = page;
@@ -115,22 +133,21 @@
                 function dataCallback(data,paging) {
                     log("dataCallback()",data,paging);
 
-                    $scope.rows = [];
-                    angular.forEach(data,function(item) { 
+                    $scope.data = [];
+                    angular.forEach(data,function(object) { 
 
-                        var row = [];
+                        var cols = [];
                         angular.forEach(options.columns,function(col) { 
                             
                             var value = "";
                            
                             if(col.value)
-                                value = col.value(item);
+                                value = col.value(object);
 
-                            row.push({ value: value, "class": col.className, data: item });
+                            cols.push({ value: value, "class": col.className, data: object });
                         });
 
-                        $scope.rows.push(row);
-
+                        $scope.data.push({ cols: cols, object: object });
                     });
                     
                     if(paging) {
@@ -202,5 +219,3 @@
     });    
 
 })();
-
-

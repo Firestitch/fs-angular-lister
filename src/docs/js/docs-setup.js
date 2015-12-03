@@ -20,7 +20,7 @@ NG_DOCS={
       "type": "directive",
       "moduleName": "app",
       "shortDescription": "",
-      "keywords": "$scope access actions api app appened array binded button call callback called class classname click clicked column columns configure contextual corresponds css custom data dataset directive directives element entire equal events expecting filters function functions greater href html icon item js label length limit lister listerinstance load ls-instance ls-options menu number object objects options paging parameter parameters passed perform places populate properties query record records rendering row side specifies starting supports table table-bordered table-striped tile title total triggered type-hint type-hint-array type-hint-function user variables-matrix"
+      "keywords": "$scope __all access actions api app appened applies array avoid binded box button call callback called class classname click clicked column columns configure contextual corresponds css custom data dataset default directive directives dropdown element entire equal events expecting fetch filter filterable filters function functions greater href html icon input interface item js key label length limit list lister listerinstance load ls-instance ls-options menu number object objects options paging paired parameter parameters passed perform places populate process properties query record records rendering ror row select selection sets side specifies starting supports table table-bordered table-striped text tile title total triggered type type-hint type-hint-array type-hint-function user values variables-matrix"
     }
   ],
   "apis": {
