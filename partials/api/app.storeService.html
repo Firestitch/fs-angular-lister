@@ -1,0 +1,67 @@
+<a href="https://github.com/Firestitch/angular-boilerplate/edit/master/app/scripts/services/store.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/Firestitch/angular-boilerplate/blob/b86aaab/app/scripts/services/store.js#L15" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">storeService</code>
+<div><span class="hint">service in module <code ng:non-bindable="">app</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="app-storeservice-page"><h3 id="description_storeservice">storeService</h3>
+<p>A factory that allows easy access to the encrypted session in local storage.</p>
+</div></div>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><a href="https://github.com/Firestitch/angular-boilerplate/blob/b86aaab/app/scripts/services/store.js#L120" class="view-source icon-eye-open"> </a><h3 id="methods_decrypt">decrypt(str)</h3>
+<div class="decrypt"><div class="decrypt-page"><p>Decrypts a string.</p>
+</div><h5 id="methods_decrypt_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>str</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="decrypt-page"><ul>
+<li>Input an encrypted string to convert it to an object.</li>
+</ul>
+</div></td></tr></tbody></table><h5 id="methods_decrypt_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="decrypt-page"><p>An object.</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/Firestitch/angular-boilerplate/blob/b86aaab/app/scripts/services/store.js#L104" class="view-source icon-eye-open"> </a><h3 id="methods_encrypt">encrypt(obj)</h3>
+<div class="encrypt"><div class="encrypt-page"><p>Encrypts an object.</p>
+</div><h5 id="methods_encrypt_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>obj</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="encrypt-page"><ul>
+<li>Input an object to convert it to an encrypted string.</li>
+</ul>
+</div></td></tr></tbody></table><h5 id="methods_encrypt_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="encrypt-page"><p>An encrypted string.</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/Firestitch/angular-boilerplate/blob/b86aaab/app/scripts/services/store.js#L36" class="view-source icon-eye-open"> </a><h3 id="methods_get">get([str])</h3>
+<div class="get"><div class="get-page"><p>Gets the saved session from local storage, decrypts it and returns the object. An optional string can be passed in to return a specific value from the session.</p>
+</div><h5 id="methods_get_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[str]</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="get-page"><ul>
+<li>Optional, input the key for the value you want fetch from local storage.</li>
+</ul>
+</div></td></tr></tbody></table><h5 id="methods_get_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="get-page"><p>Returns the decrypted session or the requested value from local storage.</p>
+</div></td></tr></table></div>
+</li>
+<li><a href="https://github.com/Firestitch/angular-boilerplate/blob/b86aaab/app/scripts/services/store.js#L80" class="view-source icon-eye-open"> </a><h3 id="methods_remove">remove()</h3>
+<div class="remove"><div class="remove-page"><p>Removes all saved local storage.</p>
+</div></div>
+</li>
+<li><a href="https://github.com/Firestitch/angular-boilerplate/blob/b86aaab/app/scripts/services/store.js#L54" class="view-source icon-eye-open"> </a><h3 id="methods_set">set(obj)</h3>
+<div class="set"><div class="set-page"><p>Saves an object as an encrypted session in local storage.</p>
+</div><h5 id="methods_set_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>obj</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="set-page"><ul>
+<li>Input the object you want set as your session in local storage.</li>
+</ul>
+</div></td></tr></tbody></table></div>
+</li>
+</ul>
+</div>
+<div class="member property"><h2 id="properties">Properties</h2>
+<ul class="properties"><li><h3 id="properties_$valid">$valid</h3>
+<div class="$valid"><div class="app-storeservice-page"><p>True if all of the containing forms and controls are valid.</p>
+</div></div>
+</li>
+<li><h3 id="properties_$invalid">$invalid</h3>
+<div class="$invalid"><div class="app-storeservice-page"><p>True if at least one containing control or form is invalid.</p>
+</div></div>
+</li>
+<li><h3 id="properties_$pending">$pending</h3>
+<div class="$pending"><div class="app-storeservice-page"><p>True if at least one containing control or form is pending.</p>
+</div></div>
+</li>
+<li><h3 id="properties_$submitted">$submitted</h3>
+<div class="$submitted"><div class="app-storeservice-page"><p>True if user has submitted the form even if its invalid.</p>
+</div></div>
+</li>
+</ul>
+</div>
+</div>
