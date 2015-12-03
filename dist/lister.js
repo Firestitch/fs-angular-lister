@@ -205,7 +205,7 @@
 
 
 
-angular.module('directives').run(['$templateCache', function($templateCache) {
+angular.module('lister').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('views/directives/lister.html',

@@ -90,7 +90,7 @@ module.exports = function(grunt) {
                 },
                 
                 ngtemplates: {
-                    directives: {
+                    lister: {
                         cwd:    'app',
                         src:    'views/directives/lister.html',
                         dest:   '.tmp/template.js'
@@ -573,7 +573,7 @@ module.exports = function(grunt) {
 
             grunt.registerTask('build', 'Compile', function(target) {
                 return grunt.task.run([ 'copy:build',
-                                        'ngtemplates:directives',
+                                        'ngtemplates:lister',
                                         'concat:build']);
             });
         };
