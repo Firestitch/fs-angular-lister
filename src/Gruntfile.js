@@ -103,7 +103,7 @@ module.exports = function(grunt) {
                     },
                     build: {
                       src: ['app/scripts/directives/lister.js','.tmp/template.js'],
-                      dest: '../dist/lister.js',
+                      dest: '../lister.js',
                     },
                 },
 
@@ -366,7 +366,7 @@ module.exports = function(grunt) {
                                 dot: true,
                                 cwd: 'app/styles/directives',
                                 src: ['_lister.scss'],
-                                dest: '../dist/'
+                                dest: '../'
                             }
                         ]
                     },
