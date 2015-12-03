@@ -2,8 +2,8 @@
   "name": "fs-angular-lister",
   "description": "A directive that manages lists and added paging, sorting, actions and lots more",
   "main": [
-    "dist/lister.js",
-    "dist/_lister.scss"
+    "lister.js",
+    "_lister.scss"
   ],
   "authors": [
     "Firestitch Inc."
