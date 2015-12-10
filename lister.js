@@ -333,7 +333,7 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "                        <md-menu-item ng-repeat=\"action in options.actions track by $index\">\r" +
     "\n" +
-    "                            <md-button ng-click=\"action.click(item.object,$event)\">\r" +
+    "                            <md-button ng-click=\"action.click(item.object,$event,lsInstance.load)\">\r" +
     "\n" +
     "                                <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{action.icon}}</md-icon>\r" +
     "\n" +
