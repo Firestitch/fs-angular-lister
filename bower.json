@@ -6,7 +6,6 @@
     "_lister.scss"
   ],
   "dependencies": {
-    "angular-material": "~0.12.4"
   },
   "authors": [
     "Firestitch Inc."
