@@ -1,31 +1,43 @@
 <div class="lister">
 
-    <div class="header">
+    <div class="header" layout="row">
 
-        <md-input-container ng-repeat="filter in filters">
-            <label>{{filter.label}}</label>
+        <div ng-repeat="filter in filters">
 
-            <md-select ng-model="filter.model" ng-if="filter.type == 'select'" md-on-close="load()">
-                <md-option
-                    ng-repeat="(item, label) in filter.values"
-                    value="{{item}}"
-                >
-                    {{label}}
-                </md-option>
-            </md-select>
+            <md-input-container ng-if="filter.type == 'select'">
+
+                <label>{{filter.label}}</label>
+
+                <md-select ng-model="filter.model" md-on-close="load()">
+                    <md-option
+                        ng-repeat="(item, label) in filter.values"
+                        value="{{item}}"
+                    >
+                        {{label}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
 
 <!--             <md-icon
                 ng-if="filter.type == 'text' && filter.icon"
                 md-icon-set="material-icons">
                     {{filter.icon}}
             </md-icon> -->
-            <input
-                ng-if="filter.type == 'text'"
-                ng-model="filter.model"
-                ng-model-options="{debounce: 300}"
-                aria-label="{{filter.label}}" />
 
-        </md-input-container>
+             <md-input-container ng-if="filter.type == 'text'">
+
+                <label>{{filter.label}}</label>
+
+                <input
+                    ng-model="filter.model"
+                    ng-model-options="{debounce: 300}"
+                    aria-label="{{filter.label}}" />
+             </md-input-container>
+         
+
+             <md-datepicker ng-model="filter.model" ng-if="filter.type == 'date'" ng-change="load()" layout layout-fill md-placeholder="{{filter.label}}"></md-datepicker>
+
+        </div>
 
     </div>
 
@@ -33,15 +45,15 @@
         <div class="lister-head">
             <div class="lister-row">
                 <div class="lister-col" ng-repeat="col in options.columns track by $index">{{col.title}}</div>
-                <div class="lister-col" ng-if="options.actions"></div>
+                <div class="lister-col" ng-if="options.actions.length"></div>
             </div>
         </div>
         <div class="lister-body">
-            <div class="lister-row" ng-repeat="item in data" ng-click="options.rowClick(item.object,$event)">
+            <div class="lister-row" ng-repeat="item in data" ng-click="options.rowClick(item.object,$event); $event.stopPropagation();">
                 <div class="lister-col" ng-repeat="col in item.cols track by $index" compile="col.value" class="{{col.class}}"></div>
 
                 <div class="lister-col lister-actions" ng-if="options.actions.length==1">
-                    <md-button ng-repeat="action in options.actions track by $index" ng-click="action.click(item.object,$event)" class="md-icon-button">
+                    <md-button ng-repeat="action in options.actions track by $index" ng-click="action.click(item.object,$event); $event.stopPropagation();" class="md-icon-button">
                         <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
                      </md-button>
                 </div>

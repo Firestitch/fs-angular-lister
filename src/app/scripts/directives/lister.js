@@ -53,7 +53,7 @@
             <td>filters</td><td><a href="" class="label type-hint type-hint-array">array</a></td>
             <td>Defines the filters found above the lister table<br><br>
                 `name` — the name in the query object passed to the fetch data process<br>
-                `type` — select (single selection dropdown) or text (one line input box)<br>
+                `type` — select (single selection dropdown) or text (one line input box) or date<br>
                 `label` — The label of the interface
                 `values` — An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.<br>
                 `default` — Sets the default filter value                
@@ -76,7 +76,7 @@
      */
     
     angular.module('lister',[])
-    .directive('lister', function ($compile, $sce) {
+    .directive('lister', function ($compile, $sce, $filter) {
 
             /**
              * @ngdoc interface
@@ -114,8 +114,26 @@
                     var query = {};
 
                     angular.forEach($scope.filters,function(filter) {
-                        if(filter.model!==null && filter.model!='__all')
-                            query[filter.name] = filter.model;
+                        if(filter.model!==null) {
+
+                            if(filter.type=='select') {
+
+                                if(filter.model!='__all')
+                                    query[filter.name] = filter.model;
+
+                            } else if(filter.type=='date') {
+
+                                var date = filter.model;
+
+                                if(date) {
+
+                                    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+                                    query[filter.name]  = $filter('date')(date, 'yyyy-MM-dd','+0000');
+                                }
+                            } else {
+                                query[filter.name] = filter.model;
+                            }
+                        }                            
                     });
 
                     query.page = $scope.paging.page;

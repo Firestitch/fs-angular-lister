@@ -74,9 +74,19 @@
                 label: 'State',
                 values: {
                     __all: 'All',
-                    builder: 'Active',
-                    manager: 'Inactive'
+                    active: 'Active',
+                    deleted: 'Deleted'
                 }
+            },
+            {
+                name: 'startdate',
+                type: 'date',
+                label: 'Start Date'
+            },
+            {
+                name: 'enddate',
+                type: 'date',
+                label: 'End Date'
             }
         ]
     };
