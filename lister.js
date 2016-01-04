@@ -119,7 +119,7 @@
                             if(filter.type=='select') {
 
                                 if(filter.model!='__all')
-                                    query[filter.name] = filter.model;
+                                    query[filter.name] = typeof filter.default !== 'undefined' && typeof filter.model === 'undefined' ? filter.default : filter.model ;
 
                             } else if(filter.type=='date') {
 
