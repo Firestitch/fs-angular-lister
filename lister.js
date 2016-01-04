@@ -97,6 +97,18 @@
                     filter.model = filter.default;
                 });
 
+                $scope.$watch('filters', function(newValues, oldValues) {
+                    var reloadData = false;
+                    angular.forEach(newValues, function(newValue, index) {
+                        if (newValue.model !== oldValues[index].model)
+                            reloadData = true;
+                    });
+
+                    if (reloadData === true)
+                        load();
+
+                }, true);
+
                 $scope.data = [];
                 $scope.options = options;
                 $scope.paging = { records: 0, page: 1, pages: 0, limit: options.limit };                
@@ -261,7 +273,7 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "                <md-select ng-model=\"filter.model\" md-on-close=\"load()\">\r" +
+    "                <md-select ng-model=\"filter.model\">\r" +
     "\n" +
     "                    <md-option\r" +
     "\n" +
@@ -315,7 +327,7 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "             <md-datepicker ng-model=\"filter.model\" ng-if=\"filter.type == 'date'\" ng-change=\"load()\" layout layout-fill md-placeholder=\"{{filter.label}}\"></md-datepicker>\r" +
+    "             <md-datepicker ng-model=\"filter.model\" ng-if=\"filter.type == 'date'\" layout layout-fill md-placeholder=\"{{filter.label}}\"></md-datepicker>\r" +
     "\n" +
     "\r" +
     "\n" +
