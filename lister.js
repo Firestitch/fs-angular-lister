@@ -225,6 +225,18 @@
                 function(value) {
                     // when the 'compile' expression changes
                     // assign it into the current DOM
+                    if (typeof value === 'object') {
+                        if (typeof value.resolve !== 'undefined') {
+                            angular.forEach(value.resolve, function(elem, index) {
+                                scope[index] = scope.$eval(elem);
+                            });
+                        }
+
+                        if (typeof value.template !== 'undefined')
+                            value = value.template;
+                    }
+                    scope.data = scope.col.data;
+                    
                     element.html(value);
 
                     // compile the new DOM and link it to the current
