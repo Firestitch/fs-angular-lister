@@ -11,13 +11,12 @@
         var s = $scope;
 
         $scope.listerInstance.load();
-        debugger;
     }
 
     $scope.listerConf = {
 
         rowClick: function(data) {
-            alert("Row Click: " + JSON.stringify(data));
+           // alert("Row Click: " + JSON.stringify(data));
         },
         data: function(query, cb) {
             
@@ -65,6 +64,22 @@
             }},
             { title: 'Date', className: 'center', value: function(data) {
                 return data["date"];
+            }},
+            { title: 'Select', 
+
+                resolve: { neighborhoods2:  [ { asdasd: "asdasd"}, { as34: "234234" }] },
+                value: function () {
+
+                //var neighborhoods2  = [ { asdasd: "asdasd"}, { as34: "234234" }];
+                
+
+                //  angular.module('lister',[])
+                //.directive('lister', function ($compile, $sce, $filter) {
+
+                return '<md-input-container><md-select ng-model="someModel" placeholder="Select a state"><md-option ng-value="opt" ng-repeat="opt in neighborhoods2">{{ opt }}</md-option></md-select></md-input-container>';
+
+
+
             }}
         ],
         filters: [

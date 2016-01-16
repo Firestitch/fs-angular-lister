@@ -50,7 +50,7 @@
         </div>
         <div class="lister-body">
             <div class="lister-row" ng-repeat="item in data" ng-click="options.rowClick(item.object,$event); $event.stopPropagation();">
-                <div class="lister-col" ng-repeat="col in item.cols track by $index" compile="col.value" class="{{col.class}}"></div>
+                <div class="lister-col" ng-repeat="col in item.cols track by $index" compile="col.value" cm-scope="col.scope" class="{{col.class}}"></div>
 
                 <div class="lister-col lister-actions" ng-if="options.actions.length==1">
                     <md-button ng-repeat="action in options.actions track by $index" ng-click="action.click(item.object,$event); $event.stopPropagation();" class="md-icon-button">
@@ -103,7 +103,8 @@
             <li ng-class="{ disabled : paging.page == 1 }" class="ng-scope">
                 <a href="" ng-click="page(paging.page - 1)" class="ng-binding">‹</a>
             </li>
-            <li ng-repeat="number in [] | listerRange:paging.pages" ng-class="{ active : paging.page == (number + 1), disabled : number == '...' }">
+
+            <li ng-repeat="number in [] | listerRange:paging.pages:paging.page" ng-class="{ active : paging.page == (number + 1), disabled : number == '...' }">
                 <a href="" ng-click="page(number + 1)">{{ number + 1}}</a>
             </li>
 

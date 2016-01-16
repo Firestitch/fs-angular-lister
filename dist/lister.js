@@ -97,18 +97,6 @@
                     filter.model = filter.default;
                 });
 
-                $scope.$watch('filters', function(newValues, oldValues) {
-                    var reloadData = false;
-                    angular.forEach(newValues, function(newValue, index) {
-                        if (newValue.model !== oldValues[index].model)
-                            reloadData = true;
-                    });
-
-                    if (reloadData === true)
-                        load();
-
-                }, true);
-
                 $scope.data = [];
                 $scope.options = options;
                 $scope.paging = { records: 0, page: 1, pages: 0, limit: options.limit };                
@@ -131,7 +119,7 @@
                             if(filter.type=='select') {
 
                                 if(filter.model!='__all')
-                                    query[filter.name] = typeof filter.default !== 'undefined' && typeof filter.model === 'undefined' ? filter.default : filter.model ;
+                                    query[filter.name] = filter.model;
 
                             } else if(filter.type=='date') {
 
@@ -202,7 +190,7 @@
             }];
 
         return {
-            templateUrl: 'views/directives/lister.html',
+            templateUrl: 'views/directives/directive.html',
             restrict: 'E',            
             scope: {
                 lsOptions: '=',
@@ -225,18 +213,6 @@
                 function(value) {
                     // when the 'compile' expression changes
                     // assign it into the current DOM
-                    if (typeof value === 'object') {
-                        if (typeof value.resolve !== 'undefined') {
-                            angular.forEach(value.resolve, function(elem, index) {
-                                scope[index] = scope.$eval(elem);
-                            });
-                        }
-
-                        if (typeof value.template !== 'undefined')
-                            value = value.template;
-                    }
-                    scope.data = scope.col.data;
-                    
                     element.html(value);
 
                     // compile the new DOM and link it to the current
@@ -249,22 +225,29 @@
         };
     }])
     .filter('listerRange', function() {
-      return function(input, total) {
+      return function(input, total, page) {
+
+        var padding = 3;
         total = parseInt(total);
 
         for (var i=0; i<total; i++) {
           input.push(i);
-        }
+        }  
+
+        if(page<total)
+            input = input.slice(page - padding - total , page - total).concat(input.slice(page, page + padding));
+        else
+            input = input.slice(padding * -1);
 
         return input;
       };
     });    
 
 })();
-angular.module('lister').run(['$templateCache', function($templateCache) {
+angular.module('fs-angular-lister').run(['$templateCache', function($templateCache) {
   'use strict';
 
-  $templateCache.put('views/directives/lister.html',
+  $templateCache.put('views/directives/directive.html',
     "<div class=\"lister\">\r" +
     "\n" +
     "\r" +
@@ -285,7 +268,7 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "                <md-select ng-model=\"filter.model\">\r" +
+    "                <md-select ng-model=\"filter.model\" md-on-close=\"load()\">\r" +
     "\n" +
     "                    <md-option\r" +
     "\n" +
@@ -339,7 +322,7 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "\r" +
     "\n" +
-    "             <md-datepicker ng-model=\"filter.model\" ng-if=\"filter.type == 'date'\" layout layout-fill md-placeholder=\"{{filter.label}}\"></md-datepicker>\r" +
+    "             <md-datepicker ng-model=\"filter.model\" ng-if=\"filter.type == 'date'\" ng-change=\"load()\" layout layout-fill md-placeholder=\"{{filter.label}}\"></md-datepicker>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -369,7 +352,7 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "            <div class=\"lister-row\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\">\r" +
     "\n" +
-    "                <div class=\"lister-col\" ng-repeat=\"col in item.cols track by $index\" compile=\"col.value\" class=\"{{col.class}}\"></div>\r" +
+    "                <div class=\"lister-col\" ng-repeat=\"col in item.cols track by $index\" compile=\"col.value\" cm-scope=\"col.scope\" class=\"{{col.class}}\"></div>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -399,7 +382,7 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "                        <md-menu-item ng-repeat=\"action in options.actions track by $index\">\r" +
     "\n" +
-    "                            <md-button ng-click=\"action.click(item.object,$event,lsInstance.load)\">\r" +
+    "                            <md-button ng-click=\"action.click(item.object,$event)\">\r" +
     "\n" +
     "                                <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{action.icon}}</md-icon>\r" +
     "\n" +
@@ -475,7 +458,9 @@ angular.module('lister').run(['$templateCache', function($templateCache) {
     "\n" +
     "            </li>\r" +
     "\n" +
-    "            <li ng-repeat=\"number in [] | listerRange:paging.pages\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\r" +
+    "\r" +
+    "\n" +
+    "            <li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\r" +
     "\n" +
     "                <a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a>\r" +
     "\n" +
