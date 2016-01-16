@@ -75,7 +75,7 @@
                     ```
      */
     
-    angular.module('lister',[])
+    angular.module('fs-angular-lister',[])
     .directive('lister', function ($compile, $sce, $filter) {
 
             /**
