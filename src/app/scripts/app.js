@@ -10,7 +10,7 @@ angular
     'ngAnimate',
     'ngStorage',
     'mdo-angular-cryptography',
-    'lister'
+    'fs-angular-lister'
 ])
 .config(function ($routeProvider, $cryptoProvider, $mdThemingProvider, CONFIG) {
     $routeProvider
