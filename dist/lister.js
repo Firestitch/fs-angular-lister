@@ -1,5 +1,12 @@
 (function () {
     'use strict';
+    
+	angular.module('fs-angular-lister',[]);
+
+
+})();
+(function () {
+    'use strict';
 
 
     /**
