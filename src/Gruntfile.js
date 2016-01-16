@@ -68,7 +68,7 @@ module.exports = function(grunt) {
                             module: 'fs-angular-lister',
                         },
                         cwd:        'app',
-                        src:        'views/directives/directive.html',
+                        src:        'views/directives/lister.html',
                         dest:       '.tmp/directivetemplate.js'
                     }
                 },
