@@ -86,7 +86,7 @@
 
                 $scope.data = [];
                 $scope.options = options;
-                $scope.paging = { records: 0, page: 1, pages: 0, limit: options.limit };                
+                $scope.paging = { records: 0, page: 1, pages: 0, limit: options.limit, enabled: false };                
                 $scope.load = load;
                 $scope.page = page;
                 $scope.filters = options.filters;
@@ -148,6 +148,8 @@
 
                         $scope.data.push({ cols: cols, object: object });
                     });
+
+                    $scope.paging.enabled = !!paging;
                     
                     if(paging) {
                         $scope.paging.records = paging.records;
@@ -408,7 +410,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <div class=\"footer\">\r" +
+    "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled\">\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -446,7 +448,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "        <ul class=\"paging\" ng-if=\"paging.pages>1\">\r" +
+    "        <ul class=\"pages\" ng-if=\"paging.pages>1\">\r" +
     "\n" +
     "            <li ng-class=\"{ disabled : paging.page == 1 }\">\r" +
     "\n" +

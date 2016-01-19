@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <div class="footer">
+    <div class="paging ng-hide" ng-show="paging.enabled">
 
         <div class="records">
             <p>{{paging.records}} Records</p>
@@ -96,7 +96,7 @@
             </md-input-container>
         </div>
 
-        <ul class="paging" ng-if="paging.pages>1">
+        <ul class="pages" ng-if="paging.pages>1">
             <li ng-class="{ disabled : paging.page == 1 }">
                 <a href="javascript:;" ng-click="page(1)">&laquo;</a>
             </li>

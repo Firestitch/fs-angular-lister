@@ -103,48 +103,50 @@
         }
     }
 
-
     .paging {
-        text-align: center;
-        
-        li {
-            display: inline-block;
-        
-            a {
-                box-sizing: border-box;
+
+        .pages {
+            text-align: center;
+            
+            li {
                 display: inline-block;
-                min-width: 1.5em;
-                padding: 0.5em 1em;
-                margin-left: 2px;
-                text-align: center;
-                cursor: pointer;
-                color: #333;
-                border: 1px solid transparent;
-                border-radius: 2px;
-                list-style: none;
-                text-decoration: none;
+            
+                a {
+                    box-sizing: border-box;
+                    display: inline-block;
+                    min-width: 1.5em;
+                    padding: 0.5em 1em;
+                    margin-left: 2px;
+                    text-align: center;
+                    cursor: pointer;
+                    color: #333;
+                    border: 1px solid transparent;
+                    border-radius: 2px;
+                    list-style: none;
+                    text-decoration: none;
 
-            }
+                }
 
-            &.disabled a {
-                pointer-events: none;
-                cursor: default;
-                color: #ccc;
-            }
+                &.disabled a {
+                    pointer-events: none;
+                    cursor: default;
+                    color: #ccc;
+                }
 
 
-            &.active a {
-                font-weight: bold;
+                &.active a {
+                    font-weight: bold;
+                }
             }
         }
-    }
 
-    .records {
-        float: left;
-    }
+        .records {
+            float: left;
+        }
 
-    .limits {
-        float: right;
+        .limits {
+            float: right;
+        }
     }
 
     .lister-actions {

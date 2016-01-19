@@ -79,7 +79,7 @@
 
                 $scope.data = [];
                 $scope.options = options;
-                $scope.paging = { records: 0, page: 1, pages: 0, limit: options.limit };                
+                $scope.paging = { records: 0, page: 1, pages: 0, limit: options.limit, enabled: false };                
                 $scope.load = load;
                 $scope.page = page;
                 $scope.filters = options.filters;
@@ -141,6 +141,8 @@
 
                         $scope.data.push({ cols: cols, object: object });
                     });
+
+                    $scope.paging.enabled = !!paging;
                     
                     if(paging) {
                         $scope.paging.records = paging.records;
