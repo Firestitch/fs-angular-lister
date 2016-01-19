@@ -136,7 +136,7 @@
 
                         var cols = [];
                         angular.forEach(options.columns,function(col) {
-                            cols.push({ value: col.value, "class": col.className, data: object, resolve: col.resolve, scope: col.scope });
+                            cols.push({ value: col.value(object), "class": col.className, data: object, resolve: col.resolve, scope: col.scope });
                         });
 
                         $scope.data.push({ cols: cols, object: object });
@@ -155,6 +155,9 @@
                 }
 
                 function log(message) {
+
+                    return;
+                    
                     var args = Array.prototype.slice.call(arguments)
                     args.shift();
                     console.log(message,args);

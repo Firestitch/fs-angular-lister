@@ -143,7 +143,7 @@
 
                         var cols = [];
                         angular.forEach(options.columns,function(col) {
-                            cols.push({ value: col.value, "class": col.className, data: object, resolve: col.resolve, scope: col.scope });
+                            cols.push({ value: col.value(object), "class": col.className, data: object, resolve: col.resolve, scope: col.scope });
                         });
 
                         $scope.data.push({ cols: cols, object: object });
@@ -162,6 +162,9 @@
                 }
 
                 function log(message) {
+
+                    return;
+                    
                     var args = Array.prototype.slice.call(arguments)
                     args.shift();
                     console.log(message,args);
@@ -186,7 +189,7 @@
             }
         }
     })
-    .directive('compile', ['$compile','$injector', function ($compile, $injector) {
+    .directive('compile', ['$compile', function ($compile) {
         return function(scope, element, attrs) {
             scope.$watch(
                 function(scope) {
@@ -195,7 +198,6 @@
                 },
                 function(value) {
 
-                    var inject = {};
                     scope.data = scope.col.data;
 
                     if(scope.col.scope) {
@@ -204,17 +206,11 @@
 
                     if(scope.col.resolve) {
                         angular.forEach(scope.col.resolve, function(elem, index) {
-                            inject[index] = scope.$eval(elem);
-                            scope[index] = inject[index];
+                            scope[index] = scope.$eval(elem);
                         });
                     }
 
                     angular.extend(scope, scope.col.data);
-
-                    inject.data = scope.col.data;
-                    inject.$scope = scope;
-
-                    value = $injector.invoke(value,null,inject);
 
                     // when the 'compile' expression changes
                     // assign it into the current DOM
