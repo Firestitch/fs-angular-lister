@@ -143,7 +143,14 @@
 
                         var cols = [];
                         angular.forEach(options.columns,function(col) {
-                            cols.push({ value: col.value(object), "class": col.className, data: object, resolve: col.resolve, scope: col.scope });
+
+                            var value = col.value;
+
+                            if(typeof col.value =='function') {
+                                value = col.value(object);
+                            }
+
+                            cols.push({ value: value, "class": col.className, data: object, resolve: col.resolve, scope: col.scope });
                         });
 
                         $scope.data.push({ cols: cols, object: object });
@@ -162,9 +169,7 @@
                 }
 
                 function log(message) {
-
                     return;
-                    
                     var args = Array.prototype.slice.call(arguments)
                     args.shift();
                     console.log(message,args);
@@ -189,7 +194,7 @@
             }
         }
     })
-    .directive('compile', ['$compile', function ($compile) {
+    .directive('compile', ['$compile', '$injector', function ($compile, $injector) {
         return function(scope, element, attrs) {
             scope.$watch(
                 function(scope) {
@@ -198,6 +203,7 @@
                 },
                 function(value) {
 
+                    var inject = {};
                     scope.data = scope.col.data;
 
                     if(scope.col.scope) {
@@ -206,11 +212,26 @@
 
                     if(scope.col.resolve) {
                         angular.forEach(scope.col.resolve, function(elem, index) {
-                            scope[index] = scope.$eval(elem);
+                            var resolve = scope.$eval(elem);
+                            inject[index] = resolve;
+                            scope[index] = resolve;
                         });
                     }
 
                     angular.extend(scope, scope.col.data);
+
+                    inject.data = scope.col.data;
+                    inject.$scope = scope;
+
+                    /*
+                    if(typeof value =='object') {
+
+                        var func = value.pop();
+                        var inject = value.slice(-1).pop();
+
+                        value = $injector.invoke(func,null,inject);
+                    }
+                    */                    
 
                     // when the 'compile' expression changes
                     // assign it into the current DOM
