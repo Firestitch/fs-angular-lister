@@ -62,25 +62,31 @@
             { title: 'GUID' , className: 'center', value: function(data) {
                 return data["guid"];
             }},
-            { title: 'Date', className: 'center', value: function(data) {
-                return data["date"];
-            }},
-            { title: 'Select', 
-
-                resolve: { neighborhoods2:  [ { asdasd: "asdasd"}, { as34: "234234" }] },
-                value: function () {
-
-                //var neighborhoods2  = [ { asdasd: "asdasd"}, { as34: "234234" }];
-                
-
-                //  angular.module('lister',[])
-                //.directive('lister', function ($compile, $sce, $filter) {
-
-                return '<md-input-container><md-select ng-model="someModel" placeholder="Select a state"><md-option ng-value="opt" ng-repeat="opt in neighborhoods2">{{ opt }}</md-option></md-select></md-input-container>';
-
-
-
-            }}
+            {   title: 'Date',
+                className: 'center',
+                value: function(data, $scope, myresolve) {
+                    return data["date"];
+                },
+                resolve: {
+                    myresolve: function() {
+                        return "myresolve!!";
+                    }
+                }
+            },
+            {   title: 'Select', 
+                value: function (label, $scope, data, list) {
+                    return '{{prefix}}<md-input-container><md-select ng-model="someModel" placeholder="{{label}}"><md-option ng-value="opt" ng-repeat="opt in list">{{ opt.label }}</md-option></md-select></md-input-container>';
+                },
+                resolve: {
+                    label: function() {
+                        return "Select a state!";
+                    },
+                    list: function() { return [ { label: "Item 1"}, { label: "Item 2" }] }
+                },
+                scope: {
+                    prefix: 'Make a section '
+                }
+            }
         ],
         filters: [
             {

@@ -15,11 +15,7 @@
      * @description
      * @restrict E
      * @param {object} ls-options Options to configure the Lister.
-     *
-     *<table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Option</th><th>Type</th><th>Details</th></tr></thead><tbody>
-        <tr>
-            <td>data</td><td><a href="" class="label type-hint type-hint-function">function</a></td>
-            <td>When the load() function is called this data function is called with two parameters query and callback. 
+     * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback. 
                 <ul>
                     <li> `query` — An object with the filters 
                     <li> `callback` — This call back function is expecting two parameters. The first an array of objects to populate the lister. The other a paging object with the following properties:
@@ -28,16 +24,9 @@
                         `limit` — The number of records for paging<br>
                         `page` — The page number starting at one<br>
                         `pages` — The total number of pages in the entire dataset<br>
-                </ul>
-            </td>
-        </tr>
-        <tr>
-            <td>rowClick</td><td><a href="" class="label type-hint type-hint-function">function</a></td>
-            <td>Called when the row is clicked</td>
-        </tr>
-        <tr>
-            <td>actions</td><td><a href="" class="label type-hint type-hint-array">array</a></td>
-            <td>Adds a column to the right side of the lister and places a button that a user can click to perform custom events <br><br>
+                </ul>  
+     * @param {function} ls-options.rowClick Called when the row is clicked
+     * @param {array} ls-options.actions Adds a column to the right side of the lister and places a button that a user can click to perform custom events <br><br>
                 When actions array's length is greater then one the object supports:
                 <br><br>
                 `label` — Used in the contextual menu item's label<br>
@@ -46,27 +35,18 @@
                 When actions array's length is equal to one the object supports:
                 <br><br>
                 `click` — Is triggered when the row's icon is clicked
-            </td>
-        </tr>
-        <tr>
-            <td>columns</td><td><a href="" class="label type-hint type-hint-array">array</a></td>
-            <td>Defines the columns for the lister<br><br>
+     * @param {array} ls-options.columns Defines the columns for the lister<br><br>
                 `title` — Specifies the column tile<br>
                 `value` — Is triggered when the rendering the column and is passed a data parameter which corresponds to the row's record<br>
-                `className` — A css class name that is appened to the column element
-            </td>
-        </tr>
-        <tr>
-            <td>filters</td><td><a href="" class="label type-hint type-hint-array">array</a></td>
-            <td>Defines the filters found above the lister table<br><br>
+                `className` — A css class name that is appened to the column element<br>
+                `resolve` — Used to inject objects in the value() function and inserts the values into the $scope variable<br>
+                `scope` — Appended to the $scope object which is injected into the value() function
+     * @param {array} ls-options.filters Defines the filters found above the lister table<br><br>
                 `name` — the name in the query object passed to the fetch data process<br>
                 `type` — select (single selection dropdown) or text (one line input box) or date<br>
                 `label` — The label of the interface
                 `values` — An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.<br>
-                `default` — Sets the default filter value                
-            </td>
-        </tr>
-        
+                `default` — Sets the default filter value
         </tbody></table>
      * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive functions.
                     ```html
@@ -162,14 +142,8 @@
                     angular.forEach(data,function(object) { 
 
                         var cols = [];
-                        angular.forEach(options.columns,function(col) { 
-                            
-                            var value = "";
-                           
-                            if(col.value)
-                                value = col.value(object);
-
-                            cols.push({ value: value, "class": col.className, data: object });
+                        angular.forEach(options.columns,function(col) {
+                            cols.push({ value: col.value, "class": col.className, data: object, resolve: col.resolve, scope: col.scope });
                         });
 
                         $scope.data.push({ cols: cols, object: object });
@@ -210,7 +184,7 @@
             }
         }
     })
-    .directive('compile', ['$compile', function ($compile) {
+    .directive('compile', ['$compile','$injector', function ($compile, $injector) {
         return function(scope, element, attrs) {
             scope.$watch(
                 function(scope) {
@@ -218,6 +192,28 @@
                     return scope.$eval(attrs.compile);
                 },
                 function(value) {
+
+                    var inject = {};
+                    scope.data = scope.col.data;
+
+                    if(scope.col.scope) {
+                        scope = angular.extend(scope,scope.col.scope);
+                    }
+
+                    if(scope.col.resolve) {
+                        angular.forEach(scope.col.resolve, function(elem, index) {
+                            inject[index] = scope.$eval(elem);
+                            scope[index] = inject[index];
+                        });
+                    }
+
+                    angular.extend(scope, scope.col.data);
+
+                    inject.data = scope.col.data;
+                    inject.$scope = scope;
+
+                    value = $injector.invoke(value,null,inject);
+
                     // when the 'compile' expression changes
                     // assign it into the current DOM
                     element.html(value);
