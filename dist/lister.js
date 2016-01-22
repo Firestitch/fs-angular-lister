@@ -90,14 +90,28 @@
                 $scope.load = load;
                 $scope.page = page;
                 $scope.filters = options.filters;
-                   
+                               
                 angular.forEach($scope.filters,function(filter) {
 
                     if(typeof filter.values=='function') {
                         filter.values = filter.values();
                     }
+
+                    var valuename = true;
+                    angular.forEach(filter.values,function(value, key) {
+                        valuename &= !!value.value;
+                    });
+
+                    if(!valuename) {
+                        var values = [];
+                        angular.forEach(filter.values,function(name, value) {
+                            values.push({ name: name, value: value });
+                        });
+
+                        filter.values = values;
+                    }
                 });
-                                               
+                                           
                 /**
                  * @ngdoc method
                  * @name load
@@ -300,31 +314,19 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <md-option\r" +
     "\n" +
-    "                        ng-repeat=\"(item, label) in filter.values\"\r" +
+    "                        ng-repeat=\"item in filter.values\"\r" +
     "\n" +
-    "                        value=\"{{item}}\"\r" +
+    "                        value=\"{{item.value}}\"\r" +
     "\n" +
     "                    >\r" +
     "\n" +
-    "                        {{label}}\r" +
+    "                    {{item.name}}\r" +
     "\n" +
     "                    </md-option>\r" +
     "\n" +
     "                </md-select>\r" +
     "\n" +
     "            </md-input-container>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "<!--             <md-icon\r" +
-    "\n" +
-    "                ng-if=\"filter.type == 'text' && filter.icon\"\r" +
-    "\n" +
-    "                md-icon-set=\"material-icons\">\r" +
-    "\n" +
-    "                    {{filter.icon}}\r" +
-    "\n" +
-    "            </md-icon> -->\r" +
     "\n" +
     "\r" +
     "\n" +

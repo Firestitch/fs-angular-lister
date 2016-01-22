@@ -52,12 +52,12 @@ module.exports = function(grunt) {
                         tasks: ['ngdocs']
                     },
                     buildscss: {
-                        files: ['app/styles/{,*/}*.scss'],
+                        files: ['app/styles/{,*/}*.*css'],
                         tasks: ['clean:buildscss','copy:buildscss'] 
                     }
                     ,
                     buildjs: {
-                        files: ['app/scripts/{,*/}*.js'],
+                        files: ['app/{,*/}*.{js,html}'],
                         tasks: ['clean:buildjs','ngtemplates','concat:build']  
                     }
                 },
