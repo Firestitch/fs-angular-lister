@@ -10,19 +10,13 @@
 
                 <md-select ng-model="filter.model" md-on-close="load()">
                     <md-option
-                        ng-repeat="(item, label) in filter.values"
-                        value="{{item}}"
+                        ng-repeat="item in filter.values"
+                        value="{{item.value}}"
                     >
-                        {{label}}
+                    {{item.name}}
                     </md-option>
                 </md-select>
             </md-input-container>
-
-<!--             <md-icon
-                ng-if="filter.type == 'text' && filter.icon"
-                md-icon-set="material-icons">
-                    {{filter.icon}}
-            </md-icon> -->
 
              <md-input-container ng-if="filter.type == 'text'">
 

@@ -90,7 +90,14 @@
                 $scope.load = load;
                 $scope.page = page;
                 $scope.filters = options.filters;
-                               
+                   
+                angular.forEach($scope.filters,function(filter) {
+
+                    if(typeof filter.values=='function') {
+                        filter.values = filter.values();
+                    }
+                });
+                                               
                 /**
                  * @ngdoc method
                  * @name load
