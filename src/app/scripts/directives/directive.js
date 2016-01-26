@@ -191,7 +191,8 @@
 
                 load();
 
-                $scope.lsInstance = { load: load, page: page };
+                if($scope.lsInstance)
+                    $scope.lsInstance = { load: load, page: page };
             }];
 
         return {
