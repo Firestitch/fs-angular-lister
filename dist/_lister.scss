@@ -47,6 +47,9 @@
 
         .lister-row {
             display: table-row;
+            &:focus {
+                outline: none;
+            }        
         }
 
         .lister-body {
