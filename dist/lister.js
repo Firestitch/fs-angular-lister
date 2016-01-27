@@ -198,7 +198,8 @@
 
                 load();
 
-                $scope.lsInstance = { load: load, page: page };
+                if($scope.lsInstance)
+                    $scope.lsInstance = { load: load, page: page };
             }];
 
         return {
@@ -210,7 +211,6 @@
             },
             controller: ListerCtrl,
             link: function($scope, element, attr, ctrl) { 
-
 
             }
         }
@@ -347,8 +347,6 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                    aria-label=\"{{filter.label}}\" />\r" +
     "\n" +
     "             </md-input-container>\r" +
-    "\n" +
-    "         \r" +
     "\n" +
     "\r" +
     "\n" +

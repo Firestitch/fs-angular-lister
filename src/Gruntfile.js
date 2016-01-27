@@ -54,10 +54,9 @@ module.exports = function(grunt) {
                     buildscss: {
                         files: ['app/styles/{,*/}*.*css'],
                         tasks: ['clean:buildscss','copy:buildscss'] 
-                    }
-                    ,
-                    buildjs: {
-                        files: ['app/{,*/}*.{js,html}'],
+                    },
+                    build: {
+                        files: ['app/**/*.{js,html}'],
                         tasks: ['clean:buildjs','ngtemplates','concat:build']  
                     }
                 },

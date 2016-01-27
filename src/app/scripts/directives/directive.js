@@ -205,7 +205,6 @@
             controller: ListerCtrl,
             link: function($scope, element, attr, ctrl) { 
 
-
             }
         }
     })
