@@ -290,230 +290,119 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
   'use strict';
 
   $templateCache.put('views/directives/lister.html',
-    "<div class=\"lister\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "    <div class=\"header\" layout=\"row\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <div ng-repeat=\"filter in filters\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "            <md-input-container ng-if=\"filter.type == 'select'\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <label>{{filter.label}}</label>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <md-select ng-model=\"filter.model\" md-on-close=\"load()\">\r" +
-    "\n" +
-    "                    <md-option\r" +
-    "\n" +
-    "                        ng-repeat=\"item in filter.values\"\r" +
-    "\n" +
-    "                        value=\"{{item.value}}\"\r" +
-    "\n" +
-    "                    >\r" +
-    "\n" +
-    "                    {{item.name}}\r" +
-    "\n" +
-    "                    </md-option>\r" +
-    "\n" +
-    "                </md-select>\r" +
-    "\n" +
-    "            </md-input-container>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "             <md-input-container ng-if=\"filter.type == 'text'\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <label>{{filter.label}}</label>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <input\r" +
-    "\n" +
-    "                    ng-model=\"filter.model\"\r" +
-    "\n" +
-    "                    ng-model-options=\"{debounce: 300}\"\r" +
-    "\n" +
-    "                    aria-label=\"{{filter.label}}\" />\r" +
-    "\n" +
-    "             </md-input-container>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "             <md-datepicker ng-model=\"filter.model\" ng-if=\"filter.type == 'date'\" ng-change=\"load()\" layout layout-fill md-placeholder=\"{{filter.label}}\"></md-datepicker>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "    </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "    <div class=\"lister-table\">\r" +
-    "\n" +
-    "        <div class=\"lister-head\">\r" +
-    "\n" +
-    "            <div class=\"lister-row\">\r" +
-    "\n" +
-    "                <div class=\"lister-col\" ng-repeat=\"col in options.columns track by $index\">{{col.title}}</div>\r" +
-    "\n" +
-    "                <div class=\"lister-col\" ng-if=\"options.actions.length\"></div>\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "        <div class=\"lister-body\">\r" +
-    "\n" +
-    "            <div class=\"lister-row\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\">\r" +
-    "\n" +
-    "                <div class=\"lister-col\" ng-repeat=\"col in item.cols track by $index\" compile=\"col.value\" cm-scope=\"col.scope\" class=\"{{col.class}}\"></div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length==1\">\r" +
-    "\n" +
-    "                    <md-button ng-repeat=\"action in options.actions track by $index\" ng-click=\"action.click(item.object,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
-    "\n" +
-    "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
-    "\n" +
-    "                     </md-button>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length>1\">\r" +
-    "\n" +
-    "                    <md-menu>\r" +
-    "\n" +
-    "                     <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
-    "\n" +
-    "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
-    "\n" +
-    "                     </md-button>\r" +
-    "\n" +
-    "                     <md-menu-content>\r" +
-    "\n" +
-    "                        <md-menu-item ng-repeat=\"action in options.actions track by $index\">\r" +
-    "\n" +
-    "                            <md-button ng-click=\"action.click(item.object,$event)\">\r" +
-    "\n" +
-    "                                <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{action.icon}}</md-icon>\r" +
-    "\n" +
-    "                                {{action.label}}\r" +
-    "\n" +
-    "                            </md-button>\r" +
-    "\n" +
-    "                        </md-menu-item>\r" +
-    "\n" +
-    "                    </md-menu-content>\r" +
-    "\n" +
-    "                    </md-menu>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "    </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <div class=\"records\">\r" +
-    "\n" +
-    "            <p>{{paging.records}} Records</p>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <div class=\"limits\">\r" +
-    "\n" +
-    "            <md-input-container>\r" +
-    "\n" +
-    "                <label>Show</label>\r" +
-    "\n" +
-    "                <md-select ng-model=\"paging.limit\" md-on-close=\"load()\">\r" +
-    "\n" +
-    "                    <md-option\r" +
-    "\n" +
-    "                        ng-repeat=\"limit in options.limits\"\r" +
-    "\n" +
-    "                        value=\"{{limit}}\">\r" +
-    "\n" +
-    "                        {{limit}} records\r" +
-    "\n" +
-    "                    </md-option>\r" +
-    "\n" +
-    "                </md-select>\r" +
-    "\n" +
-    "            </md-input-container>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <ul class=\"pages\" ng-if=\"paging.pages>1\">\r" +
-    "\n" +
-    "            <li ng-class=\"{ disabled : paging.page == 1 }\">\r" +
-    "\n" +
-    "                <a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "            <li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\">\r" +
-    "\n" +
-    "                <a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "            <li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\r" +
-    "\n" +
-    "                <a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "            <li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\">\r" +
-    "\n" +
-    "                <a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "            <li ng-class=\"{ disabled : paging.page == paging.pages }\">\r" +
-    "\n" +
-    "                <a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "        </ul>\r" +
-    "\n" +
-    "    </div>\r" +
-    "\n" +
-    "</div>\r" +
-    "\n"
+    "<div class=\"lister\">\n" +
+    "\n" +
+    "    <div class=\"header\" layout=\"row\">\n" +
+    "\n" +
+    "        <div ng-repeat=\"filter in filters\">\n" +
+    "\n" +
+    "            <md-input-container ng-if=\"filter.type == 'select'\">\n" +
+    "\n" +
+    "                <label>{{filter.label}}</label>\n" +
+    "\n" +
+    "                <md-select ng-model=\"filter.model\" md-on-close=\"load()\">\n" +
+    "                    <md-option\n" +
+    "                        ng-repeat=\"item in filter.values\"\n" +
+    "                        value=\"{{item.value}}\"\n" +
+    "                    >\n" +
+    "                    {{item.name}}\n" +
+    "                    </md-option>\n" +
+    "                </md-select>\n" +
+    "            </md-input-container>\n" +
+    "\n" +
+    "             <md-input-container ng-if=\"filter.type == 'text'\">\n" +
+    "\n" +
+    "                <label>{{filter.label}}</label>\n" +
+    "\n" +
+    "                <input\n" +
+    "                    ng-model=\"filter.model\"\n" +
+    "                    ng-model-options=\"{debounce: 300}\"\n" +
+    "                    ng-change=\"load()\"\n" +
+    "                    aria-label=\"{{filter.label}}\" />\n" +
+    "             </md-input-container>\n" +
+    "\n" +
+    "             <md-datepicker ng-model=\"filter.model\" ng-if=\"filter.type == 'date'\" ng-change=\"load()\" layout layout-fill md-placeholder=\"{{filter.label}}\"></md-datepicker>\n" +
+    "\n" +
+    "        </div>\n" +
+    "\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"lister-table\">\n" +
+    "        <div class=\"lister-head\">\n" +
+    "            <div class=\"lister-row\">\n" +
+    "                <div class=\"lister-col\" ng-repeat=\"col in options.columns track by $index\">{{col.title}}</div>\n" +
+    "                <div class=\"lister-col\" ng-if=\"options.actions.length\"></div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"lister-body\">\n" +
+    "            <div class=\"lister-row\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\">\n" +
+    "                <div class=\"lister-col\" ng-repeat=\"col in item.cols track by $index\" compile=\"col.value\" cm-scope=\"col.scope\" class=\"{{col.class}}\"></div>\n" +
+    "\n" +
+    "                <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length==1\">\n" +
+    "                    <md-button ng-repeat=\"action in options.actions track by $index\" ng-click=\"action.click(item.object,$event); $event.stopPropagation();\" class=\"md-icon-button\">\n" +
+    "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\n" +
+    "                     </md-button>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length>1\">\n" +
+    "                    <md-menu>\n" +
+    "                     <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\n" +
+    "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\n" +
+    "                     </md-button>\n" +
+    "                     <md-menu-content>\n" +
+    "                        <md-menu-item ng-repeat=\"action in options.actions track by $index\">\n" +
+    "                            <md-button ng-click=\"action.click(item.object,$event)\">\n" +
+    "                                <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{action.icon}}</md-icon>\n" +
+    "                                {{action.label}}\n" +
+    "                            </md-button>\n" +
+    "                        </md-menu-item>\n" +
+    "                    </md-menu-content>\n" +
+    "                    </md-menu>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled\">\n" +
+    "\n" +
+    "        <div class=\"records\">\n" +
+    "            <p>{{paging.records}} Records</p>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"limits\">\n" +
+    "            <md-input-container>\n" +
+    "                <label>Show</label>\n" +
+    "                <md-select ng-model=\"paging.limit\" md-on-close=\"load()\">\n" +
+    "                    <md-option\n" +
+    "                        ng-repeat=\"limit in options.limits\"\n" +
+    "                        value=\"{{limit}}\">\n" +
+    "                        {{limit}} records\n" +
+    "                    </md-option>\n" +
+    "                </md-select>\n" +
+    "            </md-input-container>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <ul class=\"pages\" ng-if=\"paging.pages>1\">\n" +
+    "            <li ng-class=\"{ disabled : paging.page == 1 }\">\n" +
+    "                <a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a>\n" +
+    "            </li>\n" +
+    "            <li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\">\n" +
+    "                <a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a>\n" +
+    "            </li>\n" +
+    "\n" +
+    "            <li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\n" +
+    "                <a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a>\n" +
+    "            </li>\n" +
+    "\n" +
+    "            <li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\">\n" +
+    "                <a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a>\n" +
+    "            </li>\n" +
+    "            <li ng-class=\"{ disabled : paging.page == paging.pages }\">\n" +
+    "                <a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a>\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "    </div>\n" +
+    "</div>\n"
   );
 
 }]);

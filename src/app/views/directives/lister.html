@@ -25,6 +25,7 @@
                 <input
                     ng-model="filter.model"
                     ng-model-options="{debounce: 300}"
+                    ng-change="load()"
                     aria-label="{{filter.label}}" />
              </md-input-container>
 
