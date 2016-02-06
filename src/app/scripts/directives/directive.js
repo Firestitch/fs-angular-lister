@@ -28,6 +28,12 @@
                 When actions array's length is equal to one the object supports:
                 <br><br>
                 `click` — Is triggered when the row's icon is clicked
+    * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side               
+    * @param {array} ls-options.selection.actions Sets the menus options for the selection interface
+                <br><br>
+                `label` — Used in the contextual menu item's label<br>
+                `click` — Is triggered when the contextual menu item is clicked. First param an array of selected objects and the second param is the $event
+                `icon` — Used in the contextual menu item icon               
      * @param {array} ls-options.columns Defines the columns for the lister<br><br>
                 `title` — Specifies the column tile<br>
                 `value` — Is triggered when the rendering the column and is passed a data parameter which corresponds to the row's record<br>
@@ -83,6 +89,46 @@
                 $scope.load = load;
                 $scope.page = page;
                 $scope.filters = options.filters;
+                $scope.checked = [];
+                $scope.selectToogled = false;
+
+                $scope.selectionsToggle = function(toogle) {
+                    
+                    $scope.selectionsClear();
+                    if(!toogle) {
+                        
+                        for(var i=0;i<$scope.data.length;i++) {
+                            $scope.checked.push(1);
+                        }
+                    } else {
+                        $scope.selectToogled = true;
+                    }
+                }
+
+
+                $scope.selectMenu = function($mdOpenMenu, ev) {
+                    $mdOpenMenu(ev);
+                }
+
+                $scope.select = function() {
+                    $scope.selectToogled = false;
+                }
+
+                $scope.selectMenu = function(click, $event) {
+
+                    var selected = [];
+                    angular.forEach($scope.checked,function(value, index) {
+                        if(value)
+                            selected.push($scope.data[index].object);
+                    });
+
+                    click(selected, $event);
+                }
+
+                $scope.selectionsClear = function() {
+                    $scope.checked = [];
+                    $scope.selectToogled = false;                 
+                }
                                
                 angular.forEach($scope.filters,function(filter) {
 
@@ -112,6 +158,8 @@
                  * @description Triggers the loading of data
                  */
                 function load() {
+                    $scope.selectionsClear();
+
                     var query = {};
 
                     angular.forEach($scope.filters,function(filter) {
@@ -209,33 +257,34 @@
         }
     })
     .directive('compile', ['$compile', '$injector', function ($compile, $injector) {
-        return function(scope, element, attrs) {
-            scope.$watch(
-                function(scope) {
+        return function($scope, element, attrs) {
+
+            $scope.$watch(
+                function($scope) {
                     // watch the 'compile' expression for changes
-                    return scope.$eval(attrs.compile);
+                    return $scope.$eval(attrs.compile);
                 },
                 function(value) {
 
                     var inject = {};
-                    scope.data = scope.col.data;
+                    $scope.data = $scope.col.data;
 
-                    if(scope.col.scope) {
-                        scope = angular.extend(scope,scope.col.scope);
+                    if($scope.col.scope) {
+                        $scope = angular.extend($scope,$scope.col.scope);
                     }
 
-                    if(scope.col.resolve) {
-                        angular.forEach(scope.col.resolve, function(elem, index) {
-                            var resolve = scope.$eval(elem);
+                    if($scope.col.resolve) {
+                        angular.forEach($scope.col.resolve, function(elem, index) {
+                            var resolve = $scope.$eval(elem);
                             inject[index] = resolve;
-                            scope[index] = resolve;
+                            $scope[index] = resolve;
                         });
                     }
 
-                    angular.extend(scope, scope.col.data);
+                    angular.extend($scope, $scope.col.data);
 
-                    inject.data = scope.col.data;
-                    inject.$scope = scope;
+                    inject.data = $scope.col.data;
+                    inject.$scope = $scope;
 
                     /*
                     if(typeof value =='object') {
@@ -255,7 +304,7 @@
                     // scope.
                     // NOTE: we only compile .childNodes so that
                     // we don't get into infinite loop compiling ourselves
-                    $compile(element.contents())(scope);
+                    $compile(element.contents())($scope);
                 }
             );
         };

@@ -1,3 +1,4 @@
+
 <div class="lister">
 
     <div class="header" layout="row">
@@ -37,13 +38,32 @@
 
     <div class="lister-table">
         <div class="lister-head">
-            <div class="lister-row">
+            <div class="lister-row">                
+                <div class="lister-col lister-select-toogle" ng-show="options.selection">
+                   
+                    <md-checkbox ng-click="selectionsToggle(selectToogled);" ng-model="selectToogled"  ng-true-value="true"></md-checkbox>
+                    <md-menu md-offset="17 42">
+                        <md-button aria-label="Select" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                            <md-icon>arrow_drop_down</md-icon>
+                        </md-button>
+                        <md-menu-content>
+                            <md-menu-item ng-repeat="action in options.selection.actions">
+                                <md-button ng-click="selectMenu(action.click,$event)">
+                                    <md-icon md-menu-align-target ng-show="action.icon">{{action.icon}}</md-icon>
+                                    {{action.label}}
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                    
+                </div>
                 <div class="lister-col" ng-repeat="col in options.columns track by $index">{{col.title}}</div>
-                <div class="lister-col" ng-if="options.actions.length"></div>
+                <div class="lister-col" ng-show="options.actions.length"></div>
             </div>
         </div>
         <div class="lister-body">
-            <div class="lister-row" ng-repeat="item in data" ng-click="options.rowClick(item.object,$event); $event.stopPropagation();">
+            <div class="lister-row" ng-class="{ selected: checked[$index] }" ng-repeat="item in data" ng-click="options.rowClick(item.object,$event); $event.stopPropagation();">
+                <div class="lister-col" ng-show="options.selection"><md-checkbox ng-model="checked[$index]" ng-true-value="1" ng-click="select(item)"></md-checkbox></div>
                 <div class="lister-col" ng-repeat="col in item.cols track by $index" compile="col.value" cm-scope="col.scope" class="{{col.class}}"></div>
 
                 <div class="lister-col lister-actions" ng-if="options.actions.length==1">
@@ -54,17 +74,17 @@
 
                 <div class="lister-col lister-actions" ng-if="options.actions.length>1">
                     <md-menu>
-                     <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
-                        <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
-                     </md-button>
-                     <md-menu-content>
-                        <md-menu-item ng-repeat="action in options.actions track by $index">
-                            <md-button ng-click="action.click(item.object,$event)">
-                                <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{action.icon}}</md-icon>
-                                {{action.label}}
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
+                        <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
+                            <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
+                        </md-button>
+                        <md-menu-content>
+                            <md-menu-item ng-repeat="action in options.actions track by $index">
+                                <md-button ng-click="action.click(item.object,$event)">
+                                    <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{action.icon}}</md-icon>
+                                    {{action.label}}
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
                     </md-menu>
                 </div>
             </div>

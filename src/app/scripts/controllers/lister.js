@@ -88,7 +88,23 @@
                 }
             }
         ],
+
+        selection: {
+            actions: [{
+                icon: 'delete',
+                label: 'Delete',
+                click: function(selected, $event) {
+                    debugger;
+                }
+            }]
+        },
+        
         filters: [
+            {
+                name: 'search',
+                type: 'text',
+                label: 'Search'
+            },
             {
                 name: 'state',
                 type: 'select',
