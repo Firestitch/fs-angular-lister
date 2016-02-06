@@ -69,7 +69,7 @@
      */
     
     angular.module('fs-angular-lister',[])
-    .directive('lister', function ($compile, $sce, $filter) {
+    .directive('lister', function ($compile, $sce, $filter, $window, $log, $q) {
 
             /**
              * @ngdoc interface
@@ -81,8 +81,9 @@
 
                 var options = $scope.lsOptions;
 
-                options.limits = options.limits ? options.limits : [5, 10, 25, 50, 100];
-                options.limit = options.limit ? options.limit : options.limits[0];
+                options.paging = options.paging || {};
+                options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
+                options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
 
@@ -92,12 +93,15 @@
 
                 $scope.data = [];
                 $scope.options = options;
-                $scope.paging = { records: 0, page: 1, pages: 0, limit: options.limit, enabled: false };                
+                $scope.paging = { records: 0, page: 1, pages: 0, limit: options.paging.limit, enabled: false };                
                 $scope.load = load;
+                $scope.loading = false;
                 $scope.page = page;
                 $scope.filters = options.filters;
                 $scope.checked = [];
                 $scope.selectToogled = false;
+                $scope.debug = false;
+                $scope.load = load;
 
                 $scope.selectionsToggle = function(toogle) {
                     
@@ -165,6 +169,10 @@
                  * @description Triggers the loading of data
                  */
                 function load() {
+
+                    if($scope.loading)
+                        return;
+
                     $scope.selectionsClear();
 
                     var query = {};
@@ -196,7 +204,16 @@
                     query.limit = $scope.paging.limit;
 
                     log("Calling data()", query);
-                    options.data(query, dataCallback);     
+                    
+                    try {
+                        
+                        $scope.loading = true;
+                        options.data(query, dataCallback);   
+                   
+                   } catch(e) {
+                        $scope.loading = false;
+                        throw e;
+                    }
                 }
            
                  function page(page) {
@@ -207,7 +224,10 @@
                 function dataCallback(data,paging) {
                     log("dataCallback()",data,paging);
 
-                    $scope.data = [];
+                    if(!$scope.options.paging.infinite) {
+                        $scope.data = [];
+                    }
+
                     angular.forEach(data,function(object) { 
 
                         var cols = [];
@@ -225,23 +245,31 @@
                         $scope.data.push({ cols: cols, object: object });
                     });
 
-                    $scope.paging.enabled = !!paging;
-                    
-                    if(paging) {
-                        $scope.paging.records = paging.records;
-                        $scope.paging.page = paging.page;
-                        $scope.paging.pages = paging.pages;
-                        $scope.paging.limit = paging.limit;
-                        options.limit = paging.limit;
+                    if($scope.options.paging.infinite) {
+                        $scope.paging.page++;
 
+                    } else {
+
+                        $scope.paging.enabled = !!paging;
+                        
+                        if(paging) {
+                            $scope.paging.records = paging.records;
+                            $scope.paging.page = paging.page;
+                            $scope.paging.pages = paging.pages;
+                            $scope.paging.limit = paging.limit;
+                            options.limit = paging.limit;
+                        }
                     }
+
+                    $scope.loading = false;
                 }
 
                 function log(message) {
-                    return;
-                    var args = Array.prototype.slice.call(arguments)
-                    args.shift();
-                    console.log(message,args);
+                    if($scope.debug) {
+                        var args = Array.prototype.slice.call(arguments)
+                        args.shift();
+                        console.log(message,args);
+                    }
                 }
 
                 load();
@@ -258,8 +286,46 @@
                 lsInstance: '='
             },
             controller: ListerCtrl,
-            link: function($scope, element, attr, ctrl) { 
+            link: function($scope, element, attr, ctrl) {
+                
+                if($scope.lsOptions.paging.infinite) {
 
+                    element = angular.element(element[0].children[0]);
+
+                    var body = document.body,
+                        html = document.documentElement,
+                        max_bottom = 0,
+                        threshhold = 400;
+
+                    angular.element($window).bind("scroll", function() {
+                      
+                        var scrollTop = parseInt($window.pageYOffset);                    
+                        var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
+                        var wn_bottom = scrollTop + parseInt(window.innerHeight);                        
+                        var condition = (el_bottom - threshhold) < wn_bottom && (el_bottom > (max_bottom + threshhold));
+
+                        if(false) {
+                            var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+                            $log.log("element top=" + element.prop('offsetTop'));
+                            $log.log("element height=" + element.prop('offsetHeight'));
+                            $log.log("scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
+                            $log.log("total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
+                            $log.log("threshhold= " + threshhold);
+                            $log.log("Element Bottom: " + el_bottom);
+                            $log.log("Window Height: " + window.innerHeight);
+                            $log.log("Window Bottom: " + wn_bottom);
+                            $log.log("Max Bottom: " + max_bottom);
+                            $log.log("If: (" + (el_bottom - threshhold) + ") < " + wn_bottom + " && (" + (el_bottom > (max_bottom + threshhold)) + ") = " + condition);
+                            $log.log("----------------------------------------------------------");
+                        }
+
+                        if(condition) {
+                            max_bottom = el_bottom;
+                            $scope.load();
+                        }
+                    }); 
+                }
             }
         }
     })
@@ -425,7 +491,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                   \r" +
     "\n" +
-    "                    <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\"></md-checkbox>\r" +
+    "                    <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\"></md-checkbox>\r" +
     "\n" +
     "                    <md-menu md-offset=\"17 42\">\r" +
     "\n" +
@@ -469,7 +535,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"lister-row\" ng-class=\"{ selected: checked[$index] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\">\r" +
     "\n" +
-    "                <div class=\"lister-col\" ng-show=\"options.selection\"><md-checkbox ng-model=\"checked[$index]\" ng-true-value=\"1\" ng-click=\"select(item)\"></md-checkbox></div>\r" +
+    "                <div class=\"lister-col\" ng-show=\"options.selection\"><md-checkbox ng-model=\"checked[$index]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\"></md-checkbox></div>\r" +
     "\n" +
     "                <div class=\"lister-col\" ng-repeat=\"col in item.cols track by $index\" compile=\"col.value\" cm-scope=\"col.scope\" class=\"{{col.class}}\"></div>\r" +
     "\n" +
@@ -525,7 +591,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled\">\r" +
+    "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled && !options.paging.infinite\">\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -543,11 +609,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <label>Show</label>\r" +
     "\n" +
-    "                <md-select ng-model=\"paging.limit\" md-on-close=\"load()\">\r" +
+    "                <md-select ng-model=\"options.paging.limit\" md-on-close=\"load()\">\r" +
     "\n" +
     "                    <md-option\r" +
     "\n" +
-    "                        ng-repeat=\"limit in options.limits\"\r" +
+    "                        ng-repeat=\"limit in options.paging.limits\"\r" +
     "\n" +
     "                        value=\"{{limit}}\">\r" +
     "\n" +
