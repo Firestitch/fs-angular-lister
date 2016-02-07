@@ -90,6 +90,20 @@
                 $scope.loading = false;
                 $scope.page = page;
                 $scope.filters = options.filters;
+
+                $scope.$watch('filters', function(newValues, oldValues) {
+                    if (newValues !== oldValues) {
+                        var reloadData = false;
+                        angular.forEach(newValues, function(newValue, index) {
+                           if (newValue.model !== oldValues[index].model)
+                               reloadData = true;
+                        });
+
+                        if (reloadData === true)
+                            load();
+                    }
+                }, true);
+
                 $scope.checked = [];
                 $scope.selectToogled = false;
                 $scope.debug = false;
@@ -179,7 +193,7 @@
 
                             } else if(filter.type=='date') {
 
-                                var date = filter.model;
+                                var date = angular.copy(filter.model);
 
                                 if(date) {
 
