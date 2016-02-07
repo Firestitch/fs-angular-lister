@@ -23,7 +23,7 @@
             query.count = 30;
 
             DummyService
-                .gets(query,{ url: 'http://scenario.local.firestitch.com/api/' })
+                .gets(query,{ url: 'http://scenario.firestitch.com/api/' })
                 .then(function(result) {
                     cb(result.objects,result.paging);
                 })
@@ -89,6 +89,11 @@
             }
         ],
         filters: [
+            {
+                name: 'name',
+                type: 'text',
+                label: 'Name'
+            },
             {
                 name: 'state',
                 type: 'select',

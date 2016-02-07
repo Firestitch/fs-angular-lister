@@ -90,6 +90,21 @@
                 $scope.load = load;
                 $scope.page = page;
                 $scope.filters = options.filters;
+
+                $scope.$watch('filters', function(newValues, oldValues) {
+                    if (newValues !== oldValues) {
+                        var reloadData = false;
+                        angular.forEach(newValues, function(newValue, index) {
+                           if (newValue.model !== oldValues[index].model)
+                               reloadData = true;
+                        });
+
+                        console.log(newValues, oldValues);
+
+                        if (reloadData === true)
+                            load();
+                    }
+                }, true);
                                
                 angular.forEach($scope.filters,function(filter) {
 
@@ -131,7 +146,7 @@
 
                             } else if(filter.type=='date') {
 
-                                var date = filter.model;
+                                var date = angular.copy(filter.model);
 
                                 if(date) {
 
@@ -300,7 +315,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <label>{{filter.label}}</label>\n" +
     "\n" +
-    "                <md-select ng-model=\"filter.model\" md-on-close=\"load()\">\n" +
+    "                <md-select ng-model=\"filter.model\">\n" +
     "                    <md-option\n" +
     "                        ng-repeat=\"item in filter.values\"\n" +
     "                        value=\"{{item.value}}\"\n" +
@@ -316,12 +331,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <input\n" +
     "                    ng-model=\"filter.model\"\n" +
-    "                    ng-model-options=\"{debounce: 300}\"\n" +
-    "                    ng-change=\"load()\"\n" +
+    "                    ng-model-options=\"{debounce: 600}\"\n" +
     "                    aria-label=\"{{filter.label}}\" />\n" +
     "             </md-input-container>\n" +
     "\n" +
-    "             <md-datepicker ng-model=\"filter.model\" ng-if=\"filter.type == 'date'\" ng-change=\"load()\" layout layout-fill md-placeholder=\"{{filter.label}}\"></md-datepicker>\n" +
+    "             <md-datepicker ng-model=\"filter.model\" ng-if=\"filter.type == 'date'\" layout layout-fill md-placeholder=\"{{filter.label}}\"></md-datepicker>\n" +
     "\n" +
     "        </div>\n" +
     "\n" +

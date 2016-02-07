@@ -83,6 +83,21 @@
                 $scope.load = load;
                 $scope.page = page;
                 $scope.filters = options.filters;
+
+                $scope.$watch('filters', function(newValues, oldValues) {
+                    if (newValues !== oldValues) {
+                        var reloadData = false;
+                        angular.forEach(newValues, function(newValue, index) {
+                           if (newValue.model !== oldValues[index].model)
+                               reloadData = true;
+                        });
+
+                        console.log(newValues, oldValues);
+
+                        if (reloadData === true)
+                            load();
+                    }
+                }, true);
                                
                 angular.forEach($scope.filters,function(filter) {
 
@@ -124,7 +139,7 @@
 
                             } else if(filter.type=='date') {
 
-                                var date = filter.model;
+                                var date = angular.copy(filter.model);
 
                                 if(date) {
 
