@@ -70,12 +70,37 @@
                 &.sorting {
                     background-image: none;
                 }
+
+                &.lister-select-toogle {
+                    md-checkbox {
+                        display: inline-block;
+                        padding-left: 0; 
+                        margin-right: 0;
+                    }
+
+                    md-menu button {
+                        height: auto;
+                        min-height: auto;
+                        width: auto;
+                        line-height: inherit;
+                        margin: 0;
+                        padding: 3px 0 3px 0;                        
+                    }
+                }
             }
         }
 
         .lister-body {
 
+            .lister-row:first-child .lister-col {
+                border: 0px;
+            }
+
             .lister-row:hover .lister-col {
+                background-color: #f6f6f6;
+            }
+
+            .lister-row.selected {
                 background-color: #f6f6f6;
             }
 
@@ -158,3 +183,5 @@
     }
 
 }
+
+

@@ -2,15 +2,20 @@
 
 
 angular.module('app')
-  .controller('ListerrCtrl', function ($scope, DummyService) {
+  .controller('ListerCtrl', function ($scope, DummyService, fsModal, $timeout) {
 
     $scope.click = click;
+    $scope.modal = modal;
     $scope.listerInstance = {};
 
     function click() {
-        var s = $scope;
-
         $scope.listerInstance.load();
+    }
+
+    function modal() {
+        fsModal.show('ListerCtrl',
+                    'views/listermodal.html'                   
+                    );     
     }
 
     $scope.listerConf = {
@@ -20,10 +25,10 @@
         },
         data: function(query, cb) {
             
-            query.count = 30;
+            query.count = 100;
 
             DummyService
-                .gets(query,{ url: 'http://scenario.firestitch.com/api/' })
+                .gets(query,{ url: 'http://scenario.local.firestitch.com/api/' })
                 .then(function(result) {
                     cb(result.objects,result.paging);
                 })
@@ -31,6 +36,12 @@
                     console.log(response);
                 });
         },
+
+        paging: {
+            infinite: true,
+            limit: 10
+        },
+
         actions: [
             {
                 click: function(data, event) {
@@ -88,11 +99,47 @@
                 }
             }
         ],
+
+        selection: {
+            actions: [{
+                icon: 'delete',
+                label: 'Delete',
+                click: function(selected, $event) {
+                    alert("delete");
+                }
+            },
+            {
+                icon: 'forward',
+                label: 'Move to Somewhere',
+                click: function(selected, $event) {
+                    fsModal
+                    .show(  function($scope, modal) {
+                                $scope.move = function() {
+                                    fsModal.hide();
+                                }
+
+                                $scope.cancel = function() {
+                                    fsModal.hide();
+                                }
+                            },
+                            'views/modal.html',
+                            { resolve : {
+                                modal: function() {
+                                    return $scope.modal;
+                                }
+                            }})
+                    .then(function() {
+                        $scope.modal();
+                    });
+                }
+            }]
+        },
+        
         filters: [
             {
-                name: 'name',
+                name: 'search',
                 type: 'text',
-                label: 'Name'
+                label: 'Search'
             },
             {
                 name: 'state',

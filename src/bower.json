@@ -4,19 +4,23 @@
   "version": "0.0.0",
   "appPath": "app",
   "dependencies": {
-    "angular": "~1.4.7",
-    "angular-material": "1.0.3",
-    "angular-route": "1.4.8",
-    "angular-sanitize": "1.4.8",
-    "angular-touch": "1.4.8",
+    "angular": "1.4.9",
+    "angular-material": "0.11.1",
+    "angular-route": "1.4.9",
+    "angular-sanitize": "1.4.9",
+    "angular-touch": "1.4.9",
     "es5-shim": "3.1.1",
     "json3": "3.3.2",
     "material-design-icons": "~2.0.0",
     "ng-fastclick": "1.0.0",
-    "ngstorage": "0.3.0"
+    "ngstorage": "0.3.0",
+    "fs-angular-modal": "latest"
   },
   "devDependencies": {
-    "angular-mocks": "1.4.8",
-    "angular-scenario": "1.4.8"
+    "angular-mocks": "1.4.9",
+    "angular-scenario": "1.4.9"
+  },
+  "resolutions": {
+    "angular": "1.4.9"
   }
 }
