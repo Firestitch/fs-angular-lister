@@ -2,15 +2,20 @@
 
 
 angular.module('app')
-  .controller('ListerrCtrl', function ($scope, DummyService) {
+  .controller('ListerCtrl', function ($scope, DummyService, fsModal, $timeout) {
 
     $scope.click = click;
+    $scope.modal = modal;
     $scope.listerInstance = {};
 
     function click() {
-        var s = $scope;
-
         $scope.listerInstance.load();
+    }
+
+    function modal() {
+        fsModal.show('ListerCtrl',
+                    'views/listermodal.html'                   
+                    );     
     }
 
     $scope.listerConf = {
@@ -100,7 +105,32 @@
                 icon: 'delete',
                 label: 'Delete',
                 click: function(selected, $event) {
-                    debugger;
+                    alert("delete");
+                }
+            },
+            {
+                icon: 'forward',
+                label: 'Move to Somewhere',
+                click: function(selected, $event) {
+                    fsModal
+                    .show(  function($scope, modal) {
+                                $scope.move = function() {
+                                    fsModal.hide();
+                                }
+
+                                $scope.cancel = function() {
+                                    fsModal.hide();
+                                }
+                            },
+                            'views/modal.html',
+                            { resolve : {
+                                modal: function() {
+                                    return $scope.modal;
+                                }
+                            }})
+                    .then(function() {
+                        $scope.modal();
+                    });
                 }
             }]
         },

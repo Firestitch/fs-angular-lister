@@ -10,15 +10,15 @@ angular
     'ngAnimate',
     'ngStorage',
     'mdo-angular-cryptography',
-    'fs-angular-lister'
+    'fs-angular-lister',
+    'fs-angular-modal'
 ])
 .config(function ($routeProvider, $cryptoProvider, $mdThemingProvider, CONFIG) {
     $routeProvider
     .when('/lister', {
         templateUrl: 'views/lister.html',
-        controller: 'ListerrCtrl',       
+        controller: 'ListerCtrl',       
     })
-
     .when('/404', {
         templateUrl: 'views/404.html'
     })

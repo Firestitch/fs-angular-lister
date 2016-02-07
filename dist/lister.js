@@ -68,8 +68,7 @@
                     ```
      */
     
-    angular.module('fs-angular-lister',[])
-    .directive('lister', function ($compile, $sce, $filter, $window, $log, $q) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q) {
 
             /**
              * @ngdoc interface
@@ -328,7 +327,12 @@
                 }
             }
         }
-    })
+    }
+
+
+    angular.module('fs-angular-lister',[])
+    .directive('lister',ListerDirective)
+    .directive('fsLister',ListerDirective)
     .directive('compile', ['$compile', '$injector', function ($compile, $injector) {
         return function($scope, element, attrs) {
 
