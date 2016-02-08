@@ -71,7 +71,7 @@
                 return "<b>" + data['name'] + "</b>";
             }},
             { title: 'GUID' , className: 'center', value: function(data) {
-                return data["guid"];
+                return '<a href="#/test">' + data["guid"] + '</a>';
             }},
             {   title: 'Date',
                 className: 'center',

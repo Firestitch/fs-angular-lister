@@ -333,7 +333,7 @@
     angular.module('fs-angular-lister',[])
     .directive('lister',ListerDirective)
     .directive('fsLister',ListerDirective)
-    .directive('compile', ['$compile', '$injector', function ($compile, $injector) {
+    .directive('compile', ['$compile', '$injector', '$location', '$timeout', function ($compile, $injector, $location, $timeout) {
         return function($scope, element, attrs) {
 
             $scope.$watch(
@@ -373,15 +373,37 @@
                     }
                     */                    
 
-                    // when the 'compile' expression changes
-                    // assign it into the current DOM
                     element.html(value);
+                    $compile(element.contents())($scope)
 
-                    // compile the new DOM and link it to the current
-                    // scope.
-                    // NOTE: we only compile .childNodes so that
-                    // we don't get into infinite loop compiling ourselves
-                    $compile(element.contents())($scope);
+                    angular.forEach(element.find('a'),function(el) {
+
+                        el = angular.element(el);                        
+
+                        el.on('click',function(event) {
+
+                            if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;
+
+                            var el = angular.element(this);
+
+                            if(event.ctrlKey) {
+
+                                var href = el.attr('href');
+                                el.attr('href',el.attr('href').replace(/^#/,''));
+                                
+                                $timeout(function() {
+                                    el.attr('href', href);
+                                });
+
+                                return;
+                            }
+                           
+                            $location.path(el.attr('href').replace(/^#/,''));
+                            $scope.$apply();
+
+                            return false;
+                        });
+                    });                    
                 }
             );
         };
