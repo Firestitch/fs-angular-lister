@@ -61,7 +61,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout) {
 
             /**
              * @ngdoc interface
@@ -289,34 +289,41 @@
                         max_bottom = 0,
                         threshhold = 400;
 
-                    angular.element($window).bind("scroll", function() {
-                      
-                        var scrollTop = parseInt($window.pageYOffset);                    
-                        var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
-                        var wn_bottom = scrollTop + parseInt(window.innerHeight);                        
-                        var condition = (el_bottom - threshhold) < wn_bottom && (el_bottom > (max_bottom + threshhold));
+                    load();
 
-                        if(false) {
-                            var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+                    function load() {
 
-                            $log.log("element top=" + element.prop('offsetTop'));
-                            $log.log("element height=" + element.prop('offsetHeight'));
-                            $log.log("scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
-                            $log.log("total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
-                            $log.log("threshhold= " + threshhold);
-                            $log.log("Element Bottom: " + el_bottom);
-                            $log.log("Window Height: " + window.innerHeight);
-                            $log.log("Window Bottom: " + wn_bottom);
-                            $log.log("Max Bottom: " + max_bottom);
-                            $log.log("If: (" + (el_bottom - threshhold) + ") < " + wn_bottom + " && (" + (el_bottom > (max_bottom + threshhold)) + ") = " + condition);
-                            $log.log("----------------------------------------------------------");
+                        if(!$scope.loading) {
+
+                            var scrollTop = parseInt($window.pageYOffset);                    
+                            var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
+                            var wn_bottom = scrollTop + parseInt(window.innerHeight);                        
+                            var condition = (el_bottom - threshhold) < wn_bottom && (el_bottom > (max_bottom + threshhold));
+
+                            if(false) {
+                                var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+                                $log.log("element top=" + element.prop('offsetTop'));
+                                $log.log("element height=" + element.prop('offsetHeight'));
+                                $log.log("scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
+                                $log.log("total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
+                                $log.log("threshhold= " + threshhold);
+                                $log.log("Element Bottom: " + el_bottom);
+                                $log.log("Window Height: " + window.innerHeight);
+                                $log.log("Window Bottom: " + wn_bottom);
+                                $log.log("Max Bottom: " + max_bottom);
+                                $log.log("If: (" + (el_bottom - threshhold) + ") < " + wn_bottom + " && (" + (el_bottom > (max_bottom + threshhold)) + ") = " + condition);
+                                $log.log("----------------------------------------------------------");
+                            }
+
+                            if(condition) {
+                                max_bottom = el_bottom;
+                                $scope.load();
+                            }
                         }
 
-                        if(condition) {
-                            max_bottom = el_bottom;
-                            $scope.load();
-                        }
-                    }); 
+                        $timeout(load,1000);
+                    }
                 }
             }
         }

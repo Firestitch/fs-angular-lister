@@ -1,6 +1,6 @@
 
 <div class="lister">
-
+    
     <div class="header" layout="row">
 
         <div ng-repeat="filter in filters">
@@ -89,6 +89,10 @@
                 </div>
             </div>
         </div>
+    </div>
+    
+    <div class="progress" ng-show="loading">
+        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
     </div>
 
     <div class="paging ng-hide" ng-show="paging.enabled && !options.paging.infinite">

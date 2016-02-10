@@ -1,5 +1,10 @@
-.lister {    
+.lister {
 
+    .progress {
+        md-progress-circular {
+            margin: auto;
+        }
+    }
     
     .header {
 
@@ -130,6 +135,7 @@
             text-align: right;
         }
     }
+
 
     .paging {
 
