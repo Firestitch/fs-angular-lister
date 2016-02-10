@@ -287,7 +287,7 @@
                     var body = document.body,
                         html = document.documentElement,
                         max_bottom = 0,
-                        threshhold = 400;
+                        threshhold = 0;
 
                     load();
 
