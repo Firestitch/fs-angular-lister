@@ -382,6 +382,10 @@
 
                         el.on('click',function(event) {
 
+                            if(event.isDefaultPrevented()) {
+                                return;
+                            }
+                            
                             if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;
 
                             var el = angular.element(this);
