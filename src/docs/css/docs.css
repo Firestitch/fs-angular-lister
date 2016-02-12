@@ -320,3 +320,14 @@ ul.events > li > h3 {
 .type-hint-number {
   background:rgb(189, 63, 66);
 }
+
+.container,
+.navbar-static-top .container,
+.navbar-fixed-top .container,
+.navbar-fixed-bottom .container {
+  width: auto;
+}
+
+.span9 {
+  width: auto;
+}

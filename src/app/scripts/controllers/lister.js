@@ -14,7 +14,7 @@
 
     function modal() {
         fsModal.show('ListerCtrl',
-                    'views/listermodal.html'                   
+                    'views/listermodal.html'
                     );     
     }
 

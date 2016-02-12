@@ -25,9 +25,14 @@
                 `label` — Used in the contextual menu item's label<br>
                 `click` — Is triggered when the contextual menu item is clicked<br>
                 `icon` — Used in the contextual menu item icon<br><br>
-                When actions array's length is equal to one the object supports:
-                <br><br>
-                `click` — Is triggered when the row's icon is clicked
+                `delete` — Used for delete confirmation. 
+                    <ul><li>`title` — Title of confirmation. Default 'Confirm'.<br>
+                    <li>`content` — Content of confirmation.<br>
+                    <li>`ok` — Function when ok is clicked.<br>
+                    <li>`cancel` — Function when cancel is clicked.<br>
+                    <li>`okLabel` — Ok label. Default 'Ok'.<br>
+                    <li>`cancelLabel` — Cancel label. Default 'Cancel'</ul>
+    * @param {object} ls-options.action Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.
     * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side               
     * @param {array} ls-options.selection.actions Sets the menus options for the selection interface
                 <br><br>
@@ -316,9 +321,7 @@
                         max_bottom = 0,
                         threshhold = 0;
 
-                    load();
-
-                    function load() {
+                    var load = function() {
 
                         if(!$scope.loading) {
 
@@ -351,6 +354,8 @@
 
                         $timeout(load,1000);
                     }
+
+                    load();
                 }
             }
         }
