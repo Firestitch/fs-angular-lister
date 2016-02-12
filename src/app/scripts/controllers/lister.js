@@ -2,7 +2,7 @@
 
 
 angular.module('app')
-  .controller('ListerCtrl', function ($scope, DummyService, fsModal, $timeout) {
+  .controller('ListerCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog) {
 
     $scope.click = click;
     $scope.modal = modal;
@@ -41,14 +41,29 @@
             infinite: true,
             limit: 10
         },
+/*
+        action:
+        {   
+            icon: 'edit',
+            click: function(data, event) {
+
+                if(this.delete) {
+                    debugger;
+                }                
+            },
+            delete: {
+                title: 'Attention',
+                content: 'Please confirm',
+                ok: function() {
+                    alert('OK!');
+                }
+
+            }
+        },
+         */
 
         actions: [
-            {
-                click: function(data, event) {
-                    alert("Edit Action Click: " + JSON.stringify(data));
-                }
-            },
-             /*
+             
             {
                 label: 'Edit',
                 icon: 'edit',
@@ -60,11 +75,14 @@
             {
                 label: 'Delete',
                 icon: 'delete',
-                click: function(data, dataRefresh) {
-                    alert("Delete Action Click: " + JSON.stringify(data));
-                }
+                delete:  {  
+                            content: 'Are you sure you would like to remove this?',
+                            ok: function(data) {                            
+                                alert("Delete Action Click: " + JSON.stringify(data));
+                            }
+                        }
             }
-            */
+           
         ],
         columns: [
             { title: 'Name' , value: function(data) {

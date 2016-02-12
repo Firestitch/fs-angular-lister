@@ -68,7 +68,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog) {
 
             /**
              * @ngdoc interface
@@ -100,6 +100,24 @@
                 $scope.selectToogled = false;
                 $scope.debug = false;
                 $scope.load = load;
+
+                $scope.actionClick = function(action, data, event) {
+                    if(action.delete) {                        
+
+                       var confirm = $mdDialog
+                        .confirm({  title: action.delete.title || 'Confirm',
+                                    content: action.delete.content,
+                                    targetEvent: event,
+                                    ariaLabel: 'Remove',
+                                    ok: action.delete.okLabel || 'Yes',
+                                    cancel: action.delete.cancelLabel || 'Cancel' })
+                       
+                       $mdDialog.show(confirm).then(action.delete.ok, action.delete.cancel);
+    
+                    } else if(action.click) {
+                        action.click(data, event);
+                    }
+                }
 
                 $scope.selectionsToggle = function(toogle) {
                     
@@ -571,7 +589,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"lister-col\" ng-repeat=\"col in options.columns track by $index\">{{col.title}}</div>\r" +
     "\n" +
-    "                <div class=\"lister-col\" ng-show=\"options.actions.length\"></div>\r" +
+    "                <div class=\"lister-col\" ng-show=\"options.actions.length || options.action\"></div>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
@@ -587,11 +605,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length==1\">\r" +
+    "                <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
     "\n" +
-    "                    <md-button ng-repeat=\"action in options.actions track by $index\" ng-click=\"action.click(item.object,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
+    "                    <md-button ng-click=\"actionClick(options.action,item.object,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
     "\n" +
-    "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
+    "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{options.action.icon}}</md-icon>\r" +
     "\n" +
     "                     </md-button>\r" +
     "\n" +
@@ -599,7 +617,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length>1\">\r" +
+    "                <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\r" +
     "\n" +
     "                    <md-menu>\r" +
     "\n" +
@@ -613,7 +631,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                            <md-menu-item ng-repeat=\"action in options.actions track by $index\">\r" +
     "\n" +
-    "                                <md-button ng-click=\"action.click(item.object,$event)\">\r" +
+    "                                <md-button ng-click=\"actionClick(action,item.object,$event)\">\r" +
     "\n" +
     "                                    <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{action.icon}}</md-icon>\r" +
     "\n" +

@@ -61,7 +61,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog) {
 
             /**
              * @ngdoc interface
@@ -93,6 +93,24 @@
                 $scope.selectToogled = false;
                 $scope.debug = false;
                 $scope.load = load;
+
+                $scope.actionClick = function(action, data, event) {
+                    if(action.delete) {                        
+
+                       var confirm = $mdDialog
+                        .confirm({  title: action.delete.title || 'Confirm',
+                                    content: action.delete.content,
+                                    targetEvent: event,
+                                    ariaLabel: 'Remove',
+                                    ok: action.delete.okLabel || 'Yes',
+                                    cancel: action.delete.cancelLabel || 'Cancel' })
+                       
+                       $mdDialog.show(confirm).then(action.delete.ok, action.delete.cancel);
+    
+                    } else if(action.click) {
+                        action.click(data, event);
+                    }
+                }
 
                 $scope.selectionsToggle = function(toogle) {
                     
