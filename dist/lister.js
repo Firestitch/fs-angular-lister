@@ -95,7 +95,6 @@
                 $scope.paging = { records: 0, page: 1, pages: 0, limit: options.paging.limit, enabled: false };                
                 $scope.load = load;
                 $scope.loading = false;
-                $scope.page = page;
                 $scope.filters = options.filters;
                 $scope.checked = [];
                 $scope.selectToogled = false;
@@ -167,15 +166,25 @@
                  * @methodOf app.controllers:ListerCtrl
                  * @description Triggers the loading of data
                  */
-                function load() {
+
+                function reload() {
+                    $scope.data = [];
+                    load({ page: 1 });
+                }
+
+                function load(opts) {
 
                     if($scope.loading)
                         return;
 
                     $scope.selectionsClear();
 
-                    var query = {};
+                    opts = opts || {};
+                    if(opts.page) {
+                        $scope.paging.page = opts.page;
+                    }
 
+                    var query = {};
                     angular.forEach($scope.filters,function(filter) {
                         if(filter.model!==null) {
 
@@ -274,7 +283,7 @@
                 load();
 
                 if($scope.lsInstance)
-                    $scope.lsInstance = { load: load, page: page };
+                    $scope.lsInstance = { load: load, page: page, reload: reload };
             }];
 
         return {
