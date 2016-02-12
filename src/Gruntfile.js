@@ -329,7 +329,9 @@ module.exports = function(grunt) {
                     title: "Documentation",
                     titleLink: "/",
                     bestMatch: true,
-                  
+                    styles: [
+                        '<%= yeoman.app %>/styles/demo.css'
+                    ]                  
                   },
                   all: ['<%= yeoman.app %>/scripts/{,*/}*.js']
                 }          
