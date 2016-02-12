@@ -41,10 +41,9 @@
             infinite: true,
             limit: 10
         },
-/*
+
         action:
         {   
-            icon: 'edit',
             click: function(data, event) {
 
                 if(this.delete) {
@@ -60,7 +59,7 @@
 
             }
         },
-         */
+         /*
 
         actions: [
              
@@ -84,6 +83,8 @@
             }
            
         ],
+
+        */
         columns: [
             { title: 'Name' , value: function(data) {
                 return "<b>" + data['name'] + "</b>";

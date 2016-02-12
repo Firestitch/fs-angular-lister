@@ -84,9 +84,15 @@
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
 
-                angular.forEach(options.filters,function(filter) {                    
+                angular.forEach(options.filters,function(filter) {
                     filter.model = filter.default;
                 });
+
+                sanitizeAction(options.action);
+                angular.forEach(options.actions,function(action) {
+                    sanitizeAction(action);
+                });
+
 
                 $scope.data = [];
                 $scope.options = options;
@@ -186,6 +192,13 @@
                 function reload() {
                     $scope.data = [];
                     load({ page: 1 });
+                }
+
+                function sanitizeAction(action) {
+                    action = action || {};
+                    action.label = action.label || 'Remove';
+                    action.icon = action.icon || 'delete';
+                    return action;
                 }
 
                 function load(opts) {
