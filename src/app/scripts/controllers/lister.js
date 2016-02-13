@@ -38,7 +38,7 @@
         },
 
         paging: {
-            infinite: true,
+            //infinite: true,
             limit: 10
         },
 

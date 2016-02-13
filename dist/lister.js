@@ -496,7 +496,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
   $templateCache.put('views/directives/lister.html',
     "\r" +
     "\n" +
-    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: options.paging.paged }\">\r" +
+    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\r" +
     "\n" +
     "    \r" +
     "\n" +

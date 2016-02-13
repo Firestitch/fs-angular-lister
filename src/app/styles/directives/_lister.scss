@@ -2,6 +2,7 @@
 
     &.loading.paged .lister-body {
         opacity: .4;
+        min-height: 150px;
     }
 
     .progress-infinite {
