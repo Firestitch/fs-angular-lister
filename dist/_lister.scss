@@ -1,11 +1,32 @@
 .lister {
 
-    .progress {
+    &.loading.paged .lister-body {
+        opacity: .4;
+    }
+
+    .progress-infinite {
         md-progress-circular {
             margin: auto;
         }
     }
-    
+
+    .progress-paged {
+        position: absolute;
+        z-index: 50;
+        left: 0;
+        right: 0;
+        top: 50%;
+        opacity: 1;
+
+        * {
+            opacity: 1;
+        }
+
+        md-progress-circular {
+            margin: auto;            
+        }
+    }   
+
     .header {
 
         md-input-container {
@@ -59,6 +80,7 @@
 
         .lister-body {
             display: table-row-group;
+            position: relative;
         }
 
         .lister-head {

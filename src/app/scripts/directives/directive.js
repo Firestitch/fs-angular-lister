@@ -104,6 +104,7 @@
                 $scope.selectToogled = false;
                 $scope.debug = false;
                 $scope.load = load;
+                $scope.page = page;
 
                 $scope.actionClick = function(action, data, event) {
                    
@@ -347,9 +348,9 @@
                             var scrollTop = parseInt($window.pageYOffset);                    
                             var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
                             var wn_bottom = scrollTop + parseInt(window.innerHeight);                        
-                            var condition = (el_bottom - threshhold) < wn_bottom && (el_bottom > (max_bottom + threshhold));
+                            var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > (max_bottom + threshhold));
 
-                            if(false) {
+                            if(1) {
                                 var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
 
                                 $log.log("element top=" + element.prop('offsetTop'));
@@ -361,7 +362,7 @@
                                 $log.log("Window Height: " + window.innerHeight);
                                 $log.log("Window Bottom: " + wn_bottom);
                                 $log.log("Max Bottom: " + max_bottom);
-                                $log.log("If: (" + (el_bottom - threshhold) + ") < " + wn_bottom + " && (" + (el_bottom > (max_bottom + threshhold)) + ") = " + condition);
+                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + (el_bottom > (max_bottom + threshhold)) + ") = " + condition);
                                 $log.log("----------------------------------------------------------");
                             }
 

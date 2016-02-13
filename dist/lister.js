@@ -111,6 +111,7 @@
                 $scope.selectToogled = false;
                 $scope.debug = false;
                 $scope.load = load;
+                $scope.page = page;
 
                 $scope.actionClick = function(action, data, event) {
                    
@@ -354,9 +355,9 @@
                             var scrollTop = parseInt($window.pageYOffset);                    
                             var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
                             var wn_bottom = scrollTop + parseInt(window.innerHeight);                        
-                            var condition = (el_bottom - threshhold) < wn_bottom && (el_bottom > (max_bottom + threshhold));
+                            var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > (max_bottom + threshhold));
 
-                            if(false) {
+                            if(1) {
                                 var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
 
                                 $log.log("element top=" + element.prop('offsetTop'));
@@ -368,7 +369,7 @@
                                 $log.log("Window Height: " + window.innerHeight);
                                 $log.log("Window Bottom: " + wn_bottom);
                                 $log.log("Max Bottom: " + max_bottom);
-                                $log.log("If: (" + (el_bottom - threshhold) + ") < " + wn_bottom + " && (" + (el_bottom > (max_bottom + threshhold)) + ") = " + condition);
+                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + (el_bottom > (max_bottom + threshhold)) + ") = " + condition);
                                 $log.log("----------------------------------------------------------");
                             }
 
@@ -495,7 +496,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
   $templateCache.put('views/directives/lister.html',
     "\r" +
     "\n" +
-    "<div class=\"lister\">\r" +
+    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: options.paging.paged }\">\r" +
     "\n" +
     "    \r" +
     "\n" +
@@ -621,6 +622,14 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        <div class=\"lister-body\">\r" +
     "\n" +
+    "\r" +
+    "\n" +
+    "            <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\r" +
+    "\n" +
+    "                <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r" +
+    "\n" +
+    "            </div>        \r" +
+    "\n" +
     "            <div class=\"lister-row\" ng-class=\"{ selected: checked[$index] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\">\r" +
     "\n" +
     "                <div class=\"lister-col\" ng-show=\"options.selection\"><md-checkbox ng-model=\"checked[$index]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\"></md-checkbox></div>\r" +
@@ -679,7 +688,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    \r" +
     "\n" +
-    "    <div class=\"progress\" ng-show=\"loading\">\r" +
+    "    <div class=\"progress-infinite ng-hide\" ng-show=\"loading && options.paging.infinite\">\r" +
     "\n" +
     "        <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r" +
     "\n" +
