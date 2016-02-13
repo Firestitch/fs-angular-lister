@@ -113,6 +113,7 @@
                 $scope.load = load;
 
                 $scope.actionClick = function(action, data, event) {
+                   
                     if(action.delete) {                        
 
                        var confirm = $mdDialog
@@ -123,7 +124,12 @@
                                     ok: action.delete.okLabel || 'Yes',
                                     cancel: action.delete.cancelLabel || 'Cancel' })
                        
-                       $mdDialog.show(confirm).then(action.delete.ok, action.delete.cancel);
+                       $mdDialog.show(confirm)
+                       .then(function() {
+                            action.delete.ok(data, event);
+                        }, function() {
+                            action.delete.cancel(data, event);
+                        });
     
                     } else if(action.click) {
                         action.click(data, event);

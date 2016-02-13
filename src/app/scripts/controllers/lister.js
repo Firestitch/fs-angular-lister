@@ -47,13 +47,13 @@
             click: function(data, event) {
 
                 if(this.delete) {
-                    debugger;
+                   
                 }                
             },
             delete: {
                 title: 'Attention',
                 content: 'Please confirm',
-                ok: function() {
+                ok: function(data) {
                     alert('OK!');
                 }
 
