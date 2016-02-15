@@ -25,7 +25,7 @@
         },
         data: function(query, cb) {
             
-            query.count = 100;
+            query.count = 5;
 
             DummyService
                 .gets(query,{ url: 'http://scenario.local.firestitch.com/api/' })
@@ -38,7 +38,7 @@
         },
 
         paging: {
-            //infinite: true,
+            infinite: true,
             limit: 10
         },
 

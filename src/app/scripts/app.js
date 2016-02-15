@@ -15,6 +15,10 @@ angular
 ])
 .config(function ($routeProvider, $cryptoProvider, $mdThemingProvider, CONFIG) {
     $routeProvider
+
+    .when('/page', {
+        templateUrl: 'views/page.html'
+    })
     .when('/lister', {
         templateUrl: 'views/lister.html',
         controller: 'ListerCtrl',       

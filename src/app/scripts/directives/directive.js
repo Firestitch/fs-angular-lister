@@ -93,7 +93,6 @@
                     sanitizeAction(action);
                 });
 
-
                 $scope.data = [];
                 $scope.options = options;
                 $scope.paging = { records: 0, page: 1, pages: 0, limit: options.paging.limit, enabled: false };                
@@ -108,7 +107,7 @@
 
                 $scope.actionClick = function(action, data, event) {
                    
-                    if(action.delete) {                        
+                    if(action.delete) {
 
                        var confirm = $mdDialog
                         .confirm({  title: action.delete.title || 'Confirm',
@@ -118,8 +117,8 @@
                                     ok: action.delete.okLabel || 'Yes',
                                     cancel: action.delete.cancelLabel || 'Cancel' })
                        
-                       $mdDialog.show(confirm)
-                       .then(function() {
+                        $mdDialog.show(confirm)
+                        .then(function() {
                             action.delete.ok(data, event);
                         }, function() {
                             action.delete.cancel(data, event);
@@ -188,7 +187,7 @@
                         filter.values = values;
                     }
                 });
-                                           
+
                 /**
                  * @ngdoc method
                  * @name load
@@ -241,7 +240,7 @@
                             } else {
                                 query[filter.name] = filter.model;
                             }
-                        }                            
+                        }
                     });
 
                     query.page = $scope.paging.page;
@@ -341,23 +340,29 @@
                         max_bottom = 0,
                         threshhold = 0;
 
+                    $scope.$on('$destroy', function () {
+                        $timeout.cancel(timeout);
+                    });
+
+                    var timeout = null;
+
                     var load = function() {
 
                         if(!$scope.loading) {
 
-                            var scrollTop = parseInt($window.pageYOffset);                    
+                            var scrollTop = parseInt($window.pageYOffset);
                             var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
-                            var wn_bottom = scrollTop + parseInt(window.innerHeight);                        
+                            var wn_bottom = scrollTop + parseInt(window.innerHeight);
                             var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > (max_bottom + threshhold));
 
-                            if(1) {
+                            if(false) {
                                 var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
 
-                                $log.log("element top=" + element.prop('offsetTop'));
-                                $log.log("element height=" + element.prop('offsetHeight'));
-                                $log.log("scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
-                                $log.log("total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
-                                $log.log("threshhold= " + threshhold);
+                                $log.log("Element top=" + element.prop('offsetTop'));
+                                $log.log("Element height=" + element.prop('offsetHeight'));
+                                $log.log("Scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
+                                $log.log("Total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
+                                $log.log("Threshhold= " + threshhold);
                                 $log.log("Element Bottom: " + el_bottom);
                                 $log.log("Window Height: " + window.innerHeight);
                                 $log.log("Window Bottom: " + wn_bottom);
@@ -372,7 +377,7 @@
                             }
                         }
 
-                        $timeout(load,1000);
+                        timeout = $timeout(load,1000);
                     }
 
                     load();
