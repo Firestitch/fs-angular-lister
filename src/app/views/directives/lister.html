@@ -108,7 +108,7 @@
         <div class="limits">
             <md-input-container>
                 <label>Show</label>
-                <md-select ng-model="options.paging.limit" md-on-close="load()">
+                <md-select ng-model="paging.limit" md-on-close="load()">
                     <md-option
                         ng-repeat="limit in options.paging.limits"
                         value="{{limit}}">

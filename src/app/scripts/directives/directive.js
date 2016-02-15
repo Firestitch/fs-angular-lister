@@ -79,6 +79,10 @@
                 var options = $scope.lsOptions;
 
                 options.paging = options.paging || {};
+                options.paging.records = 0;
+                options.paging.page = 1;
+                options.paging.pages = 0;
+                options.paging.enabled = true;
                 options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
                 options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
                 options.actions = options.actions || [];
@@ -95,7 +99,7 @@
 
                 $scope.data = [];
                 $scope.options = options;
-                $scope.paging = { records: 0, page: 1, pages: 0, limit: options.paging.limit, enabled: false };                
+                $scope.paging = options.paging;
                 $scope.load = load;
                 $scope.loading = false;
                 $scope.filters = options.filters;
@@ -119,9 +123,13 @@
                        
                         $mdDialog.show(confirm)
                         .then(function() {
-                            action.delete.ok(data, event);
+                            if(action.delete.ok) {
+                                action.delete.ok(data, event);
+                            }
                         }, function() {
-                            action.delete.cancel(data, event);
+                            if(action.delete.cancel) {
+                                action.delete.cancel(data, event);
+                            }
                         });
     
                     } else if(action.click) {
