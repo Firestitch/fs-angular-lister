@@ -33,7 +33,12 @@
                     <li>`okLabel` — Ok label. Default 'Ok'.<br>
                     <li>`cancelLabel` — Cancel label. Default 'Cancel'</ul>
     * @param {object} ls-options.action Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.
-    * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side               
+    * @param {object} ls-options.paging Configures paging
+                <br><br>
+                `infinite` — Enables infinite scroll<br>
+                `limit` — Sets the limit per page
+    * @param {object} ls-options.norecords The message to be displayed when there are no records in the search
+    * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side
     * @param {array} ls-options.selection.actions Sets the menus options for the selection interface
                 <br><br>
                 `label` — Used in the contextual menu item's label<br>
@@ -85,6 +90,7 @@
                 options.paging.enabled = true;
                 options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
                 options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
+                options.norecords = options.norecords===undefined ? 'No records matched' : '';
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
 
@@ -110,6 +116,7 @@
                 $scope.paging = options.paging;
                 $scope.load = load;
                 $scope.loading = false;
+                $scope.loaded = false;
                 $scope.filters = options.filters;
                 $scope.checked = [];
                 $scope.selectToogled = false;
@@ -270,7 +277,6 @@
                         $scope.paging.page = opts.page;
                     }
 
-
                     var query = filterValues();
                     query.page = $scope.paging.page;
                     query.limit = $scope.paging.limit;
@@ -294,6 +300,8 @@
                 }
 
                 function dataCallback(data,paging) {
+                    
+                    $scope.loaded = true;
                     log("dataCallback()",data,paging);
 
                     if(!$scope.options.paging.infinite) {

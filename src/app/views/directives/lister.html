@@ -62,28 +62,29 @@
 
         </div>
 
-    </div>
+    </div>    
 
-    <div class="lister-table">
+    <div class="lister-table">        
+
         <div class="lister-head">
             <div class="lister-row">                
                 <div class="lister-col lister-select-toogle" ng-show="options.selection">
-                   
-                    <md-checkbox ng-click="selectionsToggle(selectToogled);" ng-model="selectToogled"  ng-true-value="true" aria-label="Toggle Selection"></md-checkbox>
-                    <md-menu md-offset="17 42">
-                        <md-button aria-label="Select" class="md-icon-button" ng-click="$mdOpenMenu($event)">
-                            <md-icon>arrow_drop_down</md-icon>
-                        </md-button>
-                        <md-menu-content>
-                            <md-menu-item ng-repeat="action in options.selection.actions">
-                                <md-button ng-click="selectMenu(action.click,$event)">
-                                    <md-icon md-menu-align-target ng-show="action.icon">{{action.icon}}</md-icon>
-                                    {{action.label}}
-                                </md-button>
-                            </md-menu-item>
-                        </md-menu-content>
-                    </md-menu>
-                    
+                    <span ng-show="data.length">
+                        <md-checkbox ng-click="selectionsToggle(selectToogled);" ng-model="selectToogled"  ng-true-value="true" aria-label="Toggle Selection"></md-checkbox>
+                        <md-menu md-offset="17 42">
+                            <md-button aria-label="Select" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                                <md-icon>arrow_drop_down</md-icon>
+                            </md-button>
+                            <md-menu-content>
+                                <md-menu-item ng-repeat="action in options.selection.actions">
+                                    <md-button ng-click="selectMenu(action.click,$event)">
+                                        <md-icon md-menu-align-target ng-show="action.icon">{{action.icon}}</md-icon>
+                                        {{action.label}}
+                                    </md-button>
+                                </md-menu-item>
+                            </md-menu-content>
+                        </md-menu>
+                    </span>
                 </div>
                 <div class="lister-col" ng-repeat="col in options.columns track by $index">{{col.title}}</div>
                 <div class="lister-col" ng-show="options.actions.length || options.action"></div>
@@ -122,6 +123,8 @@
             </div>
         </div>
     </div>
+
+    <div class="norecords ng-hide" ng-show="loaded && options.norecords && !data.length">{{options.norecords}}</div>
     
     <div class="progress-infinite ng-hide" ng-show="loading && options.paging.infinite">
         <md-progress-circular md-mode="indeterminate"></md-progress-circular>

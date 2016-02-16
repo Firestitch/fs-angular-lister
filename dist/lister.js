@@ -40,7 +40,12 @@
                     <li>`okLabel` — Ok label. Default 'Ok'.<br>
                     <li>`cancelLabel` — Cancel label. Default 'Cancel'</ul>
     * @param {object} ls-options.action Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.
-    * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side               
+    * @param {object} ls-options.paging Configures paging
+                <br><br>
+                `infinite` — Enables infinite scroll<br>
+                `limit` — Sets the limit per page
+    * @param {object} ls-options.norecords The message to be displayed when there are no records in the search
+    * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side
     * @param {array} ls-options.selection.actions Sets the menus options for the selection interface
                 <br><br>
                 `label` — Used in the contextual menu item's label<br>
@@ -92,6 +97,7 @@
                 options.paging.enabled = true;
                 options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
                 options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
+                options.norecords = options.norecords===undefined ? 'No records matched' : '';
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
 
@@ -117,6 +123,7 @@
                 $scope.paging = options.paging;
                 $scope.load = load;
                 $scope.loading = false;
+                $scope.loaded = false;
                 $scope.filters = options.filters;
                 $scope.checked = [];
                 $scope.selectToogled = false;
@@ -277,7 +284,6 @@
                         $scope.paging.page = opts.page;
                     }
 
-
                     var query = filterValues();
                     query.page = $scope.paging.page;
                     query.limit = $scope.paging.limit;
@@ -301,6 +307,8 @@
                 }
 
                 function dataCallback(data,paging) {
+                    
+                    $scope.loaded = true;
                     log("dataCallback()",data,paging);
 
                     if(!$scope.options.paging.infinite) {
@@ -656,11 +664,13 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    </div>\r" +
+    "    </div>    \r" +
     "\n" +
     "\r" +
     "\n" +
-    "    <div class=\"lister-table\">\r" +
+    "    <div class=\"lister-table\">        \r" +
+    "\n" +
+    "\r" +
     "\n" +
     "        <div class=\"lister-head\">\r" +
     "\n" +
@@ -668,37 +678,37 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"lister-col lister-select-toogle\" ng-show=\"options.selection\">\r" +
     "\n" +
-    "                   \r" +
+    "                    <span ng-show=\"data.length\">\r" +
     "\n" +
-    "                    <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\"></md-checkbox>\r" +
+    "                        <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\"></md-checkbox>\r" +
     "\n" +
-    "                    <md-menu md-offset=\"17 42\">\r" +
+    "                        <md-menu md-offset=\"17 42\">\r" +
     "\n" +
-    "                        <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r" +
+    "                            <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r" +
     "\n" +
-    "                            <md-icon>arrow_drop_down</md-icon>\r" +
+    "                                <md-icon>arrow_drop_down</md-icon>\r" +
     "\n" +
-    "                        </md-button>\r" +
+    "                            </md-button>\r" +
     "\n" +
-    "                        <md-menu-content>\r" +
+    "                            <md-menu-content>\r" +
     "\n" +
-    "                            <md-menu-item ng-repeat=\"action in options.selection.actions\">\r" +
+    "                                <md-menu-item ng-repeat=\"action in options.selection.actions\">\r" +
     "\n" +
-    "                                <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
+    "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
     "\n" +
-    "                                    <md-icon md-menu-align-target ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
+    "                                        <md-icon md-menu-align-target ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
     "\n" +
-    "                                    {{action.label}}\r" +
+    "                                        {{action.label}}\r" +
     "\n" +
-    "                                </md-button>\r" +
+    "                                    </md-button>\r" +
     "\n" +
-    "                            </md-menu-item>\r" +
+    "                                </md-menu-item>\r" +
     "\n" +
-    "                        </md-menu-content>\r" +
+    "                            </md-menu-content>\r" +
     "\n" +
-    "                    </md-menu>\r" +
+    "                        </md-menu>\r" +
     "\n" +
-    "                    \r" +
+    "                    </span>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
@@ -775,6 +785,10 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "        </div>\r" +
     "\n" +
     "    </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "    <div class=\"norecords ng-hide\" ng-show=\"loaded && options.norecords && !data.length\">{{options.norecords}}</div>\r" +
     "\n" +
     "    \r" +
     "\n" +
