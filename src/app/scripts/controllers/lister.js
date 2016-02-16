@@ -171,14 +171,15 @@
                 }
             },
             {
-                name: 'startdate',
+                name: 'date',
                 type: 'date',
-                label: 'Start Date'
+                label: 'Date'
             },
             {
-                name: 'enddate',
-                type: 'date',
-                label: 'End Date'
+                name: 'range',
+                type: 'range',
+                label: 'Numbered range',
+                placeholders: ['Min', 'Max']
             }
         ]
     };

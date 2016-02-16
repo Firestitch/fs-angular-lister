@@ -90,6 +90,14 @@
 
                 angular.forEach(options.filters,function(filter) {
                     filter.model = filter.default;
+
+                    if(filter.type=='range' && !filter.placeholder) {
+                        filter.placeholder = ['Min','Max'];
+                    }
+
+                    if(filter.type=='select' && filter.default==undefined) {
+                        filter.model = '__all';
+                    }
                 });
 
                 sanitizeAction(options.action);
@@ -215,7 +223,7 @@
                     return action;
                 }
 
-                function getQuery(){
+                function filterValues() {
                     var query = {};
                     angular.forEach($scope.filters,function(filter) {
                         if(filter.model!==null) {
@@ -234,12 +242,20 @@
                                     date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
                                     query[filter.name]  = $filter('date')(date, 'yyyy-MM-dd','+0000');
                                 }
-                            } else {
-                                query[filter.name] = filter.model;
+
+                            } else if(filter.type=='range') {
+
+                                if(filter.model && (filter.model['min'] || filter.model['max'])) {
+                                    query[filter.name] = filter.model;
+                                }
+
+                            } else if(filter.model!=undefined) {
+                                query[filter.name] = filter.model;                               
                             }
                         }
                     });
-		    return query;
+		              
+                    return query;
                 }
 
                 function load(opts) {
@@ -255,7 +271,7 @@
                     }
 
 
-                    var query = getQuery();
+                    var query = filterValues();
                     query.page = $scope.paging.page;
                     query.limit = $scope.paging.limit;
 
@@ -331,7 +347,7 @@
                 load();
 
                 if($scope.lsInstance)
-                    $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: getQuery};
+                    $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: filterValues};
             }];
 
         return {

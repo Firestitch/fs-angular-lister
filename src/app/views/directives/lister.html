@@ -3,7 +3,7 @@
     
     <div class="header" layout="row">
 
-        <div ng-repeat="filter in filters">
+        <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
 
             <md-input-container ng-if="filter.type == 'select'">
 
@@ -19,7 +19,7 @@
                 </md-select>
             </md-input-container>
 
-             <md-input-container ng-if="filter.type == 'text'">
+            <md-input-container ng-if="filter.type == 'text'">
 
                 <label>{{filter.label}}</label>
 
@@ -30,7 +30,35 @@
                     aria-label="{{filter.label}}" />
              </md-input-container>
 
-             <md-datepicker ng-model="filter.model" ng-if="filter.type == 'date'" ng-change="load()" layout layout-fill md-placeholder="{{filter.label}}"></md-datepicker>
+             <span ng-if="filter.type == 'range'" layout="row">
+                 <md-input-container class="filter-range-min">
+
+                    <label>{{filter.label}}</label>
+
+                    <input
+                        placeholder="{{filter.placeholder[0]}}"
+                        ng-model="filter.model['min']"
+                        ng-model-options="{debounce: 300}"
+                        ng-change="load()"
+                        aria-label="{{filter.label}}" />
+                 </md-input-container>
+
+                 <md-input-container class="filter-range-max">
+
+                    <label>{{filter.label}}</label>
+
+                    <input
+                        placeholder="{{filter.placeholder[1]}}"
+                        ng-model="filter.model['max']"
+                        ng-model-options="{debounce: 300}"
+                        ng-change="load()"
+                        aria-label="{{filter.label}}" />
+                 </md-input-container>
+            </span>
+            <span ng-if="filter.type == 'date'" layout="row">
+                <label>{{filter.label}}</label>
+                <md-datepicker ng-model="filter.model" ng-change="load()"></md-datepicker>
+            </span>
 
         </div>
 

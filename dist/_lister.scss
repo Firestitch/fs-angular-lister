@@ -26,7 +26,78 @@
         md-progress-circular {
             margin: auto;            
         }
-    }   
+    } 
+
+    .filter {
+
+        margin-right: 6px;
+
+        &.filter-date {
+            position: relative;
+
+            label {
+                -webkit-transform: translate3d(0, 6px, 0) scale(0.75);
+                transform: translate3d(0, 6px, 0) scale(0.75);
+                transition: transform cubic-bezier(0.25, 0.8, 0.25, 1) 0.25s;
+                -webkit-transform-origin: left top;
+                transform-origin: left top;
+                display: block;
+                position: absolute;
+                left: 48px;
+                color: rgba(0,0,0,0.54);
+            }
+
+            md-datepicker {
+
+                .md-button.md-icon-button {
+                    margin: 14px 0 0 0;
+                    height: 30px;
+                }
+
+                .md-datepicker-input-container {
+                    padding-bottom: 2px;
+                    margin-left: 0;
+
+                    .md-datepicker-input {
+                        height: 30px;
+                        padding-top: 15px;
+                        font-size: 15px;
+                    }
+
+                    .md-datepicker-expand-triangle {
+                        position: absolute;
+                        left: 50%;
+                        bottom: 0;
+                        border-top-width: 7px;
+                    }
+                }
+            }
+        }
+
+        &.filter-range {
+            md-input-container {
+                min-width: initial;
+                width: 100px;
+
+                &.md-input-focused label,
+                label {
+                    color: rgba(0,0,0,0.54);
+                }
+
+                &.filter-range-min label {
+                    width: 200px;                    
+                }
+
+                &.filter-range-max label {
+                    display: none;
+                }
+
+                .md-input {
+                    display: inline;
+                }
+            }
+        }
+    }  
 
     .header {
 
@@ -34,32 +105,6 @@
             min-width: 150px;
         }
 
-        md-datepicker {
-            
-
-            .md-button.md-icon-button {
-                margin-top: 14px;
-                height: 30px;
-            }
-
-            .md-datepicker-input-container {
-                padding-bottom: 0;
-                margin-top: 14px;
-
-                .md-datepicker-input {
-                    height: 30px;
-                    padding-top: 15px;
-                    font-size: 15px;
-                }
-
-                .md-datepicker-expand-triangle {
-                    position: absolute;
-                    left: 50%;
-                    bottom: 0;
-                    border-top-width: 7px;
-                }
-            }
-        }
     }
 
     .lister-table {
