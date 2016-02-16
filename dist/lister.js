@@ -246,6 +246,7 @@
                             }
                         }
                     });
+		    return query;
                 }
 
                 function load(opts) {
