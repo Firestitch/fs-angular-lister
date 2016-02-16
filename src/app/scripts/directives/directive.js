@@ -215,18 +215,7 @@
                     return action;
                 }
 
-                function load(opts) {
-
-                    if($scope.loading)
-                        return;
-
-                    $scope.selectionsClear();
-
-                    opts = opts || {};
-                    if(opts.page) {
-                        $scope.paging.page = opts.page;
-                    }
-
+                function getQuery(){
                     var query = {};
                     angular.forEach($scope.filters,function(filter) {
                         if(filter.model!==null) {
@@ -250,7 +239,22 @@
                             }
                         }
                     });
+                }
 
+                function load(opts) {
+
+                    if($scope.loading)
+                        return;
+
+                    $scope.selectionsClear();
+
+                    opts = opts || {};
+                    if(opts.page) {
+                        $scope.paging.page = opts.page;
+                    }
+
+
+                    var query = getQuery();
                     query.page = $scope.paging.page;
                     query.limit = $scope.paging.limit;
 
@@ -326,7 +330,7 @@
                 load();
 
                 if($scope.lsInstance)
-                    $scope.lsInstance = { load: load, page: page, reload: reload };
+                    $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: getQuery};
             }];
 
         return {
