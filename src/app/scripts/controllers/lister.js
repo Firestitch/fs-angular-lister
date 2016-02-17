@@ -37,6 +37,8 @@
                 });
         },
 
+        load: true,
+
         paging: {
             //infinite: true,
             //limit: 10

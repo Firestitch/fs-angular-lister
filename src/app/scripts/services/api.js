@@ -22,7 +22,7 @@
         return service;
 
         function params(data) {
-            return '?' + $httpParamSerializer(data);
+            return '?' + encode(data).join('&');
         }
 
         function options(options,defaults) {
@@ -92,10 +92,10 @@
                     transformRequest: function(obj) {
 
                         if(config.urlencoded) {
-                            var str = [];
-                            for(var p in obj)
-                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                            return str.join("&");
+        
+                            var s = encode(obj);
+                            debugger;;
+                            return s;
                         }
 
                         return obj;
@@ -107,6 +107,37 @@
                 .catch(function (response) {
                     restfulFail(response, config);
                 });
+        }
+
+        function encode(obj,data,namespace) {
+
+            if(!data) {
+                data = [];
+            }
+
+            angular.forEach(obj,function(value, key) {
+
+                if(typeof value == 'object') {
+
+                    if(!namespace) {
+                        namespace = [];
+                    }
+
+                    encode(value,data,[key]);
+
+                } else {
+
+                    var name = key;
+
+                    if(namespace && namespace.length) {
+                        name = key + '[' + namespace.join('][') + ']';
+                    }
+
+                    data.push(name + "=" + value);
+                }
+            });
+
+            return data;
         }
 
         function headers(config) {

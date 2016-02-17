@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('app')
-    .factory('DummyService', function (apiService) {
+    .factory('DummyService', function (fsApi) {
        
         var categoryObject = {
                 isNew: true,
@@ -38,23 +38,23 @@
         }
         
         function gets(data,options) {
-            return apiService.get('dummy', data, apiService.options(options));
+            return fsApi.get('dummy', data, options);
         }
 
         function get(trade_category_id) {
-            return apiService.get('tradecategories/' + trade_category_id + '', {}, {key: 'trade_category'});
+            return fsApi.get('tradecategories/' + trade_category_id + '', {}, {key: 'trade_category'});
         }
 
         function put(data) {
-            return apiService.put('tradecategories/' + data.id + '', data, {key: 'trade_category'});
+            return fsApi.put('tradecategories/' + data.id + '', data, {key: 'trade_category'});
         }
 
         function post(data) {
-            return apiService.post('tradecategories', data, { key: 'trade_category' });
+            return fsApi.post('tradecategories', data, { key: 'trade_category' });
         }
 
         function deleted(trade_category_id) {
-            return apiService.delete('tradecategories/' + trade_category_id + '');
+            return fsApi.delete('tradecategories/' + trade_category_id + '');
         }
 
 

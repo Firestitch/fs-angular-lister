@@ -40,6 +40,7 @@
                     <li>`okLabel` — Ok label. Default 'Ok'.<br>
                     <li>`cancelLabel` — Cancel label. Default 'Cancel'</ul>
     * @param {object} ls-options.action Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.
+    * @param {bool} ls-options.load Loads the lister data on directive load. Default true
     * @param {object} ls-options.paging Configures paging
                 <br><br>
                 `infinite` — Enables infinite scroll<br>
@@ -97,7 +98,8 @@
                 options.paging.enabled = true;
                 options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
                 options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
-                options.norecords = options.norecords===undefined ? 'No records matched' : '';
+                options.norecords = options.norecords===undefined ? 'No records found' : '';
+                options.load = options.load===undefined ? true : options.load;
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
 
@@ -264,11 +266,11 @@
                                 }
 
                             } else if(filter.model!=undefined) {
-                                query[filter.name] = filter.model;                               
+                                query[filter.name] = filter.model;
                             }
                         }
                     });
-		              
+
                     return query;
                 }
 
@@ -359,7 +361,9 @@
                     }
                 }
 
-                load();
+                if(options.load) {
+                    load();
+                }
 
                 if($scope.lsInstance)
                     $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: filterValues};
