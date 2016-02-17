@@ -234,8 +234,12 @@
 
                 function sanitizeAction(action) {
                     action = action || {};
-                    action.label = action.label || 'Remove';
-                    action.icon = action.icon || 'delete';
+
+                    if(action.delete) {
+                        action.label = action.label || 'Remove';
+                        action.icon = action.icon || 'delete';
+                    }
+                    
                     return action;
                 }
 

@@ -43,7 +43,7 @@
             //infinite: true,
             //limit: 10
         },
-
+        /*
         action:
         {   
             click: function(data, event) {
@@ -61,7 +61,7 @@
 
             }
         },
-         /*
+        */
 
         actions: [
              
@@ -86,7 +86,6 @@
            
         ],
 
-        */
         columns: [
             { title: 'Name' , value: function(data) {
                 return "<b>" + data['name'] + "</b>";
