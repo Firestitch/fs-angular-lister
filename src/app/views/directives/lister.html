@@ -86,7 +86,7 @@
                         </md-menu>
                     </span>
                 </div>
-                <div class="lister-col" ng-repeat="col in options.columns track by $index">{{col.title}}</div>
+                <div class="lister-col {{col.className}}" ng-repeat="col in options.columns track by $index">{{col.title}}</div>
                 <div class="lister-col" ng-show="options.actions.length || options.action"></div>
             </div>
         </div>
@@ -97,7 +97,7 @@
             </div>        
             <div class="lister-row" ng-class="{ selected: checked[$index] }" ng-repeat="item in data" ng-click="options.rowClick(item.object,$event); $event.stopPropagation();">
                 <div class="lister-col" ng-show="options.selection"><md-checkbox ng-model="checked[$index]" ng-true-value="1" ng-click="select(item)" aria-label="Select"></md-checkbox></div>
-                <div class="lister-col {{col.class}}" ng-repeat="col in item.cols track by $index" compile="col.value" cm-scope="col.scope"></div>
+                <div class="lister-col {{col.className}}" ng-repeat="col in item.cols track by $index" compile="col.value" cm-scope="col.scope"></div>
 
                 <div class="lister-col lister-actions" ng-if="options.action">
                     <md-button ng-click="actionClick(options.action,item.object,$event); $event.stopPropagation();" class="md-icon-button">

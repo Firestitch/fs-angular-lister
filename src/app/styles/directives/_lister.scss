@@ -38,6 +38,10 @@
 
         margin-right: 15px;
 
+        label {
+            white-space: nowrap;
+        }
+
         &.filter-date {
             position: relative;
 
@@ -89,10 +93,6 @@
                 &.md-input-focused label,
                 label {
                     color: rgba(0,0,0,0.54);
-                }
-
-                &.filter-range-min label {
-                    width: 200px;
                 }
 
                 &.filter-range-max label {

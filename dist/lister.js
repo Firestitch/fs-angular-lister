@@ -332,7 +332,7 @@
                                 value = col.value(object);
                             }
 
-                            cols.push({ value: value, "class": col.className, data: object, resolve: col.resolve, scope: col.scope });
+                            cols.push({ value: value, "className": col.className, data: object, resolve: col.resolve, scope: col.scope });
                         });
 
                         $scope.data.push({ cols: cols, object: object });
@@ -720,7 +720,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                </div>\r" +
     "\n" +
-    "                <div class=\"lister-col\" ng-repeat=\"col in options.columns track by $index\">{{col.title}}</div>\r" +
+    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns track by $index\">{{col.title}}</div>\r" +
     "\n" +
     "                <div class=\"lister-col\" ng-show=\"options.actions.length || options.action\"></div>\r" +
     "\n" +
@@ -742,7 +742,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"lister-col\" ng-show=\"options.selection\"><md-checkbox ng-model=\"checked[$index]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\"></md-checkbox></div>\r" +
     "\n" +
-    "                <div class=\"lister-col {{col.class}}\" ng-repeat=\"col in item.cols track by $index\" compile=\"col.value\" cm-scope=\"col.scope\"></div>\r" +
+    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in item.cols track by $index\" compile=\"col.value\" cm-scope=\"col.scope\"></div>\r" +
     "\n" +
     "\r" +
     "\n" +

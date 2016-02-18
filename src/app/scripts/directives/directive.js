@@ -325,7 +325,7 @@
                                 value = col.value(object);
                             }
 
-                            cols.push({ value: value, "class": col.className, data: object, resolve: col.resolve, scope: col.scope });
+                            cols.push({ value: value, "className": col.className, data: object, resolve: col.resolve, scope: col.scope });
                         });
 
                         $scope.data.push({ cols: cols, object: object });
