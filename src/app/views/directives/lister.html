@@ -9,7 +9,7 @@
 
                 <label>{{filter.label}}</label>
 
-                <md-select ng-model="filter.model" md-on-close="load()">
+                <md-select ng-model="filter.model" md-on-close="filterLoad()">
                     <md-option
                         ng-repeat="item in filter.values"
                         value="{{item.value}}"
@@ -26,7 +26,7 @@
                 <input
                     ng-model="filter.model"
                     ng-model-options="{debounce: 300}"
-                    ng-change="load()"
+                    ng-change="filterLoad()"
                     aria-label="{{filter.label}}" />
              </md-input-container>
 
@@ -39,7 +39,7 @@
                         placeholder="{{filter.placeholder[0]}}"
                         ng-model="filter.model['min']"
                         ng-model-options="{debounce: 300}"
-                        ng-change="load()"
+                        ng-change="filterLoad()"
                         aria-label="{{filter.label}}" />
                  </md-input-container>
 
@@ -51,18 +51,19 @@
                         placeholder="{{filter.placeholder[1]}}"
                         ng-model="filter.model['max']"
                         ng-model-options="{debounce: 300}"
-                        ng-change="load()"
+                        ng-change="filterLoad()"
                         aria-label="{{filter.label}}" />
                  </md-input-container>
             </span>
             <span ng-if="filter.type == 'date'" layout="row">
                 <label>{{filter.label}}</label>
-                <md-datepicker ng-model="filter.model" ng-change="load()"></md-datepicker>
+                <md-datepicker ng-model="filter.model" ng-change="filterLoad()"></md-datepicker>
             </span>
 
         </div>
-
     </div>    
+
+    <div ng-show="options.paging.infinite" class="infinite-records">{{paging.records}} Records</div>  
 
     <div class="lister-table">        
 

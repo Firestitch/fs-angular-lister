@@ -124,6 +124,7 @@
                 $scope.selectToogled = false;
                 $scope.debug = false;
                 $scope.load = load;
+                $scope.filterLoad = filterLoad;
                 $scope.page = page;
 
                 $scope.actionClick = function(action, data, event) {
@@ -271,6 +272,10 @@
                     return query;
                 }
 
+                function filterLoad() {                    
+                    load({ page: 1, clear: true });
+                }
+
                 function load(opts) {
 
                     if($scope.loading)
@@ -289,6 +294,15 @@
 
                     log("Calling data()", query);
                     
+                    var dataCallback = function(data, paging) {
+                        if(opts.clear) {
+                            $scope.max_bottom = 0;
+                            $scope.data = [];
+                        }
+
+                        callback(data, paging);
+                    }
+
                     try {
                         
                         $scope.loading = true;
@@ -305,7 +319,7 @@
                     load();
                 }
 
-                function dataCallback(data,paging) {
+                function callback(data, paging) {
                     
                     $scope.loaded = true;
                     log("dataCallback()",data,paging);
@@ -331,6 +345,8 @@
                         $scope.data.push({ cols: cols, object: object });
                     });
 
+                    $scope.paging.records = paging.records;
+
                     if($scope.options.paging.infinite) {
                         $scope.paging.page++;
 
@@ -338,8 +354,7 @@
 
                         $scope.paging.enabled = !!paging;
                         
-                        if(paging) {
-                            $scope.paging.records = paging.records;
+                        if(paging) {                            
                             $scope.paging.page = paging.page;
                             $scope.paging.pages = paging.pages;
                             $scope.paging.limit = paging.limit;
@@ -376,14 +391,15 @@
             controller: ListerCtrl,
             link: function($scope, element, attr, ctrl) {
                 
+                $scope.max_bottom = 0;
+
                 if($scope.lsOptions.paging.infinite) {
 
                     element = angular.element(element[0].children[0]);
 
                     var body = document.body,
                         html = document.documentElement,
-                        max_bottom = 0,
-                        threshhold = 0;
+                        threshhold = 200;
 
                     $scope.$on('$destroy', function () {
                         $timeout.cancel(timeout);
@@ -398,7 +414,7 @@
                             var scrollTop = parseInt($window.pageYOffset);
                             var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
                             var wn_bottom = scrollTop + parseInt(window.innerHeight);
-                            var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > (max_bottom + threshhold));
+                            var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
 
                             if(false) {
                                 var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
@@ -412,17 +428,17 @@
                                 $log.log("Window Height: " + window.innerHeight);
                                 $log.log("Window Bottom: " + wn_bottom);
                                 $log.log("Max Bottom: " + max_bottom);
-                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + (el_bottom > (max_bottom + threshhold)) + ") = " + condition);
+                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + (el_bottom > ($scope.max_bottom + threshhold)) + ") = " + condition);
                                 $log.log("----------------------------------------------------------");
                             }
 
                             if(condition) {
-                                max_bottom = el_bottom;
+                                $scope.max_bottom = el_bottom;
                                 $scope.load();
                             }
                         }
 
-                        timeout = $timeout(load,1000);
+                        timeout = $timeout(load,500);
                     }
 
                     load();

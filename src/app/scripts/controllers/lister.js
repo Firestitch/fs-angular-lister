@@ -28,20 +28,21 @@
             query.count = 50;
 
             DummyService
-                .gets(query,{ url: 'http://scenario.local.firestitch.com/api/' })
+                .gets(query,{ url: 'http://spec.local.firestitch.com/api/' })
                 .then(function(result) {
                     cb(result.objects,result.paging);
                 })
                 .catch(function (response) {
                     console.log(response);
                 });
+
         },
 
         load: true,
 
         paging: {
-            //infinite: true,
-            //limit: 10
+           // infinite: true,
+            limit: 10
         },
         /*
         action:
