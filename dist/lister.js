@@ -133,6 +133,7 @@
                 $scope.load = load;
                 $scope.filterLoad = filterLoad;
                 $scope.page = page;
+                $scope.numeric = numeric;
 
                 $scope.actionClick = function(action, data, event) {
                    
@@ -350,23 +351,26 @@
                         });
 
                         $scope.data.push({ cols: cols, object: object });
-                    });
+                    });                 
 
-                    $scope.paging.records = paging.records;
+                    $scope.paging.enabled = !!paging;
+                    $scope.paging.records = null;
+
+                    if(paging) {
+                        $scope.paging.records = paging.records;
+                        $scope.paging.pages = paging.pages;
+                        
+                        if(paging.limit) {
+                            $scope.paging.limit = paging.limit;
+                            options.limit = paging.limit;
+                        }
+                    }
 
                     if($scope.options.paging.infinite) {
                         $scope.paging.page++;
 
-                    } else {
-
-                        $scope.paging.enabled = !!paging;
-                        
-                        if(paging) {                            
-                            $scope.paging.page = paging.page;
-                            $scope.paging.pages = paging.pages;
-                            $scope.paging.limit = paging.limit;
-                            options.limit = paging.limit;
-                        }
+                    } else if(paging) {
+                        $scope.paging.page = paging.page;
                     }
 
                     $scope.loading = false;
@@ -379,6 +383,11 @@
                         console.log(message,args);
                     }
                 }
+
+                function numeric(n) { 
+                      return !isNaN(parseFloat(n)) && isFinite(n); 
+                }
+
 
                 if(options.load) {
                     load();
@@ -686,11 +695,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        </div>\r" +
     "\n" +
-    "    </div>    \r" +
+    "    </div>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "    <div ng-show=\"options.paging.infinite\" class=\"infinite-records\">{{paging.records}} Records</div>  \r" +
+    "    <div ng-show=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records ng-hide\">{{paging.records}} Records</div>  \r" +
     "\n" +
     "\r" +
     "\n" +

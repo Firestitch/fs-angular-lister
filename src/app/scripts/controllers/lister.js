@@ -41,7 +41,7 @@
         load: true,
 
         paging: {
-           // infinite: true,
+            infinite: true,
             limit: 10
         },
         /*

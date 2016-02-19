@@ -61,9 +61,9 @@
             </span>
 
         </div>
-    </div>    
+    </div>
 
-    <div ng-show="options.paging.infinite" class="infinite-records">{{paging.records}} Records</div>  
+    <div ng-show="options.paging.infinite && numeric(paging.records)" class="infinite-records ng-hide">{{paging.records}} Records</div>  
 
     <div class="lister-table">        
 
