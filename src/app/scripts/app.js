@@ -2,7 +2,6 @@
 
 angular
 .module('app', [
-    'config',
     'ngRoute',
     'ngSanitize',
     'ngTouch',
@@ -14,7 +13,7 @@ angular
     'fs-angular-modal',
     'fs-angular-api'
 ])
-.config(function ($routeProvider, $cryptoProvider, $mdThemingProvider, CONFIG) {
+.config(function ($routeProvider, $cryptoProvider, $mdThemingProvider) {
     $routeProvider
 
     .when('/page', {

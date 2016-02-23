@@ -54,26 +54,50 @@
                 transform-origin: left top;
                 display: block;
                 position: absolute;
-                left: 48px;
+                left: 54px;
                 color: rgba(0,0,0,0.54);
             }
 
             md-datepicker {
 
-                .md-button.md-icon-button {
-                    margin: 14px 0 0 0;
-                    height: 30px;
+                &.md-datepicker-open .md-datepicker-input {
+                    margin-left: 0;
+                }
+
+                .md-button.md-icon-button {                     
+                    margin: 0;
+
+                    &.md-datepicker-triangle-button {
+                        height: 30px;
+                        top: 9px;
+
+                        .md-datepicker-expand-triangle {
+                            border-top-color: inherit;
+                        }
+                    }
                 }
 
                 .md-datepicker-input-container {
-                    padding-bottom: 2px;
+                    margin: 20px 0 0 0;
+                    padding-bottom: 0;
                     margin-left: 0;
-
+                    border: 0;
+               
                     .md-datepicker-input {
                         height: 30px;
-                        padding-top: 15px;
-                        font-size: 15px;
+                        font-size: inherit;
+                        line-height: 30px;
+                        outline-offset: 0;
+                        border-bottom: 1px solid rgba(0,0,0,0.12);
                     }
+
+                    &.md-datepicker-focused {
+
+                        input {
+                            border-bottom: 2px solid rgb(158,158,158);
+                            padding-bottom: 0;
+                        }
+                    }                      
 
                     .md-datepicker-expand-triangle {
                         position: absolute;
@@ -220,6 +244,18 @@
 
     .paging {
 
+        label {
+            /* HACK: because there is no native solution from material design */
+            -webkit-transform: translate3d(0, 6px, 0) scale(0.75);
+            transform: translate3d(0, 6px, 0) scale(0.75);
+            transition: transform cubic-bezier(0.25, 0.8, 0.25, 1) 0.25s;
+            -webkit-transform-origin: left top;
+            transform-origin: left top;
+            display: block;
+            color: rgba(0,0,0,0.54);
+        }
+
+
         .pages {
             text-align: center;
             
@@ -256,11 +292,13 @@
         }
 
         .records {
-            float: left;
+           div {
+                margin-top: 10px;
+           } 
         }
 
         .limits {
-            float: right;
+            
         }
     }
 
@@ -272,3 +310,6 @@
 }
 
 
+.md-datepicker-calendar-pane {
+    margin-left: -10px;
+}

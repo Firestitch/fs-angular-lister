@@ -1,10 +1,4 @@
-(function () {
-    'use strict';
-    
-	angular.module('fs-angular-lister',[]);
-
-
-})();
+(function () { angular.module('fs-angular-lister',[]); })();
 (function () {
     'use strict';
 
@@ -835,13 +829,57 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled && !options.paging.infinite\">\r" +
+    "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
     "\n" +
     "\r" +
     "\n" +
     "        <div class=\"records\">\r" +
     "\n" +
-    "            <p>{{paging.records}} Records</p>\r" +
+    "            <label>Total</label>\r" +
+    "\n" +
+    "            <div>{{paging.records}} Records</div>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "        <div flex>\r" +
+    "\n" +
+    "            <ul class=\"pages\" ng-if=\"paging.pages>1\">\r" +
+    "\n" +
+    "                <li ng-class=\"{ disabled : paging.page == 1 }\">\r" +
+    "\n" +
+    "                    <a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "                <li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\">\r" +
+    "\n" +
+    "                    <a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\r" +
+    "\n" +
+    "                    <a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\">\r" +
+    "\n" +
+    "                    <a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\">\r" +
+    "\n" +
+    "                    <a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "            </ul>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +
@@ -872,44 +910,6 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "        </div>\r" +
     "\n" +
     "\r" +
-    "\n" +
-    "        <ul class=\"pages\" ng-if=\"paging.pages>1\">\r" +
-    "\n" +
-    "            <li ng-class=\"{ disabled : paging.page == 1 }\">\r" +
-    "\n" +
-    "                <a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "            <li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\">\r" +
-    "\n" +
-    "                <a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "            <li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\r" +
-    "\n" +
-    "                <a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "            <li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\">\r" +
-    "\n" +
-    "                <a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "            <li ng-class=\"{ disabled : paging.page == paging.pages }\">\r" +
-    "\n" +
-    "                <a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a>\r" +
-    "\n" +
-    "            </li>\r" +
-    "\n" +
-    "        </ul>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +

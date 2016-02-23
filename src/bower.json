@@ -1,5 +1,7 @@
 {
-  "name": "athena",
+  "name": "fs-angular-lister",
+  "namespace": "lister",
+  "port": "5001",
   "moduleName": "app",
   "version": "0.0.0",
   "appPath": "app",

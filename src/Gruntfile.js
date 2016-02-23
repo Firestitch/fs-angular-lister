@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 
         var modRewrite = require('connect-modrewrite');
         var bower = require('./bower.json');
-
+       
         // Configurable paths for the application
         var appConfig = {
             app: bower.appPath || 'app',
@@ -64,11 +64,11 @@ module.exports = function(grunt) {
                 ngtemplates: {                   
                     app: {
                         options: {
-                            module: 'fs-angular-lister',
+                            module: bower.name,
                         },
-                        cwd:        'app',
-                        src:        'views/directives/lister.html',
-                        dest:       '.tmp/directivetemplate.js'
+                        cwd:  'app',
+                        src:  'views/directives/' + bower.namespace + '.html',
+                        dest: '.tmp/directivetemplate.js'
                     }
                 },
 
@@ -78,18 +78,18 @@ module.exports = function(grunt) {
                     },
                     build: {
                       src: ['app/scripts/modules/module.js','app/scripts/filters/filter.js','app/scripts/directives/directive.js','app/scripts/services/service.js','.tmp/directivetemplate.js'],
-                      dest: '../dist/lister.js',
+                      dest: '../dist/' + bower.namespace + '.js',
                     },
-                },
+                },              
 
                 // The actual grunt server settings
                 connect: {
                     options: {
-                        livereload: 35730
+                        livereload: parseInt(bower.port) + 200
                     },
                     local: {
                         options: {
-                            port: 9090,
+                            port: parseInt(bower.port),
                             hostname: 'localhost',
                             open: true,
                             base: [
@@ -109,7 +109,7 @@ module.exports = function(grunt) {
                     },
                     docs: {
                         options: {
-                            port: 9001,
+                            port: parseInt(bower.port) + 400,
                             hostname: 'localhost',
                             base: '../../gh-pages/',
                             open: true
@@ -231,20 +231,6 @@ module.exports = function(grunt) {
                     }
                 },
 
-                useminPrepareDev: {
-                    html: '<%= yeoman.app %>/index.html',
-                    options: {
-                        dest: '<%= yeoman.dist %>',
-                        flow: {
-                            steps: {
-                                'js': ['concat'],
-                                'css': ['concat']
-                            },
-                            post: {}
-                        }
-                    }
-                },
-
                 // Performs rewrites based on filerev and the useminPrepare configuration
                 usemin: {
                     html: ['<%= yeoman.dist %>/{,*/}*.html'],
@@ -254,24 +240,6 @@ module.exports = function(grunt) {
                     }
                 },
 
-                ngconstant: {
-                    options: {
-                        space: '  ',
-                        wrap: '\'use strict\';\n\n {%= __ngModule %}',
-                        name: 'config',
-                        dest: '<%= yeoman.dist %>/config/config.js'
-                    },
-                    local: {
-                        constants: {
-                            CONFIG: grunt.file.readJSON('config/local.json'),
-                            BOWER: bower
-                        },
-                        options: {
-                            dest: '<%= yeoman.app %>/config/config.js'
-                        }
-                    }
-                },
-                                
                 // Copies remaining files to places other tasks can use
                 copy: {
                     buildscss: {
@@ -296,30 +264,22 @@ module.exports = function(grunt) {
                     ]
                 },
 
-                exec: {
-                    livesynccloud: {
-                        cwd: '<%= yeoman.dist %>',
-                        command: 'appbuilder livesync cloud'
-                    }
-                },
-
-                prompt: {
-                    builder: {
+                ngconstant: {
+                    options: {
+                        space: '  ',
+                        wrap: '\'use strict\';\n\n {%= __ngModule %}',
+                        name: 'config',
+                        dest: '<%= yeoman.dist %>/config/config.js'
+                    },
+                    local: {
+                        constants: {
+                            BOWER: bower
+                        },
                         options: {
-                            questions: [{
-                                config: 'builder',
-                                message: 'Please select...',
-                                name: 'option',
-                                type: 'list',
-                                choices: ['LiveSync Cloud']
-                            }],
-                            then: function(results) {
-                                if(results.builder == 'LiveSync Cloud')
-                                    grunt.task.run('exec:livesynccloud');
-                            }
+                            dest: '<%= yeoman.app %>/config/config.js'
                         }
                     }
-                },
+                },   
 
                 ngdocs: {
                   options: {
@@ -336,15 +296,12 @@ module.exports = function(grunt) {
                   all: ['<%= yeoman.app %>/scripts/{,*/}*.js']
                 }          
             });
-    
-            grunt.registerTask('doc', '', function() {
-
-                 return grunt.task.run(["ngdocs","connect:docs:keepalive","watch"]);
-            });
 
             grunt.registerTask('default', '', function(target) {
 
-               return grunt.task.run([
+                grunt.file.write('app/scripts/modules/module.js', '(function () { angular.module(\'' + bower.name + '\',[]); })();');
+
+                return grunt.task.run([ 
                     'ngconstant:local',
                     'wiredep',
                     'concurrent:server',
@@ -353,10 +310,5 @@ module.exports = function(grunt) {
                     'connect:docs',
                     'watch'
                 ]);
-            });
-
-            grunt.registerTask('useminPrepareDev', function() {
-                grunt.config.set('useminPrepare', grunt.config('useminPrepareDev'));
-                grunt.task.run('useminPrepare');
             });
         };

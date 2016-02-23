@@ -131,10 +131,32 @@
         <md-progress-circular md-mode="indeterminate"></md-progress-circular>
     </div>
 
-    <div class="paging ng-hide" ng-show="paging.enabled && !options.paging.infinite">
+    <div class="paging ng-hide" ng-show="paging.enabled && !options.paging.infinite" layout="row">
 
         <div class="records">
-            <p>{{paging.records}} Records</p>
+            <label>Total</label>
+            <div>{{paging.records}} Records</div>
+        </div>
+        <div flex>
+            <ul class="pages" ng-if="paging.pages>1">
+                <li ng-class="{ disabled : paging.page == 1 }">
+                    <a href="javascript:;" ng-click="page(1)">&laquo;</a>
+                </li>
+                <li ng-class="{ disabled : paging.page == 1 }" class="ng-scope">
+                    <a href="" ng-click="page(paging.page - 1)" class="ng-binding">‹</a>
+                </li>
+
+                <li ng-repeat="number in [] | listerRange:paging.pages:paging.page" ng-class="{ active : paging.page == (number + 1), disabled : number == '...' }">
+                    <a href="" ng-click="page(number + 1)">{{ number + 1}}</a>
+                </li>
+
+                <li ng-class="{ disabled : paging.page == paging.pages }" class="ng-scope">
+                    <a href="" ng-click="page(paging.page + 1)" class="ng-binding">›</a>
+                </li>
+                <li ng-class="{ disabled : paging.page == paging.pages }">
+                    <a href="" ng-click="page(paging.pages)">&raquo;</a>
+                </li>
+            </ul>
         </div>
 
         <div class="limits">
@@ -150,24 +172,5 @@
             </md-input-container>
         </div>
 
-        <ul class="pages" ng-if="paging.pages>1">
-            <li ng-class="{ disabled : paging.page == 1 }">
-                <a href="javascript:;" ng-click="page(1)">&laquo;</a>
-            </li>
-            <li ng-class="{ disabled : paging.page == 1 }" class="ng-scope">
-                <a href="" ng-click="page(paging.page - 1)" class="ng-binding">‹</a>
-            </li>
-
-            <li ng-repeat="number in [] | listerRange:paging.pages:paging.page" ng-class="{ active : paging.page == (number + 1), disabled : number == '...' }">
-                <a href="" ng-click="page(number + 1)">{{ number + 1}}</a>
-            </li>
-
-            <li ng-class="{ disabled : paging.page == paging.pages }" class="ng-scope">
-                <a href="" ng-click="page(paging.page + 1)" class="ng-binding">›</a>
-            </li>
-            <li ng-class="{ disabled : paging.page == paging.pages }">
-                <a href="" ng-click="page(paging.pages)">&raquo;</a>
-            </li>
-        </ul>
     </div>
 </div>

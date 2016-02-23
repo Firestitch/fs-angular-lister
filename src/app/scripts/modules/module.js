@@ -1,7 +1,1 @@
-(function () {
-    'use strict';
-    
-	angular.module('fs-angular-lister',[]);
-
-
-})();
+(function () { angular.module('fs-angular-lister',[]); })();
