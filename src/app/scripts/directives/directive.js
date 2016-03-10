@@ -479,7 +479,13 @@
 
                     if($scope.col.resolve) {
                         angular.forEach($scope.col.resolve, function(elem, index) {
-                            var resolve = $scope.$eval(elem);
+                            var resolve = null;
+                            if (typeof elem == 'function') {
+                                resolve = $scope.$eval(elem);
+                            }
+                            else if (angular.isArray(elem) && angular.isFunction(elem[elem.length - 1])) {
+                                resolve = $injector.invoke(elem, null, $scope);
+                            }
                             inject[index] = resolve;
                             $scope[index] = resolve;
                         });
