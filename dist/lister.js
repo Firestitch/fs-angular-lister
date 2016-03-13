@@ -92,7 +92,7 @@
                 options.paging.enabled = true;
                 options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
                 options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
-                options.norecords = options.norecords===undefined ? 'No records found' : '';
+                options.norecords = options.norecords===undefined ? 'No records found' : options.norecords;
                 options.load = options.load===undefined ? true : options.load;
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
