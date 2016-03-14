@@ -37,77 +37,69 @@
     .filter {
 
         margin-right: 15px;
+        display: inline-block;
 
         label {
             white-space: nowrap;
+            color: rgba(0,0,0,0.54);
         }
 
         &.filter-date {
-            position: relative;
+        
+            md-datepicker-container {
+                display: inline-block;
+                position: relative;
+                padding: 2px;
+                margin: 18px 0;
+                vertical-align: middle;
 
-            label {
-                /* HACK: because there is no native solution from material design */
-                -webkit-transform: translate3d(0, 6px, 0) scale(0.75);
-                transform: translate3d(0, 6px, 0) scale(0.75);
-                transition: transform cubic-bezier(0.25, 0.8, 0.25, 1) 0.25s;
-                -webkit-transform-origin: left top;
-                transform-origin: left top;
-                display: block;
-                position: absolute;
-                left: 54px;
-                color: rgba(0,0,0,0.54);
-            }
-
-            md-datepicker {
-
-                &.md-datepicker-open .md-datepicker-input {
-                    margin-left: 0;
-                }
-
-                .md-button.md-icon-button {                     
-                    margin: 0;
-
-                    &.md-datepicker-triangle-button {
-                        height: 30px;
-                        top: 9px;
-
-                        .md-datepicker-expand-triangle {
-                            border-top-color: inherit;
-                        }
-                    }
+                .md-button.md-icon-button {
+                    margin-top: 6px;
                 }
 
                 .md-datepicker-input-container {
-                    margin: 20px 0 0 0;
                     padding-bottom: 0;
                     margin-left: 0;
                     border: 0;
-               
-                    .md-datepicker-input {
-                        height: 30px;
-                        font-size: inherit;
-                        line-height: 30px;
-                        outline-offset: 0;
-                        border-bottom: 1px solid rgba(0,0,0,0.12);
+                }
+
+                label {
+                    display: block;
+                    -webkit-transform: translate3d(0, 6px, 0) scale(0.75);
+                    transform: translate3d(0, 6px, 0) scale(0.75);
+                    transition: -webkit-transform cubic-bezier(0.25, 0.8, 0.25, 1) 0.25s;
+                    transition: transform cubic-bezier(0.25, 0.8, 0.25, 1) 0.25s;
+                    -webkit-transform-origin: left top;
+                    transform-origin: left top;
+                    position: absolute;
+                    bottom: 100%;
+                    left: 0;
+                    right: auto;   
+                    white-space: nowrap;
+                    padding-left: 3px;                    
+                }
+
+                input.md-datepicker-input {
+                    font-size: inherit;
+                    height: 30px;
+                    line-height: 30px;
+                    outline-offset: 0;
+                    border-bottom: 1px solid rgba(0,0,0,0.12);
+                }
+
+                .md-datepicker-focused {
+                    input {
+                        border-bottom: 2px solid rgb(158,158,158);
                     }
+                }    
 
-                    &.md-datepicker-focused {
 
-                        input {
-                            border-bottom: 2px solid rgb(158,158,158);
-                            padding-bottom: 0;
-                        }
-                    }                      
-
-                    .md-datepicker-expand-triangle {
-                        position: absolute;
-                        left: 50%;
-                        bottom: 0;
-                        border-top-width: 7px;
-                    }
+                button.md-datepicker-button {
+                    display: none;
                 }
             }
         }
+
 
         &.filter-range {
             md-input-container {

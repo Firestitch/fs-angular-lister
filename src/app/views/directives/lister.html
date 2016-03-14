@@ -1,7 +1,7 @@
 
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
     
-    <div class="header">
+    <div class="header" layout="row">
 
         <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
 
@@ -19,7 +19,7 @@
                 </md-select>
             </md-input-container>
 
-            <md-input-container ng-if="filter.type == 'text'">
+            <md-input-container class="md-input-has-placeholder" ng-if="filter.type == 'text'">
 
                 <label>{{filter.label}}</label>
 
@@ -30,7 +30,7 @@
                     aria-label="{{filter.label}}" />
              </md-input-container>
 
-             <span ng-if="filter.type == 'range'">
+             <span ng-if="filter.type == 'range'" layout="row">
                  <md-input-container class="filter-range-min">
 
                     <label>{{filter.label}}</label>
@@ -55,9 +55,11 @@
                         aria-label="{{filter.label}}" />
                  </md-input-container>
             </span>
-            <span ng-if="filter.type == 'date'">
-                <label>{{filter.label}}</label>
-                <md-datepicker ng-model="filter.model" ng-change="filterLoad()"></md-datepicker>
+            <span ng-if="filter.type == 'date'">                
+                <md-datepicker-container>
+                    <label>{{filter.label}}</label>
+                    <md-datepicker ng-model="filter.model" ng-change="filterLoad()"></md-datepicker>
+                </md-datepicker-container>
             </span>
 
         </div>
