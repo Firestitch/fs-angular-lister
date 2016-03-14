@@ -576,7 +576,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\n" +
     "    \n" +
-    "    <div class=\"header\" layout=\"row\">\n" +
+    "    <div class=\"header\">\n" +
     "\n" +
     "        <div ng-repeat=\"filter in filters\" class=\"filter filter-{{filter.type}}\">\n" +
     "\n" +
@@ -605,7 +605,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                    aria-label=\"{{filter.label}}\" />\n" +
     "             </md-input-container>\n" +
     "\n" +
-    "             <span ng-if=\"filter.type == 'range'\" layout=\"row\">\n" +
+    "             <span ng-if=\"filter.type == 'range'\">\n" +
     "                 <md-input-container class=\"filter-range-min\">\n" +
     "\n" +
     "                    <label>{{filter.label}}</label>\n" +
@@ -630,7 +630,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                        aria-label=\"{{filter.label}}\" />\n" +
     "                 </md-input-container>\n" +
     "            </span>\n" +
-    "            <span ng-if=\"filter.type == 'date'\" layout=\"row\">\n" +
+    "            <span ng-if=\"filter.type == 'date'\">\n" +
     "                <label>{{filter.label}}</label>\n" +
     "                <md-datepicker ng-model=\"filter.model\" ng-change=\"filterLoad()\"></md-datepicker>\n" +
     "            </span>\n" +
