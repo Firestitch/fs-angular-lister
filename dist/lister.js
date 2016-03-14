@@ -269,8 +269,8 @@
                                     query[filter.name] = filter.model;
                                 }
 
-                            } else if(filter.model!=undefined) {
-                                query[filter.name] = filter.model;
+                            } else if(String(filter.model).length) {
+                                query[filter.name] = filter.model;                                
                             }
                         }
                     });
