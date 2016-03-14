@@ -1,7 +1,7 @@
 
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
     
-    <div class="header" layout="row">
+    <div class="header">
 
         <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
 
@@ -30,7 +30,7 @@
                     aria-label="{{filter.label}}" />
              </md-input-container>
 
-             <span ng-if="filter.type == 'range'" layout="row">
+             <span ng-if="filter.type == 'range'">
                  <md-input-container class="filter-range-min">
 
                     <label>{{filter.label}}</label>
@@ -55,7 +55,7 @@
                         aria-label="{{filter.label}}" />
                  </md-input-container>
             </span>
-            <span ng-if="filter.type == 'date'" layout="row">
+            <span ng-if="filter.type == 'date'">
                 <label>{{filter.label}}</label>
                 <md-datepicker ng-model="filter.model" ng-change="filterLoad()"></md-datepicker>
             </span>

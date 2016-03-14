@@ -37,9 +37,25 @@
     .filter {
 
         margin-right: 15px;
+        display: inline-block;
 
         label {
             white-space: nowrap;
+        }
+        
+        &.filter-text {
+            
+            md-input-container {
+                margin-top: 0;
+                height: 14px;
+            }
+        }
+        
+        &.filter-range {
+            
+            md-input-container {
+                height: 27px;
+            }
         }
 
         &.filter-date {
