@@ -92,7 +92,7 @@
                 options.paging.enabled = true;
                 options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
                 options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
-                options.norecords = options.norecords===undefined ? 'No records found' : options.norecords;
+                options.norecords = options.norecords===undefined ? 'No records found' : '';
                 options.load = options.load===undefined ? true : options.load;
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
@@ -687,7 +687,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                            <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\n" +
     "                        </md-button>\n" +
     "                        <md-menu-content>\n" +
-    "                            <md-menu-item ng-repeat=\"action in options.actions track by $index\">\n" +
+    "                            <md-menu-item ng-if=\"action.show(item.object)\" ng-repeat=\"action in options.actions track by $index\">\n" +
     "                                <md-button ng-click=\"actionClick(action,item.object,$event)\">\n" +
     "                                    <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{action.icon}}</md-icon>\n" +
     "                                    {{action.label}}\n" +
