@@ -120,7 +120,6 @@
                 $scope.load = load;
                 $scope.loading = false;
                 $scope.loaded = false;
-                $scope.filters = options.filters;
                 $scope.checked = [];
                 $scope.selectToogled = false;
                 $scope.debug = false;
@@ -128,6 +127,23 @@
                 $scope.filterLoad = filterLoad;
                 $scope.page = page;
                 $scope.numeric = numeric;
+                $scope.groupedFilters = function() {
+
+                    var index = 0, filters = [];
+                    angular.forEach(options.filters,function(filter) {
+
+                        if(filter.type=='newline') {
+                            return index++;
+                        }
+
+                        if(!filters[index])
+                            filters[index] = [];
+
+                        filters[index].push(filter);
+                    });
+
+                    return filters;
+                }();
 
                 $scope.actionClick = function(action, data, event) {
                    
@@ -195,7 +211,7 @@
                     $scope.selectToogled = false;                 
                 }
                                
-                angular.forEach($scope.filters,function(filter) {
+                angular.forEach(options.filters,function(filter) {
 
                     if(typeof filter.values=='function') {
                         filter.values = filter.values();
@@ -245,7 +261,7 @@
 
                 function filterValues() {
                     var query = {};
-                    angular.forEach($scope.filters,function(filter) {
+                    angular.forEach(options.filters,function(filter) {
                         if(filter.model!==null) {
 
                             if(filter.type=='select') {
@@ -269,7 +285,7 @@
                                     query[filter.name] = filter.model;
                                 }
 
-                            } else if(String(filter.model).length) {
+                            } else if(filter.model!==undefined && String(filter.model).length) {
                                 query[filter.name] = filter.model;                                
                             }
                         }
@@ -475,7 +491,6 @@
                 },
                 function(value) {
 
-                    var inject = {};
                     $scope.data = $scope.col.data;
 
                     if($scope.col.scope) {
@@ -491,29 +506,15 @@
                             else if (angular.isArray(elem) && angular.isFunction(elem[elem.length - 1])) {
                                 resolve = $injector.invoke(elem, null, $scope);
                             }
-                            inject[index] = resolve;
                             $scope[index] = resolve;
                         });
                     }
 
                     angular.extend($scope, $scope.col.data);
 
-                    inject.data = $scope.col.data;
-                    inject.$scope = $scope;
-
-                    /*
-                    if(typeof value =='object') {
-
-                        var func = value.pop();
-                        var inject = value.slice(-1).pop();
-
-                        value = $injector.invoke(func,null,inject);
-                    }
-                    */                    
-
                     element.html(value);
                     $compile(element.contents())($scope)
-
+                   
                     angular.forEach(element.find('a'),function(el) {
 
                         el = angular.element(el);                        
@@ -577,9 +578,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\r" +
     "\n" +
-    "    \r" +
+    "\r" +
     "\n" +
-    "    <div class=\"header\" layout=\"row\">\r" +
+    "    <div ng-repeat=\"filters in groupedFilters\" class=\"header\" layout=\"row\">\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -700,6 +701,12 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "            </span>\r" +
     "\n" +
     "\r" +
+    "\n" +
+    "            <span ng-if=\"filter.type == 'newline'\">\r" +
+    "\n" +
+    "                <br>\r" +
+    "\n" +
+    "            </span>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +

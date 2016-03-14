@@ -173,6 +173,9 @@
                 }
             },
             {
+                type: 'newline'
+            },
+            {
                 name: 'date',
                 type: 'date',
                 label: 'Date'

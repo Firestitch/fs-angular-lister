@@ -1,7 +1,7 @@
 
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
-    
-    <div class="header" layout="row">
+
+    <div ng-repeat="filters in groupedFilters" class="header" layout="row">
 
         <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
 
@@ -62,6 +62,9 @@
                 </md-datepicker-container>
             </span>
 
+            <span ng-if="filter.type == 'newline'">
+                <br>
+            </span>
         </div>
     </div>
 
