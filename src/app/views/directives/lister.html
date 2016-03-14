@@ -112,7 +112,7 @@
                             <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
                         </md-button>
                         <md-menu-content>
-                            <md-menu-item ng-repeat="action in options.actions track by $index">
+                            <md-menu-item ng-if="action.show(item.object)" ng-repeat="action in options.actions track by $index">
                                 <md-button ng-click="actionClick(action,item.object,$event)">
                                     <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{action.icon}}</md-icon>
                                     {{action.label}}

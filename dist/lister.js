@@ -236,6 +236,10 @@
                         action.icon = action.icon || 'delete';
                     }
                     
+                    if(!action.show) {
+                        action.show = function(){ return true }
+                    }
+                    
                     return action;
                 }
 
