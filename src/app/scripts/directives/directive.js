@@ -144,8 +144,16 @@
                     return filters;
                 }();
 
-                $scope.actionClick = function(action, data, event) {
-                   
+                $scope.actionClick = function(action, data, event, index) {
+          
+                    var helper = {  load: load,
+                                    reload: reload,
+                                    remove: function() {
+                                        $scope.data.splice(index, 1);                                        
+                                    },
+                                    index: index
+                                }
+
                     if(action.delete) {
 
                        var confirm = $mdDialog
@@ -159,16 +167,17 @@
                         $mdDialog.show(confirm)
                         .then(function() {
                             if(action.delete.ok) {
-                                action.delete.ok(data, event);
+                                action.delete.ok(data, event, helper);
+                                helper.remove();
                             }
                         }, function() {
                             if(action.delete.cancel) {
-                                action.delete.cancel(data, event);
+                                action.delete.cancel(data, event, helper);
                             }
                         });
     
                     } else if(action.click) {
-                        action.click(data, event);
+                        action.click(data, event, helper);
                     }
                 }
 
@@ -445,7 +454,7 @@
                             var wn_bottom = scrollTop + parseInt(window.innerHeight);
                             var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
 
-                            if(false) {
+                            if($scope.lsOptions.debug) {
                                 var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
 
                                 $log.log("Element top=" + element.prop('offsetTop'));
@@ -456,8 +465,9 @@
                                 $log.log("Element Bottom: " + el_bottom);
                                 $log.log("Window Height: " + window.innerHeight);
                                 $log.log("Window Bottom: " + wn_bottom);
-                                $log.log("Max Bottom: " + max_bottom);
-                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + (el_bottom > ($scope.max_bottom + threshhold)) + ") = " + condition);
+                                $log.log("Max Bottom: " + $scope.max_bottom);
+                                $log.log("If: ( (el_bottom - threshhold) ) <=  wn_bottom  && ( (el_bottom > ($scope.max_bottom + threshhold)) )");
+                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + el_bottom  + " > " + ($scope.max_bottom + threshhold) + ") = " + condition);
                                 $log.log("----------------------------------------------------------");
                             }
 
@@ -467,7 +477,7 @@
                             }
                         }
 
-                        timeout = $timeout(load,500);
+                        timeout = $timeout(load,100);
                     }
 
                     load();

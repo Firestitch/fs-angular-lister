@@ -20,12 +20,14 @@
 
     $scope.listerConf = {
 
+        debug: true,
+
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
         },
         data: function(query, cb) {
             
-            query.count = 50;
+            query.count = 300;
 
             DummyService
                 .gets(query,{ url: 'http://spec.local.firestitch.com/api/' })
@@ -41,8 +43,8 @@
         load: true,
 
         paging: {
-            //infinite: true,
-            limit: 10
+            infinite: true,
+            limit: 20
         },
         /*
         action:
@@ -69,8 +71,9 @@
             {
                 label: 'Edit',
                 icon: 'edit',
-                click: function(data, event) {
-                    alert("Edit Action Click: " + JSON.stringify(data));
+                click: function(data, event, helper) {
+                    helper.reload();
+                    //alert("Edit Action Click: " + JSON.stringify(data));
                 }
             },
            
@@ -125,8 +128,8 @@
             actions: [{
                 icon: 'delete',
                 label: 'Delete',
-                click: function(selected, $event) {
-                    alert("delete");
+                click: function(selected, $event, helper) {
+                    //alert("delete");
                 }
             },
             {

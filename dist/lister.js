@@ -145,8 +145,16 @@
                     return filters;
                 }();
 
-                $scope.actionClick = function(action, data, event) {
-                   
+                $scope.actionClick = function(action, data, event, index) {
+          
+                    var helper = {  load: load,
+                                    reload: reload,
+                                    remove: function() {
+                                        $scope.data.splice(index, 1);                                        
+                                    },
+                                    index: index
+                                }
+
                     if(action.delete) {
 
                        var confirm = $mdDialog
@@ -160,16 +168,17 @@
                         $mdDialog.show(confirm)
                         .then(function() {
                             if(action.delete.ok) {
-                                action.delete.ok(data, event);
+                                action.delete.ok(data, event, helper);
+                                helper.remove();
                             }
                         }, function() {
                             if(action.delete.cancel) {
-                                action.delete.cancel(data, event);
+                                action.delete.cancel(data, event, helper);
                             }
                         });
     
                     } else if(action.click) {
-                        action.click(data, event);
+                        action.click(data, event, helper);
                     }
                 }
 
@@ -446,7 +455,7 @@
                             var wn_bottom = scrollTop + parseInt(window.innerHeight);
                             var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
 
-                            if(false) {
+                            if($scope.lsOptions.debug) {
                                 var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
 
                                 $log.log("Element top=" + element.prop('offsetTop'));
@@ -457,8 +466,9 @@
                                 $log.log("Element Bottom: " + el_bottom);
                                 $log.log("Window Height: " + window.innerHeight);
                                 $log.log("Window Bottom: " + wn_bottom);
-                                $log.log("Max Bottom: " + max_bottom);
-                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + (el_bottom > ($scope.max_bottom + threshhold)) + ") = " + condition);
+                                $log.log("Max Bottom: " + $scope.max_bottom);
+                                $log.log("If: ( (el_bottom - threshhold) ) <=  wn_bottom  && ( (el_bottom > ($scope.max_bottom + threshhold)) )");
+                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + el_bottom  + " > " + ($scope.max_bottom + threshhold) + ") = " + condition);
                                 $log.log("----------------------------------------------------------");
                             }
 
@@ -468,7 +478,7 @@
                             }
                         }
 
-                        timeout = $timeout(load,500);
+                        timeout = $timeout(load,100);
                     }
 
                     load();
@@ -762,7 +772,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                </div>\r" +
     "\n" +
-    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns track by $index\">{{col.title}}</div>\r" +
+    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\">{{col.title}}</div>\r" +
     "\n" +
     "                <div class=\"lister-col\" ng-show=\"options.actions.length || options.action\"></div>\r" +
     "\n" +
@@ -780,11 +790,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            </div>        \r" +
     "\n" +
-    "            <div class=\"lister-row\" ng-class=\"{ selected: checked[$index] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\">\r" +
+    "            <div class=\"lister-row\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
     "\n" +
-    "                <div class=\"lister-col\" ng-show=\"options.selection\"><md-checkbox ng-model=\"checked[$index]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\"></md-checkbox></div>\r" +
+    "                <div class=\"lister-col\" ng-show=\"options.selection\"><md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\"></md-checkbox></div>\r" +
     "\n" +
-    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in item.cols track by $index\" compile=\"col.value\" cm-scope=\"col.scope\"></div>\r" +
+    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in item.cols\" compile=\"col.value\" cm-scope=\"col.scope\"></div>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -810,11 +820,15 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        </md-button>\r" +
     "\n" +
+    "\r" +
+    "\n" +
     "                        <md-menu-content>\r" +
     "\n" +
-    "                            <md-menu-item ng-if=\"action.show(item.object)\" ng-repeat=\"action in options.actions track by $index\">\r" +
+    "                            <md-menu-item ng-if=\"action.show(item.object)\" ng-repeat=\"action in options.actions\">\r" +
     "\n" +
-    "                                <md-button ng-click=\"actionClick(action,item.object,$event)\">\r" +
+    "                                \r" +
+    "\n" +
+    "                                <md-button ng-click=\"actionClick(action,item.object,$event,rowIndex)\">\r" +
     "\n" +
     "                                    <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{action.icon}}</md-icon>\r" +
     "\n" +
