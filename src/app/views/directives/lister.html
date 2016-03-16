@@ -121,7 +121,7 @@
                             <md-menu-item ng-if="action.show(item.object)" ng-repeat="action in options.actions">
                                 
                                 <md-button ng-click="actionClick(action,item.object,$event,rowIndex)">
-                                    <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{action.icon}}</md-icon>
+                                    <md-icon md-font-set="material-icons" class="md-default-theme material-icons" ng-show="action.icon">{{action.icon}}</md-icon>
                                     {{action.label}}
                                 </md-button>
                             </md-menu-item>

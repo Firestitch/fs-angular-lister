@@ -79,7 +79,7 @@
            
             {
                 label: 'Delete',
-                icon: 'delete',
+                show: function() { return true },
                 delete:  {  
                             content: 'Are you sure you would like to remove this?',
                             ok: function(data) {                            

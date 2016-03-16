@@ -830,7 +830,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                <md-button ng-click=\"actionClick(action,item.object,$event,rowIndex)\">\r" +
     "\n" +
-    "                                    <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{action.icon}}</md-icon>\r" +
+    "                                    <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\" ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
     "\n" +
     "                                    {{action.label}}\r" +
     "\n" +
