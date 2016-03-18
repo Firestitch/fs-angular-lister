@@ -1,4 +1,4 @@
-(function () { angular.module('fs-angular-lister',[]); })();
+
 (function () {
     'use strict';
 
@@ -124,7 +124,7 @@
                 $scope.selectToogled = false;
                 $scope.debug = false;
                 $scope.load = load;
-                $scope.filterLoad = filterLoad;
+                $scope.reload = reload;
                 $scope.page = page;
                 $scope.numeric = numeric;
                 $scope.groupedFilters = function() {
@@ -168,8 +168,15 @@
                         $mdDialog.show(confirm)
                         .then(function() {
                             if(action.delete.ok) {
-                                action.delete.ok(data, event, helper);
-                                helper.remove();
+                                var result = action.delete.ok(data, event, helper);
+
+                                if(result && angular.isFunction(result.then)) {
+                                    result.then(function() {
+                                        helper.remove();
+                                    });
+                                } else {
+                                    helper.remove();
+                                }
                             }
                         }, function() {
                             if(action.delete.cancel) {
@@ -249,8 +256,7 @@
                  */
 
                 function reload() {
-                    $scope.data = [];
-                    load({ page: 1 });
+                    load({ page: 1, clear: true });
                 }
 
                 function sanitizeAction(action) {
@@ -301,10 +307,6 @@
                     });
 
                     return query;
-                }
-
-                function filterLoad() {                    
-                    load({ page: 1, clear: true });
                 }
 
                 function load(opts) {
@@ -606,7 +608,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                <md-select ng-model=\"filter.model\" md-on-close=\"filterLoad()\">\r" +
+    "                <md-select ng-model=\"filter.model\" md-on-close=\"reload()\">\r" +
     "\n" +
     "                    <md-option\r" +
     "\n" +
@@ -640,7 +642,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    ng-model-options=\"{debounce: 300}\"\r" +
     "\n" +
-    "                    ng-change=\"filterLoad()\"\r" +
+    "                    ng-change=\"reload()\"\r" +
     "\n" +
     "                    aria-label=\"{{filter.label}}\" />\r" +
     "\n" +
@@ -666,7 +668,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        ng-model-options=\"{debounce: 300}\"\r" +
     "\n" +
-    "                        ng-change=\"filterLoad()\"\r" +
+    "                        ng-change=\"reload()\"\r" +
     "\n" +
     "                        aria-label=\"{{filter.label}}\" />\r" +
     "\n" +
@@ -690,7 +692,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        ng-model-options=\"{debounce: 300}\"\r" +
     "\n" +
-    "                        ng-change=\"filterLoad()\"\r" +
+    "                        ng-change=\"reload()\"\r" +
     "\n" +
     "                        aria-label=\"{{filter.label}}\" />\r" +
     "\n" +
@@ -704,7 +706,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <label>{{filter.label}}</label>\r" +
     "\n" +
-    "                    <md-datepicker ng-model=\"filter.model\" ng-change=\"filterLoad()\"></md-datepicker>\r" +
+    "                    <md-datepicker ng-model=\"filter.model\" ng-change=\"reload()\"></md-datepicker>\r" +
     "\n" +
     "                </md-datepicker-container>\r" +
     "\n" +

@@ -123,7 +123,7 @@
                 $scope.selectToogled = false;
                 $scope.debug = false;
                 $scope.load = load;
-                $scope.filterLoad = filterLoad;
+                $scope.reload = reload;
                 $scope.page = page;
                 $scope.numeric = numeric;
                 $scope.groupedFilters = function() {
@@ -167,8 +167,15 @@
                         $mdDialog.show(confirm)
                         .then(function() {
                             if(action.delete.ok) {
-                                action.delete.ok(data, event, helper);
-                                helper.remove();
+                                var result = action.delete.ok(data, event, helper);
+
+                                if(result && angular.isFunction(result.then)) {
+                                    result.then(function() {
+                                        helper.remove();
+                                    });
+                                } else {
+                                    helper.remove();
+                                }
                             }
                         }, function() {
                             if(action.delete.cancel) {
@@ -248,8 +255,7 @@
                  */
 
                 function reload() {
-                    $scope.data = [];
-                    load({ page: 1 });
+                    load({ page: 1, clear: true });
                 }
 
                 function sanitizeAction(action) {
@@ -300,10 +306,6 @@
                     });
 
                     return query;
-                }
-
-                function filterLoad() {                    
-                    load({ page: 1, clear: true });
                 }
 
                 function load(opts) {

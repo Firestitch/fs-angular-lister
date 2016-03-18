@@ -2,7 +2,7 @@
 
 
 angular.module('app')
-  .controller('ListerCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog) {
+  .controller('ListerCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog, $q) {
 
     $scope.click = click;
     $scope.modal = modal;
@@ -43,8 +43,8 @@
         load: true,
 
         paging: {
-            infinite: true,
-            limit: 20
+            //infinite: true,
+            limit: 10
         },
         /*
         action:
@@ -84,6 +84,10 @@
                             content: 'Are you sure you would like to remove this?',
                             ok: function(data) {                            
                                 alert("Delete Action Click: " + JSON.stringify(data));
+
+                                var deferred = $q.defer();
+                                deferred.resolve();
+                                return deferred.promise;
                             }
                         }
             }
