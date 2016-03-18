@@ -43,8 +43,8 @@
         load: true,
 
         paging: {
-            //infinite: true,
-            limit: 10
+            infinite: true,
+            limit: 20
         },
         /*
         action:

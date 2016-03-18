@@ -318,6 +318,11 @@
 
                     opts = opts || {};
                     if(opts.page) {
+
+                        if(opts.clear) {
+                            opts.page = 1;
+                        }
+
                         $scope.paging.page = opts.page;
                     }
 
