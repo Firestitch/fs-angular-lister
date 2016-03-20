@@ -11,6 +11,17 @@
         }
     }
 
+    .top-actions {
+        float: right;
+
+        .more {
+            height: auto;
+            line-height: normal;
+            width: 16px;
+            margin: 0;
+        }
+    }
+
     .progress-paged {
         position: absolute;
         z-index: 50;

@@ -1,0 +1,1 @@
+(function () { angular.module('fs-angular-lister',[]); })();

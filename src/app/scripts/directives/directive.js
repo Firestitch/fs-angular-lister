@@ -116,6 +116,7 @@
                 $scope.data = [];
                 $scope.options = options;
                 $scope.paging = options.paging;
+                $scope.topActions = options.topActions;
                 $scope.load = load;
                 $scope.loading = false;
                 $scope.loaded = false;

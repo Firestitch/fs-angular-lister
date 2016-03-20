@@ -66,6 +66,38 @@
         },
         */
 
+        topActions: [
+            {
+                label: 'Export',
+                primary: false,
+                click: function() {
+                    alert('Export');
+                }
+            },
+            {
+                label: 'Add Something',
+                click: function() {
+                    alert('Add Something');
+                }
+            },
+            {
+                label: 'Menu 1',
+                more: true,
+                icon: 'delete',
+                click: function() {
+                    alert('Menu 1');
+                }
+            },
+            {
+                label: 'Menu 2',
+                more: true,
+                icon: 'delete',
+                click: function() {
+                    alert('Menu 2');
+                }
+            }      
+        ],
+
         actions: [
              
             {

@@ -1,36 +1,36 @@
 
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
-
+    <div class="top-actions" layout="row">
+        <md-button ng-repeat="action in topActions" ng-show="!action.more" ng-click="action.click($event)" class="ng-hide" ng-class="{ 'md-button-primary': action.primary!==false }">{{action.label}}</md-button>
+        <md-menu ng-show="(topActions | filter:{ more: true }).length > 0">
+            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
+                <md-icon>more_vert</md-icon>
+            </md-button>
+            <md-menu-content>
+                <md-menu-item ng-repeat="action in topActions" ng-show="action.more">
+                    <md-button ng-click="action.click($event)">
+                        <md-icon ng-show="action.icon">{{action.icon}}</md-icon>
+                        {{action.label}}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+    </div>
     <div ng-repeat="filters in groupedFilters" class="header" layout="row">
-
         <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
-
             <md-input-container ng-if="filter.type == 'select'">
-
                 <label>{{filter.label}}</label>
-
                 <md-select ng-model="filter.model" md-on-close="reload()">
-                    <md-option
-                        ng-repeat="item in filter.values"
-                        value="{{item.value}}"
-                    >
-                    {{item.name}}
+                    <md-option ng-repeat="item in filter.values" value="{{item.value}}">
+                        {{item.name}}
                     </md-option>
                 </md-select>
             </md-input-container>
-
             <md-input-container class="md-input-has-placeholder" ng-if="filter.type == 'text'">
-
                 <label>{{filter.label}}</label>
-
-                <input
-                    ng-model="filter.model"
-                    ng-model-options="{debounce: 300}"
-                    ng-change="reload()"
-                    aria-label="{{filter.label}}" />
-             </md-input-container>
-
-             <span ng-if="filter.type == 'range'" layout="row">
+                <input ng-model="filter.model" ng-model-options="{debounce: 300}" ng-change="reload()" aria-label="{{filter.label}}" />
+            </md-input-container>
+            <span ng-if="filter.type == 'range'" layout="row">
                  <md-input-container class="filter-range-min">
 
                     <label>{{filter.label}}</label>
@@ -61,19 +61,15 @@
                     <md-datepicker ng-model="filter.model" ng-change="reload()"></md-datepicker>
                 </md-datepicker-container>
             </span>
-
             <span ng-if="filter.type == 'newline'">
                 <br>
             </span>
         </div>
     </div>
-
-    <div ng-show="options.paging.infinite && numeric(paging.records)" class="infinite-records ng-hide">{{paging.records}} Records</div>  
-
-    <div class="lister-table">        
-
+    <div ng-show="options.paging.infinite && numeric(paging.records)" class="infinite-records ng-hide">{{paging.records}} Records</div>
+    <div class="lister-table">
         <div class="lister-head">
-            <div class="lister-row">                
+            <div class="lister-row">
                 <div class="lister-col lister-select-toogle" ng-show="options.selection">
                     <span ng-show="data.length">
                         <md-checkbox ng-click="selectionsToggle(selectToogled);" ng-model="selectToogled"  ng-true-value="true" aria-label="Toggle Selection"></md-checkbox>
@@ -97,29 +93,26 @@
             </div>
         </div>
         <div class="lister-body">
-
             <div class="progress-paged ng-hide" ng-show="loading && !options.paging.infinite">
                 <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-            </div>        
+            </div>
             <div class="lister-row" ng-class="{ selected: checked[rowIndex] }" ng-repeat="item in data" ng-click="options.rowClick(item.object,$event); $event.stopPropagation();" ng-init="rowIndex = $index">
-                <div class="lister-col" ng-show="options.selection"><md-checkbox ng-model="checked[rowIndex]" ng-true-value="1" ng-click="select(item)" aria-label="Select"></md-checkbox></div>
+                <div class="lister-col" ng-show="options.selection">
+                    <md-checkbox ng-model="checked[rowIndex]" ng-true-value="1" ng-click="select(item)" aria-label="Select"></md-checkbox>
+                </div>
                 <div class="lister-col {{col.className}}" ng-repeat="col in item.cols" compile="col.value" cm-scope="col.scope"></div>
-
                 <div class="lister-col lister-actions" ng-if="options.action">
                     <md-button ng-click="actionClick(options.action,item.object,$event); $event.stopPropagation();" class="md-icon-button">
                         <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{options.action.icon}}</md-icon>
-                     </md-button>
+                    </md-button>
                 </div>
-
                 <div class="lister-col lister-actions" ng-if="options.actions.length">
                     <md-menu>
                         <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
                             <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
                         </md-button>
-
                         <md-menu-content>
                             <md-menu-item ng-if="action.show(item.object)" ng-repeat="action in options.actions">
-                                
                                 <md-button ng-click="actionClick(action,item.object,$event,rowIndex)">
                                     <md-icon md-font-set="material-icons" class="md-default-theme material-icons" ng-show="action.icon">{{action.icon}}</md-icon>
                                     {{action.label}}
@@ -131,15 +124,11 @@
             </div>
         </div>
     </div>
-
     <div class="norecords ng-hide" ng-show="loaded && options.norecords && !data.length">{{options.norecords}}</div>
-    
     <div class="progress-infinite ng-hide" ng-show="loading && options.paging.infinite">
         <md-progress-circular md-mode="indeterminate"></md-progress-circular>
     </div>
-
     <div class="paging ng-hide" ng-show="paging.enabled && !options.paging.infinite" layout="row">
-
         <div class="records">
             <label>Total</label>
             <div>{{paging.records}} Records</div>
@@ -152,11 +141,9 @@
                 <li ng-class="{ disabled : paging.page == 1 }" class="ng-scope">
                     <a href="" ng-click="page(paging.page - 1)" class="ng-binding">‹</a>
                 </li>
-
                 <li ng-repeat="number in [] | listerRange:paging.pages:paging.page" ng-class="{ active : paging.page == (number + 1), disabled : number == '...' }">
                     <a href="" ng-click="page(number + 1)">{{ number + 1}}</a>
                 </li>
-
                 <li ng-class="{ disabled : paging.page == paging.pages }" class="ng-scope">
                     <a href="" ng-click="page(paging.page + 1)" class="ng-binding">›</a>
                 </li>
@@ -165,19 +152,15 @@
                 </li>
             </ul>
         </div>
-
         <div class="limits">
             <md-input-container>
                 <label>Show</label>
                 <md-select ng-model="paging.limit" md-on-close="load()">
-                    <md-option
-                        ng-repeat="limit in options.paging.limits"
-                        value="{{limit}}">
+                    <md-option ng-repeat="limit in options.paging.limits" value="{{limit}}">
                         {{limit}} records
                     </md-option>
                 </md-select>
             </md-input-container>
         </div>
-
     </div>
 </div>
