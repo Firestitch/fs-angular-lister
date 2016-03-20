@@ -596,7 +596,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\r" +
     "\n" +
-    "    <div class=\"top-actions\" layout=\"row\">\r" +
+    "    <div class=\"top-actions\" layout=\"row\" layout-align=\"end center\">\r" +
     "\n" +
     "        <md-button ng-repeat=\"action in topActions\" ng-show=\"!action.more\" ng-click=\"action.click($event)\" class=\"ng-hide\" ng-class=\"{ 'md-button-primary': action.primary!==false }\">{{action.label}}</md-button>\r" +
     "\n" +

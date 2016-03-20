@@ -14,11 +14,16 @@
     .top-actions {
         float: right;
 
-        .more {
-            height: auto;
-            line-height: normal;
-            width: 16px;
-            margin: 0;
+        md-menu {
+            padding: 0;
+            
+            .more {
+                height: auto;
+                line-height: normal;
+                width: auto;
+                margin: 0;
+                padding: 0;
+            }
         }
     }
 
