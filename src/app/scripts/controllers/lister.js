@@ -29,7 +29,7 @@
             
             query.count = 300;
 
-            return DummyService.gets(query,{ url: 'http://spec.local.firestitch.com/api/', key: 'objects', datapaging: true });
+            return DummyService.gets(query,{ url: 'http://service.firestitch.com/api/', key: 'objects', datapaging: true });
 
             
             DummyService
