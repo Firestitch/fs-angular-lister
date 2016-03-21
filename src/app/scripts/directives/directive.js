@@ -344,7 +344,19 @@
                     try {
                         
                         $scope.loading = true;
-                        options.data(query, dataCallback);   
+
+                        if(options.data) {
+
+                            var response = options.data(query, dataCallback);
+
+                            if(response && response.then) {
+
+                                response
+                                .then(function(response) {
+                                    dataCallback(response.data, response.paging);
+                                });                                
+                            }
+                        }
                    
                    } catch(e) {
                         $scope.loading = false;

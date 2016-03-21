@@ -29,6 +29,9 @@
             
             query.count = 300;
 
+            return DummyService.gets(query,{ url: 'http://spec.local.firestitch.com/api/', key: 'objects', datapaging: true });
+
+            
             DummyService
                 .gets(query,{ url: 'http://spec.local.firestitch.com/api/' })
                 .then(function(result) {
@@ -37,7 +40,6 @@
                 .catch(function (response) {
                     console.log(response);
                 });
-
         },
 
         load: true,
