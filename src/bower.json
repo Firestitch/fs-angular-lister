@@ -13,7 +13,6 @@
     "angular-touch": "1.4.9",
     "es5-shim": "3.1.1",
     "json3": "3.3.2",
-    "material-design-icons": "~2.0.0",
     "ng-fastclick": "1.0.0",
     "ngstorage": "0.3.0",
     "fs-angular-modal": "latest",
