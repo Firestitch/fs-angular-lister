@@ -211,7 +211,8 @@
                     __all: 'All',
                     active: 'Active',
                     deleted: 'Deleted'
-                }
+                },
+                default: 'active'
             },
             {
                 type: 'newline'
