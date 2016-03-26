@@ -16,7 +16,8 @@
     "ng-fastclick": "1.0.0",
     "ngstorage": "0.3.0",
     "fs-angular-modal": "latest",
-    "fs-angular-api": "latest"
+    "fs-angular-api": "latest",
+    "fs-angular-store": "latest"
   },
   "devDependencies": {
     "angular-mocks": "1.4.9",

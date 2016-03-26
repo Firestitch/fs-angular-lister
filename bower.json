@@ -6,6 +6,7 @@
     "dist/_lister.scss"
   ],
   "dependencies": {
+    "fs-angular-store": "~1.0.4"
   },
   "authors": [
     "Firestitch Inc."

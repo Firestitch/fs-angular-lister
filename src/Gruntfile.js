@@ -111,8 +111,7 @@ module.exports = function(grunt) {
                         options: {
                             port: parseInt(bower.port) + 400,
                             hostname: 'localhost',
-                            base: '../../gh-pages/',
-                            open: true
+                            base: '../../gh-pages/'
                         }
                     }
                 },

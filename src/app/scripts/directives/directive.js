@@ -72,7 +72,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore) {
 
             /**
              * @ngdoc interface
@@ -83,6 +83,7 @@
             var ListerCtrl = ['$scope', function ($scope) {                
 
                 var options = $scope.lsOptions;
+                var persist = fsStore.get('lister-persist',{});
 
                 options.paging = options.paging || {};
                 options.paging.records = 0;
@@ -97,7 +98,23 @@
                 options.filters = options.filters || [];
 
                 angular.forEach(options.filters,function(filter) {
+
+                    var persisted = persist[options.persist];
+
+                    if(persisted) {
+                        if(persisted[filter.name]) {                        
+                           filter.default = persisted[filter.name];
+                        }
+                    }
+
                     filter.model = filter.default;
+
+                    if(filter.type=='date') {
+                            
+                         if(typeof filter.model == 'string') {
+                            filter.model = new Date(filter.model);
+                         }
+                    }
 
                     if(filter.type=='range' && !filter.placeholder) {
                         filter.placeholder = ['Min','Max'];
@@ -289,9 +306,8 @@
                                 var date = filter.model;
 
                                 if(date) {
-
-                                    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-                                    query[filter.name]  = $filter('date')(date, 'yyyy-MM-dd','+0000');
+                                    var sign = date.getTimezoneOffset() < 0 ? '+' : '-';
+                                    query[filter.name] = $filter('date')(date, 'yyyy-MM-dd') + 'T00:00:00' + sign + String('00' + Math.abs(date.getTimezoneOffset() / 60)).slice(-2) + ':' + String('00' + Math.abs(date.getTimezoneOffset() % 60)).slice(-2);
                                 }
 
                             } else if(filter.type=='range') {
@@ -327,6 +343,11 @@
                     }
 
                     var query = filterValues();
+
+                    if(options.persist) {                        
+                        persist[options.persist] = query;
+                    }
+
                     query.page = $scope.paging.page;
                     query.limit = $scope.paging.limit;
 

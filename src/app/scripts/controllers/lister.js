@@ -22,6 +22,8 @@
 
         debug: true,
 
+        persist: 'lister',
+
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
         },
@@ -132,9 +134,16 @@
             { title: 'Name' , value: function(data) {
                 return "<b>" + data['name'] + "</b>";
             }},
-            { title: 'GUID' , className: 'center', value: function(data) {
-                return '<a href="#/test">' + data["guid"] + '</a>';
-            }},
+            {   title: 'GUID' , 
+                className: 'center', 
+                value: function(data) {
+                    return '<a href ng-click="test(data)">' + data["guid"] + '</a>';
+                },
+                scope: { test :function(data) {
+                    debugger;
+                    }
+                }
+            },
             {   title: 'Date',
                 className: 'center',
                 value: function(data, $scope, myresolve) {
