@@ -668,7 +668,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <label>{{filter.label}}</label>\r" +
     "\n" +
-    "                <md-select ng-model=\"filter.model\" md-on-close=\"reload()\">\r" +
+    "                <md-select ng-model=\"filter.model\" ng-change=\"reload()\">\r" +
     "\n" +
     "                    <md-option ng-repeat=\"item in filter.values\" value=\"{{item.value}}\">\r" +
     "\n" +

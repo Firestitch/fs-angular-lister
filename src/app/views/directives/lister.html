@@ -20,7 +20,7 @@
         <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
             <md-input-container ng-if="filter.type == 'select'">
                 <label>{{filter.label}}</label>
-                <md-select ng-model="filter.model" md-on-close="reload()">
+                <md-select ng-model="filter.model" ng-change="reload()">
                     <md-option ng-repeat="item in filter.values" value="{{item.value}}">
                         {{item.name}}
                     </md-option>
