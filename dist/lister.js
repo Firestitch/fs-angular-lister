@@ -832,7 +832,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
     "\n" +
-    "                    <md-button ng-click=\"actionClick(options.action,item.object,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
+    "                    <md-button ng-click=\"actionClick(options.action,item.object,$event,rowIndex); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
     "\n" +
     "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{options.action.icon}}</md-icon>\r" +
     "\n" +
