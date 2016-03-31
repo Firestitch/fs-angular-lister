@@ -72,7 +72,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope) {
 
             /**
              * @ngdoc interface
@@ -178,33 +178,59 @@
 
                     if(action.delete) {
 
-                       var confirm = $mdDialog
-                        .confirm({  title: action.delete.title || 'Confirm',
-                                    content: action.delete.content,
-                                    targetEvent: event,
-                                    ariaLabel: 'Remove',
-                                    ok: action.delete.okLabel || 'Yes',
-                                    cancel: action.delete.cancelLabel || 'Cancel' })
-                       
-                        $mdDialog.show(confirm)
-                        .then(function() {
-                            if(action.delete.ok) {
-                                var result = action.delete.ok(item.object, event, helper);
+                        var confirm = { template: [
+                                        '<md-dialog md-theme="{{ dialog.theme }}" aria-label="{{ dialog.ariaLabel }}" class="{{ dialog.css }}">',
+                                        ' <md-dialog-content role="document" tabIndex="-1">',
+                                        '   <h2 class="md-title">{{ dialog.title }}</h2>',
+                                        '   <div class="md-dialog-content-body" md-template="::dialog.mdContent"></div>',
+                                        ' </md-dialog-content>',
+                                        ' <div class="md-actions">',
+                                        '   <md-button ng-click="dialog.cancel($event)" class="md-primary">',
+                                        '     Cancel',
+                                        '   </md-button>',
+                                        '   <md-button ng-click="dialog.ok($event)" class="md-primary" md-autofocus="dialog.$type!=\'confirm\'">',
+                                        '     Yes',
+                                        '   </md-button>',
+                                        ' </div>',
+                                        '</md-dialog>'
+                                        ].join('').replace(/\s\s+/g, ''),
+                                        controller: function () {
+                                            this.ok = function() {
 
-                                if(result && angular.isFunction(result.then)) {
-                                    result.then(function() {
-                                        helper.remove();
-                                    });
-                                } else {
-                                    helper.remove();
-                                }
-                            }
-                        }, function() {
-                            if(action.delete.cancel) {
-                                action.delete.cancel(item.object, event, helper);
-                            }
-                        });
-    
+                                                if(action.delete.ok) {
+                                                    var result = action.delete.ok(item.object, event, helper);
+
+                                                    if(result && angular.isFunction(result.then)) {
+                                                        result.then(function() {
+                                                            helper.remove();
+                                                            $mdDialog.hide(true);
+                                                        });
+                                                    } else {
+                                                        helper.remove();
+                                                        $mdDialog.hide(true);
+                                                    }
+                                                }
+                                                
+                                            };
+                                            this.cancel = function($event) {
+
+                                                if(action.delete.cancel) {
+                                                    action.delete.cancel(item.object, event, helper);
+                                                }                                                
+                                                $mdDialog.hide();
+                                            };
+                                        },
+                                        preserveScope: true,
+                                        controllerAs: 'dialog',
+                                        bindToController: true,
+                                        title: action.delete.title || 'Confirm',
+                                        content: action.delete.content,
+                                        targetEvent: event,
+                                        ariaLabel: 'Confirm',
+                                        skipHide: true };
+                            
+                        $mdDialog.show(confirm);
+
                     } else if(action.click) {
                         action.click(item.object, event, helper);
                     }
