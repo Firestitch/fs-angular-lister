@@ -162,14 +162,18 @@
                     return filters;
                 }();
 
-                $scope.actionClick = function(action, data, event, index) {
-          
+                $scope.actionClick = function(action, item, event) {
+
+                    var index = $scope.data.indexOf(item);
+
                     var helper = {  load: load,
                                     reload: reload,
                                     remove: function() {
-                                        $scope.data.splice(index, 1);                                        
+                                        if(this.index!==null) {
+                                            $scope.data.splice(this.index, 1);
+                                        }
                                     },
-                                    index: index
+                                    index: index>=0 ? index : null
                                 }
 
                     if(action.delete) {
@@ -185,7 +189,7 @@
                         $mdDialog.show(confirm)
                         .then(function() {
                             if(action.delete.ok) {
-                                var result = action.delete.ok(data, event, helper);
+                                var result = action.delete.ok(item.object, event, helper);
 
                                 if(result && angular.isFunction(result.then)) {
                                     result.then(function() {
@@ -197,12 +201,12 @@
                             }
                         }, function() {
                             if(action.delete.cancel) {
-                                action.delete.cancel(data, event, helper);
+                                action.delete.cancel(item.object, event, helper);
                             }
                         });
     
                     } else if(action.click) {
-                        action.click(data, event, helper);
+                        action.click(item.object, event, helper);
                     }
                 }
 
@@ -832,7 +836,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
     "\n" +
-    "                    <md-button ng-click=\"actionClick(options.action,item.object,$event,rowIndex); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
+    "                    <md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
     "\n" +
     "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{options.action.icon}}</md-icon>\r" +
     "\n" +
@@ -854,7 +858,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                            <md-menu-item ng-if=\"action.show(item.object)\" ng-repeat=\"action in options.actions\">\r" +
     "\n" +
-    "                                <md-button ng-click=\"actionClick(action,item.object,$event,rowIndex)\">\r" +
+    "                                <md-button ng-click=\"actionClick(action,item,$event)\">\r" +
     "\n" +
     "                                    <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\" ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
     "\n" +

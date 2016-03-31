@@ -20,7 +20,7 @@
 
     $scope.listerConf = {
 
-        debug: true,
+        debug: false,
 
         persist: 'lister',
 

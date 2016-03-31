@@ -102,7 +102,7 @@
                 </div>
                 <div class="lister-col {{col.className}}" ng-repeat="col in item.cols" compile="col.value" cm-scope="col.scope"></div>
                 <div class="lister-col lister-actions" ng-if="options.action">
-                    <md-button ng-click="actionClick(options.action,item.object,$event,rowIndex); $event.stopPropagation();" class="md-icon-button">
+                    <md-button ng-click="actionClick(options.action,item,$event); $event.stopPropagation();" class="md-icon-button">
                         <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{options.action.icon}}</md-icon>
                     </md-button>
                 </div>
@@ -113,7 +113,7 @@
                         </md-button>
                         <md-menu-content>
                             <md-menu-item ng-if="action.show(item.object)" ng-repeat="action in options.actions">
-                                <md-button ng-click="actionClick(action,item.object,$event,rowIndex)">
+                                <md-button ng-click="actionClick(action,item,$event)">
                                     <md-icon md-font-set="material-icons" class="md-default-theme material-icons" ng-show="action.icon">{{action.icon}}</md-icon>
                                     {{action.label}}
                                 </md-button>
