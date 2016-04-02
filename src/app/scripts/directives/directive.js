@@ -180,18 +180,18 @@
 
                         var confirm = { template: [
                                         '<md-dialog md-theme="{{ dialog.theme }}" aria-label="{{ dialog.ariaLabel }}" class="{{ dialog.css }}">',
-                                        ' <md-dialog-content role="document" tabIndex="-1">',
+                                        ' <md-dialog-content class="md-dialog-content" tabIndex="-1">',
                                         '   <h2 class="md-title">{{ dialog.title }}</h2>',
-                                        '   <div class="md-dialog-content-body" md-template="::dialog.mdContent"></div>',
+                                        '   {{dialog.mdTextContent}}',
                                         ' </md-dialog-content>',
-                                        ' <div class="md-actions">',
+                                        ' <md-dialog-actions>',
                                         '   <md-button ng-click="dialog.cancel($event)" class="md-primary">',
                                         '     Cancel',
                                         '   </md-button>',
                                         '   <md-button ng-click="dialog.ok($event)" class="md-primary" md-autofocus="dialog.$type!=\'confirm\'">',
                                         '     Yes',
                                         '   </md-button>',
-                                        ' </div>',
+                                        ' </md-dialog-actions>',
                                         '</md-dialog>'
                                         ].join('').replace(/\s\s+/g, ''),
                                         controller: function () {
