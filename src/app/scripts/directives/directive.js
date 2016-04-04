@@ -581,7 +581,7 @@
                         angular.forEach($scope.col.resolve, function(elem, index) {
                             var resolve = null;
                             if (typeof elem == 'function') {
-                                resolve = $scope.$eval(elem);
+                                resolve = elem($scope.col.data);
                             }
                             else if (angular.isArray(elem) && angular.isFunction(elem[elem.length - 1])) {
                                 resolve = $injector.invoke(elem, null, $scope);
