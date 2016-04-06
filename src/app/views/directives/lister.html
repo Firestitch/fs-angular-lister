@@ -1,7 +1,7 @@
 
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
     <div class="top-actions" layout="row" layout-align="end center">
-        <md-button ng-repeat="action in topActions" ng-show="!action.more" ng-click="action.click($event)" class="ng-hide" ng-class="{ 'md-accent': action.primary!==false }">{{action.label}}</md-button>
+        <md-button ng-repeat="action in topActions" ng-show="!action.more" ng-click="action.click($event)" class="ng-hide" ng-class="{ 'md-accent': action.primary!==false, 'md-raised': action.primary!==false }">{{action.label}}</md-button>
         <md-menu ng-show="(topActions | filter:{ more: true }).length > 0">
             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
                 <md-icon>more_vert</md-icon>
