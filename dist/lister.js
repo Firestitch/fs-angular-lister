@@ -185,10 +185,10 @@
                                         '   {{dialog.mdTextContent}}',
                                         ' </md-dialog-content>',
                                         ' <md-dialog-actions>',
-                                        '   <md-button ng-click="dialog.cancel($event)" class="md-primary">',
+                                        '   <md-button ng-click="dialog.cancel($event)">',
                                         '     Cancel',
                                         '   </md-button>',
-                                        '   <md-button ng-click="dialog.ok($event)" class="md-primary" md-autofocus="dialog.$type!=\'confirm\'">',
+                                        '   <md-button ng-click="dialog.ok($event)" class="md-accent" md-autofocus="dialog.$type!=\'confirm\'">',
                                         '     Yes',
                                         '   </md-button>',
                                         ' </md-dialog-actions>',
@@ -660,7 +660,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    <div class=\"top-actions\" layout=\"row\" layout-align=\"end center\">\r" +
     "\n" +
-    "        <md-button ng-repeat=\"action in topActions\" ng-show=\"!action.more\" ng-click=\"action.click($event)\" class=\"ng-hide\" ng-class=\"{ 'md-accent': action.primary!==false, 'md-raised': action.primary!==false }\">{{action.label}}</md-button>\r" +
+    "        <md-button ng-repeat=\"action in topActions\" ng-show=\"!action.more\" ng-click=\"action.click($event)\" class=\"ng-hide md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
     "\n" +
     "        <md-menu ng-show=\"(topActions | filter:{ more: true }).length > 0\">\r" +
     "\n" +
