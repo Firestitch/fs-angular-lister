@@ -1,69 +1,149 @@
-
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
-    <div class="top-actions" layout="row" layout-align="end center">
-        <md-button ng-repeat="action in topActions" ng-show="!action.more" ng-click="action.click($event)" class="ng-hide" ng-class="{ 'md-accent': action.primary!==false, 'md-raised': action.primary!==false }">{{action.label}}</md-button>
-        <md-menu ng-show="(topActions | filter:{ more: true }).length > 0">
-            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
+
+    <div layout="row" layout-align="center start">
+        <div ng-show="options.inlineSearch" flex layout="row" class="ng-hide inline-search">
+            <div class="inline-search-input" flex>
+                <md-input-container class="md-block">
+                    <label>Search</label>
+                    <input ng-model="searchinput" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput)" aria-label="Search" />
+                </md-input-container>
+
+                <div class="ng-hide md-whiteframe-z2 filters" layout="column" ng-show="extended_search">
+                    <div ng-repeat="filter in options.filters" class="filter filter-{{filter.type}}">
+                        
+                        <div class="label">
+                            <label>{{filter.label}}</label> 
+                        </div>
+
+                        <div class="interface" ng-if="filter.type == 'select'">
+                            <md-input-container class="md-block">                                
+                                <md-select ng-model="filter.model" aria-label="select">
+                                    <md-option ng-repeat="item in filter.values" value="{{item.value}}">
+                                        {{item.name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+
+                        <div class="interface" ng-if="filter.type == 'text'" >
+                            <md-input-container class="md-input-has-placeholder" class="md-block">
+                                <input ng-model="filter.model" aria-label="{{filter.label}}" />
+                            </md-input-container>
+                        </div>
+                        
+                        <div class="interface" ng-if="filter.type == 'range'" >
+
+                            <span layout="row" class="md-block">
+                                 <md-input-container class="filter-range-min">
+
+                                    <label>{{filter.label}}</label>
+
+                                    <input
+                                        placeholder="{{filter.placeholder[0]}}"
+                                        ng-model="filter.model['min']"
+                                        aria-label="{{filter.label}}" />
+                                 </md-input-container>
+
+                                 <md-input-container class="filter-range-max">
+
+                                    <label>{{filter.label}}</label>
+
+                                    <input
+                                        placeholder="{{filter.placeholder[1]}}"
+                                        ng-model="filter.model['max']"
+                                        aria-label="{{filter.label}}" />
+                                 </md-input-container>
+                            </span>
+                        </div>
+
+                        <div class="interface" ng-if="filter.type == 'date'" >
+
+                            <span class="md-block">                
+                                <md-datepicker-container>
+                                    <label>{{filter.label}}</label>
+                                    <md-datepicker ng-model="filter.model"></md-datepicker>
+                                </md-datepicker-container>
+                            </span>
+                        </div>
+                    </div>
+
+                    <md-button class="md-button md-raised md-accent search-button" ng-click="search()">Search</md-button>
+                </div>
+            </div>
+            <md-button ng-click="toogleSearch()" class="md-icon-button" aria-label="Search filters">
                 <md-icon>more_vert</md-icon>
             </md-button>
-            <md-menu-content>
-                <md-menu-item ng-repeat="action in topActions" ng-show="action.more">
-                    <md-button ng-click="action.click($event)">
-                        <md-icon ng-show="action.icon">{{action.icon}}</md-icon>
-                        {{action.label}}
-                    </md-button>
-                </md-menu-item>
-            </md-menu-content>
-        </md-menu>
-    </div>
-    <div ng-repeat="filters in groupedFilters" class="header" layout="row">
-        <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
-            <md-input-container ng-if="filter.type == 'select'">
-                <label>{{filter.label}}</label>
-                <md-select ng-model="filter.model" ng-change="reload()">
-                    <md-option ng-repeat="item in filter.values" value="{{item.value}}">
-                        {{item.name}}
-                    </md-option>
-                </md-select>
-            </md-input-container>
-            <md-input-container class="md-input-has-placeholder" ng-if="filter.type == 'text'">
-                <label>{{filter.label}}</label>
-                <input ng-model="filter.model" ng-model-options="{debounce: 300}" ng-change="reload()" aria-label="{{filter.label}}" />
-            </md-input-container>
-            <span ng-if="filter.type == 'range'" layout="row">
-                 <md-input-container class="filter-range-min">
+  
+            <md-backdrop ng-show="extended_search" ng-click="toogleSearch()"></md-backdrop>
+        </div>
 
-                    <label>{{filter.label}}</label>
+        <div flex ng-show="!options.inlineSearch" class="ng-hide">
+            <div ng-repeat="filters in groupedFilters" class="header" layout="row">
+                <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
+                    <md-input-container ng-if="filter.type == 'select'">
+                        <label>{{filter.label}}</label>
+                        <md-select ng-model="filter.model" ng-change="filterChange(filter)">
+                            <md-option ng-repeat="item in filter.values" value="{{item.value}}">
+                                {{item.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-input-container class="md-input-has-placeholder" ng-if="filter.type == 'text'">
+                        <label>{{filter.label}}</label>
+                        <input ng-model="filter.model" ng-model-options="{debounce: 300}" ng-change="filterChange(filter)" aria-label="{{filter.label}}" />
+                    </md-input-container>
+                    <span ng-if="filter.type == 'range'" layout="row">
+                         <md-input-container class="filter-range-min">
 
-                    <input
-                        placeholder="{{filter.placeholder[0]}}"
-                        ng-model="filter.model['min']"
-                        ng-model-options="{debounce: 300}"
-                        ng-change="reload()"
-                        aria-label="{{filter.label}}" />
-                 </md-input-container>
+                            <label>{{filter.label}}</label>
 
-                 <md-input-container class="filter-range-max">
+                            <input
+                                placeholder="{{filter.placeholder[0]}}"
+                                ng-model="filter.model['min']"
+                                ng-model-options="{debounce: 300}"
+                                ng-change="filterChange(filter)"
+                                aria-label="{{filter.label}}" />
+                         </md-input-container>
 
-                    <label>{{filter.label}}</label>
+                         <md-input-container class="filter-range-max">
 
-                    <input
-                        placeholder="{{filter.placeholder[1]}}"
-                        ng-model="filter.model['max']"
-                        ng-model-options="{debounce: 300}"
-                        ng-change="reload()"
-                        aria-label="{{filter.label}}" />
-                 </md-input-container>
-            </span>
-            <span ng-if="filter.type == 'date'">                
-                <md-datepicker-container>
-                    <label>{{filter.label}}</label>
-                    <md-datepicker ng-model="filter.model" ng-change="reload()"></md-datepicker>
-                </md-datepicker-container>
-            </span>
-            <span ng-if="filter.type == 'newline'">
-                <br>
-            </span>
+                            <label>{{filter.label}}</label>
+
+                            <input
+                                placeholder="{{filter.placeholder[1]}}"
+                                ng-model="filter.model['max']"
+                                ng-model-options="{debounce: 300}"
+                                ng-change="filterChange(filter)"
+                                aria-label="{{filter.label}}" />
+                         </md-input-container>
+                    </span>
+                    <span ng-if="filter.type == 'date'">                
+                        <md-datepicker-container>
+                            <label>{{filter.label}}</label>
+                            <md-datepicker ng-model="filter.model" ng-change="filterChange(filter)"></md-datepicker>
+                        </md-datepicker-container>
+                    </span>
+                    <span ng-if="filter.type == 'newline'">
+                        <br>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="top-actions" layout="row" layout-align="end center">
+            <md-button ng-repeat="action in topActions" ng-show="!action.more" ng-click="action.click($event)" class="ng-hide md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{action.label}}</md-button>
+            <md-menu ng-show="(topActions | filter:{ more: true }).length > 0">
+                <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
+                    <md-icon>more_vert</md-icon>
+                </md-button>
+                <md-menu-content>
+                    <md-menu-item ng-repeat="action in topActions" ng-show="action.more">
+                        <md-button ng-click="action.click($event)">
+                            <md-icon ng-show="action.icon">{{action.icon}}</md-icon>
+                            {{action.label}}
+                        </md-button>
+                    </md-menu-item>
+                </md-menu-content>
+            </md-menu>
         </div>
     </div>
     <div ng-show="options.paging.infinite && numeric(paging.records)" class="infinite-records ng-hide">{{paging.records}} Records</div>

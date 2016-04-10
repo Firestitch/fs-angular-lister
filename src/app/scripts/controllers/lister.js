@@ -24,6 +24,8 @@
 
         persist: 'lister',
 
+        inlineSearch: true,
+
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
         },
@@ -210,7 +212,8 @@
             {
                 name: 'search',
                 type: 'text',
-                label: 'Search'
+                label: 'Search',
+                primary: true
             },
             {
                 name: 'state',
@@ -223,9 +226,9 @@
                 },
                 default: 'active'
             },
-            {
-                type: 'newline'
-            },
+            //{
+            //    type: 'newline'
+            //},
             {
                 name: 'date',
                 type: 'date',
