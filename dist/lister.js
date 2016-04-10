@@ -769,9 +769,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <div layout=\"row\" layout-align=\"center start\">\r" +
+    "    <div layout=\"row\" layout-align=\"start\">\r" +
     "\n" +
-    "        <div ng-show=\"options.inlineSearch\" flex layout=\"row\" class=\"ng-hide inline-search\">\r" +
+    "        <div ng-show=\"options.inlineSearch\" layout=\"row\" class=\"ng-hide inline-search\" flex=\"100\">\r" +
     "\n" +
     "            <div class=\"inline-search-input\" flex>\r" +
     "\n" +
@@ -921,7 +921,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "        <div flex ng-show=\"!options.inlineSearch\" class=\"ng-hide\">\r" +
+    "        <div flex ng-show=\"!options.inlineSearch\" class=\"ng-hide full-search\">\r" +
     "\n" +
     "            <div ng-repeat=\"filters in groupedFilters\" class=\"header\" layout=\"row\">\r" +
     "\n" +
@@ -1025,7 +1025,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        </div>\r" +
     "\n" +
-    "        <div class=\"top-actions\" layout=\"row\" layout-align=\"end center\">\r" +
+    "        <div class=\"top-actions\" layout=\"row\" layout-align=\"end center\" flex>\r" +
     "\n" +
     "            <md-button ng-repeat=\"action in topActions\" ng-show=\"!action.more\" ng-click=\"action.click($event)\" class=\"ng-hide md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
     "\n" +

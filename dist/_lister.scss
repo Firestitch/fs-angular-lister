@@ -12,8 +12,7 @@
     }
 
     .top-actions {
-        margin-top: 4px;
-
+        
         .md-button {
             margin-top: 0;
         }
@@ -32,6 +31,7 @@
     }
 
     .inline-search {
+        max-width: 600px;
 
         .inline-search-input {
             
@@ -39,7 +39,7 @@
 
             md-input-container {
                 padding-bottom: 0;
-                margin: 10px 0 0 0;
+                margin: 8px 0 0 0;
                 width: 100%;
 
                 .md-errors-spacer {
@@ -63,10 +63,7 @@
                         margin: 0;
                     }
 
-                    .interface {
-                        md-input-container {
-                            margin: 0;
-                        }                        
+                    .interface {                    
 
                         label { 
                             display: none;
@@ -376,6 +373,13 @@
             
         }
     }
+
+
+
+    .full-search {
+        margin-top: 7px;
+    }
+
 
     .lister-actions {
         width: 1%;

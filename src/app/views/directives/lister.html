@@ -1,7 +1,7 @@
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
 
-    <div layout="row" layout-align="center start">
-        <div ng-show="options.inlineSearch" flex layout="row" class="ng-hide inline-search">
+    <div layout="row" layout-align="start">
+        <div ng-show="options.inlineSearch" layout="row" class="ng-hide inline-search" flex="100">
             <div class="inline-search-input" flex>
                 <md-input-container md-no-float>
                     <input ng-model="searchinput" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput)" aria-label="Search" placeholder="Search"/>
@@ -76,7 +76,7 @@
             <md-backdrop ng-show="extended_search" ng-click="toogleSearch()"></md-backdrop>
         </div>
 
-        <div flex ng-show="!options.inlineSearch" class="ng-hide">
+        <div flex ng-show="!options.inlineSearch" class="ng-hide full-search">
             <div ng-repeat="filters in groupedFilters" class="header" layout="row">
                 <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
                     <md-input-container ng-if="filter.type == 'select'">
@@ -128,7 +128,7 @@
                 </div>
             </div>
         </div>
-        <div class="top-actions" layout="row" layout-align="end center">
+        <div class="top-actions" layout="row" layout-align="end center" flex>
             <md-button ng-repeat="action in topActions" ng-show="!action.more" ng-click="action.click($event)" class="ng-hide md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{action.label}}</md-button>
             <md-menu ng-show="(topActions | filter:{ more: true }).length > 0">
                 <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
