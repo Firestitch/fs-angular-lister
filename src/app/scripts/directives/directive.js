@@ -357,8 +357,15 @@
 
                     if(filter.type=='select') {
 
-                        if(filter.model!='__all')
+                        if(filter.multiple) {
+
+                            if(angular.isArray(filter.model)) {
+                                filter.value = filter.model.join(',');
+                            }
+
+                        } else if(filter.model!='__all')  {
                             filter.value = filter.model;
+                        }
 
                     } else if(filter.type=='date') {
 
@@ -386,7 +393,7 @@
 
                             if(parts.length) {
                                 filter.value = parts.join(',');
-                            }                           
+                            }
                         }
 
                     } else if(filter.model!==undefined && String(filter.model).length) {

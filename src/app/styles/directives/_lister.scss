@@ -31,7 +31,7 @@
     }
 
     .inline-search {
-        max-width: 600px;
+        max-width: 700px;
 
         .inline-search-input {
             
@@ -63,6 +63,10 @@
                         margin: 0;
                     }
 
+                    md-input-container {
+                        margin: 0;
+                    }
+
                     .interface {                    
 
                         label { 
@@ -76,14 +80,14 @@
                     }
 
                     .label {
-                        height: 35px;
+                        vertical-align: middle;
                         width: 1%;
-                        padding-right: 10px;
+                        padding: 12px 15px 12px 0;
                     }
                 }
 
                 .search-button {
-                    margin: 0;
+                    margin: 13px 0 0 0;
                 }
             }
         }

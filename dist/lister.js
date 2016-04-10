@@ -357,8 +357,15 @@
 
                     if(filter.type=='select') {
 
-                        if(filter.model!='__all')
+                        if(filter.multiple) {
+
+                            if(angular.isArray(filter.model)) {
+                                filter.value = filter.model.join(',');
+                            }
+
+                        } else if(filter.model!='__all')  {
                             filter.value = filter.model;
+                        }
 
                     } else if(filter.type=='date') {
 
@@ -386,7 +393,7 @@
 
                             if(parts.length) {
                                 filter.value = parts.join(',');
-                            }                           
+                            }
                         }
 
                     } else if(filter.model!==undefined && String(filter.model).length) {
@@ -799,7 +806,25 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        <div class=\"interface\" ng-if=\"filter.type == 'select'\">\r" +
     "\n" +
-    "                            <md-input-container class=\"md-block\">                                \r" +
+    "\r" +
+    "\n" +
+    "                            <md-input-container class=\"md-block md-no-float\" ng-show=\"filter.multiple\">\r" +
+    "\n" +
+    "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\">\r" +
+    "\n" +
+    "                                    <md-option ng-repeat=\"item in filter.values\" value=\"{{item.value}}\">\r" +
+    "\n" +
+    "                                        {{item.name}}\r" +
+    "\n" +
+    "                                    </md-option>\r" +
+    "\n" +
+    "                                </md-select>\r" +
+    "\n" +
+    "                            </md-input-container>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                            <md-input-container class=\"md-block md-no-float\" ng-show=\"!filter.multiple\">\r" +
     "\n" +
     "                                <md-select ng-model=\"filter.model\" aria-label=\"select\">\r" +
     "\n" +
@@ -817,9 +842,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                        <div class=\"interface\" ng-if=\"filter.type == 'text'\" >\r" +
+    "                        <div class=\"interface \" ng-if=\"filter.type == 'text'\" >\r" +
     "\n" +
-    "                            <md-input-container class=\"md-input-has-placeholder\" class=\"md-block\">\r" +
+    "                            <md-input-container class=\"md-no-float md-block\">\r" +
     "\n" +
     "                                <input ng-model=\"filter.model\" aria-label=\"{{filter.label}}\" />\r" +
     "\n" +

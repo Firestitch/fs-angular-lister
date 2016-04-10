@@ -224,8 +224,21 @@
                     active: 'Active',
                     deleted: 'Deleted'
                 },
+                multiple: false,
                 default: 'active'
             },
+            {
+                name: 'multiple',
+                type: 'select',
+                label: 'Multiple',
+                values: {
+                    pear: 'Pear',
+                    orange: 'Orange',
+                    banana: 'Banana',
+                    apple: 'Apple',
+                },
+                multiple: true
+            },            
             //{
             //    type: 'newline'
             //},

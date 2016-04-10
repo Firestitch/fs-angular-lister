@@ -15,7 +15,16 @@
                         </div>
 
                         <div class="interface" ng-if="filter.type == 'select'">
-                            <md-input-container class="md-block">                                
+
+                            <md-input-container class="md-block md-no-float" ng-show="filter.multiple">
+                                <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple">
+                                    <md-option ng-repeat="item in filter.values" value="{{item.value}}">
+                                        {{item.name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <md-input-container class="md-block md-no-float" ng-show="!filter.multiple">
                                 <md-select ng-model="filter.model" aria-label="select">
                                     <md-option ng-repeat="item in filter.values" value="{{item.value}}">
                                         {{item.name}}
@@ -24,8 +33,8 @@
                             </md-input-container>
                         </div>
 
-                        <div class="interface" ng-if="filter.type == 'text'" >
-                            <md-input-container class="md-input-has-placeholder" class="md-block">
+                        <div class="interface " ng-if="filter.type == 'text'" >
+                            <md-input-container class="md-no-float md-block">
                                 <input ng-model="filter.model" aria-label="{{filter.label}}" />
                             </md-input-container>
                         </div>
