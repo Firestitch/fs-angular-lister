@@ -775,11 +775,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"inline-search-input\" flex>\r" +
     "\n" +
-    "                <md-input-container class=\"md-block\">\r" +
+    "                <md-input-container md-no-float>\r" +
     "\n" +
-    "                    <label>Search</label>\r" +
-    "\n" +
-    "                    <input ng-model=\"searchinput\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput)\" aria-label=\"Search\" />\r" +
+    "                    <input ng-model=\"searchinput\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput)\" aria-label=\"Search\" placeholder=\"Search\"/>\r" +
     "\n" +
     "                </md-input-container>\r" +
     "\n" +

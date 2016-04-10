@@ -12,8 +12,11 @@
     }
 
     .top-actions {
-
         margin-top: 4px;
+
+        .md-button {
+            margin-top: 0;
+        }
 
         md-menu {
             padding: 0;
@@ -36,6 +39,8 @@
 
             md-input-container {
                 padding-bottom: 0;
+                margin-top: 8px;
+                width: 100%;
             }
 
             .filters {
@@ -55,8 +60,14 @@
                         margin: 0;
                     }
 
-                    .interface label { 
-                        display: none;
+                    .interface {
+                        md-input-container {
+                            margin-top: 0;
+                        }                        
+
+                        label { 
+                            display: none;
+                        }
                     }
 
                     .interface,
@@ -66,6 +77,8 @@
 
                     .label {
                         height: 35px;
+                        width: 1%;
+                        padding-right: 10px;
                     }
                 }
 
@@ -199,6 +212,7 @@
     .infinite-records {
         color: #999;
         font-size: 14px;  
+        margin-top: 5px;
     }
 
     .lister-table {

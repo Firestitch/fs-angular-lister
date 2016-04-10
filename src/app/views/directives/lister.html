@@ -3,9 +3,8 @@
     <div layout="row" layout-align="center start">
         <div ng-show="options.inlineSearch" flex layout="row" class="ng-hide inline-search">
             <div class="inline-search-input" flex>
-                <md-input-container class="md-block">
-                    <label>Search</label>
-                    <input ng-model="searchinput" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput)" aria-label="Search" />
+                <md-input-container md-no-float>
+                    <input ng-model="searchinput" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput)" aria-label="Search" placeholder="Search"/>
                 </md-input-container>
 
                 <div class="ng-hide md-whiteframe-z2 filters" layout="column" ng-show="extended_search">
