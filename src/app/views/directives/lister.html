@@ -176,7 +176,7 @@
                         </md-menu>
                     </span>
                 </div>
-                <div class="lister-col {{col.className}}" ng-repeat="col in options.columns">{{col.title}}</div>
+                <div class="lister-col {{col.className}}" ng-repeat="col in options.columns" compile="col.title"></div>
                 <div class="lister-col" ng-show="options.actions.length || options.action"></div>
             </div>
         </div>

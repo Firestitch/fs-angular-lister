@@ -323,7 +323,7 @@
                             values[filter_match[1]] = filter_match[2];
                         }
                     });
-
+                    
                     var primary = false;
                     angular.forEach(options.filters,function(filter) {
                         
@@ -1130,7 +1130,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                </div>\r" +
     "\n" +
-    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\">{{col.title}}</div>\r" +
+    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\" compile=\"col.title\"></div>\r" +
     "\n" +
     "                <div class=\"lister-col\" ng-show=\"options.actions.length || options.action\"></div>\r" +
     "\n" +

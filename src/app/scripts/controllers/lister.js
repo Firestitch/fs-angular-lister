@@ -7,7 +7,7 @@
     $scope.click = click;
     $scope.modal = modal;
     $scope.listerInstance = {};
-
+    
     function click() {
         $scope.listerInstance.load();
     }

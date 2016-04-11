@@ -323,7 +323,7 @@
                             values[filter_match[1]] = filter_match[2];
                         }
                     });
-
+                    
                     var primary = false;
                     angular.forEach(options.filters,function(filter) {
                         
