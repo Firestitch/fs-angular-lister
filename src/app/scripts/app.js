@@ -3,10 +3,7 @@
 angular
 .module('app', [
     'ngRoute',
-    'ngSanitize',
-    'ngTouch',
     'ngMaterial',
-    'ngAnimate',
     'ngStorage',
     'mdo-angular-cryptography',
     'fs-angular-lister',

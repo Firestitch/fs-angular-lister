@@ -24,7 +24,7 @@
 
         persist: 'lister',
 
-        inlineSearch: true,
+        inline: 1,
 
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
@@ -75,7 +75,6 @@
         topActions: [
             {
                 label: 'Export',
-                primary: false,
                 click: function() {
                     alert('Export');
                 }

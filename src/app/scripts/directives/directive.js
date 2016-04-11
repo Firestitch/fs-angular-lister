@@ -324,6 +324,7 @@
                         }
                     });
 
+                    var primary = false;
                     angular.forEach(options.filters,function(filter) {
                         
                         filter.model = null;
@@ -340,9 +341,10 @@
                                 filter.model = value;
                             }
                         }
-                        
-                        if(Object.keys(values).length === 0 && filter.primary) {
+
+                        if(Object.keys(values).length === 0 && !primary && filter.type=='text') {
                             filter.model = search;
+                            primary = true;
                         }
 
                         $scope.filterValue(filter);
