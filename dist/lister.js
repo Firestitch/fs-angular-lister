@@ -276,7 +276,7 @@
                     $scope.selectToogled = false;                 
                 } 
 
-                $scope.toogleSearch = function() {
+                $scope.toggleFilters = function() {
                     $scope.extended_search = !$scope.extended_search;
                 }
 
@@ -934,7 +934,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            </div>\r" +
     "\n" +
-    "            <md-button ng-click=\"toogleSearch()\" class=\"md-icon-button\" aria-label=\"Search filters\">\r" +
+    "            <md-button ng-click=\"toggleFilters()\" class=\"md-icon-button toggle-filters\" aria-label=\"Search filters\">\r" +
     "\n" +
     "                <md-icon>more_vert</md-icon>\r" +
     "\n" +
@@ -942,7 +942,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "  \r" +
     "\n" +
-    "            <md-backdrop ng-show=\"extended_search\" ng-click=\"toogleSearch()\"></md-backdrop>\r" +
+    "            <md-backdrop ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></md-backdrop>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +

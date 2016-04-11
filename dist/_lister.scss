@@ -51,6 +51,10 @@
 
 
     .inline-search {
+
+        .toggle-filters {
+            margin-left: -30px;
+        }
         
         .inline-search-input {
             
@@ -59,6 +63,10 @@
             md-input-container {
                 margin: 6px 0 0 0;
                 width: 100%;
+
+                input {
+                    padding-right: 30px;
+                }
 
                 .md-errors-spacer {
                     display: none;

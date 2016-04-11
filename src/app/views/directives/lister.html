@@ -78,11 +78,11 @@
                     <md-button class="md-button md-raised md-accent search-button" ng-click="search()">Search</md-button>
                 </div>
             </div>
-            <md-button ng-click="toogleSearch()" class="md-icon-button" aria-label="Search filters">
+            <md-button ng-click="toggleFilters()" class="md-icon-button toggle-filters" aria-label="Search filters">
                 <md-icon>more_vert</md-icon>
             </md-button>
   
-            <md-backdrop ng-show="extended_search" ng-click="toogleSearch()"></md-backdrop>
+            <md-backdrop ng-show="extended_search" ng-click="toggleFilters()"></md-backdrop>
         </div>
 
         <div ng-show="!options.inline" class="ng-hide full-search" flex="grow">

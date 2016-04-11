@@ -276,7 +276,7 @@
                     $scope.selectToogled = false;                 
                 } 
 
-                $scope.toogleSearch = function() {
+                $scope.toggleFilters = function() {
                     $scope.extended_search = !$scope.extended_search;
                 }
 
