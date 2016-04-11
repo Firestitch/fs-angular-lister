@@ -324,6 +324,7 @@
                         }
                     });
 
+                    var primary = false;
                     angular.forEach(options.filters,function(filter) {
                         
                         filter.model = null;
@@ -340,9 +341,10 @@
                                 filter.model = value;
                             }
                         }
-                        
-                        if(Object.keys(values).length === 0 && filter.primary) {
+
+                        if(Object.keys(values).length === 0 && !primary && filter.type=='text') {
                             filter.model = search;
+                            primary = true;
                         }
 
                         $scope.filterValue(filter);
@@ -778,9 +780,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    <div layout=\"row\" layout-align=\"start\">\r" +
     "\n" +
-    "        <div ng-show=\"options.inlineSearch\" layout=\"row\" class=\"ng-hide inline-search\" flex=\"100\">\r" +
+    "        <div ng-show=\"options.inline\" layout=\"row\" class=\"ng-hide inline-search\" flex=\"grow\">\r" +
     "\n" +
-    "            <div class=\"inline-search-input\" flex>\r" +
+    "            <div class=\"inline-search-input\" flex=\"grow\">\r" +
     "\n" +
     "                <md-input-container md-no-float>\r" +
     "\n" +
@@ -946,9 +948,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "        <div flex ng-show=\"!options.inlineSearch\" class=\"ng-hide full-search\">\r" +
+    "        <div ng-show=\"!options.inline\" class=\"ng-hide full-search\" flex=\"grow\">\r" +
     "\n" +
-    "            <div ng-repeat=\"filters in groupedFilters\" class=\"header\" layout=\"row\">\r" +
+    "            <div ng-repeat=\"filters in groupedFilters\" layout=\"row\">\r" +
     "\n" +
     "                <div ng-repeat=\"filter in filters\" class=\"filter filter-{{filter.type}}\">\r" +
     "\n" +
@@ -1050,7 +1052,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        </div>\r" +
     "\n" +
-    "        <div class=\"top-actions\" layout=\"row\" layout-align=\"end center\" flex>\r" +
+    "        <div class=\"top-actions\">\r" +
     "\n" +
     "            <md-button ng-repeat=\"action in topActions\" ng-show=\"!action.more\" ng-click=\"action.click($event)\" class=\"ng-hide md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
     "\n" +

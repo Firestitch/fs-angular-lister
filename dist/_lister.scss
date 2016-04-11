@@ -13,8 +13,12 @@
 
     .top-actions {
         
+        white-space: nowrap;
+        margin-top: 2px;
+
         .md-button {
             margin-top: 0;
+            margin-bottom: 0;
         }
 
         md-menu {
@@ -30,16 +34,30 @@
         }
     }
 
-    .inline-search {
-        max-width: 700px;
+    .full-search {
+        
+        md-input-container {
+            margin: 10px 0 0 0;
 
+            .md-errors-spacer {
+                display: none;
+            }
+        }
+
+        .filter.filter-date md-datepicker-container {
+            margin: 10px 0 0 0;
+        }
+    }
+
+
+    .inline-search {
+        
         .inline-search-input {
             
             position: relative;
 
             md-input-container {
-                padding-bottom: 0;
-                margin: 8px 0 0 0;
+                margin: 6px 0 0 0;
                 width: 100%;
 
                 .md-errors-spacer {
@@ -49,10 +67,10 @@
 
             .filters {
                 position: absolute;
-                left: 0;
+                left: 1px;
                 background: #fff;
                 width: 100%;
-                padding: 15px;
+                padding: 8px 17px 17px 17px;
                 z-index: 60;
                 display: table;
 
@@ -173,8 +191,7 @@
                     input {
                         border-bottom: 2px solid rgb(158,158,158);
                     }
-                }    
-
+                }
 
                 button.md-datepicker-button {
                     display: none;
@@ -204,14 +221,6 @@
             }
         }
     }  
-
-    .header {
-
-        md-input-container {
-            /*min-width: 150px; Testing without*/
-        }
-
-    }
 
     .infinite-records {
         color: #999;
@@ -377,13 +386,6 @@
             
         }
     }
-
-
-
-    .full-search {
-        margin-top: 7px;
-    }
-
 
     .lister-actions {
         width: 1%;
