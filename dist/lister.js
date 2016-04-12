@@ -636,7 +636,7 @@
                 
                 $scope.max_bottom = 0;
 
-                if($scope.lsOptions.paging.infinite) {
+                if($scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
 
                     element = angular.element(element[0].children[0]);
 
@@ -968,7 +968,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <md-button ng-click=\"toggleFilters()\" class=\"md-icon-button toggle-filters\" aria-label=\"Search filters\">\r" +
     "\n" +
-    "                <md-icon>more_vert</md-icon>\r" +
+    "                <md-icon>arrow_drop_down</md-icon>\r" +
     "\n" +
     "            </md-button>\r" +
     "\n" +

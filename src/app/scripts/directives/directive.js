@@ -636,7 +636,7 @@
                 
                 $scope.max_bottom = 0;
 
-                if($scope.lsOptions.paging.infinite) {
+                if($scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
 
                     element = angular.element(element[0].children[0]);
 
