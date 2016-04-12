@@ -52,6 +52,17 @@
 
     .inline-search {
 
+        .backdrop {
+            transition: opacity 450ms;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            outline: none;
+        }
+
         .toggle-filters {
             margin-left: -30px;
         }
@@ -275,6 +286,7 @@
 
                 &.lister-select-toogle {
                     white-space: nowrap;
+                    width: 1px;
                     md-checkbox {
                         display: inline-block;
                         padding-left: 0; 

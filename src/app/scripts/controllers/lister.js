@@ -24,8 +24,6 @@
 
         persist: 'lister',
 
-        inline: 1,
-
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
         },
@@ -132,11 +130,14 @@
         ],
 
         columns: [
-            { title: 'Name' , value: function(data) {
-                return "<b>" + data['name'] + "</b>";
-            }},
+            {   title: 'Name' , 
+                value: function(data) {                
+                    return "<b>" + data['name'] + "</b>";
+                },
+                width: '20%'
+            },
             {   title: 'GUID' , 
-                className: 'center', 
+                center: true,
                 value: function(data) {
                     return '<a href ng-click="test(data)">' + data["guid"] + '</a>';
                 },

@@ -72,7 +72,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope, fsLister) {
 
             /**
              * @ngdoc interface
@@ -82,7 +82,7 @@
              */
             var ListerCtrl = ['$scope', function ($scope) {                
 
-                var options = $scope.lsOptions;
+                var options = angular.merge(fsLister.options(),$scope.lsOptions);
                 var persist = fsStore.get('lister-persist',{});
 
                 options.paging = options.paging || {};
@@ -408,6 +408,20 @@
                     reload();
                 }
 
+                $scope.columnStyle = function(col) {
+                    var styles = {};
+
+                    if(col.width) {
+                        styles.width = col.width;
+                    }
+
+                    if(col.center) {
+                        styles.textAlign = 'center';
+                    }
+
+                    return styles;
+                }
+
                 /**
                  * @ngdoc method
                  * @name load
@@ -536,7 +550,7 @@
                                 value = col.value(object);
                             }
 
-                            cols.push({ value: value, "className": col.className, data: object, resolve: col.resolve, scope: col.scope });
+                            cols.push({ column: col, value: value, data: object });
                         });
 
                         $scope.data.push({ cols: cols, object: object });
@@ -751,6 +765,24 @@
             );
         };
     }])
+    .provider("fsLister",function() {
+
+        var _options = {};
+        this.options = function(options) {
+            _options = options;
+        }
+
+        this.$get = function () {
+
+            var service = { options: options };
+
+            return service;
+
+            function options() {
+                return _options;
+            }
+        }
+    })
     .filter('listerRange', function() {
       return function(input, total, page) {
 
@@ -942,7 +974,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "  \r" +
     "\n" +
-    "            <md-backdrop ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></md-backdrop>\r" +
+    "            <div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +
@@ -1130,7 +1162,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                </div>\r" +
     "\n" +
-    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\" compile=\"col.title\"></div>\r" +
+    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\" compile=\"col.title\" ng-style=\"columnStyle(col)\"></div>\r" +
     "\n" +
     "                <div class=\"lister-col\" ng-show=\"options.actions.length || options.action\"></div>\r" +
     "\n" +
@@ -1154,7 +1186,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                </div>\r" +
     "\n" +
-    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in item.cols\" compile=\"col.value\" cm-scope=\"col.scope\"></div>\r" +
+    "                <div class=\"lister-col {{col.column.className}}\" ng-repeat=\"col in item.cols\" compile=\"col.value\" cm-scope=\"col.column.scope\" ng-style=\"columnStyle(col.column)\"></div>\r" +
     "\n" +
     "                <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
     "\n" +

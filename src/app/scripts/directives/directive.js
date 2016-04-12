@@ -72,7 +72,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope, fsLister) {
 
             /**
              * @ngdoc interface
@@ -82,7 +82,7 @@
              */
             var ListerCtrl = ['$scope', function ($scope) {                
 
-                var options = $scope.lsOptions;
+                var options = angular.merge(fsLister.options(),$scope.lsOptions);
                 var persist = fsStore.get('lister-persist',{});
 
                 options.paging = options.paging || {};
@@ -408,6 +408,20 @@
                     reload();
                 }
 
+                $scope.columnStyle = function(col) {
+                    var styles = {};
+
+                    if(col.width) {
+                        styles.width = col.width;
+                    }
+
+                    if(col.center) {
+                        styles.textAlign = 'center';
+                    }
+
+                    return styles;
+                }
+
                 /**
                  * @ngdoc method
                  * @name load
@@ -536,7 +550,7 @@
                                 value = col.value(object);
                             }
 
-                            cols.push({ value: value, "className": col.className, data: object, resolve: col.resolve, scope: col.scope });
+                            cols.push({ column: col, value: value, data: object });
                         });
 
                         $scope.data.push({ cols: cols, object: object });
@@ -751,6 +765,24 @@
             );
         };
     }])
+    .provider("fsLister",function() {
+
+        var _options = {};
+        this.options = function(options) {
+            _options = options;
+        }
+
+        this.$get = function () {
+
+            var service = { options: options };
+
+            return service;
+
+            function options() {
+                return _options;
+            }
+        }
+    })
     .filter('listerRange', function() {
       return function(input, total, page) {
 

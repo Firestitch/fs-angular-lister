@@ -11,9 +11,11 @@ angular
     'fs-angular-api',
     'fs-angular-store'
 ])
-.config(function ($routeProvider, $cryptoProvider, $mdThemingProvider) {
-    $routeProvider
+.config(function ($routeProvider, $cryptoProvider, $mdThemingProvider, fsListerProvider) {
+    
+    fsListerProvider.options({ inline: true });
 
+    $routeProvider
     .when('/page', {
         templateUrl: 'views/page.html'
     })
