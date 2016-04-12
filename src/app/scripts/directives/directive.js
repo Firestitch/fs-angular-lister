@@ -136,7 +136,6 @@
                 $scope.topActions = options.topActions;
                 $scope.load = load;
                 $scope.loading = false;
-                $scope.loaded = false;
                 $scope.checked = [];
                 $scope.selectToogled = false;
                 $scope.debug = false;
@@ -532,7 +531,6 @@
 
                 function callback(data, paging) {
                     
-                    $scope.loaded = true;
                     log("dataCallback()",data,paging);
 
                     if(!$scope.options.paging.infinite) {

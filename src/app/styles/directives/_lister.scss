@@ -38,6 +38,20 @@
         padding: 25px 0 25px 0;
     }
 
+    .results {
+        min-height: 90px;
+    }
+
+    .status {
+        position: relative;
+
+        .progress-infinite {
+            position: absolute;
+            top :0;
+            width: 100%;
+        }
+    }
+
     .full-search {
         
         md-input-container {
@@ -324,7 +338,7 @@
             }
 
             .lister-col {
-                padding: 8px 10px;
+                padding: 8px;
                 border-top: 1px solid #ddd;
 
                 &.menu {
@@ -414,6 +428,10 @@
     .lister-actions {
         width: 1%;
         white-space: nowrap;
+    }
+
+    .select-checkbox {
+        margin: 0;
     }
 
 }

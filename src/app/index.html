@@ -23,9 +23,9 @@
     <![endif]-->
 
     <!-- View Container for "normal" pages -->
-    <md-content layout="row" layout-align="center center">        
-        <md-card-content ng-view></md-card-content>     
-    </md-content>
+    <div class="container">
+        <div ng-view></div>     
+    </div>
 
     <!-- View Container for pages w/o submenu -->
     <div ng-if="viewStates.hasSubMenu">

@@ -136,7 +136,6 @@
                 $scope.topActions = options.topActions;
                 $scope.load = load;
                 $scope.loading = false;
-                $scope.loaded = false;
                 $scope.checked = [];
                 $scope.selectToogled = false;
                 $scope.debug = false;
@@ -532,7 +531,6 @@
 
                 function callback(data, paging) {
                     
-                    $scope.loaded = true;
                     log("dataCallback()",data,paging);
 
                     if(!$scope.options.paging.infinite) {
@@ -810,7 +808,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <div layout=\"row\" layout-align=\"start\" class=\"search\">\r" +
+    "    <div layout=\"row\" layout-align=\"start\" class=\"search\" ng-show=\"options.filters\">\r" +
     "\n" +
     "        <div ng-show=\"options.inline\" layout=\"row\" class=\"ng-hide inline-search\" flex=\"grow\">\r" +
     "\n" +
@@ -1120,33 +1118,103 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    <div ng-show=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records ng-hide\">{{paging.records}} Records</div>\r" +
     "\n" +
-    "    <div class=\"lister-table\">\r" +
+    "    <div class=\"results\">\r" +
     "\n" +
-    "        <div class=\"lister-head\">\r" +
+    "        <div class=\"lister-table\">\r" +
     "\n" +
-    "            <div class=\"lister-row\">\r" +
+    "            <div class=\"lister-head\">\r" +
     "\n" +
-    "                <div class=\"lister-col lister-select-toogle\" ng-show=\"options.selection\">\r" +
+    "                <div class=\"lister-row\">\r" +
     "\n" +
-    "                    <span ng-show=\"data.length\">\r" +
+    "                    <div class=\"lister-col lister-select-toogle\" ng-show=\"options.selection\">\r" +
     "\n" +
-    "                        <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\"></md-checkbox>\r" +
+    "                        <span ng-show=\"data.length\">\r" +
     "\n" +
-    "                        <md-menu md-offset=\"17 42\">\r" +
+    "                            <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox>\r" +
     "\n" +
-    "                            <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r" +
+    "                            <md-menu md-offset=\"17 42\">\r" +
     "\n" +
-    "                                <md-icon>arrow_drop_down</md-icon>\r" +
+    "                                <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r" +
+    "\n" +
+    "                                    <md-icon>arrow_drop_down</md-icon>\r" +
+    "\n" +
+    "                                </md-button>\r" +
+    "\n" +
+    "                                <md-menu-content>\r" +
+    "\n" +
+    "                                    <md-menu-item ng-repeat=\"action in options.selection.actions\">\r" +
+    "\n" +
+    "                                        <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
+    "\n" +
+    "                                            <md-icon md-menu-align-target ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
+    "\n" +
+    "                                            {{action.label}}\r" +
+    "\n" +
+    "                                        </md-button>\r" +
+    "\n" +
+    "                                    </md-menu-item>\r" +
+    "\n" +
+    "                                </md-menu-content>\r" +
+    "\n" +
+    "                            </md-menu>\r" +
+    "\n" +
+    "                        </span>\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\" compile=\"col.title\" ng-style=\"columnStyle(col)\"></div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col\" ng-show=\"options.actions.length || options.action\"></div>\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "            <div class=\"lister-body\">\r" +
+    "\n" +
+    "                <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\r" +
+    "\n" +
+    "                    <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "                <div class=\"lister-row\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
+    "\n" +
+    "                    <div class=\"lister-col\" ng-show=\"options.selection\">\r" +
+    "\n" +
+    "                        <md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\" class=\"select-checkbox\"></md-checkbox>\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col {{col.column.className}}\" ng-repeat=\"col in item.cols\" compile=\"col.value\" cm-scope=\"col.column.scope\" ng-style=\"columnStyle(col.column)\"></div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
+    "\n" +
+    "                        <md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
+    "\n" +
+    "                            <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{options.action.icon}}</md-icon>\r" +
+    "\n" +
+    "                        </md-button>\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\r" +
+    "\n" +
+    "                        <md-menu>\r" +
+    "\n" +
+    "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
+    "\n" +
+    "                                <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
     "\n" +
     "                            </md-button>\r" +
     "\n" +
     "                            <md-menu-content>\r" +
     "\n" +
-    "                                <md-menu-item ng-repeat=\"action in options.selection.actions\">\r" +
+    "                                <md-menu-item ng-if=\"action.show(item.object)\" ng-repeat=\"action in options.actions\">\r" +
     "\n" +
-    "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
+    "                                    <md-button ng-click=\"actionClick(action,item,$event)\">\r" +
     "\n" +
-    "                                        <md-icon md-menu-align-target ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
+    "                                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\" ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
     "\n" +
     "                                        {{action.label}}\r" +
     "\n" +
@@ -1158,87 +1226,25 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        </md-menu>\r" +
     "\n" +
-    "                    </span>\r" +
+    "                    </div>\r" +
     "\n" +
     "                </div>\r" +
-    "\n" +
-    "                <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\" compile=\"col.title\" ng-style=\"columnStyle(col)\"></div>\r" +
-    "\n" +
-    "                <div class=\"lister-col\" ng-show=\"options.actions.length || options.action\"></div>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +
-    "        <div class=\"lister-body\">\r" +
+    "        <div class=\"status\">\r" +
     "\n" +
-    "            <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\r" +
+    "            <div class=\"norecords ng-hide\" ng-show=\"!loading && options.norecords && !data.length\">{{options.norecords}}</div>\r" +
+    "\n" +
+    "            <div class=\"progress-infinite ng-hide\" ng-show=\"loading && options.paging.infinite\">\r" +
     "\n" +
     "                <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
-    "            <div class=\"lister-row\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
-    "\n" +
-    "                <div class=\"lister-col\" ng-show=\"options.selection\">\r" +
-    "\n" +
-    "                    <md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\"></md-checkbox>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "                <div class=\"lister-col {{col.column.className}}\" ng-repeat=\"col in item.cols\" compile=\"col.value\" cm-scope=\"col.column.scope\" ng-style=\"columnStyle(col.column)\"></div>\r" +
-    "\n" +
-    "                <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
-    "\n" +
-    "                    <md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
-    "\n" +
-    "                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{options.action.icon}}</md-icon>\r" +
-    "\n" +
-    "                    </md-button>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "                <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\r" +
-    "\n" +
-    "                    <md-menu>\r" +
-    "\n" +
-    "                        <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
-    "\n" +
-    "                            <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
-    "\n" +
-    "                        </md-button>\r" +
-    "\n" +
-    "                        <md-menu-content>\r" +
-    "\n" +
-    "                            <md-menu-item ng-if=\"action.show(item.object)\" ng-repeat=\"action in options.actions\">\r" +
-    "\n" +
-    "                                <md-button ng-click=\"actionClick(action,item,$event)\">\r" +
-    "\n" +
-    "                                    <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\" ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
-    "\n" +
-    "                                    {{action.label}}\r" +
-    "\n" +
-    "                                </md-button>\r" +
-    "\n" +
-    "                            </md-menu-item>\r" +
-    "\n" +
-    "                        </md-menu-content>\r" +
-    "\n" +
-    "                    </md-menu>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
     "        </div>\r" +
-    "\n" +
-    "    </div>\r" +
-    "\n" +
-    "    <div class=\"norecords ng-hide\" ng-show=\"loaded && options.norecords && !data.length\">{{options.norecords}}</div>\r" +
-    "\n" +
-    "    <div class=\"progress-infinite ng-hide\" ng-show=\"loading && options.paging.infinite\">\r" +
-    "\n" +
-    "        <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +

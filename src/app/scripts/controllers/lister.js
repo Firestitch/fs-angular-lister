@@ -29,6 +29,8 @@
         },
         data: function(query, cb) {
             
+            //return setTimeout(function() { cb([]); }, 2000); 
+
             query.count = 300;
 
             return DummyService.gets(query,{ url: 'http://service.firestitch.com/api/', key: 'objects', datapaging: true });
