@@ -82,7 +82,7 @@
              */
             var ListerCtrl = ['$scope', function ($scope) {                
 
-                var options = angular.merge(fsLister.options(),$scope.lsOptions);
+                var options = angular.extend({},fsLister.options(),$scope.lsOptions);
                 var persist = fsStore.get('lister-persist',{});
 
                 options.paging = options.paging || {};
