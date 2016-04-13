@@ -808,7 +808,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <div layout=\"row\" layout-align=\"start\" class=\"search\" ng-show=\"options.filters\">\r" +
+    "    <div layout=\"row\" layout-align=\"start\" class=\"search\" ng-show=\"options.filters.length\">\r" +
     "\n" +
     "        <div ng-show=\"options.inline\" layout=\"row\" class=\"ng-hide inline-search\" flex=\"grow\">\r" +
     "\n" +

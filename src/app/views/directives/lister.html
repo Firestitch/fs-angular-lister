@@ -1,6 +1,6 @@
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
 
-    <div layout="row" layout-align="start" class="search" ng-show="options.filters">
+    <div layout="row" layout-align="start" class="search" ng-show="options.filters.length">
         <div ng-show="options.inline" layout="row" class="ng-hide inline-search" flex="grow">
             <div class="inline-search-input" flex="grow">
                 <md-input-container md-no-float>
