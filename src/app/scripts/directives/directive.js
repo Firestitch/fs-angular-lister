@@ -693,75 +693,71 @@
     angular.module('fs-angular-lister',[])
     .directive('lister',ListerDirective)
     .directive('fsLister',ListerDirective)
-    .directive('compile', ['$compile', '$injector', '$location', '$timeout', function ($compile, $injector, $location, $timeout) {
-        return function($scope, element, attrs) {
+    .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope', function ($compile, $injector, $location, $timeout, $rootScope) {        
+        return {    scope: {
+                        column: '=fsColumn',
+                        data: '=fsData',
+                        value: '=fsListerCompile'
+                    },
+                    link: function($scope, element, attrs, ctrl) {
 
-            $scope.$watch(
-                function($scope) {
-                    // watch the 'compile' expression for changes
-                    return $scope.$eval(attrs.compile);
-                },
-                function(value) {
+                        var scope = $rootScope.$new();
+                        scope.data = $scope.data;
 
-                    $scope.data = $scope.col.data;
+                        if($scope.column.scope) {
+                            scope = angular.extend($scope,$scope.column.scope);
+                        }
 
-                    if($scope.col.scope) {
-                        $scope = angular.extend($scope,$scope.col.scope);
-                    }
+                        if($scope.column.resolve) {
+                            angular.forEach($scope.column.resolve, function(elem, index) {
+                                var resolve = null;
+                                if (typeof elem == 'function') {
+                                    resolve = elem($scope.data);
+                                }
+                                else if (angular.isArray(elem) && angular.isFunction(elem[elem.length - 1])) {
+                                    resolve = $injector.invoke(elem, null, scope);
+                                }
+                                scope[index] = resolve;
+                            });
+                        }
 
-                    if($scope.col.resolve) {
-                        angular.forEach($scope.col.resolve, function(elem, index) {
-                            var resolve = null;
-                            if (typeof elem == 'function') {
-                                resolve = elem($scope.col.data);
-                            }
-                            else if (angular.isArray(elem) && angular.isFunction(elem[elem.length - 1])) {
-                                resolve = $injector.invoke(elem, null, $scope);
-                            }
-                            $scope[index] = resolve;
-                        });
-                    }
+                        element.html($scope.value);
+                        $compile(element.contents())(scope);
+                       
+                        angular.forEach(element.find('a'),function(el) {
 
-                    angular.extend($scope, $scope.col.data);
+                            el = angular.element(el);                        
 
-                    element.html(value);
-                    $compile(element.contents())($scope)
-                   
-                    angular.forEach(element.find('a'),function(el) {
+                            el.on('click',function(event) {
 
-                        el = angular.element(el);                        
-
-                        el.on('click',function(event) {
-
-                            if(event.isDefaultPrevented()) {
-                                return;
-                            }
-                            
-                            if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;
-
-                            var el = angular.element(this);
-
-                            if(event.ctrlKey) {
-
-                                var href = el.attr('href');
-                                el.attr('href',el.attr('href').replace(/^#/,''));
+                                if(event.isDefaultPrevented()) {
+                                    return;
+                                }
                                 
-                                $timeout(function() {
-                                    el.attr('href', href);
-                                });
+                                if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;
 
-                                return;
-                            }
-                           
-                            $location.path(el.attr('href').replace(/^#/,''));
-                            $scope.$apply();
+                                var el = angular.element(this);
 
-                            return false;
+                                if(event.ctrlKey) {
+
+                                    var href = el.attr('href');
+                                    el.attr('href',el.attr('href').replace(/^#/,''));
+                                    
+                                    $timeout(function() {
+                                        el.attr('href', href);
+                                    });
+
+                                    return;
+                                }
+                               
+                                $location.path(el.attr('href').replace(/^#/,''));
+                                $scope.$apply();
+
+                                return false;
+                            });
                         });
-                    });                    
-                }
-            );
-        };
+                    }
+        }
     }])
     .provider("fsLister",function() {
 

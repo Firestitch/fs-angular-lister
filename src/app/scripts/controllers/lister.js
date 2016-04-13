@@ -161,7 +161,7 @@
             },
             {   title: 'Select', 
                 value: function (label, $scope, data, list) {
-                    return '{{prefix}}<md-input-container><md-select ng-model="someModel" placeholder="{{label}}"><md-option ng-value="opt" ng-repeat="opt in list">{{ opt.label }}</md-option></md-select></md-input-container>';
+                    return '<md-input-container><md-select ng-model="someModel" placeholder="{{label}}" ng-change="click()"><md-option ng-value="opt" ng-repeat="opt in list">{{ opt.label }}</md-option></md-select></md-input-container>';
                 },
                 resolve: {
                     label: function() {
@@ -170,7 +170,9 @@
                     list: function() { return [ { label: "Item 1"}, { label: "Item 2" }] }
                 },
                 scope: {
-                    prefix: 'Make a section '
+                    click: function() {
+                        alert("You Clicked me!");
+                    }
                 }
             }
         ],
