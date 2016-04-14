@@ -22,7 +22,7 @@
 
         debug: false,
 
-        persist: 'lister',
+        //persist: 'lister',
 
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
@@ -217,7 +217,7 @@
                 name: 'search',
                 type: 'text',
                 label: 'Search',
-                primary: true
+                param: 'search'
             },
             {
                 name: 'state',

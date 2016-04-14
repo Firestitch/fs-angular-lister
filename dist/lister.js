@@ -72,7 +72,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope, fsLister) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope, fsLister, $location) {
 
             /**
              * @ngdoc interface
@@ -99,15 +99,25 @@
 
                 angular.forEach(options.filters,function(filter) {
 
-                    var persisted = persist[options.persist];
+                    filter.model = filter.default;
 
-                    if(persisted) {
-                        if(persisted[filter.name]!==undefined) {                        
-                           filter.default = persisted[filter.name];
+                    if(options.persist) {
+                        var persisted = persist[options.persist];
+
+                        if(persisted) {
+                            if(persisted[filter.name]!==undefined) {
+                               filter.model = persisted[filter.name];
+                            }
                         }
                     }
 
-                    filter.model = filter.default;
+                    if(filter.param) {
+                        var search = $location.search();
+
+                        if(search[filter.param]) {
+                            filter.model = search[filter.param];
+                        }
+                    }                    
 
                     if(filter.type=='date') {
                             
@@ -272,7 +282,7 @@
 
                 $scope.selectionsClear = function() {
                     $scope.checked = [];
-                    $scope.selectToogled = false;                 
+                    $scope.selectToogled = false;
                 } 
 
                 $scope.toggleFilters = function() {
