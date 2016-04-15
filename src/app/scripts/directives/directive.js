@@ -574,7 +574,10 @@
                         $scope.data.push({ cols: cols, object: object });
                     });                 
 
-                    $scope.paging.enabled = !!paging;
+                    if(!!paging) {
+                        $scope.paging.enabled = false;
+                    }
+                    
                     $scope.paging.records = null;
 
                     if(paging) {
