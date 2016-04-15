@@ -307,7 +307,7 @@
 
                         if(filter.value!==null) {
 
-                            var value = filter.value;
+                            var value = String(filter.value);
 
                             if(value.match(/\s/))
                                 value = '(' + filter.value + ')';
