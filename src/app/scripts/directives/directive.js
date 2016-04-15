@@ -85,13 +85,18 @@
                 var options = angular.extend({},fsLister.options(),$scope.lsOptions);
                 var persist = fsStore.get('lister-persist',{});
 
-                options.paging = options.paging || {};
-                options.paging.records = 0;
-                options.paging.page = 1;
-                options.paging.pages = 0;
-                options.paging.enabled = true;
-                options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
-                options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
+                if(options.paging===false) {
+                    options.paging = { enabled: false };
+                } else {
+                    options.paging = options.paging || {};
+                    options.paging.enabled = true;
+                    options.paging.records = 0;
+                    options.paging.page = 1;
+                    options.paging.pages = 0;                    
+                    options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
+                    options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
+                }
+
                 options.norecords = options.norecords===undefined ? 'No records found' : options.norecords;
                 options.load = options.load===undefined ? true : options.load;
                 options.actions = options.actions || [];
@@ -497,8 +502,13 @@
                         persist[options.persist] = models;
                     }
 
-                    query.page = $scope.paging.page;
-                    query.limit = $scope.paging.limit;
+                    if($scope.paging.page!==undefined) {
+                        query.page = $scope.paging.page;
+                    }
+
+                    if($scope.paging.limit!==undefined) {
+                        query.limit = $scope.paging.limit;
+                    }
 
                     log("Calling data()", query);
                     

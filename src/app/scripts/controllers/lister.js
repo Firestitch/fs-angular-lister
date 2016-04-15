@@ -48,10 +48,15 @@
 
         load: true,
 
+        /*
         paging: {
+
             infinite: true,
             limit: 20
         },
+        */
+
+        //paging: false,
         /*
         action:
         {   
