@@ -392,10 +392,11 @@
                     var primary = false;
                     if(!Object.keys(values).length) {
 
-                        angular.forEach(options.filters,function(value, label) {
+                        angular.forEach(options.filters,function(filter) {
                             filter.model = null;
                             if(!primary && filter.type=='text') {
                                 filter.model = search;
+                                $scope.filterValue(filter);
                                 primary = true;
                             }
                         });
