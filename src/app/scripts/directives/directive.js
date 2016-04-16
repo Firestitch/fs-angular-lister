@@ -354,14 +354,17 @@
                             values[filter_match[1]] = filter_match[2];
                         }
                     });
+
+                    angular.forEach(options.filters,function(filter) {
+                        filter.model = null;
+                        $scope.filterValue(filter);
+                    });
                     
                     angular.forEach(values,function(value, label) {
                         
                         var filter = $filter('filter')(options.filters,{ label: label },true)[0];
 
-                        if(filter) {
-
-                            filter.model = null;
+                        if(filter) {                           
                            
                             if(filter.type=='date') {
                                 filter.model = new Date(value);
