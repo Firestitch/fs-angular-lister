@@ -310,14 +310,31 @@
                     var searches = [];
                     angular.forEach(options.filters,function(filter) {
 
-                        if(filter.value!==null) {
+                        var value = filter.value;
+                        if(value!==null) {
 
-                            var value = String(filter.value);
+                             if(filter.type=='select') {
 
-                            if(value.match(/\s/))
-                                value = '(' + filter.value + ')';
+                                if(!filter.multiple) {
 
-                            searches.push(filter.name + ':' + value);
+                                    value = $filter('filter')(filter.values,{ value: value })[0];
+
+                                    if(value) {
+                                        value = value.name;
+                                    }
+                                    
+                                    if(!value) {
+                                        value = filter.values[value];
+                                    }                                    
+                                }
+                            }                            
+
+                            value = String(value);
+
+                            var label = filter.label.match(/\s/) ? '(' + filter.label + ')' : filter.label;
+                            var value = value.match(/\s/) ? '(' + value + ')' : value;
+
+                            searches.push(label + ':' + value);
                         }
                     });
 
@@ -326,43 +343,63 @@
 
                 $scope.searchChange = function(search) {
 
-                    var matches = search.match(/([^:]+:\([^\)]+\)|[^\s]+)/g);
+                    var matches = search.match(/(\([^\)]+\):[^\s]+|\([^\)]+\):\([^\)]+\)|[^:]+:\([^\)]+\)|[^\s]+)/g);
 
                     var values = {};
                     angular.forEach(matches, function(match) {
 
-                        var filter_match = match.match(/([^:]+):\(?([^)]+)/);
+                        var filter_match = match.match(/\(?([^:\)]+)\)?:\(?([^)]+)/);
 
                         if(filter_match) {
                             values[filter_match[1]] = filter_match[2];
                         }
                     });
                     
-                    var primary = false;
-                    angular.forEach(options.filters,function(filter) {
+                    angular.forEach(values,function(value, label) {
                         
-                        filter.model = null;
-                        var value = values[filter.name];
-                        if(value) {
+                        var filter = $filter('filter')(options.filters,{ label: label },true)[0];
 
+                        if(filter) {
+
+                            filter.model = null;
+                           
                             if(filter.type=='date') {
                                 filter.model = new Date(value);
 
                             } else if(filter.type=='range') {
                                 var parts = value.split(',');
                                 filter.model = { min: parts[0], max: parts[1] };
+                            
+                            } else if(filter.type=='select') {
+
+                                if(!filter.multiple) {
+
+                                    var item = $filter('filter')(filter.values,{ name: value })[0];
+
+                                    if(item) {
+                                       filter.model = item.value; 
+                                    }
+                                }
+
                             } else {
                                 filter.model = value;
                             }
-                        }
 
-                        if(Object.keys(values).length === 0 && !primary && filter.type=='text') {
-                            filter.model = search;
-                            primary = true;
+                            $scope.filterValue(filter);
                         }
+                    });
 
-                        $scope.filterValue(filter);
-                    });                           
+                    var primary = false;
+                    if(!Object.keys(values).length) {
+
+                        angular.forEach(options.filters,function(value, label) {
+                            filter.model = null;
+                            if(!primary && filter.type=='text') {
+                                filter.model = search;
+                                primary = true;
+                            }
+                        });
+                    }
 
                     reload();
                  }
