@@ -327,7 +327,11 @@
                                         value = filter.values[value];
                                     }                                    
                                 }
-                            }                            
+                            } else if(filter.type=='date') {
+
+                                var matches = value.match(/(\d{4}-\d{2}-\d{2})/);
+                                value = matches[1];
+                            }                          
 
                             value = String(value);
 
@@ -367,7 +371,12 @@
                         if(filter) {                           
                            
                             if(filter.type=='date') {
-                                filter.model = new Date(value);
+
+                                filter.model = new Date(value);                                
+
+                                if(value.match(/(\d{4}-\d{2}-\d{2})/)) {
+                                    filter.model = new Date(filter.model.getTime() + (filter.model.getTimezoneOffset() * 60000));
+                                }
 
                             } else if(filter.type=='range') {
                                 var parts = value.split(',');
