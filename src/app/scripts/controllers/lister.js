@@ -138,6 +138,7 @@
 
         columns: [
             {   title: 'Name' , 
+                order: { name: 'name', default: true },
                 value: function(data) {                
                     return "<b>" + data['name'] + "</b>";
                 },
@@ -145,6 +146,7 @@
             },
             {   title: 'GUID' , 
                 center: true,
+                order: 'guid',
                 value: function(data) {
                     return '<a href ng-click="test(data)">' + data["guid"] + '</a>';
                 },

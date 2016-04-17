@@ -177,7 +177,16 @@
                             </md-menu>
                         </span>
                     </div>
-                    <div class="lister-col {{col.className}}" ng-repeat="col in options.columns" fs-lister-compile="col.title" fs-column="col" ng-style="columnStyle(col)"></div>
+                    <div class="lister-col {{col.className}}" ng-repeat="col in options.columns" ng-style="columnStyle(col)" ng-class="{ order: col.order }" ng-click="headerClick(col)">
+                        
+                        <span fs-lister-compile="col.title" fs-column="col"></span>
+                        
+                        <span ng-show="order.name==col.order.name">
+                            <md-icon ng-show="order.direction=='asc'">arrow_downward</md-icon>
+                            <md-icon ng-show="order.direction=='desc'">arrow_upward</md-icon>
+                        </span>
+
+                    </div>
                     <div class="lister-col" ng-show="options.actions.length || options.action"></div>
                 </div>
             </div>

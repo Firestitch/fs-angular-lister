@@ -140,6 +140,29 @@
                     }
                 });
 
+                angular.forEach(options.columns,function(col) {
+                    if(col.order) {
+                        if(angular.isString(col.order)) {
+                            col.order = { name: col.order };
+                        }
+
+                        if(!col.order.direction) { 
+                            col.order.direction = 'asc';
+                        }
+
+                        if(col.order.default) {
+                            $scope.order = col.order;
+                        }
+                    }
+                });
+
+                angular.forEach(options.columns,function(col) {
+
+                    if(!$scope.order && col.order) {
+                        $scope.order = col.order;
+                    }
+                });
+
                 sanitizeAction(options.action);
                 angular.forEach(options.actions,function(action) {
                     sanitizeAction(action);
@@ -178,6 +201,19 @@
 
                     return filters;
                 }();
+
+                $scope.headerClick = function(col) {
+
+                    if(col.order) {
+                        if($scope.order.name==col.order.name) {
+                            $scope.order.direction = $scope.order.direction=='asc' ? 'desc' : 'asc';
+                        } else {
+                            $scope.order = col.order;     
+                        }
+
+                        load();
+                    }
+                }
 
                 $scope.actionClick = function(action, item, event) {
 
@@ -558,6 +594,11 @@
 
                     if($scope.paging.limit!==undefined) {
                         query.limit = $scope.paging.limit;
+                    }
+
+                    if($scope.order) {
+                        query.orderby = $scope.order.name;
+                        query.order = $scope.order.direction;
                     }
 
                     log("Calling data()", query);

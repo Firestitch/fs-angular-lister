@@ -140,6 +140,29 @@
                     }
                 });
 
+                angular.forEach(options.columns,function(col) {
+                    if(col.order) {
+                        if(angular.isString(col.order)) {
+                            col.order = { name: col.order };
+                        }
+
+                        if(!col.order.direction) { 
+                            col.order.direction = 'asc';
+                        }
+
+                        if(col.order.default) {
+                            $scope.order = col.order;
+                        }
+                    }
+                });
+
+                angular.forEach(options.columns,function(col) {
+
+                    if(!$scope.order && col.order) {
+                        $scope.order = col.order;
+                    }
+                });
+
                 sanitizeAction(options.action);
                 angular.forEach(options.actions,function(action) {
                     sanitizeAction(action);
@@ -178,6 +201,19 @@
 
                     return filters;
                 }();
+
+                $scope.headerClick = function(col) {
+
+                    if(col.order) {
+                        if($scope.order.name==col.order.name) {
+                            $scope.order.direction = $scope.order.direction=='asc' ? 'desc' : 'asc';
+                        } else {
+                            $scope.order = col.order;     
+                        }
+
+                        load();
+                    }
+                }
 
                 $scope.actionClick = function(action, item, event) {
 
@@ -558,6 +594,11 @@
 
                     if($scope.paging.limit!==undefined) {
                         query.limit = $scope.paging.limit;
+                    }
+
+                    if($scope.order) {
+                        query.orderby = $scope.order.name;
+                        query.order = $scope.order.direction;
                     }
 
                     log("Calling data()", query);
@@ -1231,7 +1272,25 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"col.title\" fs-column=\"col\" ng-style=\"columnStyle(col)\"></div>\r" +
+    "                    <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\" ng-style=\"columnStyle(col)\" ng-class=\"{ order: col.order }\" ng-click=\"headerClick(col)\">\r" +
+    "\n" +
+    "                        \r" +
+    "\n" +
+    "                        <span fs-lister-compile=\"col.title\" fs-column=\"col\"></span>\r" +
+    "\n" +
+    "                        \r" +
+    "\n" +
+    "                        <span ng-show=\"order.name==col.order.name\">\r" +
+    "\n" +
+    "                            <md-icon ng-show=\"order.direction=='asc'\">arrow_downward</md-icon>\r" +
+    "\n" +
+    "                            <md-icon ng-show=\"order.direction=='desc'\">arrow_upward</md-icon>\r" +
+    "\n" +
+    "                        </span>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                    </div>\r" +
     "\n" +
     "                    <div class=\"lister-col\" ng-show=\"options.actions.length || options.action\"></div>\r" +
     "\n" +

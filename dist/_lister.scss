@@ -272,6 +272,15 @@
         .lister-col {
             display: table-cell;
             vertical-align: middle;
+            outline: none;
+
+            &.order {
+
+                cursor: pointer;
+                &:hover {
+                    background-color: #F6F6F6;
+                }
+            }
         }
 
         .lister-row {
