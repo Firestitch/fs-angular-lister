@@ -49,7 +49,7 @@
         load: true,
 
         
-        paging: {
+        ssspaging: {
 
             infinite: true,
             limit: 5

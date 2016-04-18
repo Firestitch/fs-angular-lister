@@ -673,7 +673,7 @@
 
                     if(paging) {
 
-                        if($scope.paging.enabled && paging.records===null) {
+                        if(paging.records===null) {
                             $scope.paging.enabled = false;
                         }
 
@@ -684,6 +684,9 @@
                             $scope.paging.limit = paging.limit;
                             options.limit = paging.limit;
                         }
+                    
+                    } else {
+                        $scope.paging.enabled = false;
                     }
 
                     if($scope.options.paging.infinite) {
