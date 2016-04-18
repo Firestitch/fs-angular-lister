@@ -205,13 +205,15 @@
                 $scope.headerClick = function(col) {
 
                     if(col.order) {
+                        $scope.order.name = col.order.name;
+
                         if($scope.order.name==col.order.name) {
                             $scope.order.direction = $scope.order.direction=='asc' ? 'desc' : 'asc';
                         } else {
-                            $scope.order = col.order;     
+                            $scope.order.direction = col.order.direction;
                         }
 
-                        load();
+                        reload();
                     }
                 }
 
@@ -571,6 +573,9 @@
 
                         if(opts.clear) {
                             opts.page = 1;
+                            if(!$scope.paging || ($scope.paging && $scope.paging.infinite)) {
+                                $scope.data = [];
+                            }
                         }
 
                         $scope.paging.page = opts.page;
@@ -597,8 +602,7 @@
                     }
 
                     if($scope.order) {
-                        query.orderby = $scope.order.name;
-                        query.order = $scope.order.direction;
+                        query.order = $scope.order.name + ',' + $scope.order.direction;
                     }
 
                     log("Calling data()", query);
@@ -663,15 +667,16 @@
                         });
 
                         $scope.data.push({ cols: cols, object: object });
-                    });                 
+                    });     
 
-                    if(!!paging) {
-                        $scope.paging.enabled = false;
-                    }
-                    
                     $scope.paging.records = null;
 
                     if(paging) {
+
+                        if($scope.paging.enabled && paging.records===null) {
+                            $scope.paging.enabled = false;
+                        }
+
                         $scope.paging.records = paging.records;
                         $scope.paging.pages = paging.pages;
                         
@@ -744,10 +749,32 @@
                 lsInstance: '='
             },
             controller: ListerCtrl,
-            link: function($scope, element, attr, ctrl) {
-                
-                $scope.max_bottom = 0;
+            link: function($scope, element, attr, ctrl) {               
+               
+                var widthHolders = function() {                    
 
+                    if(!$scope.loading) {
+
+                        var elements = document.getElementsByClassName('lister-col-header');
+
+                        angular.forEach(elements,function(col) {
+
+                            angular.forEach(col.childNodes,function(element) {
+                                if(angular.element(element).hasClass('width-holder')) {
+
+                                    var style = window.getComputedStyle(col);
+                                    element.style.width = (col.clientWidth - parseInt(style.paddingLeft, 10) - parseInt(style.paddingRight, 10)) + 'px';
+                                }
+                            });
+                        }); 
+                    }
+
+                    $timeout(widthHolders,2500);
+                }
+
+                widthHolders();
+
+                $scope.max_bottom = 0;
                 if($scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
 
                     element = angular.element(element[0].children[0]);
@@ -802,7 +829,6 @@
             }
         }
     }
-
 
     angular.module('fs-angular-lister',[])
     .directive('lister',ListerDirective)
@@ -1236,63 +1262,73 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"lister-row\">\r" +
     "\n" +
-    "                    <div class=\"lister-col lister-select-toogle\" ng-show=\"options.selection\">\r" +
+    "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-show=\"options.selection\">\r" +
     "\n" +
-    "                        <span ng-show=\"data.length\">\r" +
+    "                       \r" +
     "\n" +
-    "                            <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox>\r" +
+    "                        <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox>\r" +
     "\n" +
-    "                            <md-menu md-offset=\"17 42\">\r" +
+    "                        <md-menu md-offset=\"17 42\">\r" +
     "\n" +
-    "                                <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r" +
+    "                            <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r" +
     "\n" +
-    "                                    <md-icon>arrow_drop_down</md-icon>\r" +
+    "                                <md-icon>arrow_drop_down</md-icon>\r" +
     "\n" +
-    "                                </md-button>\r" +
+    "                            </md-button>\r" +
     "\n" +
-    "                                <md-menu-content>\r" +
+    "                            <md-menu-content>\r" +
     "\n" +
-    "                                    <md-menu-item ng-repeat=\"action in options.selection.actions\">\r" +
+    "                                <md-menu-item ng-repeat=\"action in options.selection.actions\">\r" +
     "\n" +
-    "                                        <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
+    "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
     "\n" +
-    "                                            <md-icon md-menu-align-target ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
+    "                                        <md-icon md-menu-align-target ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
     "\n" +
-    "                                            {{action.label}}\r" +
+    "                                        {{action.label}}\r" +
     "\n" +
-    "                                        </md-button>\r" +
+    "                                    </md-button>\r" +
     "\n" +
-    "                                    </md-menu-item>\r" +
+    "                                </md-menu-item>\r" +
     "\n" +
-    "                                </md-menu-content>\r" +
+    "                            </md-menu-content>\r" +
     "\n" +
-    "                            </md-menu>\r" +
-    "\n" +
-    "                        </span>\r" +
+    "                        </md-menu>\r" +
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col {{col.className}}\" ng-repeat=\"col in options.columns\" ng-style=\"columnStyle(col)\" ng-class=\"{ order: col.order }\" ng-click=\"headerClick(col)\">\r" +
+    "                    <div class=\"lister-col lister-col-header {{column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"columnStyle(column)\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\r" +
     "\n" +
     "                        \r" +
     "\n" +
-    "                        <span fs-lister-compile=\"col.title\" fs-column=\"col\"></span>\r" +
+    "                        <span fs-lister-compile=\"column.title\" fs-column=\"column\"></span>\r" +
     "\n" +
-    "                        \r" +
+    "\r" +
     "\n" +
-    "                        <span ng-show=\"order.name==col.order.name\">\r" +
+    "                        <span ng-show=\"order.name==column.order.name\">\r" +
     "\n" +
-    "                            <md-icon ng-show=\"order.direction=='asc'\">arrow_downward</md-icon>\r" +
+    "                            <span ng-show=\"order.name==column.order.name\" ng-switch=\"order.direction\">\r" +
     "\n" +
-    "                            <md-icon ng-show=\"order.direction=='desc'\">arrow_upward</md-icon>\r" +
+    "                                <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
+    "\n" +
+    "                                <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\r" +
+    "\n" +
+    "                            </span>\r" +
     "\n" +
     "                        </span>\r" +
     "\n" +
     "\r" +
     "\n" +
+    "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col\" ng-show=\"options.actions.length || options.action\"></div>\r" +
+    "                    <div class=\"lister-col lister-col-header\" ng-show=\"options.actions.length || options.action\">\r" +
+    "\n" +
+    "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\r" +
+    "\n" +
+    "                    </div>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
@@ -1375,6 +1411,8 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "        </div>\r" +
     "\n" +
     "    </div>\r" +
+    "\n" +
+    "\r" +
     "\n" +
     "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
     "\n" +

@@ -317,6 +317,7 @@
                         display: inline-block;
                         padding-left: 0; 
                         margin-right: 0;
+                        width: 20px;
                     }
 
                     md-menu button {
@@ -328,14 +329,15 @@
                         padding: 3px 0 3px 0;                        
                     }
                 }
+
+                .width-holder {
+                    /*border-top: 1px solid black;
+                    display: block !important;*/
+                }
             }
         }
 
         .lister-body {
-
-            .lister-row:first-child .lister-col {
-                border: 0px;
-            }
 
             .lister-row:hover .lister-col {
                 background-color: #f6f6f6;
@@ -353,7 +355,11 @@
                     padding: 3px;
                 }                
             }
-            
+
+            .lister-row:nth-child(2) .lister-col {
+                border-top: 0px;
+            }
+
             .lister-row:last-child .lister-col {
                 border-bottom: 2px solid #ddd;
             }

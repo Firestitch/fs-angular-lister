@@ -48,14 +48,13 @@
 
         load: true,
 
-        /*
+        
         paging: {
 
             infinite: true,
-            limit: 20
+            limit: 5
         },
-        */
-
+        
         //paging: false,
         /*
         action:
@@ -184,7 +183,7 @@
             }
         ],
 
-        selection: {
+        sselection: {
             actions: [{
                 icon: 'delete',
                 label: 'Delete',

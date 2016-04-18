@@ -205,13 +205,15 @@
                 $scope.headerClick = function(col) {
 
                     if(col.order) {
+                        $scope.order.name = col.order.name;
+
                         if($scope.order.name==col.order.name) {
                             $scope.order.direction = $scope.order.direction=='asc' ? 'desc' : 'asc';
                         } else {
-                            $scope.order = col.order;     
+                            $scope.order.direction = col.order.direction;
                         }
 
-                        load();
+                        reload();
                     }
                 }
 
@@ -571,6 +573,9 @@
 
                         if(opts.clear) {
                             opts.page = 1;
+                            if(!$scope.paging || ($scope.paging && $scope.paging.infinite)) {
+                                $scope.data = [];
+                            }
                         }
 
                         $scope.paging.page = opts.page;
@@ -597,8 +602,7 @@
                     }
 
                     if($scope.order) {
-                        query.orderby = $scope.order.name;
-                        query.order = $scope.order.direction;
+                        query.order = $scope.order.name + ',' + $scope.order.direction;
                     }
 
                     log("Calling data()", query);
@@ -663,15 +667,16 @@
                         });
 
                         $scope.data.push({ cols: cols, object: object });
-                    });                 
+                    });     
 
-                    if(!!paging) {
-                        $scope.paging.enabled = false;
-                    }
-                    
                     $scope.paging.records = null;
 
                     if(paging) {
+
+                        if($scope.paging.enabled && paging.records===null) {
+                            $scope.paging.enabled = false;
+                        }
+
                         $scope.paging.records = paging.records;
                         $scope.paging.pages = paging.pages;
                         
@@ -744,10 +749,32 @@
                 lsInstance: '='
             },
             controller: ListerCtrl,
-            link: function($scope, element, attr, ctrl) {
-                
-                $scope.max_bottom = 0;
+            link: function($scope, element, attr, ctrl) {               
+               
+                var widthHolders = function() {                    
 
+                    if(!$scope.loading) {
+
+                        var elements = document.getElementsByClassName('lister-col-header');
+
+                        angular.forEach(elements,function(col) {
+
+                            angular.forEach(col.childNodes,function(element) {
+                                if(angular.element(element).hasClass('width-holder')) {
+
+                                    var style = window.getComputedStyle(col);
+                                    element.style.width = (col.clientWidth - parseInt(style.paddingLeft, 10) - parseInt(style.paddingRight, 10)) + 'px';
+                                }
+                            });
+                        }); 
+                    }
+
+                    $timeout(widthHolders,2500);
+                }
+
+                widthHolders();
+
+                $scope.max_bottom = 0;
                 if($scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
 
                     element = angular.element(element[0].children[0]);
@@ -802,7 +829,6 @@
             }
         }
     }
-
 
     angular.module('fs-angular-lister',[])
     .directive('lister',ListerDirective)
