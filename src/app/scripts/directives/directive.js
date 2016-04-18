@@ -106,7 +106,7 @@
 
                     filter.model = filter.default;
 
-                    if(options.persist) {
+                    if(options.persist && !filter.param) {
                         var persisted = persist[options.persist];
 
                         if(persisted) {
