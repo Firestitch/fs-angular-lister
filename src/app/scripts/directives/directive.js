@@ -83,9 +83,11 @@
             var ListerCtrl = ['$scope', function ($scope) {                
 
                 var options = angular.extend({},fsLister.options(),$scope.lsOptions);
+                options.view = options.view || {mode: 'simple', settings: {}};
+
                 var persist = fsStore.get('lister-persist',{});
 
-                if(options.paging===false) {
+                if(options.paging === false || options.view.mode == 'hierarchical') {
                     options.paging = { enabled: false };
                 } else {
                     options.paging = options.paging || {};
@@ -184,6 +186,17 @@
                 $scope.extended_search = false;
                 $scope.searchinput = '';
                 
+                $scope.getColIndent = function(data, index) {
+                    var colIndent = 0;
+
+                    if (options.view.mode == 'hierarchical' && index == options.view.settings.indentColumn) {
+                        colIndent = options.view.settings.levelDesignator(data) * options.view.settings.indentSize;
+                        colIndent += options.view.settings.indentUnits;
+                    }
+
+                    return colIndent;
+                };
+
                 $scope.groupedFilters = function() {
 
                     var index = 0, filters = [];
