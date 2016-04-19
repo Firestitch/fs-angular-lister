@@ -151,7 +151,7 @@
                         }
 
                         if(col.order.default) {
-                            $scope.order = col.order;
+                            $scope.order = angular.copy(col.order);
                         }
                     }
                 });
@@ -205,13 +205,14 @@
                 $scope.headerClick = function(col) {
 
                     if(col.order) {
-                        $scope.order.name = col.order.name;
 
                         if($scope.order.name==col.order.name) {
                             $scope.order.direction = $scope.order.direction=='asc' ? 'desc' : 'asc';
                         } else {
                             $scope.order.direction = col.order.direction;
                         }
+
+                        $scope.order.name = col.order.name;
 
                         reload();
                     }
@@ -404,7 +405,7 @@
                     
                     angular.forEach(values,function(value, label) {
                         
-                        var filter = $filter('filter')(options.filters,{ label: label },true)[0];
+                        var filter = $filter('filteri')(options.filters,{ label: label },true)[0];
 
                         if(filter) {                           
                            
@@ -919,6 +920,25 @@
                 return _options;
             }
         }
+    })
+
+    .filter('filteri', function() {
+      return function(list, filters) {
+
+        var result = [];        
+        angular.forEach(list,function(value,key) {
+
+            var valid = true;
+            angular.forEach(filters,function(fvalue,fkey) {
+                valid &= String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
+            });
+            
+            if(valid) {
+                result.push(value);
+            }
+        });
+        return result;
+      };
     })
     .filter('listerRange', function() {
       return function(input, total, page) {

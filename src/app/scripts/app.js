@@ -13,7 +13,7 @@ angular
 ])
 .config(function ($routeProvider, $cryptoProvider, $mdThemingProvider, fsListerProvider) {
     
-    //fsListerProvider.options({ inline: true });
+    fsListerProvider.options({ inline: true });
 
     $routeProvider
     .when('/page', {

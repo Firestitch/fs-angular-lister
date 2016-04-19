@@ -151,7 +151,7 @@
                         }
 
                         if(col.order.default) {
-                            $scope.order = col.order;
+                            $scope.order = angular.copy(col.order);
                         }
                     }
                 });
@@ -205,13 +205,14 @@
                 $scope.headerClick = function(col) {
 
                     if(col.order) {
-                        $scope.order.name = col.order.name;
 
                         if($scope.order.name==col.order.name) {
                             $scope.order.direction = $scope.order.direction=='asc' ? 'desc' : 'asc';
                         } else {
                             $scope.order.direction = col.order.direction;
                         }
+
+                        $scope.order.name = col.order.name;
 
                         reload();
                     }
@@ -404,7 +405,7 @@
                     
                     angular.forEach(values,function(value, label) {
                         
-                        var filter = $filter('filter')(options.filters,{ label: label },true)[0];
+                        var filter = $filter('filteri')(options.filters,{ label: label },true)[0];
 
                         if(filter) {                           
                            
@@ -920,6 +921,25 @@
             }
         }
     })
+
+    .filter('filteri', function() {
+      return function(list, filters) {
+
+        var result = [];        
+        angular.forEach(list,function(value,key) {
+
+            var valid = true;
+            angular.forEach(filters,function(fvalue,fkey) {
+                valid &= String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
+            });
+            
+            if(valid) {
+                result.push(value);
+            }
+        });
+        return result;
+      };
+    })
     .filter('listerRange', function() {
       return function(input, total, page) {
 
@@ -1307,15 +1327,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                        <span ng-show=\"order.name==column.order.name\">\r" +
+    "                        <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\" class=\"direction\">\r" +
     "\n" +
-    "                            <span ng-show=\"order.name==column.order.name\" ng-switch=\"order.direction\">\r" +
+    "                            <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
     "\n" +
-    "                                <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
-    "\n" +
-    "                                <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\r" +
-    "\n" +
-    "                            </span>\r" +
+    "                            <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\r" +
     "\n" +
     "                        </span>\r" +
     "\n" +

@@ -180,11 +180,9 @@
                         
                         <span fs-lister-compile="column.title" fs-column="column"></span>
 
-                        <span ng-show="order.name==column.order.name">
-                            <span ng-show="order.name==column.order.name" ng-switch="order.direction">
-                                <md-icon ng-switch-when="asc">arrow_downward</md-icon>
-                                <md-icon ng-switch-when="desc">arrow_upward</md-icon>
-                            </span>
+                        <span ng-switch="order.direction" ng-show="order.name==column.order.name" class="direction">
+                            <md-icon ng-switch-when="asc">arrow_downward</md-icon>
+                            <md-icon ng-switch-when="desc">arrow_upward</md-icon>
                         </span>
 
                         <div class="width-holder" ng-show="loading"></div>

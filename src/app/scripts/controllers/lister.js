@@ -24,6 +24,8 @@
 
         //persist: 'lister',
 
+        //inline: true,
+
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
         },
@@ -49,7 +51,7 @@
         load: true,
 
         
-        ssspaging: {
+        paging: {
 
             infinite: true,
             limit: 5
@@ -147,15 +149,17 @@
                 center: true,
                 order: 'guid',
                 value: function(data) {
-                    return '<a href ng-click="test(data)">' + data["guid"] + '</a>';
+                    return '<a href ng-click="test(data)">{{data.guid}}</a>';
                 },
-                scope: { test :function(data) {
-                    debugger;
+                scope: {
+                    test :function(data, event, x,c,v) {
+                        debugger;
                     }
                 }
             },
             {   title: 'Date',
                 className: 'center',
+                order: { name: 'date' },
                 value: function(data, $scope, myresolve) {
                     return data["date"];
                 },
@@ -183,7 +187,7 @@
             }
         ],
 
-        sselection: {
+        selection: {
             actions: [{
                 icon: 'delete',
                 label: 'Delete',
