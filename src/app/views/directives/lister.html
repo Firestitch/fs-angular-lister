@@ -10,7 +10,7 @@
                 <div class="ng-hide md-whiteframe-z2 filters" layout="column" ng-show="extended_search">
                     <div ng-repeat="filter in options.filters" class="filter filter-{{filter.type}}">
                         
-                        <div class="label">
+                        <div class="filter-label">
                             <label>{{filter.label}}</label> 
                         </div>
 
@@ -79,7 +79,7 @@
                 </div>
             </div>
             <md-button ng-click="toggleFilters()" class="md-icon-button toggle-filters" aria-label="Search filters">
-                <md-icon>arrow_drop_down</md-icon>
+                <div class="icon-down"></div>
             </md-button>
   
             <div class="backdrop" ng-show="extended_search" ng-click="toggleFilters()"></div>

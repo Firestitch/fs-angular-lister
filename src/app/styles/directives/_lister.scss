@@ -83,6 +83,28 @@
             margin-left: -30px;
         }
         
+        .icon-down {
+
+            display: block;
+            -webkit-align-items: flex-end;
+            -ms-flex-align: end;
+            align-items: flex-end;
+            text-align: end;
+            margin: 0 4px;
+            -webkit-transform: translate3d(0, 1px, 0);
+            transform: translate3d(0, 1px, 0);
+
+            &:after {
+                display: block;
+                content: '\25BC';
+                position: relative;
+                top: 2px;
+                speak: none;
+                -webkit-transform: scaleY(0.6) scaleX(1);
+                transform: scaleY(0.7) scaleX(1.1);
+            }
+        }
+
         .inline-search-input {
             
             position: relative;
@@ -128,11 +150,11 @@
                     }
 
                     .interface,
-                    .label {
+                    .filter-label {
                         display: table-cell;
                     }
 
-                    .label {
+                    .filter-label {
                         vertical-align: middle;
                         width: 1%;
                         padding: 0 15px 0 0;
