@@ -987,7 +987,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        \r" +
     "\n" +
-    "                        <div class=\"label\">\r" +
+    "                        <div class=\"filter-label\">\r" +
     "\n" +
     "                            <label>{{filter.label}}</label> \r" +
     "\n" +
@@ -1125,7 +1125,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <md-button ng-click=\"toggleFilters()\" class=\"md-icon-button toggle-filters\" aria-label=\"Search filters\">\r" +
     "\n" +
-    "                <md-icon>arrow_drop_down</md-icon>\r" +
+    "                <div class=\"icon-down\"></div>\r" +
     "\n" +
     "            </md-button>\r" +
     "\n" +
