@@ -1323,19 +1323,21 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        \r" +
     "\n" +
-    "                        <span fs-lister-compile=\"column.title\" fs-column=\"column\" class=\"title\"></span>\r" +
+    "                        <div class=\"wrap\">\r" +
+    "\n" +
+    "                            <span fs-lister-compile=\"column.title\" fs-column=\"column\" class=\"title\"></span>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                        <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\" class=\"direction\">\r" +
+    "                            <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\" class=\"direction\">\r" +
     "\n" +
-    "                            <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
+    "                                <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
     "\n" +
-    "                            <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\r" +
+    "                                <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\r" +
     "\n" +
-    "                        </span>\r" +
+    "                            </span>\r" +
     "\n" +
-    "\r" +
+    "                        </div>\r" +
     "\n" +
     "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\r" +
     "\n" +

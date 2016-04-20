@@ -327,8 +327,12 @@
                 font-size: 14px;
                 padding: 8px;
 
-                .title {
-                    vertical-align: middle;
+                .wrap {
+                    white-space: nowrap;
+                    
+                    .title {
+                        vertical-align: middle;
+                    }
                 }
 
                 &.sorting {
