@@ -11,7 +11,7 @@
                     <div ng-repeat="filter in options.filters" class="filter filter-{{filter.type}}">
                         
                         <div class="filter-label">
-                            <label>{{filter.label}}</label> 
+                            {{filter.label}}
                         </div>
 
                         <div class="interface" ng-if="filter.type == 'select'">

@@ -989,7 +989,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        <div class=\"filter-label\">\r" +
     "\n" +
-    "                            <label>{{filter.label}}</label> \r" +
+    "                            {{filter.label}}\r" +
     "\n" +
     "                        </div>\r" +
     "\n" +
