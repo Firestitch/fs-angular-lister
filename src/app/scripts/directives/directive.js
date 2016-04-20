@@ -159,7 +159,7 @@
                 angular.forEach(options.columns,function(col) {
 
                     if(!$scope.order && col.order) {
-                        $scope.order = col.order;
+                        $scope.order = angular.copy(col.order);
                     }
                 });
 

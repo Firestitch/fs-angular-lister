@@ -159,7 +159,7 @@
                 angular.forEach(options.columns,function(col) {
 
                     if(!$scope.order && col.order) {
-                        $scope.order = col.order;
+                        $scope.order = angular.copy(col.order);
                     }
                 });
 
@@ -1323,7 +1323,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        \r" +
     "\n" +
-    "                        <span fs-lister-compile=\"column.title\" fs-column=\"column\"></span>\r" +
+    "                        <span fs-lister-compile=\"column.title\" fs-column=\"column\" class=\"title\"></span>\r" +
     "\n" +
     "\r" +
     "\n" +

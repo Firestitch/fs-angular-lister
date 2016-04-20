@@ -327,6 +327,10 @@
                 font-size: 14px;
                 padding: 8px;
 
+                .title {
+                    vertical-align: middle;
+                }
+
                 &.sorting {
                     background-image: none;
                 }
@@ -356,9 +360,10 @@
                     display: block !important;*/
                 }
 
-                .direction md-icon{
-                    vertical-align: top;
+                .direction md-icon {
                     font-size: 17px;
+                    line-height: normal;
+                    height: auto;
                 }
             }
         }
