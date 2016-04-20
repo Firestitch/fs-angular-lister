@@ -1329,13 +1329,17 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\" class=\"direction\">\r" +
+    "                            <div class=\"direction\">\r" +
     "\n" +
-    "                                <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
+    "                                <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\">\r" +
     "\n" +
-    "                                <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\r" +
+    "                                    <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
     "\n" +
-    "                            </span>\r" +
+    "                                    <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\r" +
+    "\n" +
+    "                                </span>\r" +
+    "\n" +
+    "                            </div>\r" +
     "\n" +
     "                        </div>\r" +
     "\n" +

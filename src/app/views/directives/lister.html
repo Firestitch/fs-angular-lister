@@ -181,10 +181,12 @@
                         <div class="wrap">
                             <span fs-lister-compile="column.title" fs-column="column" class="title"></span>
 
-                            <span ng-switch="order.direction" ng-show="order.name==column.order.name" class="direction">
-                                <md-icon ng-switch-when="asc">arrow_downward</md-icon>
-                                <md-icon ng-switch-when="desc">arrow_upward</md-icon>
-                            </span>
+                            <div class="direction">
+                                <span ng-switch="order.direction" ng-show="order.name==column.order.name">
+                                    <md-icon ng-switch-when="asc">arrow_downward</md-icon>
+                                    <md-icon ng-switch-when="desc">arrow_upward</md-icon>
+                                </span>
+                            </div>
                         </div>
                         <div class="width-holder" ng-show="loading"></div>
 

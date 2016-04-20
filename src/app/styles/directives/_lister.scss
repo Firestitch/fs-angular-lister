@@ -333,6 +333,11 @@
                     .title {
                         vertical-align: middle;
                     }
+
+                    .direction {
+                        display: inline-block;
+                        width: 17px;
+                    }
                 }
 
                 &.sorting {
