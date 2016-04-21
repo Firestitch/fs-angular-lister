@@ -1329,7 +1329,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <div class=\"direction\">\r" +
+    "                            <div class=\"direction\" ng-show=\"column.order\">\r" +
     "\n" +
     "                                <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\">\r" +
     "\n" +
