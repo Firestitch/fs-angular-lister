@@ -1291,7 +1291,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox>\r" +
     "\n" +
-    "                        <md-menu md-offset=\"17 42\">\r" +
+    "                        <md-menu md-offset=\"6 32\">\r" +
     "\n" +
     "                            <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r" +
     "\n" +
@@ -1305,7 +1305,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
     "\n" +
-    "                                        <md-icon md-menu-align-target ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
+    "                                        <md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
     "\n" +
     "                                        {{action.label}}\r" +
     "\n" +

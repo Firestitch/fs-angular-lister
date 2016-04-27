@@ -162,14 +162,14 @@
                     <div class="lister-col lister-col-header lister-select-toogle" ng-show="options.selection">
                        
                         <md-checkbox ng-click="selectionsToggle(selectToogled);" ng-model="selectToogled"  ng-true-value="true" aria-label="Toggle Selection" class="select-checkbox"></md-checkbox>
-                        <md-menu md-offset="17 42">
+                        <md-menu md-offset="6 32">
                             <md-button aria-label="Select" class="md-icon-button" ng-click="$mdOpenMenu($event)">
                                 <md-icon>arrow_drop_down</md-icon>
                             </md-button>
                             <md-menu-content>
                                 <md-menu-item ng-repeat="action in options.selection.actions">
                                     <md-button ng-click="selectMenu(action.click,$event)">
-                                        <md-icon md-menu-align-target ng-show="action.icon">{{action.icon}}</md-icon>
+                                        <md-icon ng-show="action.icon">{{action.icon}}</md-icon>
                                         {{action.label}}
                                     </md-button>
                                 </md-menu-item>
