@@ -874,7 +874,7 @@
 
                             el.on('click',function(event) {
 
-                                if(event.isDefaultPrevented()) {
+                                if(event.isDefaultPrevented() || el.attr('href').match(/^http/)) {
                                     return;
                                 }
                                 
