@@ -540,7 +540,7 @@
 
                     if(action.delete) {
                         action.label = action.label || 'Remove';
-                        action.icon = action.icon || 'delete';
+                        action.icon = (action.icon !== undefined) ? action.icon  : 'delete';
                     }
                     
                     if(!action.show) {
