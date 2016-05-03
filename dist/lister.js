@@ -539,7 +539,7 @@
                     action = action || {};
 
                     if(action.delete) {
-                        action.label = action.label || 'Remove';
+                        action.label = (action.label !== undefined) ?  action.label || 'Remove';
                         action.icon = (action.icon !== undefined) ? action.icon  : 'delete';
                     }
                     
