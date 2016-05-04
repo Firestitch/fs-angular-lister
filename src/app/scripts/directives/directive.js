@@ -323,7 +323,7 @@
 
                     click(selected, $event);
                 }
-
+                
                 $scope.selectionsClear = function() {
                     $scope.checked = [];
                     $scope.selectToogled = false;

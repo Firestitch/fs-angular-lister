@@ -323,7 +323,7 @@
 
                     click(selected, $event);
                 }
-
+                
                 $scope.selectionsClear = function() {
                     $scope.checked = [];
                     $scope.selectToogled = false;
@@ -566,8 +566,8 @@
                     action = action || {};
 
                     if(action.delete) {
-                        action.label = action.label || 'Remove';
-                        action.icon = action.icon || 'delete';
+                        action.label = (action.label !== undefined) ?  action.label : 'Remove';
+                        action.icon = (action.icon !== undefined) ? action.icon  : 'delete';
                     }
                     
                     if(!action.show) {
@@ -1473,8 +1473,6 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "        </div>\r" +
     "\n" +
     "    </div>\r" +
-    "\n" +
-    "\r" +
     "\n" +
     "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
     "\n" +
