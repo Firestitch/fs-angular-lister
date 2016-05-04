@@ -333,6 +333,10 @@
                     $scope.extended_search = !$scope.extended_search;
                 }
 
+                $scope.done = function() {
+                    $scope.extended_search = false;
+                }
+
                 $scope.search = function() {
 
                     angular.forEach(options.filters,function(filter) {

@@ -333,6 +333,10 @@
                     $scope.extended_search = !$scope.extended_search;
                 }
 
+                $scope.done = function() {
+                    $scope.extended_search = false;
+                }
+
                 $scope.search = function() {
 
                     angular.forEach(options.filters,function(filter) {
@@ -1158,7 +1162,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                    <!--<md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"search()\">Search</md-button>-->\r" +
+    "                    <md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"done()\">Done</md-button>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
