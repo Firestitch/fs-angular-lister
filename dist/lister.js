@@ -340,7 +340,6 @@
                     });
 
                     $scope.searchInputUpdate();
-                    $scope.extended_search = false;
                     reload();
                 }
 
@@ -354,7 +353,20 @@
 
                              if(filter.type=='select') {
 
-                                if(!filter.multiple) {
+                                if(filter.multiple) {
+
+                                    var values = [];
+                                    angular.forEach(value.split(','),function(item) {
+                                       var value = $filter('filter')(filter.values,{ value: item })[0];
+
+                                        if(value) {
+                                            values.push(value.name);
+                                        }
+                                    });
+
+                                    value = values.join(',');
+
+                                } else {
 
                                     value = $filter('filter')(filter.values,{ value: value })[0];
 
@@ -366,6 +378,7 @@
                                         value = filter.values[value];
                                     }                                    
                                 }
+
                             } else if(filter.type=='date') {
 
                                 var matches = value.match(/(\d{4}-\d{2}-\d{2})/);
@@ -411,7 +424,7 @@
                            
                             if(filter.type=='date') {
 
-                                filter.model = new Date(value);                                
+                                filter.model = new Date(value);
 
                                 if(value.match(/(\d{4}-\d{2}-\d{2})/)) {
                                     filter.model = new Date(filter.model.getTime() + (filter.model.getTimezoneOffset() * 60000));
@@ -423,7 +436,21 @@
                             
                             } else if(filter.type=='select') {
 
-                                if(!filter.multiple) {
+                                if(filter.multiple) {
+
+                                    var values = [];
+                                    angular.forEach(value.split(','),function(value) {
+
+                                        var item = $filter('filter')(filter.values,{ name: value },true)[0];
+
+                                        if(item) {
+                                            values.push(item.value);
+                                        }
+                                    });
+
+                                    filter.model = values;
+                                
+                                } else {
 
                                     var item = $filter('filter')(filter.values,{ name: value })[0];
 
@@ -973,11 +1000,17 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"inline-search-input\" flex=\"grow\">\r" +
     "\n" +
-    "                <md-input-container md-no-float>\r" +
+    "                <div layout=\"row\">\r" +
     "\n" +
-    "                    <input ng-model=\"searchinput\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput)\" aria-label=\"Search\" placeholder=\"Search\"/>\r" +
+    "                    <md-icon>search</md-icon>\r" +
     "\n" +
-    "                </md-input-container>\r" +
+    "                    <md-input-container md-no-float>                    \r" +
+    "\n" +
+    "                        <input ng-model=\"searchinput\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput)\" aria-label=\"Search\" placeholder=\"Search\"/>\r" +
+    "\n" +
+    "                    </md-input-container>\r" +
+    "\n" +
+    "                </div>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1001,7 +1034,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                            <md-input-container class=\"md-block md-no-float\" ng-show=\"filter.multiple\">\r" +
     "\n" +
-    "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\">\r" +
+    "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"search()\">\r" +
     "\n" +
     "                                    <md-option ng-repeat=\"item in filter.values\" value=\"{{item.value}}\">\r" +
     "\n" +
@@ -1017,7 +1050,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                            <md-input-container class=\"md-block md-no-float\" ng-show=\"!filter.multiple\">\r" +
     "\n" +
-    "                                <md-select ng-model=\"filter.model\" aria-label=\"select\">\r" +
+    "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"search()\">\r" +
     "\n" +
     "                                    <md-option ng-repeat=\"item in filter.values\" value=\"{{item.value}}\">\r" +
     "\n" +
@@ -1033,11 +1066,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                        <div class=\"interface \" ng-if=\"filter.type == 'text'\" >\r" +
+    "                        <div class=\"interface \" ng-if=\"filter.type == 'text'\">\r" +
     "\n" +
     "                            <md-input-container class=\"md-no-float md-block\">\r" +
     "\n" +
-    "                                <input ng-model=\"filter.model\" aria-label=\"{{filter.label}}\" />\r" +
+    "                                <input ng-model=\"filter.model\" aria-label=\"{{filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-change=\"search()\"/>\r" +
     "\n" +
     "                            </md-input-container>\r" +
     "\n" +
@@ -1057,15 +1090,17 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <label>{{filter.label}}</label>\r" +
     "\n" +
-    "\r" +
-    "\n" +
     "                                    <input\r" +
     "\n" +
     "                                        placeholder=\"{{filter.placeholder[0]}}\"\r" +
     "\n" +
     "                                        ng-model=\"filter.model['min']\"\r" +
     "\n" +
-    "                                        aria-label=\"{{filter.label}}\" />\r" +
+    "                                        aria-label=\"{{filter.label}}\"\r" +
+    "\n" +
+    "                                        ng-model-options=\"{debounce: 400}\"\r" +
+    "\n" +
+    "                                        ng-change=\"search()\" />\r" +
     "\n" +
     "                                 </md-input-container>\r" +
     "\n" +
@@ -1077,15 +1112,17 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <label>{{filter.label}}</label>\r" +
     "\n" +
-    "\r" +
-    "\n" +
     "                                    <input\r" +
     "\n" +
     "                                        placeholder=\"{{filter.placeholder[1]}}\"\r" +
     "\n" +
     "                                        ng-model=\"filter.model['max']\"\r" +
     "\n" +
-    "                                        aria-label=\"{{filter.label}}\" />\r" +
+    "                                        aria-label=\"{{filter.label}}\"\r" +
+    "\n" +
+    "                                        ng-model-options=\"{debounce: 400}\"\r" +
+    "\n" +
+    "                                        ng-change=\"search()\" />\r" +
     "\n" +
     "                                 </md-input-container>\r" +
     "\n" +
@@ -1105,7 +1142,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <label>{{filter.label}}</label>\r" +
     "\n" +
-    "                                    <md-datepicker ng-model=\"filter.model\"></md-datepicker>\r" +
+    "                                    <md-datepicker ng-model=\"filter.model\" ng-change=\"search()\"></md-datepicker>\r" +
     "\n" +
     "                                </md-datepicker-container>\r" +
     "\n" +
@@ -1117,7 +1154,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                    <md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"search()\">Search</md-button>\r" +
+    "                    <!--<md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"search()\">Search</md-button>-->\r" +
     "\n" +
     "                </div>\r" +
     "\n" +

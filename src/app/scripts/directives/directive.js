@@ -340,7 +340,6 @@
                     });
 
                     $scope.searchInputUpdate();
-                    $scope.extended_search = false;
                     reload();
                 }
 
@@ -354,7 +353,20 @@
 
                              if(filter.type=='select') {
 
-                                if(!filter.multiple) {
+                                if(filter.multiple) {
+
+                                    var values = [];
+                                    angular.forEach(value.split(','),function(item) {
+                                       var value = $filter('filter')(filter.values,{ value: item })[0];
+
+                                        if(value) {
+                                            values.push(value.name);
+                                        }
+                                    });
+
+                                    value = values.join(',');
+
+                                } else {
 
                                     value = $filter('filter')(filter.values,{ value: value })[0];
 
@@ -366,6 +378,7 @@
                                         value = filter.values[value];
                                     }                                    
                                 }
+
                             } else if(filter.type=='date') {
 
                                 var matches = value.match(/(\d{4}-\d{2}-\d{2})/);
@@ -411,7 +424,7 @@
                            
                             if(filter.type=='date') {
 
-                                filter.model = new Date(value);                                
+                                filter.model = new Date(value);
 
                                 if(value.match(/(\d{4}-\d{2}-\d{2})/)) {
                                     filter.model = new Date(filter.model.getTime() + (filter.model.getTimezoneOffset() * 60000));
@@ -423,7 +436,21 @@
                             
                             } else if(filter.type=='select') {
 
-                                if(!filter.multiple) {
+                                if(filter.multiple) {
+
+                                    var values = [];
+                                    angular.forEach(value.split(','),function(value) {
+
+                                        var item = $filter('filter')(filter.values,{ name: value },true)[0];
+
+                                        if(item) {
+                                            values.push(item.value);
+                                        }
+                                    });
+
+                                    filter.model = values;
+                                
+                                } else {
 
                                     var item = $filter('filter')(filter.values,{ name: value })[0];
 

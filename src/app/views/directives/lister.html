@@ -3,9 +3,12 @@
     <div layout="row" layout-align="start" class="search" ng-show="options.filters.length || options.topActions.length" layout-align=" end">
         <div ng-show="options.inline" layout="row" class="ng-hide inline-search" flex="grow">
             <div class="inline-search-input" flex="grow">
-                <md-input-container md-no-float>
-                    <input ng-model="searchinput" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput)" aria-label="Search" placeholder="Search"/>
-                </md-input-container>
+                <div layout="row">
+                    <md-icon>search</md-icon>
+                    <md-input-container md-no-float>                    
+                        <input ng-model="searchinput" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput)" aria-label="Search" placeholder="Search"/>
+                    </md-input-container>
+                </div>
 
                 <div class="ng-hide md-whiteframe-z2 filters" layout="column" ng-show="extended_search">
                     <div ng-repeat="filter in options.filters" class="filter filter-{{filter.type}}">
@@ -17,7 +20,7 @@
                         <div class="interface" ng-if="filter.type == 'select'">
 
                             <md-input-container class="md-block md-no-float" ng-show="filter.multiple">
-                                <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple">
+                                <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="search()">
                                     <md-option ng-repeat="item in filter.values" value="{{item.value}}">
                                         {{item.name}}
                                     </md-option>
@@ -25,7 +28,7 @@
                             </md-input-container>
 
                             <md-input-container class="md-block md-no-float" ng-show="!filter.multiple">
-                                <md-select ng-model="filter.model" aria-label="select">
+                                <md-select ng-model="filter.model" aria-label="select" ng-change="search()">
                                     <md-option ng-repeat="item in filter.values" value="{{item.value}}">
                                         {{item.name}}
                                     </md-option>
@@ -33,9 +36,9 @@
                             </md-input-container>
                         </div>
 
-                        <div class="interface " ng-if="filter.type == 'text'" >
+                        <div class="interface " ng-if="filter.type == 'text'">
                             <md-input-container class="md-no-float md-block">
-                                <input ng-model="filter.model" aria-label="{{filter.label}}" />
+                                <input ng-model="filter.model" aria-label="{{filter.label}}" ng-model-options="{debounce: 400}" ng-change="search()"/>
                             </md-input-container>
                         </div>
                         
@@ -45,21 +48,23 @@
                                  <md-input-container class="filter-range-min">
 
                                     <label>{{filter.label}}</label>
-
                                     <input
                                         placeholder="{{filter.placeholder[0]}}"
                                         ng-model="filter.model['min']"
-                                        aria-label="{{filter.label}}" />
+                                        aria-label="{{filter.label}}"
+                                        ng-model-options="{debounce: 400}"
+                                        ng-change="search()" />
                                  </md-input-container>
 
                                  <md-input-container class="filter-range-max">
 
                                     <label>{{filter.label}}</label>
-
                                     <input
                                         placeholder="{{filter.placeholder[1]}}"
                                         ng-model="filter.model['max']"
-                                        aria-label="{{filter.label}}" />
+                                        aria-label="{{filter.label}}"
+                                        ng-model-options="{debounce: 400}"
+                                        ng-change="search()" />
                                  </md-input-container>
                             </span>
                         </div>
@@ -69,13 +74,13 @@
                             <span class="md-block">                
                                 <md-datepicker-container>
                                     <label>{{filter.label}}</label>
-                                    <md-datepicker ng-model="filter.model"></md-datepicker>
+                                    <md-datepicker ng-model="filter.model" ng-change="search()"></md-datepicker>
                                 </md-datepicker-container>
                             </span>
                         </div>
                     </div>
 
-                    <md-button class="md-button md-raised md-accent search-button" ng-click="search()">Search</md-button>
+                    <!--<md-button class="md-button md-raised md-accent search-button" ng-click="search()">Search</md-button>-->
                 </div>
             </div>
             <md-button ng-click="toggleFilters()" class="md-icon-button toggle-filters" aria-label="Search filters">
