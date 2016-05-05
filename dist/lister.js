@@ -365,7 +365,7 @@
 
                                     var values = [];
                                     angular.forEach(value.split(','),function(item) {
-                                       var value = $filter('filter')(filter.values,{ value: item })[0];
+                                       var value = $filter('filter')(filter.values,{ value: item },true)[0];
 
                                         if(value) {
                                             values.push(value.name);
@@ -376,7 +376,7 @@
 
                                 } else {
 
-                                    value = $filter('filter')(filter.values,{ value: value })[0];
+                                    value = $filter('filter')(filter.values,{ value: value },true)[0];
 
                                     if(value) {
                                         value = value.name;
@@ -460,7 +460,7 @@
                                 
                                 } else {
 
-                                    var item = $filter('filter')(filter.values,{ name: value })[0];
+                                    var item = $filter('filter')(filter.values,{ name: value },true)[0];
 
                                     if(item) {
                                        filter.model = item.value; 
