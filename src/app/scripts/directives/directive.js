@@ -218,6 +218,16 @@
                     }
                 }
 
+                $scope.actionsShow = function(data) {
+                    var show = true;
+                    
+                    angular.forEach($scope.options.actions,function(action) {
+                        show &= action.show(data);
+                    });
+
+                    return show;
+                }
+                
                 $scope.actionClick = function(action, item, event) {
 
                     var index = $scope.data.indexOf(item);
