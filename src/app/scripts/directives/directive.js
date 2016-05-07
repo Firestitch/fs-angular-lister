@@ -632,7 +632,7 @@
                     if(options.persist) {
 
                         var models = {};
-                        angular.forEach(options.filters,function(filter) {                            
+                        angular.forEach(options.filters,function(filter) {
                             models[filter.name] = filter.model;
                         });
 

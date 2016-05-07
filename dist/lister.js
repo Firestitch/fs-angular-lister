@@ -218,6 +218,16 @@
                     }
                 }
 
+                $scope.actionsShow = function(data) {
+                    var show = true;
+                    
+                    angular.forEach($scope.options.actions,function(action) {
+                        show &= action.show(data);
+                    });
+
+                    return show;
+                }
+                
                 $scope.actionClick = function(action, item, event) {
 
                     var index = $scope.data.indexOf(item);
@@ -1434,7 +1444,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\r" +
     "\n" +
-    "                        <md-menu>\r" +
+    "                        <md-menu ng-show=\"actionsShow(item.object)\">\r" +
     "\n" +
     "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
     "\n" +
