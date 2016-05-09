@@ -219,10 +219,12 @@
                 }
 
                 $scope.actionsShow = function(data) {
-                    var show = true;
                     
+                    var show = false;
                     angular.forEach($scope.options.actions,function(action) {
-                        show &= action.show(data);
+                        if(action.show(data)) {
+                            show = true;
+                        }
                     });
 
                     return show;
@@ -632,7 +634,7 @@
                     if(options.persist) {
 
                         var models = {};
-                        angular.forEach(options.filters,function(filter) {                            
+                        angular.forEach(options.filters,function(filter) {
                             models[filter.name] = filter.model;
                         });
 
