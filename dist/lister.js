@@ -219,7 +219,7 @@
                 }
 
                 $scope.actionsShow = function(data) {
-                    
+
                     var show = false;
                     angular.forEach($scope.options.actions,function(action) {
                         if(action.show(data)) {
@@ -377,11 +377,11 @@
 
                                     var values = [];
                                     angular.forEach(value.split(','),function(item) {
-                                       var value = $filter('filter')(filter.values,{ value: item },true)[0];
-
-                                        if(value) {
-                                            values.push(value.name);
-                                        }
+                                        angular.forEach(filter.values,function(filter_item) {
+                                            if(!String(filter_item.value).localeCompare(String(item))) {
+                                                values.push(filter_item.name);
+                                            }
+                                        });
                                     });
 
                                     value = values.join(',');
