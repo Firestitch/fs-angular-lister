@@ -387,16 +387,12 @@
                                     value = values.join(',');
 
                                 } else {
-
-                                    value = $filter('filter')(filter.values,{ value: value },true)[0];
-
-                                    if(value) {
-                                        value = value.name;
-                                    }
                                     
-                                    if(!value) {
-                                        value = filter.values[value];
-                                    }                                    
+                                    angular.forEach(filter.values,function(filter_item) {
+                                        if(!String(filter_item.value).localeCompare(String(value))) {
+                                            value = filter_item.name;
+                                        }
+                                    });                                    
                                 }
 
                             } else if(filter.type=='date') {
