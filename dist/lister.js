@@ -611,7 +611,7 @@
 
                     opts = opts || {};
 
-                    if($scope.options.paging.infinite && !opts.clear) {
+                    if($scope.options.paging.infinite && opts.clear===false) {
                         if($scope.options.paging.records <= ($scope.options.paging.limit * $scope.options.paging.page)) {
                             return;
                         }
