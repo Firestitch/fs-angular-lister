@@ -182,6 +182,7 @@
                 $scope.numeric = numeric;
                 $scope.extended_search = false;
                 $scope.searchinput = '';
+                $scope.paged = null;
                 
                 $scope.groupedFilters = function() {
 
@@ -611,8 +612,12 @@
 
                     opts = opts || {};
 
-                    if($scope.options.paging.infinite && opts.clear===false) {
-                        if($scope.options.paging.records <= ($scope.options.paging.limit * $scope.options.paging.page)) {
+                    if(opts.clear===true) {
+                        $scope.paged = null;
+                    }
+
+                    if($scope.options.paging.infinite && $scope.paged) {
+                        if($scope.paged.records <= ($scope.paged.limit * $scope.paged.page)) {
                             return;
                         }
                     }
@@ -738,6 +743,8 @@
                     } else {
                         $scope.paging.enabled = false;
                     }
+
+                    $scope.paged = paging;
 
                     if($scope.options.paging.infinite) {                       
                         $scope.paging.page++;
