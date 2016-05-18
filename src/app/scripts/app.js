@@ -19,15 +19,15 @@ angular
     .when('/page', {
         templateUrl: 'views/page.html'
     })
-    .when('/lister', {
-        templateUrl: 'views/lister.html',
-        controller: 'ListerCtrl',       
+    .when('/demo', {
+        templateUrl: 'views/demo.html',
+        controller: 'DemoCtrl',       
     })
     .when('/404', {
         templateUrl: 'views/404.html'
     })
     .otherwise({
-        redirectTo: '/lister'
+        redirectTo: '/demo'
     });
 
     $cryptoProvider.setCryptographyKey('abc123');

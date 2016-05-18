@@ -2,18 +2,21 @@
 
 
 angular.module('app')
-  .controller('ListerCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog, $q) {
+  .controller('DemoCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog, $q) {
 
-    $scope.click = click;
     $scope.modal = modal;
     $scope.listerInstance = {};
     
-    function click() {
+    $scope.load = function() {
         $scope.listerInstance.load();
     }
 
+    $scope.reload = function() {
+        $scope.listerInstance.reload();
+    }
+
     function modal() {
-        fsModal.show('ListerCtrl',
+        fsModal.show('DemoCtrl',
                     'views/listermodal.html'
                     );     
     }
@@ -33,7 +36,7 @@
             
             //return setTimeout(function() { cb([]); }, 2000); 
 
-            query.count = 300;
+            query.count = 5;
 
             return DummyService.gets(query,{ url: 'http://service.firestitch.com/api/', key: 'objects', datapaging: true });
 
@@ -54,7 +57,7 @@
         paging: {
 
             infinite: true,
-            limit: 5
+            limit: 6
         },
         
         //paging: false,

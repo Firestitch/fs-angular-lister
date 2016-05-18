@@ -172,7 +172,6 @@
                 $scope.options = options;
                 $scope.paging = options.paging;
                 $scope.topActions = options.topActions;
-                $scope.load = load;
                 $scope.loading = false;
                 $scope.checked = [];
                 $scope.selectToogled = false;
@@ -457,7 +456,7 @@
                                     var values = [];
                                     angular.forEach(value.split(','),function(value) {
 
-                                        var item = $filter('filter')(filter.values,{ name: value },true)[0];
+                                        var item = $filter('filteri')(filter.values,{ name: value },true)[0];
 
                                         if(item) {
                                             values.push(item.value);
@@ -468,7 +467,7 @@
                                 
                                 } else {
 
-                                    var item = $filter('filter')(filter.values,{ name: value },true)[0];
+                                    var item = $filter('filteri')(filter.values,{ name: value },true)[0];
 
                                     if(item) {
                                        filter.model = item.value; 
@@ -587,7 +586,7 @@
                     }
                     
                     if(!action.show) {
-                        action.show = function(){ return true }
+                        action.show = function() { return true }
                     }
                     
                     return action;
@@ -610,9 +609,14 @@
                     if($scope.loading)
                         return;
 
-                    $scope.selectionsClear();
-
                     opts = opts || {};
+
+                    if($scope.options.paging.infinite && !opts.clear) {
+                        if($scope.options.paging.records <= ($scope.options.paging.limit * $scope.options.paging.page)) {
+                            return;
+                        }
+                    }
+                    
                     if(opts.page) {
 
                         if(opts.clear) {
@@ -624,6 +628,8 @@
 
                         $scope.paging.page = opts.page;
                     }
+
+                    $scope.selectionsClear();          
 
                     var query = filterValues();
 
@@ -733,9 +739,9 @@
                         $scope.paging.enabled = false;
                     }
 
-                    if($scope.options.paging.infinite) {
+                    if($scope.options.paging.infinite) {                       
                         $scope.paging.page++;
-
+                       
                     } else if(paging) {
                         $scope.paging.page = paging.page;
                     }
@@ -781,7 +787,7 @@
                 $scope.searchInputUpdate();
 
                 if(options.load) {
-                    load();
+                    reload();
                 }
 
                 if($scope.lsInstance)
