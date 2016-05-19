@@ -1063,7 +1063,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <md-input-container class=\"md-block md-no-float\" ng-show=\"filter.multiple\">\r" +
+    "                            <md-input-container class=\"md-no-float\" ng-show=\"filter.multiple\">\r" +
     "\n" +
     "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"search()\">\r" +
     "\n" +
@@ -1079,7 +1079,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <md-input-container class=\"md-block md-no-float\" ng-show=\"!filter.multiple\">\r" +
+    "                            <md-input-container class=\"md-no-float\" ng-show=\"!filter.multiple\">\r" +
     "\n" +
     "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"search()\">\r" +
     "\n" +
@@ -1099,7 +1099,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        <div class=\"interface \" ng-if=\"filter.type == 'text'\">\r" +
     "\n" +
-    "                            <md-input-container class=\"md-no-float md-block\">\r" +
+    "                            <md-input-container class=\"md-no-float\">\r" +
     "\n" +
     "                                <input ng-model=\"filter.model\" aria-label=\"{{filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-change=\"search()\"/>\r" +
     "\n" +
