@@ -38,11 +38,11 @@
 
             query.count = 22;
 
-            return DummyService.gets(query,{ url: 'http://service.firestitch.com/api/', key: 'objects', datapaging: true });
+            return DummyService.gets(query,{ url: 'https://service.firestitch.com/api/', key: 'objects', datapaging: true });
 
             
             DummyService
-                .gets(query,{ url: 'http://spec.local.firestitch.com/api/' })
+                .gets(query,{ url: 'https://spec.local.firestitch.com/api/' })
                 .then(function(result) {
                     cb(result.objects,result.paging);
                 })

@@ -648,12 +648,14 @@
                         persist[options.persist] = models;
                     }
 
-                    if($scope.paging.page!==undefined) {
+                    if($scope.paging.enabled) {
+                        if($scope.paging.page!==undefined) {
                         query.page = $scope.paging.page;
-                    }
+                        }
 
-                    if($scope.paging.limit!==undefined) {
-                        query.limit = $scope.paging.limit;
+                        if($scope.paging.limit!==undefined) {
+                            query.limit = $scope.paging.limit;
+                        }
                     }
 
                     if($scope.order) {
@@ -835,7 +837,7 @@
                 widthHolders();
 
                 $scope.max_bottom = 0;
-                if($scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
+                if($scope.lsOptions && $scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
 
                     element = angular.element(element[0].children[0]);
 

@@ -648,12 +648,14 @@
                         persist[options.persist] = models;
                     }
 
-                    if($scope.paging.page!==undefined) {
+                    if($scope.paging.enabled) {
+                        if($scope.paging.page!==undefined) {
                         query.page = $scope.paging.page;
-                    }
+                        }
 
-                    if($scope.paging.limit!==undefined) {
-                        query.limit = $scope.paging.limit;
+                        if($scope.paging.limit!==undefined) {
+                            query.limit = $scope.paging.limit;
+                        }
                     }
 
                     if($scope.order) {
@@ -835,7 +837,7 @@
                 widthHolders();
 
                 $scope.max_bottom = 0;
-                if($scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
+                if($scope.lsOptions && $scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
 
                     element = angular.element(element[0].children[0]);
 
@@ -1345,6 +1347,12 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    <div class=\"results\">\r" +
     "\n" +
+    "        <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\r" +
+    "\n" +
+    "            <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r" +
+    "\n" +
+    "        </div>    \r" +
+    "\n" +
     "        <div class=\"lister-table\">\r" +
     "\n" +
     "            <div class=\"lister-head\">\r" +
@@ -1426,12 +1434,6 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "            </div>\r" +
     "\n" +
     "            <div class=\"lister-body\">\r" +
-    "\n" +
-    "                <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\r" +
-    "\n" +
-    "                    <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r" +
-    "\n" +
-    "                </div>\r" +
     "\n" +
     "                <div class=\"lister-row\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
     "\n" +
