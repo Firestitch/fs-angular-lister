@@ -932,13 +932,13 @@
 
                             el.on('click',function(event) {
 
+                                var el = angular.element(this);
+                                
                                 if(event.isDefaultPrevented() || el.attr('href').match(/^http/)) {
                                     return;
                                 }
                                 
-                                if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;
-
-                                var el = angular.element(this);
+                                if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;                                
 
                                 if(event.ctrlKey) {
 
