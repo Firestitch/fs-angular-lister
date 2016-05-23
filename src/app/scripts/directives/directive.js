@@ -135,8 +135,17 @@
                         filter.placeholder = ['Min','Max'];
                     }
 
-                    if(filter.type=='select' && filter.default==undefined) {
-                        filter.model = '__all';
+                    if(filter.type=='select') {
+
+                        if(filter.multiple) {
+                            if(!angular.isArray(filter.default)) {
+                                filter.model = [];
+                            }
+                        } else {
+                            if(filter.default==undefined) {
+                                filter.model = '__all';
+                            }
+                        }
                     }
                 });
 
@@ -892,7 +901,7 @@
         }
     }
 
-    angular.module('fs-angular-lister',[])
+    angular.module('fs-angular-lister',['fs-angular-store'])
     .directive('lister',ListerDirective)
     .directive('fsLister',ListerDirective)
     .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope', function ($compile, $injector, $location, $timeout, $rootScope) {        

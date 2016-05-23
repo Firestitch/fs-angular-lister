@@ -8,8 +8,7 @@ angular
     'mdo-angular-cryptography',
     'fs-angular-lister',
     'fs-angular-modal',
-    'fs-angular-api',
-    'fs-angular-store'
+    'fs-angular-api'
 ])
 .config(function ($routeProvider, $cryptoProvider, $mdThemingProvider, fsListerProvider) {
     

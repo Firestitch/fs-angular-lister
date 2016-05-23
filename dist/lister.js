@@ -135,8 +135,17 @@
                         filter.placeholder = ['Min','Max'];
                     }
 
-                    if(filter.type=='select' && filter.default==undefined) {
-                        filter.model = '__all';
+                    if(filter.type=='select') {
+
+                        if(filter.multiple) {
+                            if(!angular.isArray(filter.default)) {
+                                filter.model = [];
+                            }
+                        } else {
+                            if(filter.default==undefined) {
+                                filter.model = '__all';
+                            }
+                        }
                     }
                 });
 
@@ -892,7 +901,7 @@
         }
     }
 
-    angular.module('fs-angular-lister',[])
+    angular.module('fs-angular-lister',['fs-angular-store'])
     .directive('lister',ListerDirective)
     .directive('fsLister',ListerDirective)
     .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope', function ($compile, $injector, $location, $timeout, $rootScope) {        
@@ -1063,7 +1072,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <md-input-container class=\"md-no-float\" ng-show=\"filter.multiple\">\r" +
+    "                            <md-input-container class=\"md-no-float\" ng-if=\"filter.multiple\">\r" +
     "\n" +
     "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"search()\">\r" +
     "\n" +
@@ -1079,7 +1088,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <md-input-container class=\"md-no-float\" ng-show=\"!filter.multiple\">\r" +
+    "                            <md-input-container class=\"md-no-float\" ng-if=\"!filter.multiple\">\r" +
     "\n" +
     "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"search()\">\r" +
     "\n" +
