@@ -710,31 +710,35 @@
                     load();
                 }
 
-                function callback(data, paging) {
+                function callback(objects, paging) {
                     
-                    log("dataCallback()",data,paging);
+                    log("dataCallback()",objects,paging);
 
                     if(!$scope.options.paging.infinite) {
                         $scope.data = [];
                     }
 
-                    angular.forEach(data,function(object) { 
+                    var ol = objects.length;
+                    for (var o = 0; o < ol; o++) { 
 
+                        var cl = options.columns.length;
                         var cols = [];
-                        angular.forEach(options.columns,function(col) {
-
+                        
+                        for (var c = 0; c < cl; c++) {
+                        
+                            var col = options.columns[c];
                             var value = col.value;
 
                             if(typeof col.value =='function') {
-                                value = col.value(object);
+                                value = col.value(objects[o]);
                             }
 
-                            cols.push({ column: col, value: value, data: object });
-                        });
+                            cols.push({ column: col, value: value });
+                        }
 
-                        $scope.data.push({ cols: cols, object: object });
-                    });     
-
+                        $scope.data.push({ cols: cols, object: objects[o] });
+                    }    
+                    
                     $scope.paging.records = null;
 
                     if(paging) {
@@ -912,8 +916,7 @@
                     },
                     link: function($scope, element, attrs, ctrl) {
 
-                        var scope = $rootScope.$new();
-                        scope.data = $scope.data;
+                        var scope = $scope;
 
                         if($scope.column.scope) {
                             scope = angular.extend($scope,$scope.column.scope);
@@ -935,11 +938,10 @@
                         element.html($scope.value);
                         $compile(element.contents())(scope);
                        
-                        angular.forEach(element.find('a'),function(el) {
+                        var elements = element.find('a');
+                        for(var i=0;i<elements.length;i++) {
 
-                            el = angular.element(el);                        
-
-                            el.on('click',function(event) {
+                            angular.element(elements[i]).on('click',function(event) {
 
                                 var el = angular.element(this);
                                 
@@ -966,7 +968,7 @@
 
                                 return false;
                             });
-                        });
+                        }
                     }
         }
     }])

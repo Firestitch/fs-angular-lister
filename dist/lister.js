@@ -710,31 +710,35 @@
                     load();
                 }
 
-                function callback(data, paging) {
+                function callback(objects, paging) {
                     
-                    log("dataCallback()",data,paging);
+                    log("dataCallback()",objects,paging);
 
                     if(!$scope.options.paging.infinite) {
                         $scope.data = [];
                     }
 
-                    angular.forEach(data,function(object) { 
+                    var ol = objects.length;
+                    for (var o = 0; o < ol; o++) { 
 
+                        var cl = options.columns.length;
                         var cols = [];
-                        angular.forEach(options.columns,function(col) {
-
+                        
+                        for (var c = 0; c < cl; c++) {
+                        
+                            var col = options.columns[c];
                             var value = col.value;
 
                             if(typeof col.value =='function') {
-                                value = col.value(object);
+                                value = col.value(objects[o]);
                             }
 
-                            cols.push({ column: col, value: value, data: object });
-                        });
+                            cols.push({ column: col, value: value });
+                        }
 
-                        $scope.data.push({ cols: cols, object: object });
-                    });     
-
+                        $scope.data.push({ cols: cols, object: objects[o] });
+                    }    
+                    
                     $scope.paging.records = null;
 
                     if(paging) {
@@ -757,7 +761,7 @@
 
                     $scope.paged = paging;
 
-                    if($scope.options.paging.infinite) {                       
+                    if($scope.options.paging.infinite) {
                         $scope.paging.page++;
                        
                     } else if(paging) {
@@ -912,8 +916,7 @@
                     },
                     link: function($scope, element, attrs, ctrl) {
 
-                        var scope = $rootScope.$new();
-                        scope.data = $scope.data;
+                        var scope = $scope;
 
                         if($scope.column.scope) {
                             scope = angular.extend($scope,$scope.column.scope);
@@ -935,11 +938,10 @@
                         element.html($scope.value);
                         $compile(element.contents())(scope);
                        
-                        angular.forEach(element.find('a'),function(el) {
+                        var elements = element.find('a');
+                        for(var i=0;i<elements.length;i++) {
 
-                            el = angular.element(el);                        
-
-                            el.on('click',function(event) {
+                            angular.element(elements[i]).on('click',function(event) {
 
                                 var el = angular.element(this);
                                 
@@ -966,7 +968,7 @@
 
                                 return false;
                             });
-                        });
+                        }
                     }
         }
     }])
@@ -1034,9 +1036,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <div layout=\"row\" layout-align=\"start\" class=\"search\" ng-show=\"options.filters.length || options.topActions.length\" layout-align=\" end\">\r" +
+    "    <div layout=\"row\" layout-align=\"start\" class=\"search\" ng-if=\"options.filters.length || options.topActions.length\" layout-align=\" end\">\r" +
     "\n" +
-    "        <div ng-show=\"options.inline\" layout=\"row\" class=\"ng-hide inline-search\" flex=\"grow\">\r" +
+    "        <div ng-if=\"options.inline\" layout=\"row\" class=\"inline-search\" flex=\"grow\">\r" +
     "\n" +
     "            <div class=\"inline-search-input\" flex=\"grow\">\r" +
     "\n" +
@@ -1062,7 +1064,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        <div class=\"filter-label\">\r" +
     "\n" +
-    "                            {{filter.label}}\r" +
+    "                            {{::filter.label}}\r" +
     "\n" +
     "                        </div>\r" +
     "\n" +
@@ -1076,9 +1078,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"search()\">\r" +
     "\n" +
-    "                                    <md-option ng-repeat=\"item in filter.values\" value=\"{{item.value}}\">\r" +
+    "                                    <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
     "\n" +
-    "                                        {{item.name}}\r" +
+    "                                        {{::item.name}}\r" +
     "\n" +
     "                                    </md-option>\r" +
     "\n" +
@@ -1092,9 +1094,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"search()\">\r" +
     "\n" +
-    "                                    <md-option ng-repeat=\"item in filter.values\" value=\"{{item.value}}\">\r" +
+    "                                    <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
     "\n" +
-    "                                        {{item.name}}\r" +
+    "                                        {{::item.name}}\r" +
     "\n" +
     "                                    </md-option>\r" +
     "\n" +
@@ -1110,7 +1112,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                            <md-input-container class=\"md-no-float\">\r" +
     "\n" +
-    "                                <input ng-model=\"filter.model\" aria-label=\"{{filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-change=\"search()\"/>\r" +
+    "                                <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-change=\"search()\"/>\r" +
     "\n" +
     "                            </md-input-container>\r" +
     "\n" +
@@ -1128,15 +1130,15 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                                    <label>{{filter.label}}</label>\r" +
+    "                                    <label>{{::filter.label}}</label>\r" +
     "\n" +
     "                                    <input\r" +
     "\n" +
-    "                                        placeholder=\"{{filter.placeholder[0]}}\"\r" +
+    "                                        placeholder=\"{{::filter.placeholder[0]}}\"\r" +
     "\n" +
     "                                        ng-model=\"filter.model['min']\"\r" +
     "\n" +
-    "                                        aria-label=\"{{filter.label}}\"\r" +
+    "                                        aria-label=\"{{::filter.label}}\"\r" +
     "\n" +
     "                                        ng-model-options=\"{debounce: 400}\"\r" +
     "\n" +
@@ -1150,15 +1152,15 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                                    <label>{{filter.label}}</label>\r" +
+    "                                    <label>{{::filter.label}}</label>\r" +
     "\n" +
     "                                    <input\r" +
     "\n" +
-    "                                        placeholder=\"{{filter.placeholder[1]}}\"\r" +
+    "                                        placeholder=\"{{::filter.placeholder[1]}}\"\r" +
     "\n" +
     "                                        ng-model=\"filter.model['max']\"\r" +
     "\n" +
-    "                                        aria-label=\"{{filter.label}}\"\r" +
+    "                                        aria-label=\"{{::filter.label}}\"\r" +
     "\n" +
     "                                        ng-model-options=\"{debounce: 400}\"\r" +
     "\n" +
@@ -1180,7 +1182,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                <md-datepicker-container>\r" +
     "\n" +
-    "                                    <label>{{filter.label}}</label>\r" +
+    "                                    <label>{{::filter.label}}</label>\r" +
     "\n" +
     "                                    <md-datepicker ng-model=\"filter.model\" ng-change=\"search()\"></md-datepicker>\r" +
     "\n" +
@@ -1214,21 +1216,21 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "        <div ng-show=\"!options.inline\" class=\"ng-hide full-search\" flex=\"grow\">\r" +
+    "        <div ng-if=\"!options.inline\" class=\"full-search\" flex=\"grow\">\r" +
     "\n" +
     "            <div ng-repeat=\"filters in groupedFilters\" layout=\"row\">\r" +
     "\n" +
-    "                <div ng-repeat=\"filter in filters\" class=\"filter filter-{{filter.type}}\">\r" +
+    "                <div ng-repeat=\"filter in filters\" class=\"filter filter-{{::filter.type}}\">\r" +
     "\n" +
     "                    <md-input-container ng-if=\"filter.type == 'select'\">\r" +
     "\n" +
-    "                        <label>{{filter.label}}</label>\r" +
+    "                        <label>{{::filter.label}}</label>\r" +
     "\n" +
     "                        <md-select ng-model=\"filter.model\" ng-change=\"filterChange(filter)\">\r" +
     "\n" +
-    "                            <md-option ng-repeat=\"item in filter.values\" value=\"{{item.value}}\">\r" +
+    "                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
     "\n" +
-    "                                {{item.name}}\r" +
+    "                                {{::item.name}}\r" +
     "\n" +
     "                            </md-option>\r" +
     "\n" +
@@ -1238,9 +1240,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <md-input-container class=\"md-input-has-placeholder\" ng-if=\"filter.type == 'text'\">\r" +
     "\n" +
-    "                        <label>{{filter.label}}</label>\r" +
+    "                        <label>{{::filter.label}}</label>\r" +
     "\n" +
-    "                        <input ng-model=\"filter.model\" ng-model-options=\"{debounce: 300}\" ng-change=\"filterChange(filter)\" aria-label=\"{{filter.label}}\" />\r" +
+    "                        <input ng-model=\"filter.model\" ng-model-options=\"{debounce: 300}\" ng-change=\"filterChange(filter)\" aria-label=\"{{::filter.label}}\" />\r" +
     "\n" +
     "                    </md-input-container>\r" +
     "\n" +
@@ -1250,13 +1252,13 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <label>{{filter.label}}</label>\r" +
+    "                            <label>{{::filter.label}}</label>\r" +
     "\n" +
     "\r" +
     "\n" +
     "                            <input\r" +
     "\n" +
-    "                                placeholder=\"{{filter.placeholder[0]}}\"\r" +
+    "                                placeholder=\"{{::filter.placeholder[0]}}\"\r" +
     "\n" +
     "                                ng-model=\"filter.model['min']\"\r" +
     "\n" +
@@ -1264,7 +1266,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                ng-change=\"filterChange(filter)\"\r" +
     "\n" +
-    "                                aria-label=\"{{filter.label}}\" />\r" +
+    "                                aria-label=\"{{::filter.label}}\" />\r" +
     "\n" +
     "                         </md-input-container>\r" +
     "\n" +
@@ -1274,13 +1276,13 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <label>{{filter.label}}</label>\r" +
+    "                            <label>{{::filter.label}}</label>\r" +
     "\n" +
     "\r" +
     "\n" +
     "                            <input\r" +
     "\n" +
-    "                                placeholder=\"{{filter.placeholder[1]}}\"\r" +
+    "                                placeholder=\"{{::filter.placeholder[1]}}\"\r" +
     "\n" +
     "                                ng-model=\"filter.model['max']\"\r" +
     "\n" +
@@ -1288,7 +1290,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                ng-change=\"filterChange(filter)\"\r" +
     "\n" +
-    "                                aria-label=\"{{filter.label}}\" />\r" +
+    "                                aria-label=\"{{::filter.label}}\" />\r" +
     "\n" +
     "                         </md-input-container>\r" +
     "\n" +
@@ -1298,7 +1300,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        <md-datepicker-container>\r" +
     "\n" +
-    "                            <label>{{filter.label}}</label>\r" +
+    "                            <label>{{::filter.label}}</label>\r" +
     "\n" +
     "                            <md-datepicker ng-model=\"filter.model\" ng-change=\"filterChange(filter)\"></md-datepicker>\r" +
     "\n" +
@@ -1320,9 +1322,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        <div class=\"top-actions\">\r" +
     "\n" +
-    "            <md-button ng-repeat=\"action in topActions\" ng-show=\"!action.more\" ng-click=\"action.click($event)\" class=\"ng-hide md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
+    "            <md-button ng-repeat=\"action in topActions\" ng-if=\"!action.more\" ng-click=\"action.click($event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{::action.label}}</md-button>\r" +
     "\n" +
-    "            <md-menu ng-show=\"(topActions | filter:{ more: true }).length > 0\">\r" +
+    "            <md-menu ng-if=\"(topActions | filter:{ more: true }).length > 0\">\r" +
     "\n" +
     "                <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\">\r" +
     "\n" +
@@ -1332,13 +1334,13 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <md-menu-content>\r" +
     "\n" +
-    "                    <md-menu-item ng-repeat=\"action in topActions\" ng-show=\"action.more\">\r" +
+    "                    <md-menu-item ng-repeat=\"action in topActions\" ng-if=\"action.more\">\r" +
     "\n" +
     "                        <md-button ng-click=\"action.click($event)\">\r" +
     "\n" +
-    "                            <md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
+    "                            <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
     "\n" +
-    "                            {{action.label}}\r" +
+    "                            {{::action.label}}\r" +
     "\n" +
     "                        </md-button>\r" +
     "\n" +
@@ -1352,7 +1354,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <div ng-show=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records ng-hide\">{{paging.records}} Records</div>\r" +
+    "    <div ng-if=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records\">{{paging.records}} Records</div>\r" +
     "\n" +
     "    <div class=\"results\">\r" +
     "\n" +
@@ -1368,7 +1370,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"lister-row\">\r" +
     "\n" +
-    "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-show=\"options.selection\">\r" +
+    "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection\">\r" +
     "\n" +
     "                       \r" +
     "\n" +
@@ -1388,9 +1390,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
     "\n" +
-    "                                        <md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
+    "                                        <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
     "\n" +
-    "                                        {{action.label}}\r" +
+    "                                        {{::action.label}}\r" +
     "\n" +
     "                                    </md-button>\r" +
     "\n" +
@@ -1402,7 +1404,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col lister-col-header {{column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"columnStyle(column)\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\r" +
+    "                    <div class=\"lister-col lister-col-header {{::column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"columnStyle(column)\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\r" +
     "\n" +
     "                        \r" +
     "\n" +
@@ -1412,7 +1414,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <div class=\"direction\" ng-show=\"column.order\">\r" +
+    "                            <div class=\"direction\" ng-if=\"column.order\">\r" +
     "\n" +
     "                                <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\">\r" +
     "\n" +
@@ -1432,7 +1434,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col lister-col-header\" ng-show=\"options.actions.length || options.action\">\r" +
+    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.actions.length || options.action\">\r" +
     "\n" +
     "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\r" +
     "\n" +
@@ -1446,19 +1448,19 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"lister-row\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
     "\n" +
-    "                    <div class=\"lister-col\" ng-show=\"options.selection\">\r" +
+    "                    <div class=\"lister-col\" ng-if=\"options.selection\">\r" +
     "\n" +
     "                        <md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\" class=\"select-checkbox\"></md-checkbox>\r" +
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col {{col.column.className}}\" ng-repeat=\"col in item.cols\" fs-lister-compile=\"col.value\" fs-column=\"col.column\" fs-data=\"item.object\" ng-style=\"columnStyle(col.column)\"></div>\r" +
+    "                    <div class=\"lister-col {{::col.column.className}}\" ng-repeat=\"col in item.cols\" fs-lister-compile=\"col.value\" fs-column=\"col.column\" fs-data=\"item.object\" ng-style=\"columnStyle(col.column)\"></div>\r" +
     "\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
     "\n" +
     "                        <md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
     "\n" +
-    "                            <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{options.action.icon}}</md-icon>\r" +
+    "                            <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{::options.action.icon}}</md-icon>\r" +
     "\n" +
     "                        </md-button>\r" +
     "\n" +
@@ -1466,7 +1468,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\r" +
     "\n" +
-    "                        <md-menu ng-show=\"actionsShow(item.object)\">\r" +
+    "                        <md-menu ng-if=\"actionsShow(item.object)\">\r" +
     "\n" +
     "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
     "\n" +
@@ -1480,9 +1482,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-button ng-click=\"actionClick(action,item,$event)\">\r" +
     "\n" +
-    "                                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\" ng-show=\"action.icon\">{{action.icon}}</md-icon>\r" +
+    "                                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\" ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
     "\n" +
-    "                                        {{action.label}}\r" +
+    "                                        {{::action.label}}\r" +
     "\n" +
     "                                    </md-button>\r" +
     "\n" +
@@ -1500,9 +1502,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        </div>\r" +
     "\n" +
-    "        <div class=\"status\" ng-show=\"options.paging.infinite\">\r" +
+    "        <div class=\"status\" ng-if=\"options.paging.infinite\">\r" +
     "\n" +
-    "            <div class=\"norecords ng-hide\" ng-show=\"!loading && options.norecords && !data.length\">{{options.norecords}}</div>\r" +
+    "            <div class=\"norecords ng-hide\" ng-show=\"!loading && options.norecords && !data.length\">{{::options.norecords}}</div>\r" +
     "\n" +
     "            <div class=\"progress-infinite ng-hide\" ng-show=\"loading\">\r" +
     "\n" +
@@ -1514,7 +1516,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <div class=\"paging ng-hide\" ng-show=\"paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
+    "    <div class=\"paging ng-hide\" ng-if=\"paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
     "\n" +
     "        <div class=\"records\">\r" +
     "\n" +
@@ -1572,7 +1574,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <md-option ng-repeat=\"limit in options.paging.limits\" value=\"{{limit}}\">\r" +
     "\n" +
-    "                        {{limit}} records\r" +
+    "                        {{::limit}} records\r" +
     "\n" +
     "                    </md-option>\r" +
     "\n" +

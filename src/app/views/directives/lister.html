@@ -1,7 +1,7 @@
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
 
-    <div layout="row" layout-align="start" class="search" ng-show="options.filters.length || options.topActions.length" layout-align=" end">
-        <div ng-show="options.inline" layout="row" class="ng-hide inline-search" flex="grow">
+    <div layout="row" layout-align="start" class="search" ng-if="options.filters.length || options.topActions.length" layout-align=" end">
+        <div ng-if="options.inline" layout="row" class="inline-search" flex="grow">
             <div class="inline-search-input" flex="grow">
                 <div layout="row">
                     <md-icon>search</md-icon>
@@ -14,23 +14,23 @@
                     <div ng-repeat="filter in options.filters" class="filter filter-{{filter.type}}">
                         
                         <div class="filter-label">
-                            {{filter.label}}
+                            {{::filter.label}}
                         </div>
 
                         <div class="interface" ng-if="filter.type == 'select'">
 
                             <md-input-container class="md-no-float" ng-if="filter.multiple">
                                 <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="search()">
-                                    <md-option ng-repeat="item in filter.values" value="{{item.value}}">
-                                        {{item.name}}
+                                    <md-option ng-repeat="item in filter.values" value="{{::item.value}}">
+                                        {{::item.name}}
                                     </md-option>
                                 </md-select>
                             </md-input-container>
 
                             <md-input-container class="md-no-float" ng-if="!filter.multiple">
                                 <md-select ng-model="filter.model" aria-label="select" ng-change="search()">
-                                    <md-option ng-repeat="item in filter.values" value="{{item.value}}">
-                                        {{item.name}}
+                                    <md-option ng-repeat="item in filter.values" value="{{::item.value}}">
+                                        {{::item.name}}
                                     </md-option>
                                 </md-select>
                             </md-input-container>
@@ -38,7 +38,7 @@
 
                         <div class="interface " ng-if="filter.type == 'text'">
                             <md-input-container class="md-no-float">
-                                <input ng-model="filter.model" aria-label="{{filter.label}}" ng-model-options="{debounce: 400}" ng-change="search()"/>
+                                <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-change="search()"/>
                             </md-input-container>
                         </div>
                         
@@ -47,22 +47,22 @@
                             <span layout="row" class="md-block">
                                  <md-input-container class="filter-range-min">
 
-                                    <label>{{filter.label}}</label>
+                                    <label>{{::filter.label}}</label>
                                     <input
-                                        placeholder="{{filter.placeholder[0]}}"
+                                        placeholder="{{::filter.placeholder[0]}}"
                                         ng-model="filter.model['min']"
-                                        aria-label="{{filter.label}}"
+                                        aria-label="{{::filter.label}}"
                                         ng-model-options="{debounce: 400}"
                                         ng-change="search()" />
                                  </md-input-container>
 
                                  <md-input-container class="filter-range-max">
 
-                                    <label>{{filter.label}}</label>
+                                    <label>{{::filter.label}}</label>
                                     <input
-                                        placeholder="{{filter.placeholder[1]}}"
+                                        placeholder="{{::filter.placeholder[1]}}"
                                         ng-model="filter.model['max']"
-                                        aria-label="{{filter.label}}"
+                                        aria-label="{{::filter.label}}"
                                         ng-model-options="{debounce: 400}"
                                         ng-change="search()" />
                                  </md-input-container>
@@ -73,7 +73,7 @@
 
                             <span class="md-block">                
                                 <md-datepicker-container>
-                                    <label>{{filter.label}}</label>
+                                    <label>{{::filter.label}}</label>
                                     <md-datepicker ng-model="filter.model" ng-change="search()"></md-datepicker>
                                 </md-datepicker-container>
                             </span>
@@ -90,49 +90,49 @@
             <div class="backdrop" ng-show="extended_search" ng-click="toggleFilters()"></div>
         </div>
 
-        <div ng-show="!options.inline" class="ng-hide full-search" flex="grow">
+        <div ng-if="!options.inline" class="full-search" flex="grow">
             <div ng-repeat="filters in groupedFilters" layout="row">
-                <div ng-repeat="filter in filters" class="filter filter-{{filter.type}}">
+                <div ng-repeat="filter in filters" class="filter filter-{{::filter.type}}">
                     <md-input-container ng-if="filter.type == 'select'">
-                        <label>{{filter.label}}</label>
+                        <label>{{::filter.label}}</label>
                         <md-select ng-model="filter.model" ng-change="filterChange(filter)">
-                            <md-option ng-repeat="item in filter.values" value="{{item.value}}">
-                                {{item.name}}
+                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}">
+                                {{::item.name}}
                             </md-option>
                         </md-select>
                     </md-input-container>
                     <md-input-container class="md-input-has-placeholder" ng-if="filter.type == 'text'">
-                        <label>{{filter.label}}</label>
-                        <input ng-model="filter.model" ng-model-options="{debounce: 300}" ng-change="filterChange(filter)" aria-label="{{filter.label}}" />
+                        <label>{{::filter.label}}</label>
+                        <input ng-model="filter.model" ng-model-options="{debounce: 300}" ng-change="filterChange(filter)" aria-label="{{::filter.label}}" />
                     </md-input-container>
                     <span ng-if="filter.type == 'range'" layout="row">
                          <md-input-container class="filter-range-min">
 
-                            <label>{{filter.label}}</label>
+                            <label>{{::filter.label}}</label>
 
                             <input
-                                placeholder="{{filter.placeholder[0]}}"
+                                placeholder="{{::filter.placeholder[0]}}"
                                 ng-model="filter.model['min']"
                                 ng-model-options="{debounce: 300}"
                                 ng-change="filterChange(filter)"
-                                aria-label="{{filter.label}}" />
+                                aria-label="{{::filter.label}}" />
                          </md-input-container>
 
                          <md-input-container class="filter-range-max">
 
-                            <label>{{filter.label}}</label>
+                            <label>{{::filter.label}}</label>
 
                             <input
-                                placeholder="{{filter.placeholder[1]}}"
+                                placeholder="{{::filter.placeholder[1]}}"
                                 ng-model="filter.model['max']"
                                 ng-model-options="{debounce: 300}"
                                 ng-change="filterChange(filter)"
-                                aria-label="{{filter.label}}" />
+                                aria-label="{{::filter.label}}" />
                          </md-input-container>
                     </span>
                     <span ng-if="filter.type == 'date'">                
                         <md-datepicker-container>
-                            <label>{{filter.label}}</label>
+                            <label>{{::filter.label}}</label>
                             <md-datepicker ng-model="filter.model" ng-change="filterChange(filter)"></md-datepicker>
                         </md-datepicker-container>
                     </span>
@@ -143,23 +143,23 @@
             </div>
         </div>
         <div class="top-actions">
-            <md-button ng-repeat="action in topActions" ng-show="!action.more" ng-click="action.click($event)" class="ng-hide md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{action.label}}</md-button>
-            <md-menu ng-show="(topActions | filter:{ more: true }).length > 0">
+            <md-button ng-repeat="action in topActions" ng-if="!action.more" ng-click="action.click($event)" class="md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{::action.label}}</md-button>
+            <md-menu ng-if="(topActions | filter:{ more: true }).length > 0">
                 <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
                     <md-icon>more_vert</md-icon>
                 </md-button>
                 <md-menu-content>
-                    <md-menu-item ng-repeat="action in topActions" ng-show="action.more">
+                    <md-menu-item ng-repeat="action in topActions" ng-if="action.more">
                         <md-button ng-click="action.click($event)">
-                            <md-icon ng-show="action.icon">{{action.icon}}</md-icon>
-                            {{action.label}}
+                            <md-icon ng-if="action.icon">{{::action.icon}}</md-icon>
+                            {{::action.label}}
                         </md-button>
                     </md-menu-item>
                 </md-menu-content>
             </md-menu>
         </div>
     </div>
-    <div ng-show="options.paging.infinite && numeric(paging.records)" class="infinite-records ng-hide">{{paging.records}} Records</div>
+    <div ng-if="options.paging.infinite && numeric(paging.records)" class="infinite-records">{{paging.records}} Records</div>
     <div class="results">
         <div class="progress-paged ng-hide" ng-show="loading && !options.paging.infinite">
             <md-progress-circular md-mode="indeterminate"></md-progress-circular>
@@ -167,7 +167,7 @@
         <div class="lister-table">
             <div class="lister-head">
                 <div class="lister-row">
-                    <div class="lister-col lister-col-header lister-select-toogle" ng-show="options.selection">
+                    <div class="lister-col lister-col-header lister-select-toogle" ng-if="options.selection">
                        
                         <md-checkbox ng-click="selectionsToggle(selectToogled);" ng-model="selectToogled"  ng-true-value="true" aria-label="Toggle Selection" class="select-checkbox"></md-checkbox>
                         <md-menu md-offset="6 32">
@@ -177,19 +177,19 @@
                             <md-menu-content>
                                 <md-menu-item ng-repeat="action in options.selection.actions">
                                     <md-button ng-click="selectMenu(action.click,$event)">
-                                        <md-icon ng-show="action.icon">{{action.icon}}</md-icon>
-                                        {{action.label}}
+                                        <md-icon ng-if="action.icon">{{::action.icon}}</md-icon>
+                                        {{::action.label}}
                                     </md-button>
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
                     </div>
-                    <div class="lister-col lister-col-header {{column.className}}" ng-repeat="column in options.columns" ng-style="columnStyle(column)" ng-class="{ order: column.order }" ng-click="headerClick(column)">
+                    <div class="lister-col lister-col-header {{::column.className}}" ng-repeat="column in options.columns" ng-style="columnStyle(column)" ng-class="{ order: column.order }" ng-click="headerClick(column)">
                         
                         <div class="wrap">
                             <span fs-lister-compile="column.title" fs-column="column" class="title"></span>
 
-                            <div class="direction" ng-show="column.order">
+                            <div class="direction" ng-if="column.order">
                                 <span ng-switch="order.direction" ng-show="order.name==column.order.name">
                                     <md-icon ng-switch-when="asc">arrow_downward</md-icon>
                                     <md-icon ng-switch-when="desc">arrow_upward</md-icon>
@@ -199,32 +199,32 @@
                         <div class="width-holder" ng-show="loading"></div>
 
                     </div>
-                    <div class="lister-col lister-col-header" ng-show="options.actions.length || options.action">
+                    <div class="lister-col lister-col-header" ng-if="options.actions.length || options.action">
                         <div class="width-holder" ng-show="loading"></div>
                     </div>
                 </div>
             </div>
             <div class="lister-body">
                 <div class="lister-row" ng-class="{ selected: checked[rowIndex] }" ng-repeat="item in data" ng-click="options.rowClick(item.object,$event); $event.stopPropagation();" ng-init="rowIndex = $index">
-                    <div class="lister-col" ng-show="options.selection">
+                    <div class="lister-col" ng-if="options.selection">
                         <md-checkbox ng-model="checked[rowIndex]" ng-true-value="1" ng-click="select(item)" aria-label="Select" class="select-checkbox"></md-checkbox>
                     </div>
-                    <div class="lister-col {{col.column.className}}" ng-repeat="col in item.cols" fs-lister-compile="col.value" fs-column="col.column" fs-data="item.object" ng-style="columnStyle(col.column)"></div>
+                    <div class="lister-col {{::col.column.className}}" ng-repeat="col in item.cols" fs-lister-compile="col.value" fs-column="col.column" fs-data="item.object" ng-style="columnStyle(col.column)"></div>
                     <div class="lister-col lister-actions" ng-if="options.action">
                         <md-button ng-click="actionClick(options.action,item,$event); $event.stopPropagation();" class="md-icon-button">
-                            <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{options.action.icon}}</md-icon>
+                            <md-icon md-font-set="material-icons" class="md-default-theme material-icons">{{::options.action.icon}}</md-icon>
                         </md-button>
                     </div>
                     <div class="lister-col lister-actions" ng-if="options.actions.length">
-                        <md-menu ng-show="actionsShow(item.object)">
+                        <md-menu ng-if="actionsShow(item.object)">
                             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
                                 <md-icon md-font-set="material-icons" class="md-default-theme material-icons">more_vert</md-icon>
                             </md-button>
                             <md-menu-content>
                                 <md-menu-item ng-if="action.show(item.object)" ng-repeat="action in options.actions">
                                     <md-button ng-click="actionClick(action,item,$event)">
-                                        <md-icon md-font-set="material-icons" class="md-default-theme material-icons" ng-show="action.icon">{{action.icon}}</md-icon>
-                                        {{action.label}}
+                                        <md-icon md-font-set="material-icons" class="md-default-theme material-icons" ng-if="action.icon">{{::action.icon}}</md-icon>
+                                        {{::action.label}}
                                     </md-button>
                                 </md-menu-item>
                             </md-menu-content>
@@ -233,14 +233,14 @@
                 </div>
             </div>
         </div>
-        <div class="status" ng-show="options.paging.infinite">
-            <div class="norecords ng-hide" ng-show="!loading && options.norecords && !data.length">{{options.norecords}}</div>
+        <div class="status" ng-if="options.paging.infinite">
+            <div class="norecords ng-hide" ng-show="!loading && options.norecords && !data.length">{{::options.norecords}}</div>
             <div class="progress-infinite ng-hide" ng-show="loading">
                 <md-progress-circular md-mode="indeterminate"></md-progress-circular>
             </div>
         </div>
     </div>
-    <div class="paging ng-hide" ng-show="paging.enabled && !options.paging.infinite" layout="row">
+    <div class="paging ng-hide" ng-if="paging.enabled && !options.paging.infinite" layout="row">
         <div class="records">
             <label>Total</label>
             <div>{{paging.records}} Records</div>
@@ -269,7 +269,7 @@
                 <label>Show</label>
                 <md-select ng-model="paging.limit" md-on-close="load()">
                     <md-option ng-repeat="limit in options.paging.limits" value="{{limit}}">
-                        {{limit}} records
+                        {{::limit}} records
                     </md-option>
                 </md-select>
             </md-input-container>
