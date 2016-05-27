@@ -28,6 +28,11 @@
         //persist: 'lister',
 
         //inline: true,
+        sort: {
+            stop: function($item,$partFrom,$partTo,$indexFrom,$indexTo) {
+                debugger;   
+            }
+        },
 
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));

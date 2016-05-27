@@ -396,7 +396,11 @@
 
                 &.menu {
                     padding: 3px;
-                }                
+                }
+
+                .sort-handle {
+                    cursor: pointer;
+                }              
             }
 
             .lister-row:nth-child(1) .lister-col {

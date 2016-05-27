@@ -72,7 +72,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope, fsLister, $location) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope, fsLister, $location, $templateCache) {
 
             /**
              * @ngdoc interface
@@ -733,7 +733,7 @@
                                 value = col.value(objects[o]);
                             }
 
-                            cols.push({ column: col, value: value });
+                            cols.push(value);
                         }
 
                         $scope.data.push({ cols: cols, object: objects[o] });
@@ -761,7 +761,7 @@
 
                     $scope.paged = paging;
 
-                    if($scope.options.paging.infinite) {
+                    if($scope.options.paging.infinite) {                       
                         $scope.paging.page++;
                        
                     } else if(paging) {
@@ -817,95 +817,117 @@
             }];
 
         return {
-            templateUrl: 'views/directives/lister.html',
+            template: function(element, attr) {
+                var template = $templateCache.get('views/directives/lister.html');
+
+                var sort = angular.element(element).attr('ls-sort');
+
+                if(sort===undefined) {
+                    template = template
+                                .replace(/sv-root[^\s\>]*/,'')
+                                .replace(/sv-on-stop[^\s\>]*/,'')
+                                .replace(/sv-part[^\s\>]*/,'')
+                                .replace(/sv-handle[^\s\>]*/,'')
+                                .replace(/sv-element[^\s\>]*/,'');
+                }
+
+                return template;
+            },
             restrict: 'E',            
             scope: {
                 lsOptions: '=',
                 lsInstance: '='
             },
             controller: ListerCtrl,
-            link: function($scope, element, attr, ctrl) {               
-               
-                var widthHolders = function() {                    
+            compile: function(element, tAttrs, s, d) {
 
-                    if(!$scope.loading) {
 
-                        var elements = document.getElementsByClassName('lister-col-header');
+                return {
 
-                        angular.forEach(elements,function(col) {
+                    post: function($scope, element, attr, ctrl) {               
+                       
+                        var widthHolders = function() {                    
 
-                            angular.forEach(col.childNodes,function(element) {
-                                if(angular.element(element).hasClass('width-holder')) {
+                            if(!$scope.loading) {
 
-                                    var style = window.getComputedStyle(col);
-                                    element.style.width = (col.clientWidth - parseInt(style.paddingLeft, 10) - parseInt(style.paddingRight, 10)) + 'px';
-                                }
-                            });
-                        }); 
-                    }
+                                var elements = document.getElementsByClassName('lister-col-header');
 
-                    $timeout(widthHolders,2500);
-                }
+                                angular.forEach(elements,function(col) {
 
-                widthHolders();
+                                    angular.forEach(col.childNodes,function(element) {
+                                        if(angular.element(element).hasClass('width-holder')) {
 
-                $scope.max_bottom = 0;
-                if($scope.lsOptions && $scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
-
-                    element = angular.element(element[0].children[0]);
-
-                    var body = document.body,
-                        html = document.documentElement,
-                        threshhold = 200;
-
-                    $scope.$on('$destroy', function () {
-                        $timeout.cancel(timeout);
-                    });
-
-                    var timeout = null;
-
-                    var load = function() {
-
-                        if(!$scope.loading) {
-
-                            var scrollTop = parseInt($window.pageYOffset);
-                            var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
-                            var wn_bottom = scrollTop + parseInt(window.innerHeight);
-                            var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
-
-                            if($scope.lsOptions.debug) {
-                                var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
-
-                                $log.log("Element top=" + element.prop('offsetTop'));
-                                $log.log("Element height=" + element.prop('offsetHeight'));
-                                $log.log("Scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
-                                $log.log("Total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
-                                $log.log("Threshhold= " + threshhold);
-                                $log.log("Element Bottom: " + el_bottom);
-                                $log.log("Window Height: " + window.innerHeight);
-                                $log.log("Window Bottom: " + wn_bottom);
-                                $log.log("Max Bottom: " + $scope.max_bottom);
-                                $log.log("If: ( (el_bottom - threshhold) ) <=  wn_bottom  && ( (el_bottom > ($scope.max_bottom + threshhold)) )");
-                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + el_bottom  + " > " + ($scope.max_bottom + threshhold) + ") = " + condition);
-                                $log.log("----------------------------------------------------------");
+                                            var style = window.getComputedStyle(col);
+                                            element.style.width = (col.clientWidth - parseInt(style.paddingLeft, 10) - parseInt(style.paddingRight, 10)) + 'px';
+                                        }
+                                    });
+                                }); 
                             }
 
-                            if(condition) {
-                                $scope.max_bottom = el_bottom;
-                                $scope.load();
-                            }
+                            $timeout(widthHolders,2500);
                         }
 
-                        timeout = $timeout(load,100);
-                    }
+                        widthHolders();
 
-                    load();
+                        $scope.max_bottom = 0;
+                        if($scope.lsOptions && $scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
+
+                            element = angular.element(element[0].children[0]);
+
+                            var body = document.body,
+                                html = document.documentElement,
+                                threshhold = 200;
+
+                            $scope.$on('$destroy', function () {
+                                $timeout.cancel(timeout);
+                            });
+
+                            var timeout = null;
+
+                            var load = function() {
+
+                                if(!$scope.loading) {
+
+                                    var scrollTop = parseInt($window.pageYOffset);
+                                    var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
+                                    var wn_bottom = scrollTop + parseInt(window.innerHeight);
+                                    var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
+
+                                    if($scope.lsOptions.debug) {
+                                        var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+                                        $log.log("Element top=" + element.prop('offsetTop'));
+                                        $log.log("Element height=" + element.prop('offsetHeight'));
+                                        $log.log("Scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
+                                        $log.log("Total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
+                                        $log.log("Threshhold= " + threshhold);
+                                        $log.log("Element Bottom: " + el_bottom);
+                                        $log.log("Window Height: " + window.innerHeight);
+                                        $log.log("Window Bottom: " + wn_bottom);
+                                        $log.log("Max Bottom: " + $scope.max_bottom);
+                                        $log.log("If: ( (el_bottom - threshhold) ) <=  wn_bottom  && ( (el_bottom > ($scope.max_bottom + threshhold)) )");
+                                        $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + el_bottom  + " > " + ($scope.max_bottom + threshhold) + ") = " + condition);
+                                        $log.log("----------------------------------------------------------");
+                                    }
+
+                                    if(condition) {
+                                        $scope.max_bottom = el_bottom;
+                                        $scope.load();
+                                    }
+                                }
+
+                                timeout = $timeout(load,100);
+                            }
+
+                            load();
+                        }
+                    }
                 }
             }
         }
     }
 
-    angular.module('fs-angular-lister',['fs-angular-store'])
+    angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view'])
     .directive('lister',ListerDirective)
     .directive('fsLister',ListerDirective)
     .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope', function ($compile, $injector, $location, $timeout, $rootScope) {        
@@ -1370,6 +1392,8 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"lister-row\">\r" +
     "\n" +
+    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.sort\"></div>\r" +
+    "\n" +
     "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection\">\r" +
     "\n" +
     "                       \r" +
@@ -1444,9 +1468,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            </div>\r" +
     "\n" +
-    "            <div class=\"lister-body\">\r" +
+    "            <div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"options.sort.stop($item,$indexFrom,$indexTo,$partFrom,$partTo)\">\r" +
     "\n" +
-    "                <div class=\"lister-row\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
+    "                <div class=\"lister-row\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
+    "\n" +
+    "                    <div class=\"lister-col\" ng-if=\"options.sort\"><div sv-handle class=\"sort-handle\"><md-icon>drag_handle</md-icon></div></div>\r" +
     "\n" +
     "                    <div class=\"lister-col\" ng-if=\"options.selection\">\r" +
     "\n" +
@@ -1454,13 +1480,13 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col {{::col.column.className}}\" ng-repeat=\"col in item.cols\" fs-lister-compile=\"col.value\" fs-column=\"col.column\" fs-data=\"item.object\" ng-style=\"columnStyle(col.column)\"></div>\r" +
+    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"item.cols[$index]\" fs-column=\"col\" fs-data=\"item.object\" ng-style=\"columnStyle(col)\"></div>\r" +
     "\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
     "\n" +
     "                        <md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
     "\n" +
-    "                            <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">{{::options.action.icon}}</md-icon>\r" +
+    "                            <md-icon class=\"material-icons\">{{::options.action.icon}}</md-icon>\r" +
     "\n" +
     "                        </md-button>\r" +
     "\n" +
@@ -1472,7 +1498,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
     "\n" +
-    "                                <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
+    "                                <md-icon class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
     "\n" +
     "                            </md-button>\r" +
     "\n" +
@@ -1482,7 +1508,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-button ng-click=\"actionClick(action,item,$event)\">\r" +
     "\n" +
-    "                                        <md-icon md-font-set=\"material-icons\" class=\"md-default-theme material-icons\" ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
+    "                                        <md-icon class=\"material-icons\" ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
     "\n" +
     "                                        {{::action.label}}\r" +
     "\n" +

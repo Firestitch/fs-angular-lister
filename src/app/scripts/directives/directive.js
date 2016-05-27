@@ -72,7 +72,7 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope, fsLister, $location) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope, fsLister, $location, $templateCache) {
 
             /**
              * @ngdoc interface
@@ -733,7 +733,7 @@
                                 value = col.value(objects[o]);
                             }
 
-                            cols.push({ column: col, value: value });
+                            cols.push(value);
                         }
 
                         $scope.data.push({ cols: cols, object: objects[o] });
@@ -817,95 +817,117 @@
             }];
 
         return {
-            templateUrl: 'views/directives/lister.html',
+            template: function(element, attr) {
+                var template = $templateCache.get('views/directives/lister.html');
+
+                var sort = angular.element(element).attr('ls-sort');
+
+                if(sort===undefined) {
+                    template = template
+                                .replace(/sv-root[^\s\>]*/,'')
+                                .replace(/sv-on-stop[^\s\>]*/,'')
+                                .replace(/sv-part[^\s\>]*/,'')
+                                .replace(/sv-handle[^\s\>]*/,'')
+                                .replace(/sv-element[^\s\>]*/,'');
+                }
+
+                return template;
+            },
             restrict: 'E',            
             scope: {
                 lsOptions: '=',
                 lsInstance: '='
             },
             controller: ListerCtrl,
-            link: function($scope, element, attr, ctrl) {               
-               
-                var widthHolders = function() {                    
+            compile: function(element, tAttrs, s, d) {
 
-                    if(!$scope.loading) {
 
-                        var elements = document.getElementsByClassName('lister-col-header');
+                return {
 
-                        angular.forEach(elements,function(col) {
+                    post: function($scope, element, attr, ctrl) {               
+                       
+                        var widthHolders = function() {                    
 
-                            angular.forEach(col.childNodes,function(element) {
-                                if(angular.element(element).hasClass('width-holder')) {
+                            if(!$scope.loading) {
 
-                                    var style = window.getComputedStyle(col);
-                                    element.style.width = (col.clientWidth - parseInt(style.paddingLeft, 10) - parseInt(style.paddingRight, 10)) + 'px';
-                                }
-                            });
-                        }); 
-                    }
+                                var elements = document.getElementsByClassName('lister-col-header');
 
-                    $timeout(widthHolders,2500);
-                }
+                                angular.forEach(elements,function(col) {
 
-                widthHolders();
+                                    angular.forEach(col.childNodes,function(element) {
+                                        if(angular.element(element).hasClass('width-holder')) {
 
-                $scope.max_bottom = 0;
-                if($scope.lsOptions && $scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
-
-                    element = angular.element(element[0].children[0]);
-
-                    var body = document.body,
-                        html = document.documentElement,
-                        threshhold = 200;
-
-                    $scope.$on('$destroy', function () {
-                        $timeout.cancel(timeout);
-                    });
-
-                    var timeout = null;
-
-                    var load = function() {
-
-                        if(!$scope.loading) {
-
-                            var scrollTop = parseInt($window.pageYOffset);
-                            var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
-                            var wn_bottom = scrollTop + parseInt(window.innerHeight);
-                            var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
-
-                            if($scope.lsOptions.debug) {
-                                var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
-
-                                $log.log("Element top=" + element.prop('offsetTop'));
-                                $log.log("Element height=" + element.prop('offsetHeight'));
-                                $log.log("Scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
-                                $log.log("Total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
-                                $log.log("Threshhold= " + threshhold);
-                                $log.log("Element Bottom: " + el_bottom);
-                                $log.log("Window Height: " + window.innerHeight);
-                                $log.log("Window Bottom: " + wn_bottom);
-                                $log.log("Max Bottom: " + $scope.max_bottom);
-                                $log.log("If: ( (el_bottom - threshhold) ) <=  wn_bottom  && ( (el_bottom > ($scope.max_bottom + threshhold)) )");
-                                $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + el_bottom  + " > " + ($scope.max_bottom + threshhold) + ") = " + condition);
-                                $log.log("----------------------------------------------------------");
+                                            var style = window.getComputedStyle(col);
+                                            element.style.width = (col.clientWidth - parseInt(style.paddingLeft, 10) - parseInt(style.paddingRight, 10)) + 'px';
+                                        }
+                                    });
+                                }); 
                             }
 
-                            if(condition) {
-                                $scope.max_bottom = el_bottom;
-                                $scope.load();
-                            }
+                            $timeout(widthHolders,2500);
                         }
 
-                        timeout = $timeout(load,100);
-                    }
+                        widthHolders();
 
-                    load();
+                        $scope.max_bottom = 0;
+                        if($scope.lsOptions && $scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
+
+                            element = angular.element(element[0].children[0]);
+
+                            var body = document.body,
+                                html = document.documentElement,
+                                threshhold = 200;
+
+                            $scope.$on('$destroy', function () {
+                                $timeout.cancel(timeout);
+                            });
+
+                            var timeout = null;
+
+                            var load = function() {
+
+                                if(!$scope.loading) {
+
+                                    var scrollTop = parseInt($window.pageYOffset);
+                                    var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
+                                    var wn_bottom = scrollTop + parseInt(window.innerHeight);
+                                    var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
+
+                                    if($scope.lsOptions.debug) {
+                                        var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+                                        $log.log("Element top=" + element.prop('offsetTop'));
+                                        $log.log("Element height=" + element.prop('offsetHeight'));
+                                        $log.log("Scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
+                                        $log.log("Total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
+                                        $log.log("Threshhold= " + threshhold);
+                                        $log.log("Element Bottom: " + el_bottom);
+                                        $log.log("Window Height: " + window.innerHeight);
+                                        $log.log("Window Bottom: " + wn_bottom);
+                                        $log.log("Max Bottom: " + $scope.max_bottom);
+                                        $log.log("If: ( (el_bottom - threshhold) ) <=  wn_bottom  && ( (el_bottom > ($scope.max_bottom + threshhold)) )");
+                                        $log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + el_bottom  + " > " + ($scope.max_bottom + threshhold) + ") = " + condition);
+                                        $log.log("----------------------------------------------------------");
+                                    }
+
+                                    if(condition) {
+                                        $scope.max_bottom = el_bottom;
+                                        $scope.load();
+                                    }
+                                }
+
+                                timeout = $timeout(load,100);
+                            }
+
+                            load();
+                        }
+                    }
                 }
             }
         }
     }
 
-    angular.module('fs-angular-lister',['fs-angular-store'])
+    angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view'])
     .directive('lister',ListerDirective)
     .directive('fsLister',ListerDirective)
     .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope', function ($compile, $injector, $location, $timeout, $rootScope) {        
