@@ -6,7 +6,8 @@
     "dist/_lister.scss"
   ],
   "dependencies": {
-    "fs-angular-store": "~1.0.4"
+    "fs-angular-store": "~1.0.4",
+    "angular-sortable-view": "0.0.15"
   },
   "authors": [
     "Firestitch Inc."
