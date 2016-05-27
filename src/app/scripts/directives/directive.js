@@ -695,7 +695,7 @@
                                 response
                                 .then(function(response) {
                                     dataCallback(response.data, response.paging);
-                                });                                
+                                });
                             }
                         }
                    

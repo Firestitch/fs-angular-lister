@@ -695,7 +695,7 @@
                                 response
                                 .then(function(response) {
                                     dataCallback(response.data, response.paging);
-                                });                                
+                                });
                             }
                         }
                    
@@ -1060,7 +1060,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    <div layout=\"row\" layout-align=\"start\" class=\"search\" ng-if=\"options.filters.length || options.topActions.length\" layout-align=\" end\">\r" +
     "\n" +
-    "        <div ng-if=\"options.inline\" layout=\"row\" class=\"inline-search\" flex=\"grow\">\r" +
+    "        <div ng-if=\"options.inline\" layout=\"row\" class=\"inline-search\" flex>\r" +
     "\n" +
     "            <div class=\"inline-search-input\" flex=\"grow\">\r" +
     "\n" +
