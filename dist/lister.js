@@ -238,6 +238,16 @@
 
                     return show;
                 }
+
+                $scope.sortStop = function(item,partTo,indexFrom,indexTo) {
+
+                    var list = [];
+                    angular.forEach(partTo,function(object) {
+                        list.push(object.object);
+                    });
+
+                    $scope.options.sort.stop(item.object,list,indexFrom,indexTo);
+                }
                 
                 $scope.actionClick = function(action, item, event) {
 
@@ -1468,11 +1478,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            </div>\r" +
     "\n" +
-    "            <div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"options.sort.stop($item,$indexFrom,$indexTo,$partFrom,$partTo)\">\r" +
+    "            <div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"sortStop($item,$partTo,$indexFrom,$indexTo)\">\r" +
     "\n" +
     "                <div class=\"lister-row\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
     "\n" +
-    "                    <div class=\"lister-col\" ng-if=\"options.sort\"><div sv-handle class=\"sort-handle\"><md-icon>drag_handle</md-icon></div></div>\r" +
+    "                    <div class=\"lister-col lister-col-sort\" ng-if=\"options.sort\"><div class=\"sort-handle\"><md-icon>drag_handle</md-icon></div></div>\r" +
     "\n" +
     "                    <div class=\"lister-col\" ng-if=\"options.selection\">\r" +
     "\n" +

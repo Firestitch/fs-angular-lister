@@ -238,6 +238,16 @@
 
                     return show;
                 }
+
+                $scope.sortStop = function(item,partTo,indexFrom,indexTo) {
+
+                    var list = [];
+                    angular.forEach(partTo,function(object) {
+                        list.push(object.object);
+                    });
+
+                    $scope.options.sort.stop(item.object,list,indexFrom,indexTo);
+                }
                 
                 $scope.actionClick = function(action, item, event) {
 

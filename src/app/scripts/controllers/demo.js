@@ -29,7 +29,7 @@
 
         //inline: true,
         sort: {
-            stop: function($item,$partFrom,$partTo,$indexFrom,$indexTo) {
+            stop: function(item,list,$indexFrom,$indexTo) {
                 debugger;   
             }
         },
