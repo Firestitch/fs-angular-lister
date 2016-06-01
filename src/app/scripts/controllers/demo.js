@@ -41,7 +41,7 @@
             
             //return setTimeout(function() { cb([]); }, 2000); 
 
-            query.count = 100;
+            query.count = 50;
 
             return DummyService.gets(query,{ url: 'https://service.firestitch.com/api/', key: 'objects', datapaging: true });
 
@@ -61,10 +61,11 @@
         
         paging: {
 
-            infinite: true,
-            limit: 20
+            //infinite: true,
+            //pages: false,
+            limit: 10
         },
-        
+
         //paging: false,
         /*
         action:

@@ -85,22 +85,34 @@
                 var options = angular.extend({},fsLister.options(),$scope.lsOptions);
                 var persist = fsStore.get('lister-persist',{});
 
-                if(options.paging===false) {
+                if(options.paging===false)
                     options.paging = { enabled: false };
-                } else {
-                    options.paging = options.paging || {};
-                    options.paging.enabled = true;
-                    options.paging.records = 0;
-                    options.paging.page = 1;
-                    options.paging.pages = 0;                    
-                    options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
-                    options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
-                }
 
+                options.paging = options.paging || {};
+                options.paging.enabled = options.paging.enabled===undefined ? true : options.paging.enabled;
+                options.paging.pages = options.paging.pages===undefined ? true : options.paging.pages;
+                options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
+                options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
                 options.norecords = options.norecords===undefined ? 'No records found' : options.norecords;
                 options.load = options.load===undefined ? true : options.load;
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
+
+                $scope.data = [];
+                $scope.options = options;
+                $scope.paging = { records: 0, page: 1, pages: 0 };
+                $scope.topActions = options.topActions;
+                $scope.loading = false;
+                $scope.checked = [];
+                $scope.selectToogled = false;
+                $scope.debug = false;
+                $scope.load = load;
+                $scope.reload = reload;
+                $scope.page = page;
+                $scope.numeric = numeric;
+                $scope.extended_search = false;
+                $scope.searchinput = '';
+                $scope.paged = null;
 
                 angular.forEach(options.filters,function(filter) {
 
@@ -176,22 +188,6 @@
                 angular.forEach(options.actions,function(action) {
                     sanitizeAction(action);
                 });
-
-                $scope.data = [];
-                $scope.options = options;
-                $scope.paging = options.paging;
-                $scope.topActions = options.topActions;
-                $scope.loading = false;
-                $scope.checked = [];
-                $scope.selectToogled = false;
-                $scope.debug = false;
-                $scope.load = load;
-                $scope.reload = reload;
-                $scope.page = page;
-                $scope.numeric = numeric;
-                $scope.extended_search = false;
-                $scope.searchinput = '';
-                $scope.paged = null;
                 
                 $scope.groupedFilters = function() {
 
@@ -645,7 +641,7 @@
 
                         if(opts.clear) {
                             opts.page = 1;
-                            if(!$scope.paging || ($scope.paging && $scope.paging.infinite)) {
+                            if($scope.options.paging.infinite) {
                                 $scope.data = [];
                             }
                         }
@@ -667,13 +663,13 @@
                         persist[options.persist] = models;
                     }
 
-                    if($scope.paging.enabled) {
+                    if($scope.options.paging.enabled) {
                         if($scope.paging.page!==undefined) {
-                        query.page = $scope.paging.page;
+                            query.page = $scope.paging.page;
                         }
 
-                        if($scope.paging.limit!==undefined) {
-                            query.limit = $scope.paging.limit;
+                        if($scope.options.paging.limit!==undefined) {
+                            query.limit = $scope.options.paging.limit;
                         }
                     }
 
@@ -754,19 +750,19 @@
                     if(paging) {
 
                         if(paging.records===null) {
-                            $scope.paging.enabled = false;
+                            $scope.options.paging.enabled = false;
                         }
 
                         $scope.paging.records = paging.records;
                         $scope.paging.pages = paging.pages;
                         
                         if(paging.limit) {
-                            $scope.paging.limit = paging.limit;
-                            options.limit = paging.limit;
+                            $scope.options.paging.limit = paging.limit;
+                            //options.limit = paging.limit;
                         }
                     
                     } else {
-                        $scope.paging.enabled = false;
+                        $scope.options.paging.enabled = false;
                     }
 
                     $scope.paged = paging;
@@ -1552,7 +1548,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <div class=\"paging ng-hide\" ng-if=\"paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
+    "    <div class=\"paging\" ng-if=\"options.paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
     "\n" +
     "        <div class=\"records\">\r" +
     "\n" +
@@ -1564,7 +1560,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        <div flex>\r" +
     "\n" +
-    "            <ul class=\"pages\" ng-if=\"paging.pages>1\">\r" +
+    "            <ul class=\"pages\" ng-if=\"paging.pages>1 && options.paging.pages\">\r" +
     "\n" +
     "                <li ng-class=\"{ disabled : paging.page == 1 }\">\r" +
     "\n" +
@@ -1606,7 +1602,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <label>Show</label>\r" +
     "\n" +
-    "                <md-select ng-model=\"paging.limit\" md-on-close=\"load()\">\r" +
+    "                <md-select ng-model=\"options.paging.limit\" md-on-close=\"reload()\">\r" +
     "\n" +
     "                    <md-option ng-repeat=\"limit in options.paging.limits\" value=\"{{limit}}\">\r" +
     "\n" +
