@@ -82,8 +82,9 @@
              */
             var ListerCtrl = ['$scope', function ($scope) {                
 
-                var options = angular.extend({},fsLister.options(),$scope.lsOptions);
-                var persist = fsStore.get('lister-persist',{});
+                var options     = angular.extend({},fsLister.options(),$scope.lsOptions);
+                var persist     = fsStore.get('lister-persist',{});
+                var dataIndex   = 0;                
 
                 if(options.paging===false)
                     options.paging = { enabled: false };
@@ -99,9 +100,10 @@
                 options.filters = options.filters || [];
 
                 $scope.data = [];
+                $scope.dataCols = [];
+                $scope.styleCols = [];
                 $scope.options = options;
                 $scope.paging = { records: 0, page: 1, pages: 0 };
-                $scope.topActions = options.topActions;
                 $scope.loading = false;
                 $scope.checked = [];
                 $scope.selectToogled = false;
@@ -161,7 +163,10 @@
                     }
                 });
 
-                angular.forEach(options.columns,function(col) {
+                angular.forEach(options.columns,function(col,index) {
+
+                    $scope.styleCols[index] = columnStyle(col);
+
                     if(col.order) {
                         if(angular.isString(col.order)) {
                             col.order = { name: col.order };
@@ -281,7 +286,7 @@
                                             this.ok = function() {
 
                                                 if(action.delete.ok) {
-                                                    var result = action.delete.ok(item.object, event, helper);
+                                                    var result = action.delete.ok(item, event, helper);
 
                                                     if(result && angular.isFunction(result.then)) {
                                                         result.then(function() {
@@ -298,7 +303,7 @@
                                             this.cancel = function($event) {
 
                                                 if(action.delete.cancel) {
-                                                    action.delete.cancel(item.object, event, helper);
+                                                    action.delete.cancel(item, event, helper);
                                                 }                                                
                                                 $mdDialog.hide();
                                             };
@@ -315,7 +320,7 @@
                         $mdDialog.show(confirm);
 
                     } else if(action.click) {
-                        action.click(item.object, event, helper);
+                        action.click(item, event, helper);
                     }
                 }
 
@@ -569,7 +574,7 @@
                     reload();
                 }
 
-                $scope.columnStyle = function(col) {
+                function columnStyle(col) {
                     var styles = {};
 
                     if(col.width) {
@@ -620,6 +625,12 @@
                     return query;
                 }
 
+                function clearData() {
+                    dataIndex = 0;
+                    $scope.data = [];                    
+                    $scope.dataCols = [];
+                }
+
                 function load(opts) {
 
                     if($scope.loading)
@@ -642,7 +653,7 @@
                         if(opts.clear) {
                             opts.page = 1;
                             if($scope.options.paging.infinite) {
-                                $scope.data = [];
+                               clearData();
                             }
                         }
 
@@ -682,7 +693,7 @@
                     var dataCallback = function(data, paging) {
                         if(opts.clear) {
                             $scope.max_bottom = 0;
-                            $scope.data = [];
+                            clearData();
                         }
 
                         callback(data, paging);
@@ -721,7 +732,7 @@
                     log("dataCallback()",objects,paging);
 
                     if(!$scope.options.paging.infinite) {
-                        $scope.data = [];
+                        clearData();
                     }
 
                     var ol = objects.length;
@@ -729,7 +740,7 @@
 
                         var cl = options.columns.length;
                         var cols = [];
-                        
+
                         for (var c = 0; c < cl; c++) {
                         
                             var col = options.columns[c];
@@ -739,10 +750,15 @@
                                 value = col.value(objects[o]);
                             }
 
-                            cols.push(value);
+                            cols[c] = value;
                         }
 
-                        $scope.data.push({ cols: cols, object: objects[o] });
+                        $scope.dataCols[dataIndex] = cols;
+
+                        objects[o].$$index = dataIndex;
+                        $scope.data.push(objects[o]);
+
+                        dataIndex++;
                     }    
                     
                     $scope.paging.records = null;
@@ -818,8 +834,18 @@
                     reload();
                 }
 
+                function data() {
+
+                    if(!arguments.length)
+                        return $scope.data;
+
+                    $scope.data = arguments[0];
+
+                    return this;
+                }
+
                 if($scope.lsInstance)
-                    $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: filterValues};
+                    $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: filterValues, data: data };
             }];
 
         return {
@@ -1350,9 +1376,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        <div class=\"top-actions\">\r" +
     "\n" +
-    "            <md-button ng-repeat=\"action in topActions\" ng-if=\"!action.more\" ng-click=\"action.click($event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{::action.label}}</md-button>\r" +
+    "            <md-button ng-repeat=\"action in options.topActions\" ng-if=\"!action.more\" ng-click=\"action.click($event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{::action.label}}</md-button>\r" +
     "\n" +
-    "            <md-menu ng-if=\"(topActions | filter:{ more: true }).length > 0\">\r" +
+    "            <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\r" +
     "\n" +
     "                <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\">\r" +
     "\n" +
@@ -1362,7 +1388,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <md-menu-content>\r" +
     "\n" +
-    "                    <md-menu-item ng-repeat=\"action in topActions\" ng-if=\"action.more\">\r" +
+    "                    <md-menu-item ng-repeat=\"action in options.topActions\" ng-if=\"action.more\">\r" +
     "\n" +
     "                        <md-button ng-click=\"action.click($event)\">\r" +
     "\n" +
@@ -1434,7 +1460,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col lister-col-header {{::column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"columnStyle(column)\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\r" +
+    "                    <div class=\"lister-col lister-col-header {{::column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"styleCols[$index]\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\r" +
     "\n" +
     "                        \r" +
     "\n" +
@@ -1476,7 +1502,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"sortStop($item,$partTo,$indexFrom,$indexTo)\">\r" +
     "\n" +
-    "                <div class=\"lister-row\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item.object,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
+    "                <div class=\"lister-row\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
     "\n" +
     "                    <div class=\"lister-col lister-col-sort\" ng-if=\"options.sort\"><div class=\"sort-handle\"><md-icon>drag_handle</md-icon></div></div>\r" +
     "\n" +
@@ -1486,7 +1512,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"item.cols[$index]\" fs-column=\"col\" fs-data=\"item.object\" ng-style=\"columnStyle(col)\"></div>\r" +
+    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" fs-column=\"col\" fs-data=\"item\" ng-style=\"styleCols[$index]\"></div>\r" +
     "\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
     "\n" +
@@ -1500,7 +1526,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\r" +
     "\n" +
-    "                        <md-menu ng-if=\"actionsShow(item.object)\">\r" +
+    "                        <md-menu ng-if=\"actionsShow(item)\">\r" +
     "\n" +
     "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
     "\n" +
@@ -1510,7 +1536,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                            <md-menu-content>\r" +
     "\n" +
-    "                                <md-menu-item ng-if=\"action.show(item.object)\" ng-repeat=\"action in options.actions\">\r" +
+    "                                <md-menu-item ng-if=\"action.show(item)\" ng-repeat=\"action in options.actions\">\r" +
     "\n" +
     "                                    <md-button ng-click=\"actionClick(action,item,$event)\">\r" +
     "\n" +

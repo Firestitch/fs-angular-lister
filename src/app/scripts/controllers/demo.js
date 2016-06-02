@@ -11,6 +11,10 @@
         $scope.listerInstance.load();
     }
 
+    $scope.data = function() {
+        alert(JSON.stringify($scope.listerInstance.data()));
+    }
+
     $scope.reload = function() {
         $scope.listerInstance.reload();
     }
@@ -61,7 +65,7 @@
         
         paging: {
 
-            //infinite: true,
+            infinite: true,
             //pages: false,
             limit: 10
         },

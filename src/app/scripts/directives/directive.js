@@ -82,8 +82,9 @@
              */
             var ListerCtrl = ['$scope', function ($scope) {                
 
-                var options = angular.extend({},fsLister.options(),$scope.lsOptions);
-                var persist = fsStore.get('lister-persist',{});
+                var options     = angular.extend({},fsLister.options(),$scope.lsOptions);
+                var persist     = fsStore.get('lister-persist',{});
+                var dataIndex   = 0;                
 
                 if(options.paging===false)
                     options.paging = { enabled: false };
@@ -99,9 +100,10 @@
                 options.filters = options.filters || [];
 
                 $scope.data = [];
+                $scope.dataCols = [];
+                $scope.styleCols = [];
                 $scope.options = options;
                 $scope.paging = { records: 0, page: 1, pages: 0 };
-                $scope.topActions = options.topActions;
                 $scope.loading = false;
                 $scope.checked = [];
                 $scope.selectToogled = false;
@@ -161,7 +163,10 @@
                     }
                 });
 
-                angular.forEach(options.columns,function(col) {
+                angular.forEach(options.columns,function(col,index) {
+
+                    $scope.styleCols[index] = columnStyle(col);
+
                     if(col.order) {
                         if(angular.isString(col.order)) {
                             col.order = { name: col.order };
@@ -281,7 +286,7 @@
                                             this.ok = function() {
 
                                                 if(action.delete.ok) {
-                                                    var result = action.delete.ok(item.object, event, helper);
+                                                    var result = action.delete.ok(item, event, helper);
 
                                                     if(result && angular.isFunction(result.then)) {
                                                         result.then(function() {
@@ -298,7 +303,7 @@
                                             this.cancel = function($event) {
 
                                                 if(action.delete.cancel) {
-                                                    action.delete.cancel(item.object, event, helper);
+                                                    action.delete.cancel(item, event, helper);
                                                 }                                                
                                                 $mdDialog.hide();
                                             };
@@ -315,7 +320,7 @@
                         $mdDialog.show(confirm);
 
                     } else if(action.click) {
-                        action.click(item.object, event, helper);
+                        action.click(item, event, helper);
                     }
                 }
 
@@ -569,7 +574,7 @@
                     reload();
                 }
 
-                $scope.columnStyle = function(col) {
+                function columnStyle(col) {
                     var styles = {};
 
                     if(col.width) {
@@ -620,6 +625,12 @@
                     return query;
                 }
 
+                function clearData() {
+                    dataIndex = 0;
+                    $scope.data = [];                    
+                    $scope.dataCols = [];
+                }
+
                 function load(opts) {
 
                     if($scope.loading)
@@ -642,7 +653,7 @@
                         if(opts.clear) {
                             opts.page = 1;
                             if($scope.options.paging.infinite) {
-                                $scope.data = [];
+                               clearData();
                             }
                         }
 
@@ -682,7 +693,7 @@
                     var dataCallback = function(data, paging) {
                         if(opts.clear) {
                             $scope.max_bottom = 0;
-                            $scope.data = [];
+                            clearData();
                         }
 
                         callback(data, paging);
@@ -721,7 +732,7 @@
                     log("dataCallback()",objects,paging);
 
                     if(!$scope.options.paging.infinite) {
-                        $scope.data = [];
+                        clearData();
                     }
 
                     var ol = objects.length;
@@ -729,7 +740,7 @@
 
                         var cl = options.columns.length;
                         var cols = [];
-                        
+
                         for (var c = 0; c < cl; c++) {
                         
                             var col = options.columns[c];
@@ -739,10 +750,15 @@
                                 value = col.value(objects[o]);
                             }
 
-                            cols.push(value);
+                            cols[c] = value;
                         }
 
-                        $scope.data.push({ cols: cols, object: objects[o] });
+                        $scope.dataCols[dataIndex] = cols;
+
+                        objects[o].$$index = dataIndex;
+                        $scope.data.push(objects[o]);
+
+                        dataIndex++;
                     }    
                     
                     $scope.paging.records = null;
@@ -818,8 +834,18 @@
                     reload();
                 }
 
+                function data() {
+
+                    if(!arguments.length)
+                        return $scope.data;
+
+                    $scope.data = arguments[0];
+
+                    return this;
+                }
+
                 if($scope.lsInstance)
-                    $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: filterValues};
+                    $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: filterValues, data: data };
             }];
 
         return {

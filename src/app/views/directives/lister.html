@@ -143,13 +143,13 @@
             </div>
         </div>
         <div class="top-actions">
-            <md-button ng-repeat="action in topActions" ng-if="!action.more" ng-click="action.click($event)" class="md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{::action.label}}</md-button>
-            <md-menu ng-if="(topActions | filter:{ more: true }).length > 0">
+            <md-button ng-repeat="action in options.topActions" ng-if="!action.more" ng-click="action.click($event)" class="md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{::action.label}}</md-button>
+            <md-menu ng-if="(options.topActions | filter:{ more: true }).length > 0">
                 <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
                     <md-icon>more_vert</md-icon>
                 </md-button>
                 <md-menu-content>
-                    <md-menu-item ng-repeat="action in topActions" ng-if="action.more">
+                    <md-menu-item ng-repeat="action in options.topActions" ng-if="action.more">
                         <md-button ng-click="action.click($event)">
                             <md-icon ng-if="action.icon">{{::action.icon}}</md-icon>
                             {{::action.label}}
@@ -185,7 +185,7 @@
                             </md-menu-content>
                         </md-menu>
                     </div>
-                    <div class="lister-col lister-col-header {{::column.className}}" ng-repeat="column in options.columns" ng-style="columnStyle(column)" ng-class="{ order: column.order }" ng-click="headerClick(column)">
+                    <div class="lister-col lister-col-header {{::column.className}}" ng-repeat="column in options.columns" ng-style="styleCols[$index]" ng-class="{ order: column.order }" ng-click="headerClick(column)">
                         
                         <div class="wrap">
                             <span fs-lister-compile="column.title" fs-column="column" class="title"></span>
@@ -206,24 +206,24 @@
                 </div>
             </div>
             <div class="lister-body" sv-root sv-part="data" sv-on-sort="sortStop($item,$partTo,$indexFrom,$indexTo)">
-                <div class="lister-row" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: checked[rowIndex] }" ng-repeat="item in data" ng-click="options.rowClick(item.object,$event); $event.stopPropagation();" ng-init="rowIndex = $index">
+                <div class="lister-row" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: checked[rowIndex] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event); $event.stopPropagation();" ng-init="rowIndex = $index">
                     <div class="lister-col lister-col-sort" ng-if="options.sort"><div class="sort-handle"><md-icon>drag_handle</md-icon></div></div>
                     <div class="lister-col" ng-if="options.selection">
                         <md-checkbox ng-model="checked[rowIndex]" ng-true-value="1" ng-click="select(item)" aria-label="Select" class="select-checkbox"></md-checkbox>
                     </div>
-                    <div class="lister-col {{::col.className}}" ng-repeat="col in options.columns" fs-lister-compile="item.cols[$index]" fs-column="col" fs-data="item.object" ng-style="columnStyle(col)"></div>
+                    <div class="lister-col {{::col.className}}" ng-repeat="col in options.columns" fs-lister-compile="dataCols[item.$$index][$index]" fs-column="col" fs-data="item" ng-style="styleCols[$index]"></div>
                     <div class="lister-col lister-actions" ng-if="options.action">
                         <md-button ng-click="actionClick(options.action,item,$event); $event.stopPropagation();" class="md-icon-button">
                             <md-icon class="material-icons">{{::options.action.icon}}</md-icon>
                         </md-button>
                     </div>
                     <div class="lister-col lister-actions" ng-if="options.actions.length">
-                        <md-menu ng-if="actionsShow(item.object)">
+                        <md-menu ng-if="actionsShow(item)">
                             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
                                 <md-icon class="md-default-theme material-icons">more_vert</md-icon>
                             </md-button>
                             <md-menu-content>
-                                <md-menu-item ng-if="action.show(item.object)" ng-repeat="action in options.actions">
+                                <md-menu-item ng-if="action.show(item)" ng-repeat="action in options.actions">
                                     <md-button ng-click="actionClick(action,item,$event)">
                                         <md-icon class="material-icons" ng-if="action.icon">{{::action.icon}}</md-icon>
                                         {{::action.label}}
