@@ -244,10 +244,10 @@
 
                     var list = [];
                     angular.forEach(partTo,function(object) {
-                        list.push(object.object);
+                        list.push(object);
                     });
 
-                    $scope.options.sort.stop(item.object,list,indexFrom,indexTo);
+                    $scope.options.sort.stop(item,list,indexFrom,indexTo);
                 }
                 
                 $scope.actionClick = function(action, item, event) {
@@ -350,7 +350,7 @@
                     var selected = [];
                     angular.forEach($scope.checked,function(value, index) {
                         if(value)
-                            selected.push($scope.data[index].object);
+                            selected.push($scope.data[index]);
                     });
 
                     click(selected, $event);
