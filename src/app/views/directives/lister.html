@@ -4,7 +4,7 @@
         <div ng-if="options.inline" layout="row" class="inline-search" flex>
             <div class="inline-search-input" flex="grow">
                 <div layout="row">
-                    <md-icon>search</md-icon>
+                    <a href ng-click="reload()"><md-icon>search</md-icon></a>
                     <md-input-container md-no-float>                    
                         <input ng-model="searchinput" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput)" aria-label="Search" placeholder="Search"/>
                     </md-input-container>

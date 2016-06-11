@@ -1098,7 +1098,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div layout=\"row\">\r" +
     "\n" +
-    "                    <md-icon>search</md-icon>\r" +
+    "                    <a href ng-click=\"reload()\"><md-icon>search</md-icon></a>\r" +
     "\n" +
     "                    <md-input-container md-no-float>                    \r" +
     "\n" +
