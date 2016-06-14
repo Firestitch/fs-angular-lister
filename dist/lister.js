@@ -1096,7 +1096,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"inline-search-input\" flex=\"grow\">\r" +
     "\n" +
-    "                <div layout=\"row\">\r" +
+    "                <div layout=\"row\" layout-align=\"start center\">\r" +
     "\n" +
     "                    <a href ng-click=\"reload()\"><md-icon>search</md-icon></a>\r" +
     "\n" +
