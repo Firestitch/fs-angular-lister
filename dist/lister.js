@@ -116,7 +116,14 @@
                 $scope.searchinput = { value: '' };
                 $scope.paged = null;
 
+                var primary = false;
                 angular.forEach(options.filters,function(filter) {
+
+                    if(filter.primary) {
+                        primary = true;
+                    } else {
+                        filter.primary = false;
+                    }
 
                     filter.model = filter.default;
 
@@ -169,6 +176,9 @@
                         filter.placeholder = ['Min','Max'];
                     }
 
+                    if(!primary && filter.type=='text') {
+                        filter.primary = primary = true;
+                    }
                 });
 
                 angular.forEach(options.columns,function(col,index) {
@@ -456,6 +466,11 @@
 
                     $scope.searchinput = { value: searches.join(' ') };
                 }
+                $scope.searchKeydown = function(event)  {
+                    if(event.keyCode==27 || event.keyCode==13) {
+                        $scope.extended_search = false;
+                    }
+                }
 
                 $scope.searchChange = function(search) {
 
@@ -527,15 +542,13 @@
                         }
                     });
 
-                    var primary = false;
                     if(!Object.keys(values).length) {
 
                         angular.forEach(options.filters,function(filter) {
                             filter.model = null;
-                            if(!primary && filter.type=='text') {
+                            if(filter.primary) {
                                 filter.model = search;
                                 $scope.filterValue(filter);
-                                primary = true;
                             }
                         });
                     }
@@ -1126,7 +1139,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <md-input-container md-no-float>                    \r" +
     "\n" +
-    "                        <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" aria-label=\"Search\" placeholder=\"Search\"/>\r" +
+    "                        <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\"/>\r" +
     "\n" +
     "                    </md-input-container>\r" +
     "\n" +
@@ -1138,7 +1151,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"wrap\">\r" +
     "\n" +
-    "                        <div ng-repeat=\"filter in options.filters\" class=\"filter filter-{{filter.type}}\">\r" +
+    "                        <div ng-repeat=\"filter in options.filters| filter:{ primary: false }\" class=\"filter filter-{{filter.type}}\">\r" +
     "\n" +
     "                            \r" +
     "\n" +
@@ -1309,6 +1322,10 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                <div class=\"icon-down\"></div>\r" +
     "\n" +
     "            </md-button>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div>\r" +
     "\n" +
     "        </div>\r" +
     "\n" +

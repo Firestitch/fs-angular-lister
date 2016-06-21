@@ -116,7 +116,14 @@
                 $scope.searchinput = { value: '' };
                 $scope.paged = null;
 
+                var primary = false;
                 angular.forEach(options.filters,function(filter) {
+
+                    if(filter.primary) {
+                        primary = true;
+                    } else {
+                        filter.primary = false;
+                    }
 
                     filter.model = filter.default;
 
@@ -169,6 +176,9 @@
                         filter.placeholder = ['Min','Max'];
                     }
 
+                    if(!primary && filter.type=='text') {
+                        filter.primary = primary = true;
+                    }
                 });
 
                 angular.forEach(options.columns,function(col,index) {
@@ -456,6 +466,11 @@
 
                     $scope.searchinput = { value: searches.join(' ') };
                 }
+                $scope.searchKeydown = function(event)  {
+                    if(event.keyCode==27 || event.keyCode==13) {
+                        $scope.extended_search = false;
+                    }
+                }
 
                 $scope.searchChange = function(search) {
 
@@ -527,15 +542,13 @@
                         }
                     });
 
-                    var primary = false;
                     if(!Object.keys(values).length) {
 
                         angular.forEach(options.filters,function(filter) {
                             filter.model = null;
-                            if(!primary && filter.type=='text') {
+                            if(filter.primary) {
                                 filter.model = search;
                                 $scope.filterValue(filter);
-                                primary = true;
                             }
                         });
                     }

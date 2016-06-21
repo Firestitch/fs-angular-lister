@@ -117,6 +117,8 @@
 
                 input {
                     height: 34px;
+                    position: relative;
+                    z-index: 100;
                 }
                 
                 .md-errors-spacer {

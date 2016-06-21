@@ -6,13 +6,13 @@
                 <div layout="row" layout-align="start center">
                     <a href ng-click="reload()"><md-icon>search</md-icon></a>
                     <md-input-container md-no-float>                    
-                        <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="openFilters()" aria-label="Search" placeholder="Search"/>
+                        <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="openFilters()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search"/>
                     </md-input-container>
                 </div>
 
                 <div class="ng-hide filters" layout="column" ng-show="extended_search">
                     <div class="wrap">
-                        <div ng-repeat="filter in options.filters" class="filter filter-{{filter.type}}">
+                        <div ng-repeat="filter in options.filters| filter:{ primary: false }" class="filter filter-{{filter.type}}">
                             
                             <div class="filter-label">
                                 {{::filter.label}}
@@ -98,6 +98,8 @@
             <md-button ng-click="toggleFilters()" class="md-icon-button toggle-filters" aria-label="Search filters">
                 <div class="icon-down"></div>
             </md-button>
+
+            <div class="backdrop" ng-show="extended_search" ng-click="toggleFilters()"></div>
         </div>
 
         <div ng-if="!options.inline" class="full-search" flex="grow">
