@@ -113,7 +113,7 @@
                 $scope.page = page;
                 $scope.numeric = numeric;
                 $scope.extended_search = false;
-                $scope.searchinput = '';
+                $scope.searchinput = { value: '' };
                 $scope.paged = null;
 
                 angular.forEach(options.filters,function(filter) {
@@ -136,31 +136,39 @@
                         if(search[filter.param]) {
                             filter.model = search[filter.param];
                         }
-                    }                    
+                    }  
 
-                    if(filter.type=='date') {
-                            
-                         if(typeof filter.model == 'string') {
-                            filter.model = new Date(filter.model);
-                         }
+                    if(!filter.model) {                 
+
+                        if(filter.type=='date') {
+                                
+                            if(typeof filter.model == 'string') {
+                                filter.model = new Date(filter.model);
+                            }
+                        }
+
+                        if(filter.type=='toggle') {
+                            filter.model = filter.false;
+                        }
+
+                        if(filter.type=='select') {
+
+                            if(filter.multiple) {
+                                if(!angular.isArray(filter.default)) {
+                                    filter.model = [];
+                                }
+                            } else {
+                                if(filter.default==undefined) {
+                                    filter.model = '__all';
+                                }
+                            }
+                        }
                     }
 
                     if(filter.type=='range' && !filter.placeholder) {
                         filter.placeholder = ['Min','Max'];
                     }
 
-                    if(filter.type=='select') {
-
-                        if(filter.multiple) {
-                            if(!angular.isArray(filter.default)) {
-                                filter.model = [];
-                            }
-                        } else {
-                            if(filter.default==undefined) {
-                                filter.model = '__all';
-                            }
-                        }
-                    }
                 });
 
                 angular.forEach(options.columns,function(col,index) {
@@ -365,6 +373,14 @@
                     $scope.extended_search = !$scope.extended_search;
                 }
 
+                $scope.openFilters = function() {
+                    $scope.extended_search = true;
+                }
+
+                $scope.filterToggle = function(filter) {                    
+                    $scope.search();
+                }
+
                 $scope.done = function() {
                     $scope.extended_search = false;
                 }
@@ -419,7 +435,15 @@
 
                                 var matches = value.match(/(\d{4}-\d{2}-\d{2})/);
                                 value = matches[1];
-                            }                      
+                            
+                            } else if(filter.type=='toggle') {
+
+                                if(filter.model==filter.false) {
+                                    return;
+                                } else {
+                                    value = 'Yes';
+                                }
+                            }
 
                             value = String(value);
 
@@ -430,7 +454,7 @@
                         }
                     });
 
-                    $scope.searchinput = searches.join(' ');
+                    $scope.searchinput = { value: searches.join(' ') };
                 }
 
                 $scope.searchChange = function(search) {
@@ -617,7 +641,7 @@
                     var query = {};
                     angular.forEach(options.filters,function(filter) {
                         
-                        if(filter.value!==null) {
+                        if(filter.value!==null && String(filter.value).length) {
                             query[filter.name] = filter.value;
                         }
                     });

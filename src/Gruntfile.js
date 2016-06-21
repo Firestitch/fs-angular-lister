@@ -74,7 +74,7 @@ module.exports = function(grunt) {
 
                 concat: {
                     options: {
-                     
+                     separator: '\n'
                     },
                     build: {
                       src: ['app/scripts/filters/filter.js','app/scripts/directives/directive.js','app/scripts/services/service.js','.tmp/directivetemplate.js'],

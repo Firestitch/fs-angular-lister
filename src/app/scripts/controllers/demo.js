@@ -65,9 +65,9 @@
         
         paging: {
 
-            infinite: true,
+            //infinite: true,
             //pages: false,
-            limit: 10
+            limit: 5
         },
 
         //paging: false,
@@ -251,9 +251,15 @@
                     active: 'Active',
                     deleted: 'Deleted'
                 },
-                multiple: false,
-                default: 'active'
+                multiple: false
             },
+            {
+                name: 'toggle',
+                type: 'toggle',
+                label: 'Toggle',
+                true: 'active',
+                false: 'delete'
+            },            
             {
                 name: 'multiple',
                 type: 'select',
@@ -264,7 +270,13 @@
                     banana: 'Banana',
                     apple: 'Apple',
                 },
-                multiple: true
+                multiple: true,
+                default: {
+                    pear: 'Pear',
+                    orange: 'Orange',
+                    banana: 'Banana',
+                    apple: 'Apple',
+                },
             },            
             //{
             //    type: 'newline'
