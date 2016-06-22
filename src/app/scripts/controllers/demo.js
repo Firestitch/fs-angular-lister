@@ -29,7 +29,7 @@
 
         debug: false,
 
-        //persist: 'lister',
+        persist: 'lister',
 
         //inline: true,
         sort: {

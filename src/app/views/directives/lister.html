@@ -12,7 +12,7 @@
 
                 <div class="ng-hide filters" layout="column" ng-show="extended_search">
                     <div class="wrap">
-                        <div ng-repeat="filter in options.filters| filter:{ primary: false }" class="filter filter-{{filter.type}}">
+                        <div ng-repeat="filter in options.filters" class="filter filter-{{filter.type}}">
                             
                             <div class="filter-label">
                                 {{::filter.label}}

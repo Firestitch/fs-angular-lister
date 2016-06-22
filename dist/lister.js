@@ -1147,7 +1147,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"wrap\">\r" +
     "\n" +
-    "                        <div ng-repeat=\"filter in options.filters| filter:{ primary: false }\" class=\"filter filter-{{filter.type}}\">\r" +
+    "                        <div ng-repeat=\"filter in options.filters\" class=\"filter filter-{{filter.type}}\">\r" +
     "\n" +
     "                            \r" +
     "\n" +
