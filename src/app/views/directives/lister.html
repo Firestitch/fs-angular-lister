@@ -80,12 +80,12 @@
                                 </span>
                             </div>
 
-                            <div class="interface interface-toggle" ng-if="filter.type == 'toggle'" >
+                            <div class="interface interface-checkbox" ng-if="filter.type == 'checkbox'" >
 
                                 <span class="md-block">                
                                     <md-input-container>
                                         <label>{{::filter.label}}</label>
-                                        <md-checkbox ng-change="filterToggle(filter)" ng-model="filter.model" ng-true-value="'{{filter.true}}'" ng-false-value="'{{filter.false}}'" aria-label="Toggle filter"></md-checkbox>
+                                        <md-checkbox ng-change="search()" ng-model="filter.model" ng-true-value="'{{filter.checked}}'" ng-false-value="'{{filter.unchecked}}'" aria-label="Checkbox filter"></md-checkbox>
                                     </md-input-container>
                                 </span>
                             </div>

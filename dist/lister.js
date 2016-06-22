@@ -154,8 +154,8 @@
                             }
                         }
 
-                        if(filter.type=='toggle') {
-                            filter.model = filter.false;
+                        if(filter.type=='checkbox') {
+                            filter.model = filter.unchecked;
                         }
 
                         if(filter.type=='select') {
@@ -387,10 +387,6 @@
                     $scope.extended_search = true;
                 }
 
-                $scope.filterToggle = function(filter) {                    
-                    $scope.search();
-                }
-
                 $scope.done = function() {
                     $scope.extended_search = false;
                 }
@@ -446,9 +442,9 @@
                                 var matches = value.match(/(\d{4}-\d{2}-\d{2})/);
                                 value = matches[1];
                             
-                            } else if(filter.type=='toggle') {
+                            } else if(filter.type=='checkbox') {
 
-                                if(filter.model==filter.false) {
+                                if(filter.model==filter.unchecked) {
                                     return;
                                 } else {
                                     value = 'Yes';
@@ -1287,7 +1283,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                            <div class=\"interface interface-toggle\" ng-if=\"filter.type == 'toggle'\" >\r" +
+    "                            <div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\" >\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1297,7 +1293,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                        <label>{{::filter.label}}</label>\r" +
     "\n" +
-    "                                        <md-checkbox ng-change=\"filterToggle(filter)\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.true}}'\" ng-false-value=\"'{{filter.false}}'\" aria-label=\"Toggle filter\"></md-checkbox>\r" +
+    "                                        <md-checkbox ng-change=\"search()\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox>\r" +
     "\n" +
     "                                    </md-input-container>\r" +
     "\n" +

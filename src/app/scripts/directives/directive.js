@@ -154,8 +154,8 @@
                             }
                         }
 
-                        if(filter.type=='toggle') {
-                            filter.model = filter.false;
+                        if(filter.type=='checkbox') {
+                            filter.model = filter.unchecked;
                         }
 
                         if(filter.type=='select') {
@@ -387,10 +387,6 @@
                     $scope.extended_search = true;
                 }
 
-                $scope.filterToggle = function(filter) {                    
-                    $scope.search();
-                }
-
                 $scope.done = function() {
                     $scope.extended_search = false;
                 }
@@ -446,9 +442,9 @@
                                 var matches = value.match(/(\d{4}-\d{2}-\d{2})/);
                                 value = matches[1];
                             
-                            } else if(filter.type=='toggle') {
+                            } else if(filter.type=='checkbox') {
 
-                                if(filter.model==filter.false) {
+                                if(filter.model==filter.unchecked) {
                                     return;
                                 } else {
                                     value = 'Yes';

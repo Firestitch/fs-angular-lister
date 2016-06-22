@@ -255,10 +255,10 @@
             },
             {
                 name: 'toggle',
-                type: 'toggle',
-                label: 'Toggle',
-                true: 'active',
-                false: 'delete'
+                type: 'checkbox',
+                label: 'Checkbox',
+                checked: 'active',
+                unchecked: 'delete'
             },            
             {
                 name: 'multiple',
