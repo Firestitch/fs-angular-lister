@@ -172,7 +172,7 @@
         </div>
     </div>
     <div ng-if="options.paging.infinite && numeric(paging.records)" class="infinite-records">{{paging.records}} Records</div>
-    <div class="results">
+    <div class="results" ng-if="options.columns.length">
         <div class="progress-paged ng-hide" ng-show="loading && !options.paging.infinite">
             <md-progress-circular md-mode="indeterminate"></md-progress-circular>
         </div>    

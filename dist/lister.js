@@ -1467,7 +1467,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    <div ng-if=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records\">{{paging.records}} Records</div>\r" +
     "\n" +
-    "    <div class=\"results\">\r" +
+    "    <div class=\"results\" ng-if=\"options.columns.length\">\r" +
     "\n" +
     "        <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\r" +
     "\n" +
