@@ -82,6 +82,12 @@
             outline: none;
         }
 
+        .md-icon-button-reload {
+            .material-icons {
+                font-size: 22px;
+            }
+        }
+        
         .md-icon-button-filters,
         .md-icon-button-reload {
             position: relative;
@@ -100,7 +106,7 @@
         .inline-search-input {
             
             position: relative;
-            margin-right: -55px;
+            margin-right: -25px;
 
             md-input-container {
                 margin: 0;

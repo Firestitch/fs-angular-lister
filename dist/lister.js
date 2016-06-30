@@ -1334,7 +1334,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            </md-button>\r" +
     "\n" +
-    "\r" +
+    "            <!--\r" +
     "\n" +
     "            <md-button ng-click=\"toggleFilters()\" md-no-ink class=\"md-icon-button md-icon-button-filters\" aria-label=\"Search filters\">\r" +
     "\n" +
@@ -1344,7 +1344,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            </md-button>\r" +
     "\n" +
-    "\r" +
+    "            -->\r" +
     "\n" +
     "            <div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div>\r" +
     "\n" +
