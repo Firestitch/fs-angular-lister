@@ -453,7 +453,12 @@
 
                             value = String(value);
 
-                            var label = filter.label.match(/\s/) ? '(' + filter.label + ')' : filter.label;
+                            if (filter.alias) {
+                                var label = filter.alias.match(/\s/) ? '(' + filter.alias + ')' : filter.alias;
+                            } else {
+                                var label = filter.label.match(/\s/) ? '(' + filter.label + ')' : filter.label;
+                            }
+                            
                             var value = value.match(/\s/) ? '(' + value + ')' : value;
 
                             searches.push(label + ':' + value);
@@ -1088,7 +1093,11 @@
 
             var valid = true;
             angular.forEach(filters,function(fvalue,fkey) {
-                valid &= String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
+                if (value['alias']) {
+                    valid = String(fvalue).toLowerCase()===String(value['alias']).toLowerCase();
+                } else {
+                    valid = String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
+                }
             });
             
             if(valid) {
