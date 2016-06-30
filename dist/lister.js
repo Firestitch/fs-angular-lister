@@ -463,7 +463,9 @@
                     $scope.searchinput = { value: searches.join(' ') };
                 }
                 $scope.searchKeydown = function(event)  {
-                    if(event.keyCode==27 || event.keyCode==13) {
+                    if(event.keyCode==40) {
+                        $scope.extended_search = true;
+                    } else {
                         $scope.extended_search = false;
                     }
                 }
@@ -1125,7 +1127,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    <div layout=\"row\" layout-align=\"start\" class=\"search\" ng-if=\"options.filters.length || options.topActions.length\" layout-align=\" end\">\r" +
     "\n" +
-    "        <div ng-if=\"options.inline\" layout=\"row\" class=\"inline-search\" flex>\r" +
+    "        <div ng-if=\"options.inline\" layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex>\r" +
     "\n" +
     "            <div class=\"inline-search-input\" flex=\"grow\">\r" +
     "\n" +
@@ -1313,9 +1315,23 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            </div>\r" +
     "\n" +
-    "            <md-button ng-click=\"toggleFilters()\" class=\"md-icon-button toggle-filters\" aria-label=\"Search filters\">\r" +
+    "\r" +
     "\n" +
-    "                <div class=\"icon-down\"></div>\r" +
+    "           \r" +
+    "\n" +
+    "            <md-button ng-click=\"reload()\" md-no-ink class=\"md-icon-button md-icon-button-reload\" aria-label=\"Reload\">\r" +
+    "\n" +
+    "                <div class=\"material-icons\">refresh</div>\r" +
+    "\n" +
+    "            </md-button>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <md-button ng-click=\"toggleFilters()\" md-no-ink class=\"md-icon-button md-icon-button-filters\" aria-label=\"Search filters\">\r" +
+    "\n" +
+    "                <div class=\"material-icons icon-collapsed\" ng-show=\"!extended_search\">expand_more</div>\r" +
+    "\n" +
+    "                <div class=\"material-icons icon-expanded\" ng-show=\"extended_search\">chevron_right</div>\r" +
     "\n" +
     "            </md-button>\r" +
     "\n" +
@@ -1702,6 +1718,8 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "    </div>\r" +
     "\n" +
     "</div>\r" +
+    "\n" +
+    "\r" +
     "\n"
   );
 

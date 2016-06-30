@@ -81,35 +81,25 @@
             outline: none;
         }
 
-        .toggle-filters {
-            margin-left: -30px;
-        }
-        
-        .icon-down {
-
-            display: block;
-            -webkit-align-items: flex-end;
-            -ms-flex-align: end;
-            align-items: flex-end;
-            text-align: end;
-            margin: 0 4px;
-            -webkit-transform: translate3d(0, 1px, 0);
-            transform: translate3d(0, 1px, 0);
-
-            &:after {
+        .md-icon-button-filters,
+        .md-icon-button-reload {
+            position: relative;
+            z-index: 51;
+       
+            margin: 0;
+            padding: 0; 
+            width: 32px;
+            .material-icons {
                 display: block;
-                content: '\25BC';
-                position: relative;
-                top: 2px;
-                speak: none;
-                -webkit-transform: scaleY(0.6) scaleX(1);
-                transform: scaleY(0.7) scaleX(1.1);
+                color: #757575;
             }
         }
+        
 
         .inline-search-input {
             
             position: relative;
+            margin-right: -53px;
 
             md-input-container {
                 margin: 0;

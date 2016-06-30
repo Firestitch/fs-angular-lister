@@ -1,7 +1,7 @@
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
 
     <div layout="row" layout-align="start" class="search" ng-if="options.filters.length || options.topActions.length" layout-align=" end">
-        <div ng-if="options.inline" layout="row" class="inline-search" flex>
+        <div ng-if="options.inline" layout="row" layout-align="start center" class="inline-search" flex>
             <div class="inline-search-input" flex="grow">
                 <div layout="row" layout-align="start center">
                     <a href ng-click="reload()"><md-icon>search</md-icon></a>
@@ -95,8 +95,15 @@
                     </div>
                 </div>
             </div>
-            <md-button ng-click="toggleFilters()" class="md-icon-button toggle-filters" aria-label="Search filters">
-                <div class="icon-down"></div>
+
+           
+            <md-button ng-click="reload()" md-no-ink class="md-icon-button md-icon-button-reload" aria-label="Reload">
+                <div class="material-icons">refresh</div>
+            </md-button>
+
+            <md-button ng-click="toggleFilters()" md-no-ink class="md-icon-button md-icon-button-filters" aria-label="Search filters">
+                <div class="material-icons icon-collapsed" ng-show="!extended_search">expand_more</div>
+                <div class="material-icons icon-expanded" ng-show="extended_search">chevron_right</div>
             </md-button>
 
             <div class="backdrop" ng-show="extended_search" ng-click="toggleFilters()"></div>
@@ -290,3 +297,4 @@
         </div>
     </div>
 </div>
+

@@ -463,7 +463,9 @@
                     $scope.searchinput = { value: searches.join(' ') };
                 }
                 $scope.searchKeydown = function(event)  {
-                    if(event.keyCode==27 || event.keyCode==13) {
+                    if(event.keyCode==40) {
+                        $scope.extended_search = true;
+                    } else {
                         $scope.extended_search = false;
                     }
                 }
