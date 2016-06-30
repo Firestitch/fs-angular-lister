@@ -1134,7 +1134,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <div layout=\"row\" layout-align=\"start\" class=\"search\" ng-if=\"options.filters.length || options.topActions.length\" layout-align=\" end\">\r" +
+    "    <div layout=\"row\" layout-align=\"start\" class=\"lister-search\" ng-if=\"options.filters.length || options.topActions.length\" layout-align=\" end\">\r" +
     "\n" +
     "        <div ng-if=\"options.inline\" layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex>\r" +
     "\n" +
@@ -1142,7 +1142,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div layout=\"row\" layout-align=\"start center\">\r" +
     "\n" +
-    "                    <a href ng-click=\"reload()\"><md-icon>search</md-icon></a>\r" +
+    "\r" +
+    "\n" +
+    "                    <a ng-click=\"reload()\" class=\"search-reload\"><i class=\"material-icons reload\">refresh</i><i class=\"material-icons search\">search</i></a>\r" +
     "\n" +
     "                    <md-input-container md-no-float>                    \r" +
     "\n" +
@@ -1328,11 +1330,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "           \r" +
     "\n" +
-    "            <md-button ng-click=\"reload()\" md-no-ink class=\"md-icon-button md-icon-button-reload\" aria-label=\"Reload\">\r" +
-    "\n" +
-    "                <div class=\"material-icons\">refresh</div>\r" +
-    "\n" +
-    "            </md-button>\r" +
+    "\r" +
     "\n" +
     "            <!--\r" +
     "\n" +

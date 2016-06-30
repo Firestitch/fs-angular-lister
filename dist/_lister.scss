@@ -34,7 +34,7 @@
         }
     }
 
-    .search {
+    .lister-search {
         margin: 25px 0 25px 0;
     }
 
@@ -107,6 +107,28 @@
             
             position: relative;
             margin-right: -25px;
+
+            .search-reload {
+                cursor: pointer;
+
+                .reload {
+                    display: none;
+                }
+
+                .search {
+                    display: block;
+                }
+
+                &:hover {
+                    .reload {
+                        display: block;
+                    }
+
+                    .search {
+                        display: none;
+                    }
+                }
+            }
 
             md-input-container {
                 margin: 0;
