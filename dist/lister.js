@@ -453,7 +453,12 @@
 
                             value = String(value);
 
-                            var label = filter.label.match(/\s/) ? '(' + filter.label + ')' : filter.label;
+                            if (filter.alias) {
+                                var label = filter.alias.match(/\s/) ? '(' + filter.alias + ')' : filter.alias;
+                            } else {
+                                var label = filter.label.match(/\s/) ? '(' + filter.label + ')' : filter.label;
+                            }
+                            
                             var value = value.match(/\s/) ? '(' + value + ')' : value;
 
                             searches.push(label + ':' + value);
@@ -1088,7 +1093,11 @@
 
             var valid = true;
             angular.forEach(filters,function(fvalue,fkey) {
-                valid &= String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
+                if (value['alias']) {
+                    valid = String(fvalue).toLowerCase()===String(value['alias']).toLowerCase();
+                } else {
+                    valid = String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
+                }
             });
             
             if(valid) {
@@ -1137,7 +1146,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <md-input-container md-no-float>                    \r" +
     "\n" +
-    "                        <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\"/>\r" +
+    "                        <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\" />\r" +
     "\n" +
     "                    </md-input-container>\r" +
     "\n" +
@@ -1329,9 +1338,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <md-button ng-click=\"toggleFilters()\" md-no-ink class=\"md-icon-button md-icon-button-filters\" aria-label=\"Search filters\">\r" +
     "\n" +
-    "                <div class=\"material-icons icon-collapsed\" ng-show=\"!extended_search\">expand_more</div>\r" +
+    "                <div class=\"material-icons icon-collapsed\" ng-show=\"extended_search\">expand_more</div>\r" +
     "\n" +
-    "                <div class=\"material-icons icon-expanded\" ng-show=\"extended_search\">chevron_right</div>\r" +
+    "                <div class=\"material-icons icon-expanded\" ng-show=\"!extended_search\">chevron_right</div>\r" +
     "\n" +
     "            </md-button>\r" +
     "\n" +
