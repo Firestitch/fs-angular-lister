@@ -467,13 +467,15 @@
 
                     $scope.searchinput = { value: searches.join(' ') };
                 }
-                $scope.searchKeydown = function(event)  {
-                    if(event.keyCode==40) {
-                        $scope.extended_search = true;
-                    } else {
-                        $scope.extended_search = false;
+                $scope.searchKeydown = function(event, operation)  {
+                    var operation = operation || 'open';
+
+                    if (operation=='open') {
+                        $scope.extended_search = (event.keyCode==40) ? true : false;
+                    } else if(operation=='closePopupOnEnter') {
+                        $scope.extended_search = (event.keyCode==13) ? false : true;
                     }
-                }
+                };
 
                 $scope.searchChange = function(search) {
 

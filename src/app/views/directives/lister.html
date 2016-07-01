@@ -40,7 +40,7 @@
 
                             <div class="interface " ng-if="filter.type == 'text'">
                                 <md-input-container class="md-no-float">
-                                    <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-change="search()"/>
+                                    <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-keydown="searchKeydown($event, 'closePopupOnEnter')" ng-change="search()"/>
                                 </md-input-container>
                             </div>
                             
