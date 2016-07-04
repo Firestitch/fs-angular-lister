@@ -492,7 +492,12 @@
                     });
 
                     angular.forEach(options.filters,function(filter) {
-                        filter.model = null;
+                        if (filter.type == 'checkbox') {
+                            filter.model = filter.unchecked;
+                            filter.value = filter.unchecked;
+                        } else {
+                            filter.model = null;
+                        }
                         $scope.filterValue(filter);
                     });
                     
@@ -539,6 +544,8 @@
                                     }
                                 }
 
+                            } else if(filter.type=='checkbox') {
+                                filter.model = (value == 'Yes') ? filter.checked  : filter.unchecked;
                             } else {
                                 filter.model = value;
                             }
