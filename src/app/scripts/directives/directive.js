@@ -72,7 +72,8 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, fsStore, $rootScope, fsLister, $location, $templateCache) {
+    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, 
+                                    fsStore, $rootScope, fsLister, $location, $templateCache) {
 
             /**
              * @ngdoc interface
@@ -82,9 +83,9 @@
              */
             var ListerCtrl = ['$scope', function ($scope) {                
 
-                var options     = angular.extend({},fsLister.options(),$scope.lsOptions);
-                var persist     = fsStore.get('lister-persist',{});
+                var options     = angular.extend({},fsLister.options(),$scope.lsOptions);                
                 var dataIndex   = 0;                
+                var persists    = fsStore.get('lister-persist',{});
 
                 if(options.paging===false)
                     options.paging = { enabled: false };
@@ -98,6 +99,30 @@
                 options.load = options.load===undefined ? true : options.load;
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
+
+                if(options.persist) {
+
+                    if(!angular.isObject(options.persist)) {
+                        options.persist = {};
+                    }
+
+                    if(!options.persist.name) {
+                        options.persist.name = $location.$$path;
+                    }
+
+                    if(!persists[options.persist.name] || !persists[options.persist.name]['data']) {
+                        persists[options.persist.name] = { data: {}, date: new Date() };
+                    }
+
+                    if(options.persist.timeout) {
+
+                        var date = new Date(persists[options.persist.name]['date']);
+
+                        if(!date || ((new Date()).getTime() - (options.persist.timeout * 60 * 1000))>date.getTime()) {
+                            persists[options.persist.name] = { data: {}, date: new Date() };
+                        }
+                    }
+                }
 
                 $scope.data = [];
                 $scope.dataCols = [];
@@ -128,12 +153,11 @@
                     filter.model = filter.default;
 
                     if(options.persist) {
-                        var persisted = persist[options.persist];
 
-                        if(persisted) {
-                            if(persisted[filter.name]!==undefined) {
-                               filter.model = persisted[filter.name];
-                            }
+                        var persisted = persists[options.persist.name]['data'];
+
+                        if(persisted[filter.name]!==undefined) {
+                           filter.model = persisted[filter.name];
                         }
                     }
 
@@ -720,7 +744,7 @@
                             models[filter.name] = filter.model;
                         });
 
-                        persist[options.persist] = models;
+                        persists[options.persist.name] = { data: models, date: new Date() };
                     }
 
                     if($scope.options.paging.enabled) {

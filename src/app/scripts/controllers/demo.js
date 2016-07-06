@@ -29,7 +29,10 @@
 
         debug: false,
 
-        persist: 'lister',
+        persist: {
+            name: 'lister',
+            timeout: 60
+        },
 
         //inline: true,
         sort: {
