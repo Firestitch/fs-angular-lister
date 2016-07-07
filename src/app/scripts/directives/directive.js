@@ -203,6 +203,11 @@
                     if(!primary && filter.type=='text') {
                         filter.primary = primary = true;
                     }
+
+                     if(filter.type=='select' && filter.isolate && filter.isolate.value==filter.model) {
+                        filter.isolate.enabled = true;
+                    }
+
                 });
 
                 angular.forEach(options.columns,function(col,index) {
@@ -415,6 +420,26 @@
                     $scope.extended_search = false;
                 }
 
+                $scope.selectSearch = function(filter) {
+                   
+                    if(filter.isolate) {
+                        filter.isolate.enabled = false;
+                    }
+                    
+                    $scope.search();
+                }
+                
+                $scope.isolateSearch = function(filter) {
+
+                    if(filter.isolate.enabled) {
+                        filter.model = filter.multiple ? [filter.isolate.value] : filter.isolate.value;
+                    } else {
+                        filter.model = null;
+                    }
+                    
+                    $scope.search();
+                }
+
                 $scope.search = function() {
 
                     angular.forEach(options.filters,function(filter) {
@@ -433,32 +458,38 @@
                         var value = filter.value;
                         if(value!==null) {
 
-                             if(filter.type=='select') {
+                            if(filter.type=='select') {
 
-                                if(filter.multiple) {
-
-                                    if(!value) {
-                                        return;
-                                    }
-
-                                    var values = [];
-                                    angular.forEach(value.split(','),function(item) {
-                                        angular.forEach(filter.values,function(filter_item) {
-                                            if(!String(filter_item.value).localeCompare(String(item))) {
-                                                values.push(filter_item.name);
-                                            }
-                                        });
-                                    });
-
-                                    value = values.join(',');
+                                if(filter.isolate && filter.isolate.enabled) {
+                                    value = filter.isolate.label;
 
                                 } else {
-                                    
-                                    angular.forEach(filter.values,function(filter_item) {
-                                        if(!String(filter_item.value).localeCompare(String(value))) {
-                                            value = filter_item.name;
+
+                                    if(filter.multiple) {
+
+                                        if(!value) {
+                                            return;
                                         }
-                                    });                                    
+
+                                        var values = [];
+                                        angular.forEach(value.split(','),function(item) {
+                                            angular.forEach(filter.values,function(filter_item) {
+                                                if(!String(filter_item.value).localeCompare(String(item))) {
+                                                    values.push(filter_item.name);
+                                                }
+                                            });
+                                        });
+
+                                        value = values.join(',');
+
+                                    } else {
+                                        
+                                        angular.forEach(filter.values,function(filter_item) {
+                                            if(!String(filter_item.value).localeCompare(String(value))) {
+                                                value = filter_item.name;
+                                            }
+                                        });
+                                    }
                                 }
 
                             } else if(filter.type=='date') {
@@ -598,14 +629,19 @@
 
                     if(filter.type=='select') {
 
-                        if(filter.multiple) {
+                        if(filter.isolate && filter.isolate.enabled) {
+                            filter.value = filter.isolate.value;
+                        } else {
 
-                            if(angular.isArray(filter.model)) {
-                                filter.value = filter.model.join(',');
+                            if(filter.multiple) {
+
+                                if(angular.isArray(filter.model)) {
+                                    filter.value = filter.model.join(',');
+                                }
+
+                            } else if(filter.model!='__all')  {
+                                filter.value = filter.model;
                             }
-
-                        } else if(filter.model!='__all')  {
-                            filter.value = filter.model;
                         }
 
                     } else if(filter.type=='date') {
@@ -898,6 +934,15 @@
                         filter.values = values;
                     }
 
+                    if(filter.isolate) {
+                        angular.forEach(filter.values,function(item, index) {
+
+                            if(item.value==filter.isolate.value) {
+                                filter.values.splice(index,1);
+                            }
+                        });
+                    }
+                           
                     $scope.filterValue(filter);
                 });
 

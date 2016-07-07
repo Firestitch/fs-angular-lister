@@ -203,6 +203,11 @@
                     if(!primary && filter.type=='text') {
                         filter.primary = primary = true;
                     }
+
+                     if(filter.type=='select' && filter.isolate && filter.isolate.value==filter.model) {
+                        filter.isolate.enabled = true;
+                    }
+
                 });
 
                 angular.forEach(options.columns,function(col,index) {
@@ -415,6 +420,26 @@
                     $scope.extended_search = false;
                 }
 
+                $scope.selectSearch = function(filter) {
+                   
+                    if(filter.isolate) {
+                        filter.isolate.enabled = false;
+                    }
+                    
+                    $scope.search();
+                }
+                
+                $scope.isolateSearch = function(filter) {
+
+                    if(filter.isolate.enabled) {
+                        filter.model = filter.multiple ? [filter.isolate.value] : filter.isolate.value;
+                    } else {
+                        filter.model = null;
+                    }
+                    
+                    $scope.search();
+                }
+
                 $scope.search = function() {
 
                     angular.forEach(options.filters,function(filter) {
@@ -433,32 +458,38 @@
                         var value = filter.value;
                         if(value!==null) {
 
-                             if(filter.type=='select') {
+                            if(filter.type=='select') {
 
-                                if(filter.multiple) {
-
-                                    if(!value) {
-                                        return;
-                                    }
-
-                                    var values = [];
-                                    angular.forEach(value.split(','),function(item) {
-                                        angular.forEach(filter.values,function(filter_item) {
-                                            if(!String(filter_item.value).localeCompare(String(item))) {
-                                                values.push(filter_item.name);
-                                            }
-                                        });
-                                    });
-
-                                    value = values.join(',');
+                                if(filter.isolate && filter.isolate.enabled) {
+                                    value = filter.isolate.label;
 
                                 } else {
-                                    
-                                    angular.forEach(filter.values,function(filter_item) {
-                                        if(!String(filter_item.value).localeCompare(String(value))) {
-                                            value = filter_item.name;
+
+                                    if(filter.multiple) {
+
+                                        if(!value) {
+                                            return;
                                         }
-                                    });                                    
+
+                                        var values = [];
+                                        angular.forEach(value.split(','),function(item) {
+                                            angular.forEach(filter.values,function(filter_item) {
+                                                if(!String(filter_item.value).localeCompare(String(item))) {
+                                                    values.push(filter_item.name);
+                                                }
+                                            });
+                                        });
+
+                                        value = values.join(',');
+
+                                    } else {
+                                        
+                                        angular.forEach(filter.values,function(filter_item) {
+                                            if(!String(filter_item.value).localeCompare(String(value))) {
+                                                value = filter_item.name;
+                                            }
+                                        });
+                                    }
                                 }
 
                             } else if(filter.type=='date') {
@@ -598,14 +629,19 @@
 
                     if(filter.type=='select') {
 
-                        if(filter.multiple) {
+                        if(filter.isolate && filter.isolate.enabled) {
+                            filter.value = filter.isolate.value;
+                        } else {
 
-                            if(angular.isArray(filter.model)) {
-                                filter.value = filter.model.join(',');
+                            if(filter.multiple) {
+
+                                if(angular.isArray(filter.model)) {
+                                    filter.value = filter.model.join(',');
+                                }
+
+                            } else if(filter.model!='__all')  {
+                                filter.value = filter.model;
                             }
-
-                        } else if(filter.model!='__all')  {
-                            filter.value = filter.model;
                         }
 
                     } else if(filter.type=='date') {
@@ -898,6 +934,15 @@
                         filter.values = values;
                     }
 
+                    if(filter.isolate) {
+                        angular.forEach(filter.values,function(item, index) {
+
+                            if(item.value==filter.isolate.value) {
+                                filter.values.splice(index,1);
+                            }
+                        });
+                    }
+                           
                     $scope.filterValue(filter);
                 });
 
@@ -1193,159 +1238,177 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"wrap\">\r" +
     "\n" +
-    "                        <div ng-repeat=\"filter in options.filters\" class=\"filter filter-{{filter.type}}\">\r" +
+    "                        <div ng-repeat=\"filter in options.filters\" class=\"filter-group\">\r" +
     "\n" +
     "                            \r" +
     "\n" +
-    "                            <div class=\"filter-label\">\r" +
-    "\n" +
-    "                                {{::filter.label}}\r" +
-    "\n" +
-    "                            </div>\r" +
+    "                            <div class=\"filter filter-{{filter.type}}\">\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                            <div class=\"interface\" ng-if=\"filter.type == 'select'\">\r" +
+    "                                <div class=\"filter-label\">\r" +
+    "\n" +
+    "                                    {{::filter.label}}\r" +
+    "\n" +
+    "                                </div>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                                <md-input-container class=\"md-no-float\" ng-if=\"filter.multiple\">\r" +
-    "\n" +
-    "                                    <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"search()\">\r" +
-    "\n" +
-    "                                        <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
-    "\n" +
-    "                                            {{::item.name}}\r" +
-    "\n" +
-    "                                        </md-option>\r" +
-    "\n" +
-    "                                    </md-select>\r" +
-    "\n" +
-    "                                </md-input-container>\r" +
+    "                                <div class=\"interface\" ng-if=\"filter.type == 'select'\">\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                                <md-input-container class=\"md-no-float\" ng-if=\"!filter.multiple\">\r" +
+    "                                    <md-input-container class=\"md-no-float\" ng-if=\"filter.multiple\">\r" +
     "\n" +
-    "                                    <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"search()\">\r" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"selectSearch(filter)\">\r" +
     "\n" +
-    "                                        <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
+    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
     "\n" +
-    "                                            {{::item.name}}\r" +
+    "                                                {{::item.name}}\r" +
     "\n" +
-    "                                        </md-option>\r" +
+    "                                            </md-option>\r" +
     "\n" +
-    "                                    </md-select>\r" +
-    "\n" +
-    "                                </md-input-container>\r" +
-    "\n" +
-    "                            </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            <div class=\"interface \" ng-if=\"filter.type == 'text'\">\r" +
-    "\n" +
-    "                                <md-input-container class=\"md-no-float\">\r" +
-    "\n" +
-    "                                    <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"search()\"/>\r" +
-    "\n" +
-    "                                </md-input-container>\r" +
-    "\n" +
-    "                            </div>\r" +
-    "\n" +
-    "                            \r" +
-    "\n" +
-    "                            <div class=\"interface\" ng-if=\"filter.type == 'range'\" >\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <span layout=\"row\" class=\"md-block\">\r" +
-    "\n" +
-    "                                     <md-input-container class=\"filter-range-min\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                        <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                                        <input\r" +
-    "\n" +
-    "                                            placeholder=\"{{::filter.placeholder[0]}}\"\r" +
-    "\n" +
-    "                                            ng-model=\"filter.model['min']\"\r" +
-    "\n" +
-    "                                            aria-label=\"{{::filter.label}}\"\r" +
-    "\n" +
-    "                                            ng-model-options=\"{debounce: 400}\"\r" +
-    "\n" +
-    "                                            ng-change=\"search()\" />\r" +
-    "\n" +
-    "                                     </md-input-container>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                     <md-input-container class=\"filter-range-max\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                        <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                                        <input\r" +
-    "\n" +
-    "                                            placeholder=\"{{::filter.placeholder[1]}}\"\r" +
-    "\n" +
-    "                                            ng-model=\"filter.model['max']\"\r" +
-    "\n" +
-    "                                            aria-label=\"{{::filter.label}}\"\r" +
-    "\n" +
-    "                                            ng-model-options=\"{debounce: 400}\"\r" +
-    "\n" +
-    "                                            ng-change=\"search()\" />\r" +
-    "\n" +
-    "                                     </md-input-container>\r" +
-    "\n" +
-    "                                </span>\r" +
-    "\n" +
-    "                            </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            <div class=\"interface\" ng-if=\"filter.type == 'date'\" >\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <span class=\"md-block\">                \r" +
-    "\n" +
-    "                                    <md-datepicker-container>\r" +
-    "\n" +
-    "                                        <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                                        <md-datepicker ng-model=\"filter.model\" ng-change=\"search()\"></md-datepicker>\r" +
-    "\n" +
-    "                                    </md-datepicker-container>\r" +
-    "\n" +
-    "                                </span>\r" +
-    "\n" +
-    "                            </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            <div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\" >\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <span class=\"md-block\">                \r" +
-    "\n" +
-    "                                    <md-input-container>\r" +
-    "\n" +
-    "                                        <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                                        <md-checkbox ng-change=\"search()\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox>\r" +
+    "                                        </md-select>\r" +
     "\n" +
     "                                    </md-input-container>\r" +
     "\n" +
-    "                                </span>\r" +
+    "\r" +
+    "\n" +
+    "                                    <md-input-container class=\"md-no-float\" ng-if=\"!filter.multiple\">\r" +
+    "\n" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\r" +
+    "\n" +
+    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
+    "\n" +
+    "                                                {{::item.name}}\r" +
+    "\n" +
+    "                                            </md-option>\r" +
+    "\n" +
+    "                                        </md-select>\r" +
+    "\n" +
+    "                                    </md-input-container>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                <div class=\"interface \" ng-if=\"filter.type == 'text'\">\r" +
+    "\n" +
+    "                                    <md-input-container class=\"md-no-float\">\r" +
+    "\n" +
+    "                                        <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"search()\"/>\r" +
+    "\n" +
+    "                                    </md-input-container>\r" +
+    "\n" +
+    "                                </div>\r" +
+    "\n" +
+    "                                \r" +
+    "\n" +
+    "                                <div class=\"interface\" ng-if=\"filter.type == 'range'\" >\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                    <span layout=\"row\" class=\"md-block\">\r" +
+    "\n" +
+    "                                         <md-input-container class=\"filter-range-min\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                            <label>{{::filter.label}}</label>\r" +
+    "\n" +
+    "                                            <input\r" +
+    "\n" +
+    "                                                placeholder=\"{{::filter.placeholder[0]}}\"\r" +
+    "\n" +
+    "                                                ng-model=\"filter.model['min']\"\r" +
+    "\n" +
+    "                                                aria-label=\"{{::filter.label}}\"\r" +
+    "\n" +
+    "                                                ng-model-options=\"{debounce: 400}\"\r" +
+    "\n" +
+    "                                                ng-change=\"search()\" />\r" +
+    "\n" +
+    "                                         </md-input-container>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                         <md-input-container class=\"filter-range-max\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                            <label>{{::filter.label}}</label>\r" +
+    "\n" +
+    "                                            <input\r" +
+    "\n" +
+    "                                                placeholder=\"{{::filter.placeholder[1]}}\"\r" +
+    "\n" +
+    "                                                ng-model=\"filter.model['max']\"\r" +
+    "\n" +
+    "                                                aria-label=\"{{::filter.label}}\"\r" +
+    "\n" +
+    "                                                ng-model-options=\"{debounce: 400}\"\r" +
+    "\n" +
+    "                                                ng-change=\"search()\" />\r" +
+    "\n" +
+    "                                         </md-input-container>\r" +
+    "\n" +
+    "                                    </span>\r" +
+    "\n" +
+    "                                </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                <div class=\"interface\" ng-if=\"filter.type == 'date'\" >\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                    <span class=\"md-block\">                \r" +
+    "\n" +
+    "                                        <md-datepicker-container>\r" +
+    "\n" +
+    "                                            <label>{{::filter.label}}</label>\r" +
+    "\n" +
+    "                                            <md-datepicker ng-model=\"filter.model\" ng-change=\"search()\"></md-datepicker>\r" +
+    "\n" +
+    "                                        </md-datepicker-container>\r" +
+    "\n" +
+    "                                    </span>\r" +
+    "\n" +
+    "                                </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                <div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\">\r" +
+    "\n" +
+    "                                    <md-checkbox ng-change=\"search()\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox>\r" +
+    "\n" +
+    "                                </div>\r" +
+    "\n" +
+    "\r" +
     "\n" +
     "                            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                            <div ng-if=\"filter.isolate\" class=\"filter isolate\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                <div class=\"filter-label\"></div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                <div class=\"interface\">\r" +
+    "\n" +
+    "                                    <md-checkbox ng-change=\"isolateSearch(filter)\" ng-model=\"filter.isolate.enabled\" ng-true-value=\"true\" ng-false-value=\"false\" aria-label=\"Checkbox filter\"></md-checkbox>\r" +
+    "\n" +
+    "                                    {{filter.isolate.label}}\r" +
+    "\n" +
+    "                                </div>\r" +
+    "\n" +
+    "                            </div>                            \r" +
     "\n" +
     "                        </div>\r" +
     "\n" +

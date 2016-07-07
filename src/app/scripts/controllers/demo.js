@@ -252,17 +252,13 @@
                 values: {
                     __all: 'All',
                     active: 'Active',
+                    pending: 'Pending',
+                    completed: 'Completed',
                     deleted: 'Deleted'
-                },
-                multiple: false
-            },
-            {
-                name: 'toggle',
-                type: 'checkbox',
-                label: 'Checkbox',
-                checked: 'active',
-                unchecked: 'delete'
-            },            
+                },                
+                isolate: { label: 'Show Deleted', value: 'deleted' },
+                multiple: true
+            },           
             {
                 name: 'multiple',
                 type: 'select',
@@ -294,7 +290,14 @@
                 type: 'range',
                 label: 'Numbered range',
                 placeholders: ['Min', 'Max']
-            }
+            },
+            {
+                name: 'toggle',
+                type: 'checkbox',
+                label: 'Checkbox',
+                checked: 'active',
+                unchecked: 'delete'
+            }            
         ]
     };
 });

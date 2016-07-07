@@ -100,8 +100,7 @@
                 display: block;
                 color: #757575;
             }
-        }
-        
+        }       
 
         .inline-search-input {
             
@@ -153,12 +152,20 @@
                 z-index: 51;
                 display: table;
 
+                label {
+                    display: none;
+                }
+
                 .wrap {
                     padding: 8px 17px 17px 17px;
                     background: #fff;
                     box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
                     margin-left: 26px;
-                }            
+                }
+
+                .filter-group {
+                    display: table-row-group;
+                }        
 
                 .filter {
                     display: table-row;
@@ -174,28 +181,34 @@
 
                     .interface {                    
 
-                        label { 
-                            display: none;
-                        }
-
                         &.interface-checkbox {
                             md-checkbox {
-                                margin: 8px 0;
+                                margin: 8px 0  8px 2px;
                             }
                         }
                     }
 
                     .interface,
                     .filter-label {
-                        display: table-cell;
-                        padding: 5px 0px;
+                        display: table-cell;                        
                     }
 
                     .filter-label {
-                        vertical-align: middle;
                         width: 1%;
-                        padding: 0 15px 0 0;
                         white-space: nowrap;
+                        vertical-align: middle;
+                        padding-right: 15px;
+                    }
+                }
+
+                .isolate  {
+                    .interface {
+                        line-height: 20px;
+                        padding-top: 5px;
+                    }
+
+                    md-checkbox {
+                        margin: 0 0 0 2px;
                     }
                 }
 
