@@ -18,6 +18,7 @@
     "fs-angular-modal": "latest",
     "fs-angular-api": "latest",
     "fs-angular-store": "latest",
+    "fs-boilerplate-styles": "latest",
     "angular-sortable-view": "0.0.15"
   },
   "devDependencies": {
