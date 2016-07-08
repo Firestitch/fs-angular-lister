@@ -261,9 +261,14 @@
                 padding: 2px;
                 margin: 18px 0;
                 vertical-align: middle;
+                min-height: 0;
+
+                md-datepicker {
+                    padding-right: 0;
+                    margin-right: 0;
+                }
 
                 .md-button.md-icon-button {
-                    margin-top: 6px;
                 }
 
                 .md-datepicker-input-container {
