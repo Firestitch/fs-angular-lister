@@ -34,7 +34,7 @@
             timeout: 60
         },
 
-        //inline: true,
+        inline: true,
         sort: {
             stop: function(item,list,$indexFrom,$indexTo) {
                 debugger;   
@@ -44,6 +44,7 @@
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
         },
+
         data: function(query, cb) {
             
             //return setTimeout(function() { cb([]); }, 2000); 

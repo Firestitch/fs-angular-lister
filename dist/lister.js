@@ -118,7 +118,7 @@
 
                         var date = new Date(persists[options.persist.name]['date']);
 
-                        if(!date || ((new Date()).getTime() - (options.persist.timeout * 60 * 1000))>date.getTime()) {
+                        if(moment(date).subtract(options.persist.timeout,'minutes').isAfter(moment())) {
                             persists[options.persist.name] = { data: {}, date: new Date() };
                         }
                     }
@@ -157,7 +157,12 @@
                         var persisted = persists[options.persist.name]['data'];
 
                         if(persisted[filter.name]!==undefined) {
-                           filter.model = persisted[filter.name];
+
+                            filter.model = persisted[filter.name];
+
+                            if(filter.type=='date') {
+                                filter.model = new Date(filter.model);
+                            }
                         }
                     }
 
@@ -172,7 +177,7 @@
                     if(!filter.model) {                 
 
                         if(filter.type=='date') {
-                                
+                            
                             if(typeof filter.model == 'string') {
                                 filter.model = new Date(filter.model);
                             }
@@ -207,7 +212,6 @@
                      if(filter.type=='select' && filter.isolate && filter.isolate.value==filter.model) {
                         filter.isolate.enabled = true;
                     }
-
                 });
 
                 angular.forEach(options.columns,function(col,index) {
@@ -426,6 +430,10 @@
                         filter.isolate.enabled = false;
                     }
                     
+                    $scope.search();
+                }
+
+                $scope.dateSearch = function(filter) {
                     $scope.search();
                 }
                 
@@ -649,8 +657,7 @@
                         var date = filter.model;
 
                         if(date) {
-                            var sign = date.getTimezoneOffset() < 0 ? '+' : '-';
-                            filter.value = $filter('date')(date, 'yyyy-MM-dd') + 'T00:00:00' + sign + String('00' + Math.abs(date.getTimezoneOffset() / 60)).slice(-2) + ':' + String('00' + Math.abs(date.getTimezoneOffset() % 60)).slice(-2);
+                            filter.value = moment(date).utc().add(moment(filter.model).utcOffset(), 'm').format();
                         }
 
                     } else if(filter.type=='range') {
@@ -1370,7 +1377,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                            <label>{{::filter.label}}</label>\r" +
     "\n" +
-    "                                            <md-datepicker ng-model=\"filter.model\" ng-change=\"search()\"></md-datepicker>\r" +
+    "                                            <md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\"></md-datepicker>\r" +
     "\n" +
     "                                        </md-datepicker-container>\r" +
     "\n" +
