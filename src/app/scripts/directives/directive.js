@@ -4,8 +4,7 @@
 
     /**
      * @ngdoc directive
-     * @name app.directives:lister
-     * @description
+     * @name app.directives:fs-lister
      * @restrict E
      * @param {object} ls-options Options to configure the Lister.
      * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback. 
@@ -57,7 +56,7 @@
                 `label` — The label of the interface
                 `values` — An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.<br>
                 `default` — Sets the default filter value
-        </tbody></table>
+
      * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive functions.
                     ```html
                     <lister ls-instance="listerInstance"></lister>
@@ -74,13 +73,7 @@
     
     var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, 
                                     fsStore, $rootScope, fsLister, $location, $templateCache) {
-
-            /**
-             * @ngdoc interface
-             * @name app.controllers:ListerCtrl
-             * @description
-             * A factory that allows easy access to the lister directive instance
-             */
+        
             var ListerCtrl = ['$scope', function ($scope) {                
 
                 var options     = angular.extend({},fsLister.options(),$scope.lsOptions);                
@@ -704,12 +697,6 @@
                     return styles;
                 }
 
-                /**
-                 * @ngdoc method
-                 * @name load
-                 * @methodOf app.controllers:ListerCtrl
-                 * @description Triggers the loading of data
-                 */
                 function reload() {
                     load({ page: 1, clear: true });
                 }
