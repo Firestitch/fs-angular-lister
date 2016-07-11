@@ -4,8 +4,7 @@
 
     /**
      * @ngdoc directive
-     * @name app.directives:lister
-     * @description
+     * @name app.directives:fs-lister
      * @restrict E
      * @param {object} ls-options Options to configure the Lister.
      * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback. 
@@ -57,7 +56,7 @@
                 `label` — The label of the interface
                 `values` — An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.<br>
                 `default` — Sets the default filter value
-        </tbody></table>
+
      * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive functions.
                     ```html
                     <lister ls-instance="listerInstance"></lister>
@@ -73,15 +72,30 @@
      */
     
     var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, 
-                                    fsStore, $rootScope, fsLister, $location, $templateCache) {
+                                    fsStore, $rootScope, fsLister, $location, $templateCache) {            
+        return {
+            template: function(element, attr) {
+                var template = $templateCache.get('views/directives/lister.html');
 
-            /**
-             * @ngdoc interface
-             * @name app.controllers:ListerCtrl
-             * @description
-             * A factory that allows easy access to the lister directive instance
-             */
-            var ListerCtrl = ['$scope', function ($scope) {                
+                var sort = angular.element(element).attr('ls-sort');
+
+                if(sort===undefined) {
+                    template = template
+                                .replace(/sv-root[^\s\>]*/,'')
+                                .replace(/sv-on-stop[^\s\>]*/,'')
+                                .replace(/sv-part[^\s\>]*/,'')
+                                .replace(/sv-handle[^\s\>]*/,'')
+                                .replace(/sv-element[^\s\>]*/,'');
+                }
+
+                return template;
+            },
+            restrict: 'E',            
+            scope: {
+                lsOptions: '=',
+                lsInstance: '='
+            },
+            controller: function ($scope) {
 
                 var options     = angular.extend({},fsLister.options(),$scope.lsOptions);                
                 var dataIndex   = 0;                
@@ -704,12 +718,6 @@
                     return styles;
                 }
 
-                /**
-                 * @ngdoc method
-                 * @name load
-                 * @methodOf app.controllers:ListerCtrl
-                 * @description Triggers the loading of data
-                 */
                 function reload() {
                     load({ page: 1, clear: true });
                 }
@@ -969,33 +977,10 @@
                     return this;
                 }
 
-                if($scope.lsInstance)
-                    $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: filterValues, data: data };
-            }];
-
-        return {
-            template: function(element, attr) {
-                var template = $templateCache.get('views/directives/lister.html');
-
-                var sort = angular.element(element).attr('ls-sort');
-
-                if(sort===undefined) {
-                    template = template
-                                .replace(/sv-root[^\s\>]*/,'')
-                                .replace(/sv-on-stop[^\s\>]*/,'')
-                                .replace(/sv-part[^\s\>]*/,'')
-                                .replace(/sv-handle[^\s\>]*/,'')
-                                .replace(/sv-element[^\s\>]*/,'');
+                if($scope.lsInstance) {
+                    angular.extend($scope.lsInstance,{ load: load, page: page, reload: reload , filterValues: filterValues, data: data });
                 }
-
-                return template;
             },
-            restrict: 'E',            
-            scope: {
-                lsOptions: '=',
-                lsInstance: '='
-            },
-            controller: ListerCtrl,
             compile: function(element, tAttrs, s, d) {
 
 

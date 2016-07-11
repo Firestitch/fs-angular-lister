@@ -72,9 +72,30 @@
      */
     
     var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, 
-                                    fsStore, $rootScope, fsLister, $location, $templateCache) {
-        
-            var ListerCtrl = ['$scope', function ($scope) {                
+                                    fsStore, $rootScope, fsLister, $location, $templateCache) {            
+        return {
+            template: function(element, attr) {
+                var template = $templateCache.get('views/directives/lister.html');
+
+                var sort = angular.element(element).attr('ls-sort');
+
+                if(sort===undefined) {
+                    template = template
+                                .replace(/sv-root[^\s\>]*/,'')
+                                .replace(/sv-on-stop[^\s\>]*/,'')
+                                .replace(/sv-part[^\s\>]*/,'')
+                                .replace(/sv-handle[^\s\>]*/,'')
+                                .replace(/sv-element[^\s\>]*/,'');
+                }
+
+                return template;
+            },
+            restrict: 'E',            
+            scope: {
+                lsOptions: '=',
+                lsInstance: '='
+            },
+            controller: function ($scope) {
 
                 var options     = angular.extend({},fsLister.options(),$scope.lsOptions);                
                 var dataIndex   = 0;                
@@ -956,33 +977,10 @@
                     return this;
                 }
 
-                if($scope.lsInstance)
-                    $scope.lsInstance = { load: load, page: page, reload: reload , filterValues: filterValues, data: data };
-            }];
-
-        return {
-            template: function(element, attr) {
-                var template = $templateCache.get('views/directives/lister.html');
-
-                var sort = angular.element(element).attr('ls-sort');
-
-                if(sort===undefined) {
-                    template = template
-                                .replace(/sv-root[^\s\>]*/,'')
-                                .replace(/sv-on-stop[^\s\>]*/,'')
-                                .replace(/sv-part[^\s\>]*/,'')
-                                .replace(/sv-handle[^\s\>]*/,'')
-                                .replace(/sv-element[^\s\>]*/,'');
+                if($scope.lsInstance) {
+                    angular.extend($scope.lsInstance,{ load: load, page: page, reload: reload , filterValues: filterValues, data: data });
                 }
-
-                return template;
             },
-            restrict: 'E',            
-            scope: {
-                lsOptions: '=',
-                lsInstance: '='
-            },
-            controller: ListerCtrl,
             compile: function(element, tAttrs, s, d) {
 
 
