@@ -179,13 +179,8 @@
                 order: { name: 'date' },
                 value: function(data, $scope, myresolve) {
                     return data["date"];
-                },
-                resolve: {
-                    myresolve: function() {
-                        return "myresolve!!";
-                    }
                 }
-            },
+            }, 
             {   title: 'Select', 
                 value: function (label, $scope, data, list) {
                     return '<md-input-container><md-select ng-model="someModel" placeholder="{{label}}" ng-change="click()"><md-option ng-value="opt" ng-repeat="opt in list">{{ opt.label }}</md-option></md-select></md-input-container>';
@@ -277,14 +272,17 @@
                     banana: 'Banana',
                     apple: 'Apple',
                 },
-            },            
-            //{
-            //    type: 'newline'
-            //},
+            },
             {
                 name: 'date',
                 type: 'date',
-                label: 'Date'
+                label: 'Date',
+                time: false
+            },
+            {
+                name: 'datetime',
+                type: 'date',
+                label: 'Date with Time'
             },
             {
                 name: 'range',

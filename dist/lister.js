@@ -671,7 +671,12 @@
                         var date = filter.model;
 
                         if(date) {
-                            filter.value = moment(date).utc().add(moment(filter.model).utcOffset(), 'm').format();
+
+                            if(filter.time===undefined || filter.time) {
+                                filter.value = moment(date).utc().format();
+                            } else {
+                                filter.value = moment(date).utc().add(moment(filter.model).utcOffset(), 'm').format();
+                            }
                         }
 
                     } else if(filter.type=='range') {
