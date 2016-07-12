@@ -3,10 +3,10 @@
     <div layout="row" layout-align="start" class="lister-search" ng-if="options.filters.length || options.topActions.length" layout-align=" end">
         <div ng-if="options.inline" layout="row" layout-align="start center" class="inline-search" flex>
             <div class="inline-search-input" flex="grow">
-                <div layout="row" layout-align="start center">
+                <div class="main-search-bar" layout="row" layout-align="start center">
 
                     <div ng-click="reload()" class="search-reload"><i class="material-icons reload">refresh</i><i class="material-icons search">search</i></div>
-                    <md-input-container md-no-float>                    
+                    <md-input-container class="md-short-container" md-no-float>
                         <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="openFilters()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />
                     </md-input-container>
                 </div>
@@ -23,7 +23,7 @@
 
                                 <div class="interface" ng-if="filter.type == 'select'">
 
-                                    <md-input-container class="md-no-float" ng-if="filter.multiple">
+                                    <md-input-container class="md-short-container md-block md-no-float" ng-if="filter.multiple">
                                         <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectSearch(filter)">
                                             <md-option ng-repeat="item in filter.values" value="{{::item.value}}">
                                                 {{::item.name}}
@@ -31,7 +31,7 @@
                                         </md-select>
                                     </md-input-container>
 
-                                    <md-input-container class="md-no-float" ng-if="!filter.multiple">
+                                    <md-input-container class="md-short-container md-block md-no-float" ng-if="!filter.multiple">
                                         <md-select ng-model="filter.model" aria-label="select" ng-change="selectSearch(filter)">
                                             <md-option ng-repeat="item in filter.values" value="{{::item.value}}">
                                                 {{::item.name}}
@@ -42,7 +42,7 @@
                                 </div>
 
                                 <div class="interface " ng-if="filter.type == 'text'">
-                                    <md-input-container class="md-no-float">
+                                    <md-input-container class="md-short-container md-block md-no-float">
                                         <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-keydown="searchKeydown($event, 'closePopupOnEnter')" ng-change="search()"/>
                                     </md-input-container>
                                 </div>
@@ -50,7 +50,7 @@
                                 <div class="interface" ng-if="filter.type == 'range'" >
 
                                     <span layout="row" class="md-block">
-                                         <md-input-container class="filter-range-min">
+                                         <md-input-container class="md-short-container md-block filter-range-min">
 
                                             <label>{{::filter.label}}</label>
                                             <input
@@ -61,7 +61,7 @@
                                                 ng-change="search()" />
                                          </md-input-container>
 
-                                         <md-input-container class="filter-range-max">
+                                         <md-input-container class="md-short-container md-block filter-range-max">
 
                                             <label>{{::filter.label}}</label>
                                             <input
@@ -77,7 +77,7 @@
                                 <div class="interface" ng-if="filter.type == 'date'" >
 
                                     <span class="md-block">                
-                                        <md-datepicker-container>
+                                        <md-datepicker-container class="md-short-container md-block">
                                             <label>{{::filter.label}}</label>
                                             <md-datepicker ng-model="filter.model" ng-change="dateSearch(filter)"></md-datepicker>
                                         </md-datepicker-container>
@@ -120,7 +120,7 @@
         <div ng-if="!options.inline" class="full-search" flex="grow">
             <div ng-repeat="filters in groupedFilters" layout="row">
                 <div ng-repeat="filter in filters" class="filter filter-{{::filter.type}}">
-                    <md-input-container ng-if="filter.type == 'select'">
+                    <md-input-container class="md-short-container" ng-if="filter.type == 'select'">
                         <label>{{::filter.label}}</label>
                         <md-select ng-model="filter.model" ng-change="filterChange(filter)">
                             <md-option ng-repeat="item in filter.values" value="{{::item.value}}">
@@ -128,12 +128,12 @@
                             </md-option>
                         </md-select>
                     </md-input-container>
-                    <md-input-container class="md-input-has-placeholder" ng-if="filter.type == 'text'">
+                    <md-input-container class="md-short-container md-input-has-placeholder" ng-if="filter.type == 'text'">
                         <label>{{::filter.label}}</label>
                         <input ng-model="filter.model" ng-model-options="{debounce: 300}" ng-change="filterChange(filter)" aria-label="{{::filter.label}}" />
                     </md-input-container>
                     <span ng-if="filter.type == 'range'" layout="row">
-                         <md-input-container class="filter-range-min">
+                         <md-input-container class="md-short-container filter-range-min">
 
                             <label>{{::filter.label}}</label>
 
@@ -145,7 +145,7 @@
                                 aria-label="{{::filter.label}}" />
                          </md-input-container>
 
-                         <md-input-container class="filter-range-max">
+                         <md-input-container class="md-short-container filter-range-max">
 
                             <label>{{::filter.label}}</label>
 
@@ -158,7 +158,7 @@
                          </md-input-container>
                     </span>
                     <span ng-if="filter.type == 'date'">                
-                        <md-datepicker-container>
+                        <md-datepicker-container class="md-short-container">
                             <label>{{::filter.label}}</label>
                             <md-datepicker ng-model="filter.model" ng-change="filterChange(filter)"></md-datepicker>
                         </md-datepicker-container>
