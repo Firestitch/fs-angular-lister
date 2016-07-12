@@ -1213,7 +1213,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                <div class=\"main-search-bar\" layout=\"row\" layout-align=\"start center\">\n" +
     "\n" +
     "                    <div ng-click=\"reload()\" class=\"search-reload\"><i class=\"material-icons reload\">refresh</i><i class=\"material-icons search\">search</i></div>\n" +
-    "                    <md-input-container class=\"md-short-container\" md-no-float>                    \n" +
+    "                    <md-input-container class=\"md-short-container\" md-no-float>\n" +
     "                        <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\" />\n" +
     "                    </md-input-container>\n" +
     "                </div>\n" +
@@ -1225,7 +1225,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                            <div class=\"filter filter-{{filter.type}}\">\n" +
     "\n" +
     "                                <div class=\"filter-label\">\n" +
-    "                                    {{::filter.label}}\n" +
+    "                                    <div class=\"filter-label-content\">\n" +
+    "                                        {{::filter.label}}\n" +
+    "                                    </div>\n" +
     "                                </div>\n" +
     "\n" +
     "                                <div class=\"interface\" ng-if=\"filter.type == 'select'\">\n" +

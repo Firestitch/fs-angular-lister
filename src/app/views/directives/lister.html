@@ -18,7 +18,9 @@
                             <div class="filter filter-{{filter.type}}">
 
                                 <div class="filter-label">
-                                    {{::filter.label}}
+                                    <div class="filter-label-content">
+                                        {{::filter.label}}
+                                    </div>
                                 </div>
 
                                 <div class="interface" ng-if="filter.type == 'select'">
