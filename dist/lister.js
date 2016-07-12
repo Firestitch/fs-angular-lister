@@ -1,7 +1,6 @@
 (function () {
     'use strict';
-
-
+    
     /**
      * @ngdoc directive
      * @name app.directives:fs-lister
@@ -9,54 +8,68 @@
      * @param {object} ls-options Options to configure the Lister.
      * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback. 
                 <ul>
-                    <li> `query` — An object with the filters 
-                    <li> `callback` — This call back function is expecting two parameters. The first an array of objects to populate the lister. The other a paging object with the following properties:
-                        <br><br>
-                        `records` — The number of records in the entire dataset (before any paging).<br>
-                        `limit` — The number of records for paging<br>
-                        `page` — The page number starting at one<br>
-                        `pages` — The total number of pages in the entire dataset<br>
+                    <li><label>query</label> An object with the filters</li>
+                    <li><label>callback</label>Call back function to populate lister dataset and paging</li>
+                    <ul>
+                        <li><label>data</label> An array of objects to populate the lister</li>
+                        <li><label>paging</label> Paging object</li>
+                        <ul>
+                            <li><label>records</label> The number of records in the entire dataset (before any paging).</li>
+                            <li><label>limit</label> The number of records for paging</li>
+                            <li><label>page</label> The page number starting at one</li>
+                            <li><label>pages</label> The total number of pages in the entire dataset</li>
+                        </ul>
+                    </ul>
                 </ul>  
      * @param {function} ls-options.rowClick Called when the row is clicked
-     * @param {array} ls-options.actions Adds a column to the right side of the lister and places a button that a user can click to perform custom events <br><br>
-                When actions array's length is greater then one the object supports:
-                <br><br>
-                `label` — Used in the contextual menu item's label<br>
-                `click` — Is triggered when the contextual menu item is clicked<br>
-                `icon` — Used in the contextual menu item icon<br><br>
-                `delete` — Used for delete confirmation. 
-                    <ul><li>`title` — Title of confirmation. Default 'Confirm'.<br>
-                    <li>`content` — Content of confirmation.<br>
-                    <li>`ok` — Function when ok is clicked.<br>
-                    <li>`cancel` — Function when cancel is clicked.<br>
-                    <li>`okLabel` — Ok label. Default 'Ok'.<br>
-                    <li>`cancelLabel` — Cancel label. Default 'Cancel'</ul>
+     * @param {array} ls-options.actions Adds a column to the right side of the lister and places a button that a user can click to perform custom events
+                <ul>
+                    <li><label>label</label>Used in the contextual menu item's label</li>
+                    <li><label>click</label>Is triggered when the contextual menu item is clicked</li>
+                    <li><label>icon</label>Used in the contextual menu item icon</li>
+                    <li><label>delete</label> Used for delete confirmation. </li>
+                    <ul>
+                        <li><label>title</label> Title of confirmation. Default 'Confirm'.</li>
+                        <li><label>content</label> Content of confirmation.</li>
+                        <li><label>ok</label> Function when ok is clicked.</li>
+                        <li><label>cancel</label> Function when cancel is clicked.</li>
+                        <li><label>okLabel</label> Ok label. Default 'Ok'.</li>
+                        <li><label>cancelLabel</label> Cancel label. Default 'Cancel'</li>
+                    </ul>
+                </ul>
     * @param {object} ls-options.action Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.
     * @param {bool} ls-options.load Loads the lister data on directive load. Default true
     * @param {object} ls-options.paging Configures paging
-                <br><br>
-                `infinite` — Enables infinite scroll<br>
-                `limit` — Sets the limit per page
+                <ul>
+                    <li><label>infinite</label>Enables infinite scroll</li>
+                    <li><label>limit</label>Sets the limit per page</li>
+                </ul>
     * @param {object} ls-options.norecords The message to be displayed when there are no records in the search
     * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side
-    * @param {array} ls-options.selection.actions Sets the menus options for the selection interface
-                <br><br>
-                `label` — Used in the contextual menu item's label<br>
-                `click` — Is triggered when the contextual menu item is clicked. First param an array of selected objects and the second param is the $event
-                `icon` — Used in the contextual menu item icon               
-     * @param {array} ls-options.columns Defines the columns for the lister<br><br>
-                `title` — Specifies the column tile<br>
-                `value` — Is triggered when the rendering the column and is passed a data parameter which corresponds to the row's record<br>
-                `className` — A css class name that is appened to the column element<br>
-                `resolve` — Used to inject objects in the value() function and inserts the values into the $scope variable<br>
-                `scope` — Appended to the $scope object which is injected into the value() function
-     * @param {array} ls-options.filters Defines the filters found above the lister table<br><br>
-                `name` — the name in the query object passed to the fetch data process<br>
-                `type` — select (single selection dropdown) or text (one line input box) or date<br>
-                `label` — The label of the interface
-                `values` — An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.<br>
-                `default` — Sets the default filter value
-
+                <ul>
+                    <li><label>actions[]</label> Sets the menus options for the selection interface</li>
+                    <ul>
+                        <li><label>label</label>Used in the contextual menu item's label</li>
+                        <li><label>click</label>Is triggered when the contextual menu item is clicked. First param an array of selected objects and the second param is the $event</li>
+                        <li><label>icon</label>Used in the contextual menu item icon</li>
+                    </ul>
+                </ul>        
+    * @param {array} ls-options.columns Defines the columns for the lister
+                <ul>
+                    <li><label>title</label>Specifies the column tile</li>
+                    <li><label>value</label>Is triggered when the rendering the column and is passed a data parameter which corresponds to the row's record</li>
+                    <li><label>className</label>A css class name that is appened to the column element</li>
+                    <li><label>resolve</label>Used to inject objects in the value() function and inserts the values into the $scope variable</li>
+                    <li><label>scope</label>Appended to the $scope object which is injected into the value() function</li>
+                </ul>
+     * @param {array} ls-options.filters Defines the filters found above the lister table
+                <ul>
+                    <li><label>name</label>the name in the query object passed to the fetch data process</li>
+                    <li><label>type</label>select (single selection dropdown) or text (one line input box) or date</li>
+                    <li><label>label</label>The label of the interface</li>
+                    <li><label>values</label>An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.</li>
+                    <li><label>default</label>Sets the default filter value</li>
+                </ul>
      * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive functions.
                     ```html
                     <lister ls-instance="listerInstance"></lister>
@@ -71,7 +84,9 @@
                     ```
      */
     
-    var ListerDirective = function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, 
+    var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$timeout', '$mdDialog', 
+                            'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache',
+                            function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, 
                                     fsStore, $rootScope, fsLister, $location, $templateCache) {            
         return {
             template: function(element, attr) {
@@ -1072,12 +1087,13 @@
                 }
             }
         }
-    }
+    }];
 
     angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view'])
     .directive('lister',ListerDirective)
     .directive('fsLister',ListerDirective)
-    .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope', function ($compile, $injector, $location, $timeout, $rootScope) {        
+    .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope', 
+                                    function ($compile, $injector, $location, $timeout, $rootScope) {        
         return {    scope: {
                         column: '=fsColumn',
                         data: '=fsData',
