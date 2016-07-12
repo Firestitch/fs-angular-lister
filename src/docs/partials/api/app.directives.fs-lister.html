@@ -1,0 +1,71 @@
+<a href="https://github.com/Firestitch/angular-boilerplate/edit/master/app/scripts/directives/directive.js" class="improve-docs"><i class="icon-edit"> </i>Improve this doc</a><a href="https://github.com/Firestitch/angular-boilerplate/blob/469846f/app/scripts/directives/directive.js#L73" class="view-source"><i class="icon-eye-open"> </i>View source</a><h1><code ng:non-bindable="">fs-lister</code>
+<div><span class="hint">directive in module <code ng:non-bindable="">app</code>
+</span>
+</div>
+</h1>
+<div><h2 id="usage">Usage</h2>
+<div class="usage">as element:<pre class="prettyprint linenums">&lt;fs-lister
+       ls-options="{object}"
+       [ls-instance="{object}"]&gt;
+&lt;/fs-lister&gt;</pre>
+<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>ls-options</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Options to configure the Lister.</p>
+</div><table><thead><tr><th>Property</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>data</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>When the load() function is called this data function is called with two parameters query and callback.</p>
+<ul>
+    <li> <code>query</code> — An object with the filters 
+    <li> <code>callback</code> — This call back function is expecting two parameters. The first an array of objects to populate the lister. The other a paging object with the following properties:
+        <br><br>
+        <code>records</code> — The number of records in the entire dataset (before any paging).<br>
+        <code>limit</code> — The number of records for paging<br>
+        <code>page</code> — The page number starting at one<br>
+        <code>pages</code> — The total number of pages in the entire dataset<br>
+</ul>  
+</div></td></tr><tr><td>rowClick</td><td><a href="" class="label type-hint type-hint-function">function</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Called when the row is clicked</p>
+</div></td></tr><tr><td>actions</td><td><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Adds a column to the right side of the lister and places a button that a user can click to perform custom events <br><br>
+When actions array&#39;s length is greater then one the object supports:
+<br><br>
+<code>label</code> — Used in the contextual menu item&#39;s label<br>
+<code>click</code> — Is triggered when the contextual menu item is clicked<br>
+<code>icon</code> — Used in the contextual menu item icon<br><br>
+<code>delete</code> — Used for delete confirmation. 
+    <ul><li><code>title</code> — Title of confirmation. Default &#39;Confirm&#39;.<br>
+    <li><code>content</code> — Content of confirmation.<br>
+    <li><code>ok</code> — Function when ok is clicked.<br>
+    <li><code>cancel</code> — Function when cancel is clicked.<br>
+    <li><code>okLabel</code> — Ok label. Default &#39;Ok&#39;.<br>
+    <li><code>cancelLabel</code> — Cancel label. Default &#39;Cancel&#39;</ul></p>
+</div></td></tr><tr><td>action</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.</p>
+</div></td></tr><tr><td>load</td><td><a href="" class="label type-hint type-hint-bool">bool</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Loads the lister data on directive load. Default true</p>
+</div></td></tr><tr><td>paging</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Configures paging
+<br><br>
+<code>infinite</code> — Enables infinite scroll<br>
+<code>limit</code> — Sets the limit per page</p>
+</div></td></tr><tr><td>norecords</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>The message to be displayed when there are no records in the search</p>
+</div></td></tr><tr><td>selection</td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Enables the checkbox selection interface found on the left side</p>
+</div></td></tr><tr><td>selection.actions</td><td><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Sets the menus options for the selection interface
+<br><br>
+<code>label</code> — Used in the contextual menu item&#39;s label<br>
+<code>click</code> — Is triggered when the contextual menu item is clicked. First param an array of selected objects and the second param is the $event
+<code>icon</code> — Used in the contextual menu item icon               </p>
+</div></td></tr><tr><td>columns</td><td><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Defines the columns for the lister<br><br>
+<code>title</code> — Specifies the column tile<br>
+<code>value</code> — Is triggered when the rendering the column and is passed a data parameter which corresponds to the row&#39;s record<br>
+<code>className</code> — A css class name that is appened to the column element<br>
+<code>resolve</code> — Used to inject objects in the value() function and inserts the values into the $scope variable<br>
+<code>scope</code> — Appended to the $scope object which is injected into the value() function</p>
+</div></td></tr><tr><td>filters</td><td><a href="" class="label type-hint type-hint-array">array</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Defines the filters found above the lister table<br><br>
+<code>name</code> — the name in the query object passed to the fetch data process<br>
+<code>type</code> — select (single selection dropdown) or text (one line input box) or date<br>
+<code>label</code> — The label of the interface
+<code>values</code> — An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key &#39;__all&#39;.  Applies only ror select type filters.<br>
+<code>default</code> — Sets the default filter value</p>
+</div></td></tr></tbody></table></td></tr><tr><td>ls-instance <div><em>(optional)</em></div></td><td><a href="" class="label type-hint type-hint-object">object</a></td><td><div class="app-directives-page app-directives-fs-lister-page"><p>Object to be two way binded. This can be useful when trying to access the directive functions.</p>
+<pre><code class="lang-html">&lt;lister ls-instance=&quot;listerInstance&quot;&gt;&lt;/lister&gt;
+</code></pre>
+<pre><code class="lang-js">$scope.listerInstance = {}; 
+
+function click() {
+    $scope.listerInstance.load();
+}
+</code></pre>
+</div></td></tr></tbody></table></div>
+</div>

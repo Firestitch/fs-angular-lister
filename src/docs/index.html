@@ -11,14 +11,14 @@
                  Declarative templates with data-binding, MVC, dependency injection and great
                  testability story all implemented with pure client-side JavaScript!">
   <meta name="fragment" content="!">
-  <title ng-bind-template="Lister Documentation: {{partialTitle}}">Docs</title>
+  <title ng-bind-template="Documentation: {{partialTitle}}">Docs</title>
   <script type="text/javascript">
     // dynamically add base tag as well as css and javascript files.
     // we can't add css/js the usual way, because some browsers (FF) eagerly prefetch resources
     // before the base attribute is added, causing 404 and terribly slow loading of the docs app.
     (function() {
       var indexFile = (location.pathname.match(/\/(index[^\.]*\.html)/) || ['', ''])[1],
-          origin, baseUrl, rUrl = /(\/?#!\/.*|\/(api|tutorial)\/?(\?.*)*|\/index[^\.]*\.html.*)$/,
+          origin, baseUrl, rUrl = /(\/?#!\/.*|\/(api)\/?(\?.*)*|\/index[^\.]*\.html.*)$/,
           headEl = document.getElementsByTagName('head')[0],
           sync = true;
 
@@ -37,6 +37,8 @@
       addTag('link', {rel: 'stylesheet', href: 'css/docs.css', type: 'text/css'});
       addTag('link', {rel: 'stylesheet', href: 'css/animations.css', type: 'text/css'});
 
+      
+         addTag('link', {rel: 'stylesheet', href: 'css/ngdocs.css', type: 'text/css'}, sync);
       
 
       addTag('script', {src: 'js/google-code-prettify.js'}, sync);
@@ -85,7 +87,7 @@
         <div class="container">
           
           
-            <a  href="/"  class="brand">Lister Documentation</a>
+            <a  href="/"  class="brand">Documentation</a>
           
           <ul class="nav">
             <li ng-repeat="(url, name) in sections" ng-class="{active: isActivePath(url)}">
