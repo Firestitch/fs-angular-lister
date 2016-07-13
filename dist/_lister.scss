@@ -61,6 +61,7 @@
                 display: none;
             }
         }
+
         .filter.filter-date {
             > span {
                 display: inline-block
@@ -189,7 +190,6 @@
                     }
 
                     .filter-label-content {
-                        margin-top: 18px;
                     }
                 }
 
@@ -250,6 +250,9 @@
 
         &.filter-range {
             md-input-container {
+                min-width: initial;
+                width: 50px;
+
                 &.filter-range-max label {
                     display: none;
                 }
