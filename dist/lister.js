@@ -110,7 +110,7 @@
                 lsOptions: '=',
                 lsInstance: '='
             },
-            controller: function ($scope) {
+            controller: ['$scope', function($scope) {
 
                 var options     = angular.extend({},fsLister.options(),$scope.lsOptions);                
                 var dataIndex   = 0;                
@@ -1000,9 +1000,8 @@
                 if($scope.lsInstance) {
                     angular.extend($scope.lsInstance,{ load: load, page: page, reload: reload , filterValues: filterValues, data: data });
                 }
-            },
-            compile: function(element, tAttrs, s, d) {
-
+            }],
+            compile: function(element, tAttrs) {
 
                 return {
 
