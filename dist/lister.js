@@ -466,6 +466,12 @@
                     $scope.search();
                 }
                 
+                $scope.topActionsClick = function(action,$event) {
+                    if(action.click) {
+                        action.click(filterValues(),$event);
+                    }
+                }
+
                 $scope.isolateSearch = function(filter) {
 
                     if(filter.isolate.enabled) {
@@ -1564,7 +1570,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        <div class=\"top-actions\">\r" +
     "\n" +
-    "            <md-button ng-repeat=\"action in options.topActions\" ng-if=\"!action.more\" ng-click=\"action.click($event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{::action.label}}</md-button>\r" +
+    "            <md-button ng-repeat=\"action in options.topActions\" ng-if=\"!action.more\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{::action.label}}</md-button>\r" +
     "\n" +
     "            <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\r" +
     "\n" +

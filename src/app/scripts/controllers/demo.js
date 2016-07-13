@@ -98,7 +98,8 @@
         topActions: [
             {
                 label: 'Export',
-                click: function() {
+                click: function(data,event) {
+                    debugger;
                     alert('Export');
                 }
             },

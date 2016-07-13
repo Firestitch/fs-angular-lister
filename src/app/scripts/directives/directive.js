@@ -466,6 +466,12 @@
                     $scope.search();
                 }
                 
+                $scope.topActionsClick = function(action,$event) {
+                    if(action.click) {
+                        action.click(filterValues(),$event);
+                    }
+                }
+
                 $scope.isolateSearch = function(filter) {
 
                     if(filter.isolate.enabled) {
