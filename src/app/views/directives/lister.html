@@ -25,7 +25,7 @@
 
                                     <md-input-container class="md-no-float" ng-if="filter.multiple">
                                         <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectSearch(filter)">
-                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}">
+                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}" style="padding-left: {{(item.depth*16)+40}}px">
                                                 {{::item.name}}
                                             </md-option>
                                         </md-select>
@@ -33,7 +33,7 @@
 
                                     <md-input-container class="md-no-float" ng-if="!filter.multiple">
                                         <md-select ng-model="filter.model" aria-label="select" ng-change="selectSearch(filter)">
-                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}" class="depth-{{::item.depth}}">
+                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}" style="padding-left: {{(item.depth*16)+16}}px">
                                                 {{::item.name}}
                                             </md-option>
                                         </md-select>

@@ -309,11 +309,11 @@
                     	{id: 6, parent_id:null, name: 'stick'},
                     	{id: 7, parent_id:6, name: 'javelin'},
                     ],
-                    parent_id_field: 'parent_id',
+                    parent_field: 'parent_id',
                     label_field: 'name',
-                    value_field: 'id',
-                    include_all: true
-                }
+                    value_field: 'id'
+                },
+                multiple: true
             },
 
             {

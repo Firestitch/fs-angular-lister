@@ -69,6 +69,12 @@
                     <li><label>label</label>The label of the interface</li>
                     <li><label>values</label>An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.</li>
                     <li><label>nested</label>An key/value paired object with options related to showing nested select options</li>
+                    <ul>
+                        <li><label>parent_field</label>name of field used to link to parent row. typically 'parent_id' or similar</li>
+                        <li><label>label_field</label>name of field to use as rows label</li>
+                        <li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>
+                        <li><label>children_field</label>name of field containing child objects in the filter.values array</li>
+                    </ul>
                     <li><label>default</label>Sets the default filter value</li>
                 </ul>
      * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive functions.
@@ -756,26 +762,29 @@
 
 
                 				if(typeof obj=='object' && obj[children_field])
-                					prepped_values.push(...walkValues(obj[children_field], depth+1));
+                					Array.prototype.push.apply(prepped_values, walkValues(obj[children_field], depth+1));
                 			});
                 			return prepped_values;
                 		}
 
-                		values = walkValues(filter.values);
+	              		if(!filter.multiple)
+	               			values.push({value:'__all', name:'All', depth:0});
+
+                		Array.prototype.push.apply(values, walkValues(filter.values));
 
 
 	               	} else if(filter.nested && filter.nested.objects) {
 	               		//generate a list of values from objects that have not been nested.
 
 	               		var value_field = filter.nested.value_field || 'id';
-	               		var parent_id_field = filter.nested.parent_id_field || 'parent_id';
+	               		var parent_field = filter.nested.parent_field || 'parent_id';
 	               		var name_field = filter.nested.label_field || 'name';
 
 	               		function walkValues(parent_id, values, depth) {
                 			var depth = depth || 0;
                 			var prepped_values = [];
                 			angular.forEach(values, function(obj,key) {
-                				if(obj[parent_id_field]!=parent_id)
+                				if(obj[parent_field]!=parent_id)
                 					return;
 
                 				var value = {
@@ -788,16 +797,16 @@
 
                 				var children = walkValues(obj[value_field], values, depth+1);
                 				if(children.length>0)
-                					prepped_values.push(...children);
+                					Array.prototype.push.apply(prepped_values, children);
                 			});
 
                 			return prepped_values;
 	               		}
 
-	               		if(filter.nested.include_all)
+	               		if(!filter.multiple)
 	               			values.push({value:'__all', name:'All', depth:0});
 
-	               		values.push(...walkValues(null, filter.nested.objects));
+	               		Array.prototype.push.apply(values, walkValues(null, filter.nested.objects));
                 	}
 
                 	return values;
@@ -1326,7 +1335,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-input-container class=\"md-no-float\" ng-if=\"filter.multiple\">\n" +
     "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"selectSearch(filter)\">\n" +
-    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\n" +
+    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" style=\"padding-left: {{(item.depth*16)+40}}px\">\n" +
     "                                                {{::item.name}}\n" +
     "                                            </md-option>\n" +
     "                                        </md-select>\n" +
@@ -1334,7 +1343,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-input-container class=\"md-no-float\" ng-if=\"!filter.multiple\">\n" +
     "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\n" +
-    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" class=\"depth-{{::item.depth}}\">\n" +
+    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" style=\"padding-left: {{(item.depth*16)+16}}px\">\n" +
     "                                                {{::item.name}}\n" +
     "                                            </md-option>\n" +
     "                                        </md-select>\n" +
