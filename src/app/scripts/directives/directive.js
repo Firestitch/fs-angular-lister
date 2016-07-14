@@ -129,11 +129,6 @@
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
 
-                angular.forEach(options.filters, function(filter,key) {
-                	if(filter.type=='select')
-                		filter.values = prepSelectValues(filter);
-                });
-
                 if(options.persist) {
 
                     if(!angular.isObject(options.persist)) {
@@ -177,6 +172,10 @@
 
                 var primary = false;
                 angular.forEach(options.filters,function(filter) {
+
+                	if(filter.type=='select')
+                		filter.values = prepSelectValues(filter);
+
 
                     if(filter.primary) {
                         primary = true;
