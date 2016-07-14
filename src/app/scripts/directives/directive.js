@@ -68,6 +68,7 @@
                     <li><label>type</label>select (single selection dropdown) or text (one line input box) or date</li>
                     <li><label>label</label>The label of the interface</li>
                     <li><label>values</label>An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.</li>
+                    <li><label>nested</label>An key/value paired object with options related to showing nested select options</li>
                     <li><label>default</label>Sets the default filter value</li>
                 </ul>
      * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive functions.
