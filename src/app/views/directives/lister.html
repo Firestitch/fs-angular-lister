@@ -6,7 +6,7 @@
                 <div layout="row" layout-align="start center">
 
                     <div ng-click="reload()" class="search-reload"><i class="material-icons reload">refresh</i><i class="material-icons search">search</i></div>
-                    <md-input-container md-no-float>                    
+                    <md-input-container md-no-float>
                         <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="openFilters()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />
                     </md-input-container>
                 </div>
@@ -14,7 +14,7 @@
                 <div class="ng-hide filters" layout="column" ng-show="extended_search">
                     <div class="wrap">
                         <div ng-repeat="filter in options.filters" class="filter-group">
-                            
+
                             <div class="filter filter-{{filter.type}}">
 
                                 <div class="filter-label">
@@ -33,7 +33,7 @@
 
                                     <md-input-container class="md-no-float" ng-if="!filter.multiple">
                                         <md-select ng-model="filter.model" aria-label="select" ng-change="selectSearch(filter)">
-                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}">
+                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}" class="depth-{{::item.depth}}">
                                                 {{::item.name}}
                                             </md-option>
                                         </md-select>
@@ -46,7 +46,7 @@
                                         <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-keydown="searchKeydown($event, 'closePopupOnEnter')" ng-change="search()"/>
                                     </md-input-container>
                                 </div>
-                                
+
                                 <div class="interface" ng-if="filter.type == 'range'" >
 
                                     <span layout="row" class="md-block">
@@ -76,7 +76,7 @@
 
                                 <div class="interface" ng-if="filter.type == 'date'" >
 
-                                    <span class="md-block">                
+                                    <span class="md-block">
                                         <md-datepicker-container>
                                             <label>{{::filter.label}}</label>
                                             <md-datepicker ng-model="filter.model" ng-change="dateSearch(filter)"></md-datepicker>
@@ -98,7 +98,7 @@
                                     <md-checkbox ng-change="isolateSearch(filter)" ng-model="filter.isolate.enabled" ng-true-value="true" ng-false-value="false" aria-label="Checkbox filter"></md-checkbox>
                                     {{filter.isolate.label}}
                                 </div>
-                            </div>                            
+                            </div>
                         </div>
 
                         <md-button class="md-button md-raised md-accent search-button" ng-click="done()">Done</md-button>
@@ -106,7 +106,7 @@
                 </div>
             </div>
 
-           
+
 
             <!--
             <md-button ng-click="toggleFilters()" md-no-ink class="md-icon-button md-icon-button-filters" aria-label="Search filters">
@@ -157,7 +157,7 @@
                                 aria-label="{{::filter.label}}" />
                          </md-input-container>
                     </span>
-                    <span ng-if="filter.type == 'date'">                
+                    <span ng-if="filter.type == 'date'">
                         <md-datepicker-container>
                             <label>{{::filter.label}}</label>
                             <md-datepicker ng-model="filter.model" ng-change="filterChange(filter)"></md-datepicker>
@@ -190,13 +190,13 @@
     <div class="results" ng-if="options.columns.length">
         <div class="progress-paged ng-hide" ng-show="loading && !options.paging.infinite">
             <md-progress-circular md-mode="indeterminate"></md-progress-circular>
-        </div>    
+        </div>
         <div class="lister-table">
             <div class="lister-head">
                 <div class="lister-row">
                     <div class="lister-col lister-col-header" ng-if="options.sort"></div>
                     <div class="lister-col lister-col-header lister-select-toogle" ng-if="options.selection">
-                       
+
                         <md-checkbox ng-click="selectionsToggle(selectToogled);" ng-model="selectToogled"  ng-true-value="true" aria-label="Toggle Selection" class="select-checkbox"></md-checkbox>
                         <md-menu md-offset="6 32">
                             <md-button aria-label="Select" class="md-icon-button" ng-click="$mdOpenMenu($event)">
@@ -213,7 +213,7 @@
                         </md-menu>
                     </div>
                     <div class="lister-col lister-col-header {{::column.className}}" ng-repeat="column in options.columns" ng-style="styleCols[$index]" ng-class="{ order: column.order }" ng-click="headerClick(column)">
-                        
+
                         <div class="wrap">
                             <span fs-lister-compile="column.title" fs-column="column" class="title"></span>
 

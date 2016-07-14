@@ -12,9 +12,9 @@
     }
 
     .top-actions {
-        
+
         white-space: nowrap;
-        
+
         .md-button {
             margin-top: 0;
             margin-bottom: 0;
@@ -23,7 +23,7 @@
 
         md-menu {
             padding: 0;
-            
+
             .more {
                 height: auto;
                 line-height: normal;
@@ -54,7 +54,7 @@
     }
 
     .full-search {
-        
+
         md-input-container {
             margin: 10px 0 0 0;
             min-height: 0;
@@ -72,7 +72,7 @@
 
     .inline-search {
         margin-right: 10px;
-        
+
         .backdrop {
             position: fixed;
             top: 0;
@@ -88,23 +88,23 @@
                 font-size: 22px;
             }
         }
-        
+
         .md-icon-button-filters,
         .md-icon-button-reload {
             position: relative;
             z-index: 51;
-       
+
             margin: 0;
-            padding: 0; 
+            padding: 0;
             width: 32px;
             .material-icons {
                 display: block;
                 color: #757575;
             }
-        }       
+        }
 
         .inline-search-input {
-            
+
             position: relative;
             margin-right: -25px;
 
@@ -141,7 +141,7 @@
                     position: relative;
                     z-index: 51;
                 }
-                
+
                 .md-errors-spacer {
                     display: none;
                 }
@@ -149,7 +149,7 @@
 
             .filters {
                 position: absolute;
-                width: 100%;                
+                width: 100%;
                 z-index: 51;
                 display: table;
 
@@ -166,7 +166,7 @@
 
                 .filter-group {
                     display: table-row-group;
-                }        
+                }
 
                 .filter {
                     display: table-row;
@@ -180,7 +180,7 @@
                         min-height: 0;
                     }
 
-                    .interface {                    
+                    .interface {
 
                         &.interface-checkbox {
                             md-checkbox {
@@ -191,7 +191,7 @@
 
                     .interface,
                     .filter-label {
-                        display: table-cell;                        
+                        display: table-cell;
                     }
 
                     .filter-label {
@@ -233,7 +233,7 @@
         }
 
         md-progress-circular {
-            margin: auto;            
+            margin: auto;
         }
     }
 
@@ -254,7 +254,7 @@
         }
 
         &.filter-date {
-        
+
             md-datepicker-container {
                 display: inline-block;
                 position: relative;
@@ -288,9 +288,9 @@
                     position: absolute;
                     bottom: 100%;
                     left: 0;
-                    right: auto;   
+                    right: auto;
                     white-space: nowrap;
-                    padding-left: 3px;                    
+                    padding-left: 3px;
                 }
 
                 input.md-datepicker-input {
@@ -335,11 +335,11 @@
                 }
             }
         }
-    }  
+    }
 
     .infinite-records {
         color: #999;
-        font-size: 14px;  
+        font-size: 14px;
         margin-top: 5px;
     }
 
@@ -366,7 +366,7 @@
             display: table-row;
             &:focus {
                 outline: none;
-            }        
+            }
         }
 
         .lister-body {
@@ -377,9 +377,9 @@
         .lister-head {
 
             display: table-header-group;
-            
+
             .lister-col {
-                
+
                 border-bottom: 2px solid #ddd;
                 color: #999;
                 font-size: 14px;
@@ -387,7 +387,7 @@
 
                 .wrap {
                     white-space: nowrap;
-                    
+
                     .title {
                         vertical-align: middle;
                     }
@@ -407,7 +407,7 @@
                     width: 1px;
                     md-checkbox {
                         display: inline-block;
-                        padding-left: 0; 
+                        padding-left: 0;
                         margin-right: 0;
                         width: 20px;
                     }
@@ -418,7 +418,7 @@
                         width: auto;
                         line-height: inherit;
                         margin: 0;
-                        padding: 3px 0 3px 0;                        
+                        padding: 3px 0 3px 0;
                     }
                 }
 
@@ -459,7 +459,7 @@
 
                 .sort-handle {
                     cursor: pointer;
-                }              
+                }
             }
 
             .lister-row:nth-child(1) .lister-col {
@@ -500,10 +500,10 @@
 
         .pages {
             text-align: center;
-            
+
             li {
                 display: inline-block;
-            
+
                 a {
                     box-sizing: border-box;
                     display: inline-block;
@@ -536,11 +536,11 @@
         .records {
            div {
                 margin-top: 10px;
-           } 
+           }
         }
 
         .limits {
-            
+
         }
     }
 
@@ -558,4 +558,16 @@
 
 .md-datepicker-calendar-pane {
     margin-left: -10px;
+}
+
+
+md-option {
+	&.depth-1 { padding-left: 32px; }
+	&.depth-2 { padding-left: 48px; }
+	&.depth-3 { padding-left: 64px; }
+	&.depth-4 { padding-left: 80px; }
+	&.depth-5 { padding-left: 90px; }
+	&.depth-6 { padding-left: 100px; }
+	&.depth-7 { padding-left: 110px; }
+	&.depth-8 { padding-left: 120px; }
 }

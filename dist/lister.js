@@ -1,12 +1,12 @@
 (function () {
     'use strict';
-    
+
     /**
      * @ngdoc directive
      * @name app.directives:fs-lister
      * @restrict E
      * @param {object} ls-options Options to configure the Lister.
-     * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback. 
+     * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback.
                 <ul>
                     <li><label>query</label> An object with the filters</li>
                     <li><label>callback</label>Call back function to populate lister dataset and paging</li>
@@ -20,7 +20,7 @@
                             <li><label>pages</label> The total number of pages in the entire dataset</li>
                         </ul>
                     </ul>
-                </ul>  
+                </ul>
      * @param {function} ls-options.rowClick Called when the row is clicked
      * @param {array} ls-options.actions Adds a column to the right side of the lister and places a button that a user can click to perform custom events
                 <ul>
@@ -53,7 +53,7 @@
                         <li><label>click</label>Is triggered when the contextual menu item is clicked. First param an array of selected objects and the second param is the $event</li>
                         <li><label>icon</label>Used in the contextual menu item icon</li>
                     </ul>
-                </ul>        
+                </ul>
     * @param {array} ls-options.columns Defines the columns for the lister
                 <ul>
                     <li><label>title</label>Specifies the column tile</li>
@@ -76,18 +76,18 @@
                     ```
 
                     ```js
-                    $scope.listerInstance = {}; 
+                    $scope.listerInstance = {};
 
                     function click() {
                         $scope.listerInstance.load();
                     }
                     ```
      */
-    
-    var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$timeout', '$mdDialog', 
+
+    var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$timeout', '$mdDialog',
                             'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache',
-                            function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, 
-                                    fsStore, $rootScope, fsLister, $location, $templateCache) {            
+                            function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog,
+                                    fsStore, $rootScope, fsLister, $location, $templateCache) {
         return {
             template: function(element, attr) {
                 var template = $templateCache.get('views/directives/lister.html');
@@ -105,15 +105,15 @@
 
                 return template;
             },
-            restrict: 'E',            
+            restrict: 'E',
             scope: {
                 lsOptions: '=',
                 lsInstance: '='
             },
             controller: ['$scope', function($scope) {
 
-                var options     = angular.extend({},fsLister.options(),$scope.lsOptions);                
-                var dataIndex   = 0;                
+                var options     = angular.extend({},fsLister.options(),$scope.lsOptions);
+                var dataIndex   = 0;
                 var persists    = fsStore.get('lister-persist',{});
 
                 if(options.paging===false)
@@ -128,6 +128,11 @@
                 options.load = options.load===undefined ? true : options.load;
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
+
+                angular.forEach(options.filters, function(filter,key) {
+                	if(filter.type=='select')
+                		filter.values = prepSelectValues(filter);
+                });
 
                 if(options.persist) {
 
@@ -201,12 +206,12 @@
                         if(search[filter.param]) {
                             filter.model = search[filter.param];
                         }
-                    }  
+                    }
 
-                    if(!filter.model) {                 
+                    if(!filter.model) {
 
                         if(filter.type=='date') {
-                            
+
                             if(typeof filter.model == 'string') {
                                 filter.model = new Date(filter.model);
                             }
@@ -252,7 +257,7 @@
                             col.order = { name: col.order };
                         }
 
-                        if(!col.order.direction) { 
+                        if(!col.order.direction) {
                             col.order.direction = 'asc';
                         }
 
@@ -273,7 +278,7 @@
                 angular.forEach(options.actions,function(action) {
                     sanitizeAction(action);
                 });
-                
+
                 $scope.groupedFilters = function() {
 
                     var index = 0, filters = [];
@@ -329,7 +334,7 @@
 
                     $scope.options.sort.stop(item,list,indexFrom,indexTo);
                 }
-                
+
                 $scope.actionClick = function(action, item, event) {
 
                     var index = $scope.data.indexOf(item);
@@ -378,13 +383,13 @@
                                                         $mdDialog.hide(true);
                                                     }
                                                 }
-                                                
+
                                             };
                                             this.cancel = function($event) {
 
                                                 if(action.delete.cancel) {
                                                     action.delete.cancel(item, event, helper);
-                                                }                                                
+                                                }
                                                 $mdDialog.hide();
                                             };
                                         },
@@ -396,7 +401,7 @@
                                         targetEvent: event,
                                         ariaLabel: 'Confirm',
                                         skipHide: true };
-                            
+
                         $mdDialog.show(confirm);
 
                     } else if(action.click) {
@@ -405,10 +410,10 @@
                 }
 
                 $scope.selectionsToggle = function(toogle) {
-                    
+
                     $scope.selectionsClear();
                     if(!toogle) {
-                        
+
                         for(var i=0;i<$scope.data.length;i++) {
                             $scope.checked.push(1);
                         }
@@ -435,11 +440,11 @@
 
                     click(selected, $event);
                 }
-                
+
                 $scope.selectionsClear = function() {
                     $scope.checked = [];
                     $scope.selectToogled = false;
-                } 
+                }
 
                 $scope.toggleFilters = function() {
                     $scope.extended_search = !$scope.extended_search;
@@ -454,18 +459,18 @@
                 }
 
                 $scope.selectSearch = function(filter) {
-                   
+
                     if(filter.isolate) {
                         filter.isolate.enabled = false;
                     }
-                    
+
                     $scope.search();
                 }
 
                 $scope.dateSearch = function(filter) {
                     $scope.search();
                 }
-                
+
                 $scope.topActionsClick = function(action,$event) {
                     if(action.click) {
                         action.click(filterValues(),$event);
@@ -479,7 +484,7 @@
                     } else {
                         filter.model = null;
                     }
-                    
+
                     $scope.search();
                 }
 
@@ -526,7 +531,7 @@
                                         value = values.join(',');
 
                                     } else {
-                                        
+
                                         angular.forEach(filter.values,function(filter_item) {
                                             if(!String(filter_item.value).localeCompare(String(value))) {
                                                 value = filter_item.name;
@@ -539,7 +544,7 @@
 
                                 var matches = value.match(/(\d{4}-\d{2}-\d{2})/);
                                 value = matches[1];
-                            
+
                             } else if(filter.type=='checkbox') {
 
                                 if(filter.model==filter.unchecked) {
@@ -556,7 +561,7 @@
                             } else {
                                 var label = filter.label.match(/\s/) ? '(' + filter.label + ')' : filter.label;
                             }
-                            
+
                             var value = value.match(/\s/) ? '(' + value + ')' : value;
 
                             searches.push(label + ':' + value);
@@ -598,13 +603,13 @@
                         }
                         $scope.filterValue(filter);
                     });
-                    
+
                     angular.forEach(values,function(value, label) {
-                        
+
                         var filter = $filter('filteri')(options.filters,{ label: label },true)[0];
 
-                        if(filter) {                           
-                           
+                        if(filter) {
+
                             if(filter.type=='date') {
 
                                 filter.model = new Date(value);
@@ -616,7 +621,7 @@
                             } else if(filter.type=='range') {
                                 var parts = value.split(',');
                                 filter.model = { min: parts[0], max: parts[1] };
-                            
+
                             } else if(filter.type=='select') {
 
                                 if(filter.multiple) {
@@ -632,13 +637,13 @@
                                     });
 
                                     filter.model = values;
-                                
+
                                 } else {
 
                                     var item = $filter('filteri')(filter.values,{ name: value },true)[0];
 
                                     if(item) {
-                                       filter.model = item.value; 
+                                       filter.model = item.value;
                                     }
                                 }
 
@@ -701,7 +706,7 @@
                         }
 
                     } else if(filter.type=='range') {
-                        
+
                         if(filter.model) {
                             var min = filter.model['min'];
                             var max = filter.model['max'];
@@ -730,6 +735,74 @@
                     reload();
                 }
 
+                function prepSelectValues(filter) {
+                	var values = [];
+
+                	if(filter.values) {
+                		//if filter has values then sort through them in case they have nested children and build a single list
+                		var children_field = filter.nested && filter.nested.children_field ? filter.nested.children_field : 'children';
+
+                		function walkValues(values, depth) {
+                			var depth = depth || 0;
+                			var prepped_values = [];
+                			angular.forEach(values, function(obj,key) {
+                				var value = {value: key, name: '', depth: depth};
+                				if(typeof obj=='string')
+                					value.name = obj;
+                				else
+                					value.name = obj.name;
+
+								prepped_values.push(value);
+
+
+                				if(typeof obj=='object' && obj[children_field])
+                					prepped_values.push(...walkValues(obj[children_field], depth+1));
+                			});
+                			return prepped_values;
+                		}
+
+                		values = walkValues(filter.values);
+
+
+	               	} else if(filter.nested && filter.nested.objects) {
+	               		//generate a list of values from objects that have not been nested.
+
+	               		var value_field = filter.nested.value_field || 'id';
+	               		var parent_id_field = filter.nested.parent_id_field || 'parent_id';
+	               		var name_field = filter.nested.label_field || 'name';
+
+	               		function walkValues(parent_id, values, depth) {
+                			var depth = depth || 0;
+                			var prepped_values = [];
+                			angular.forEach(values, function(obj,key) {
+                				if(obj[parent_id_field]!=parent_id)
+                					return;
+
+                				var value = {
+                					value: obj[value_field],
+                					name: obj[name_field],
+                					depth: depth
+                				};
+								prepped_values.push(value);
+
+
+                				var children = walkValues(obj[value_field], values, depth+1);
+                				if(children.length>0)
+                					prepped_values.push(...children);
+                			});
+
+                			return prepped_values;
+	               		}
+
+	               		if(filter.nested.include_all)
+	               			values.push({value:'__all', name:'All', depth:0});
+
+	               		values.push(...walkValues(null, filter.nested.objects));
+                	}
+
+                	return values;
+                }
+
                 function columnStyle(col) {
                     var styles = {};
 
@@ -755,18 +828,18 @@
                         action.label = (action.label !== undefined) ?  action.label : 'Remove';
                         action.icon = (action.icon !== undefined) ? action.icon  : 'delete';
                     }
-                    
+
                     if(!action.show) {
                         action.show = function() { return true }
                     }
-                    
+
                     return action;
                 }
 
                 function filterValues() {
                     var query = {};
                     angular.forEach(options.filters,function(filter) {
-                        
+
                         if(filter.value!==null && String(filter.value).length) {
                             query[filter.name] = filter.value;
                         }
@@ -777,7 +850,7 @@
 
                 function clearData() {
                     dataIndex = 0;
-                    $scope.data = [];                    
+                    $scope.data = [];
                     $scope.dataCols = [];
                 }
 
@@ -797,7 +870,7 @@
                             return;
                         }
                     }
-                    
+
                     if(opts.page) {
 
                         if(opts.clear) {
@@ -810,7 +883,7 @@
                         $scope.paging.page = opts.page;
                     }
 
-                    $scope.selectionsClear();          
+                    $scope.selectionsClear();
 
                     var query = filterValues();
 
@@ -839,7 +912,7 @@
                     }
 
                     log("Calling data()", query);
-                    
+
                     var dataCallback = function(data, paging) {
                         if(opts.clear) {
                             $scope.max_bottom = 0;
@@ -850,7 +923,7 @@
                     }
 
                     try {
-                        
+
                         $scope.loading = true;
 
                         if(options.data) {
@@ -865,20 +938,20 @@
                                 });
                             }
                         }
-                   
+
                    } catch(e) {
                         $scope.loading = false;
                         throw e;
                     }
                 }
-           
+
                  function page(page) {
                     $scope.paging.page = page;
                     load();
                 }
 
                 function callback(objects, paging) {
-                    
+
                     log("dataCallback()",objects,paging);
 
                     if(!$scope.options.paging.infinite) {
@@ -886,13 +959,13 @@
                     }
 
                     var ol = objects.length;
-                    for (var o = 0; o < ol; o++) { 
+                    for (var o = 0; o < ol; o++) {
 
                         var cl = options.columns.length;
                         var cols = [];
 
                         for (var c = 0; c < cl; c++) {
-                        
+
                             var col = options.columns[c];
                             var value = col.value;
 
@@ -909,8 +982,8 @@
                         $scope.data.push(objects[o]);
 
                         dataIndex++;
-                    }    
-                    
+                    }
+
                     $scope.paging.records = null;
 
                     if(paging) {
@@ -921,21 +994,21 @@
 
                         $scope.paging.records = paging.records;
                         $scope.paging.pages = paging.pages;
-                        
+
                         if(paging.limit) {
                             $scope.options.paging.limit = paging.limit;
                             //options.limit = paging.limit;
                         }
-                    
+
                     } else {
                         $scope.options.paging.enabled = false;
                     }
 
                     $scope.paged = paging;
 
-                    if($scope.options.paging.infinite) {                       
+                    if($scope.options.paging.infinite) {
                         $scope.paging.page++;
-                       
+
                     } else if(paging) {
                         $scope.paging.page = paging.page;
                     }
@@ -951,8 +1024,8 @@
                     }
                 }
 
-                function numeric(n) { 
-                      return !isNaN(parseFloat(n)) && isFinite(n); 
+                function numeric(n) {
+                      return !isNaN(parseFloat(n)) && isFinite(n);
                 }
 
                 angular.forEach(options.filters,function(filter) {
@@ -983,7 +1056,7 @@
                             }
                         });
                     }
-                           
+
                     $scope.filterValue(filter);
                 });
 
@@ -1011,9 +1084,9 @@
 
                 return {
 
-                    post: function($scope, element, attr, ctrl) {               
-                       
-                        var widthHolders = function() {                    
+                    post: function($scope, element, attr, ctrl) {
+
+                        var widthHolders = function() {
 
                             if(!$scope.loading) {
 
@@ -1028,7 +1101,7 @@
                                             element.style.width = (col.clientWidth - parseInt(style.paddingLeft, 10) - parseInt(style.paddingRight, 10)) + 'px';
                                         }
                                     });
-                                }); 
+                                });
                             }
 
                             $timeout(widthHolders,2500);
@@ -1097,8 +1170,8 @@
     angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view'])
     .directive('lister',ListerDirective)
     .directive('fsLister',ListerDirective)
-    .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope', 
-                                    function ($compile, $injector, $location, $timeout, $rootScope) {        
+    .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',
+                                    function ($compile, $injector, $location, $timeout, $rootScope) {
         return {    scope: {
                         column: '=fsColumn',
                         data: '=fsData',
@@ -1127,32 +1200,32 @@
 
                         element.html($scope.value);
                         $compile(element.contents())(scope);
-                       
+
                         var elements = element.find('a');
                         for(var i=0;i<elements.length;i++) {
 
                             angular.element(elements[i]).on('click',function(event) {
 
                                 var el = angular.element(this);
-                                
+
                                 if(event.isDefaultPrevented() || el.attr('href').match(/^http/)) {
                                     return;
                                 }
-                                
-                                if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;                                
+
+                                if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;
 
                                 if(event.ctrlKey) {
 
                                     var href = el.attr('href');
                                     el.attr('href',el.attr('href').replace(/^#/,''));
-                                    
+
                                     $timeout(function() {
                                         el.attr('href', href);
                                     });
 
                                     return;
                                 }
-                               
+
                                 $location.path(el.attr('href').replace(/^#/,''));
                                 $scope.$apply();
 
@@ -1184,7 +1257,7 @@
     .filter('filteri', function() {
       return function(list, filters) {
 
-        var result = [];        
+        var result = [];
         angular.forEach(list,function(value,key) {
 
             var valid = true;
@@ -1195,7 +1268,7 @@
                     valid = String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
                 }
             });
-            
+
             if(valid) {
                 result.push(value);
             }
@@ -1211,7 +1284,7 @@
 
         for (var i=0; i<total; i++) {
           input.push(i);
-        }  
+        }
 
         if(page<total)
             input = input.slice(page - padding - total , page - total).concat(input.slice(page, page + padding));
@@ -1226,621 +1299,313 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
   'use strict';
 
   $templateCache.put('views/directives/lister.html',
-    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "    <div layout=\"row\" layout-align=\"start\" class=\"lister-search\" ng-if=\"options.filters.length || options.topActions.length\" layout-align=\" end\">\r" +
-    "\n" +
-    "        <div ng-if=\"options.inline\" layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex>\r" +
-    "\n" +
-    "            <div class=\"inline-search-input\" flex=\"grow\">\r" +
-    "\n" +
-    "                <div layout=\"row\" layout-align=\"start center\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                    <div ng-click=\"reload()\" class=\"search-reload\"><i class=\"material-icons reload\">refresh</i><i class=\"material-icons search\">search</i></div>\r" +
-    "\n" +
-    "                    <md-input-container md-no-float>                    \r" +
-    "\n" +
-    "                        <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\" />\r" +
-    "\n" +
-    "                    </md-input-container>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                <div class=\"ng-hide filters\" layout=\"column\" ng-show=\"extended_search\">\r" +
-    "\n" +
-    "                    <div class=\"wrap\">\r" +
-    "\n" +
-    "                        <div ng-repeat=\"filter in options.filters\" class=\"filter-group\">\r" +
-    "\n" +
-    "                            \r" +
-    "\n" +
-    "                            <div class=\"filter filter-{{filter.type}}\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <div class=\"filter-label\">\r" +
-    "\n" +
-    "                                    {{::filter.label}}\r" +
-    "\n" +
-    "                                </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <div class=\"interface\" ng-if=\"filter.type == 'select'\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                    <md-input-container class=\"md-no-float\" ng-if=\"filter.multiple\">\r" +
-    "\n" +
-    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"selectSearch(filter)\">\r" +
-    "\n" +
-    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
-    "\n" +
-    "                                                {{::item.name}}\r" +
-    "\n" +
-    "                                            </md-option>\r" +
-    "\n" +
-    "                                        </md-select>\r" +
-    "\n" +
-    "                                    </md-input-container>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                    <md-input-container class=\"md-no-float\" ng-if=\"!filter.multiple\">\r" +
-    "\n" +
-    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\r" +
-    "\n" +
-    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
-    "\n" +
-    "                                                {{::item.name}}\r" +
-    "\n" +
-    "                                            </md-option>\r" +
-    "\n" +
-    "                                        </md-select>\r" +
-    "\n" +
-    "                                    </md-input-container>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <div class=\"interface \" ng-if=\"filter.type == 'text'\">\r" +
-    "\n" +
-    "                                    <md-input-container class=\"md-no-float\">\r" +
-    "\n" +
-    "                                        <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"search()\"/>\r" +
-    "\n" +
-    "                                    </md-input-container>\r" +
-    "\n" +
-    "                                </div>\r" +
-    "\n" +
-    "                                \r" +
-    "\n" +
-    "                                <div class=\"interface\" ng-if=\"filter.type == 'range'\" >\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                    <span layout=\"row\" class=\"md-block\">\r" +
-    "\n" +
-    "                                         <md-input-container class=\"filter-range-min\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                            <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                                            <input\r" +
-    "\n" +
-    "                                                placeholder=\"{{::filter.placeholder[0]}}\"\r" +
-    "\n" +
-    "                                                ng-model=\"filter.model['min']\"\r" +
-    "\n" +
-    "                                                aria-label=\"{{::filter.label}}\"\r" +
-    "\n" +
-    "                                                ng-model-options=\"{debounce: 400}\"\r" +
-    "\n" +
-    "                                                ng-change=\"search()\" />\r" +
-    "\n" +
-    "                                         </md-input-container>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                         <md-input-container class=\"filter-range-max\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                            <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                                            <input\r" +
-    "\n" +
-    "                                                placeholder=\"{{::filter.placeholder[1]}}\"\r" +
-    "\n" +
-    "                                                ng-model=\"filter.model['max']\"\r" +
-    "\n" +
-    "                                                aria-label=\"{{::filter.label}}\"\r" +
-    "\n" +
-    "                                                ng-model-options=\"{debounce: 400}\"\r" +
-    "\n" +
-    "                                                ng-change=\"search()\" />\r" +
-    "\n" +
-    "                                         </md-input-container>\r" +
-    "\n" +
-    "                                    </span>\r" +
-    "\n" +
-    "                                </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <div class=\"interface\" ng-if=\"filter.type == 'date'\" >\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                    <span class=\"md-block\">                \r" +
-    "\n" +
-    "                                        <md-datepicker-container>\r" +
-    "\n" +
-    "                                            <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                                            <md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\"></md-datepicker>\r" +
-    "\n" +
-    "                                        </md-datepicker-container>\r" +
-    "\n" +
-    "                                    </span>\r" +
-    "\n" +
-    "                                </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\">\r" +
-    "\n" +
-    "                                    <md-checkbox ng-change=\"search()\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox>\r" +
-    "\n" +
-    "                                </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            <div ng-if=\"filter.isolate\" class=\"filter isolate\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <div class=\"filter-label\"></div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                                <div class=\"interface\">\r" +
-    "\n" +
-    "                                    <md-checkbox ng-change=\"isolateSearch(filter)\" ng-model=\"filter.isolate.enabled\" ng-true-value=\"true\" ng-false-value=\"false\" aria-label=\"Checkbox filter\"></md-checkbox>\r" +
-    "\n" +
-    "                                    {{filter.isolate.label}}\r" +
-    "\n" +
-    "                                </div>\r" +
-    "\n" +
-    "                            </div>                            \r" +
-    "\n" +
-    "                        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                        <md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"done()\">Done</md-button>\r" +
-    "\n" +
-    "                    </div>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "           \r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "            <!--\r" +
-    "\n" +
-    "            <md-button ng-click=\"toggleFilters()\" md-no-ink class=\"md-icon-button md-icon-button-filters\" aria-label=\"Search filters\">\r" +
-    "\n" +
-    "                <div class=\"material-icons icon-collapsed\" ng-show=\"extended_search\">expand_more</div>\r" +
-    "\n" +
-    "                <div class=\"material-icons icon-expanded\" ng-show=\"!extended_search\">chevron_right</div>\r" +
-    "\n" +
-    "            </md-button>\r" +
-    "\n" +
-    "            -->\r" +
-    "\n" +
-    "            <div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "        <div ng-if=\"!options.inline\" class=\"full-search\" flex=\"grow\">\r" +
-    "\n" +
-    "            <div ng-repeat=\"filters in groupedFilters\" layout=\"row\">\r" +
-    "\n" +
-    "                <div ng-repeat=\"filter in filters\" class=\"filter filter-{{::filter.type}}\">\r" +
-    "\n" +
-    "                    <md-input-container ng-if=\"filter.type == 'select'\">\r" +
-    "\n" +
-    "                        <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                        <md-select ng-model=\"filter.model\" ng-change=\"filterChange(filter)\">\r" +
-    "\n" +
-    "                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\r" +
-    "\n" +
-    "                                {{::item.name}}\r" +
-    "\n" +
-    "                            </md-option>\r" +
-    "\n" +
-    "                        </md-select>\r" +
-    "\n" +
-    "                    </md-input-container>\r" +
-    "\n" +
-    "                    <md-input-container class=\"md-input-has-placeholder\" ng-if=\"filter.type == 'text'\">\r" +
-    "\n" +
-    "                        <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                        <input ng-model=\"filter.model\" ng-model-options=\"{debounce: 300}\" ng-change=\"filterChange(filter)\" aria-label=\"{{::filter.label}}\" />\r" +
-    "\n" +
-    "                    </md-input-container>\r" +
-    "\n" +
-    "                    <span ng-if=\"filter.type == 'range'\" layout=\"row\">\r" +
-    "\n" +
-    "                         <md-input-container class=\"filter-range-min\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            <input\r" +
-    "\n" +
-    "                                placeholder=\"{{::filter.placeholder[0]}}\"\r" +
-    "\n" +
-    "                                ng-model=\"filter.model['min']\"\r" +
-    "\n" +
-    "                                ng-model-options=\"{debounce: 300}\"\r" +
-    "\n" +
-    "                                ng-change=\"filterChange(filter)\"\r" +
-    "\n" +
-    "                                aria-label=\"{{::filter.label}}\" />\r" +
-    "\n" +
-    "                         </md-input-container>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                         <md-input-container class=\"filter-range-max\">\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            <input\r" +
-    "\n" +
-    "                                placeholder=\"{{::filter.placeholder[1]}}\"\r" +
-    "\n" +
-    "                                ng-model=\"filter.model['max']\"\r" +
-    "\n" +
-    "                                ng-model-options=\"{debounce: 300}\"\r" +
-    "\n" +
-    "                                ng-change=\"filterChange(filter)\"\r" +
-    "\n" +
-    "                                aria-label=\"{{::filter.label}}\" />\r" +
-    "\n" +
-    "                         </md-input-container>\r" +
-    "\n" +
-    "                    </span>\r" +
-    "\n" +
-    "                    <span ng-if=\"filter.type == 'date'\">                \r" +
-    "\n" +
-    "                        <md-datepicker-container>\r" +
-    "\n" +
-    "                            <label>{{::filter.label}}</label>\r" +
-    "\n" +
-    "                            <md-datepicker ng-model=\"filter.model\" ng-change=\"filterChange(filter)\"></md-datepicker>\r" +
-    "\n" +
-    "                        </md-datepicker-container>\r" +
-    "\n" +
-    "                    </span>\r" +
-    "\n" +
-    "                    <span ng-if=\"filter.type == 'newline'\">\r" +
-    "\n" +
-    "                        <br>\r" +
-    "\n" +
-    "                    </span>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "        <div class=\"top-actions\">\r" +
-    "\n" +
-    "            <md-button ng-repeat=\"action in options.topActions\" ng-if=\"!action.more\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{::action.label}}</md-button>\r" +
-    "\n" +
-    "            <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\r" +
-    "\n" +
-    "                <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\">\r" +
-    "\n" +
-    "                    <md-icon>more_vert</md-icon>\r" +
-    "\n" +
-    "                </md-button>\r" +
-    "\n" +
-    "                <md-menu-content>\r" +
-    "\n" +
-    "                    <md-menu-item ng-repeat=\"action in options.topActions\" ng-if=\"action.more\">\r" +
-    "\n" +
-    "                        <md-button ng-click=\"action.click($event)\">\r" +
-    "\n" +
-    "                            <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
-    "\n" +
-    "                            {{::action.label}}\r" +
-    "\n" +
-    "                        </md-button>\r" +
-    "\n" +
-    "                    </md-menu-item>\r" +
-    "\n" +
-    "                </md-menu-content>\r" +
-    "\n" +
-    "            </md-menu>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "    </div>\r" +
-    "\n" +
-    "    <div ng-if=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records\">{{paging.records}} Records</div>\r" +
-    "\n" +
-    "    <div class=\"results\" ng-if=\"options.columns.length\">\r" +
-    "\n" +
-    "        <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\r" +
-    "\n" +
-    "            <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r" +
-    "\n" +
-    "        </div>    \r" +
-    "\n" +
-    "        <div class=\"lister-table\">\r" +
-    "\n" +
-    "            <div class=\"lister-head\">\r" +
-    "\n" +
-    "                <div class=\"lister-row\">\r" +
-    "\n" +
-    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.sort\"></div>\r" +
-    "\n" +
-    "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection\">\r" +
-    "\n" +
-    "                       \r" +
-    "\n" +
-    "                        <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox>\r" +
-    "\n" +
-    "                        <md-menu md-offset=\"6 32\">\r" +
-    "\n" +
-    "                            <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r" +
-    "\n" +
-    "                                <md-icon>arrow_drop_down</md-icon>\r" +
-    "\n" +
-    "                            </md-button>\r" +
-    "\n" +
-    "                            <md-menu-content>\r" +
-    "\n" +
-    "                                <md-menu-item ng-repeat=\"action in options.selection.actions\">\r" +
-    "\n" +
-    "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
-    "\n" +
-    "                                        <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
-    "\n" +
-    "                                        {{::action.label}}\r" +
-    "\n" +
-    "                                    </md-button>\r" +
-    "\n" +
-    "                                </md-menu-item>\r" +
-    "\n" +
-    "                            </md-menu-content>\r" +
-    "\n" +
-    "                        </md-menu>\r" +
-    "\n" +
-    "                    </div>\r" +
-    "\n" +
-    "                    <div class=\"lister-col lister-col-header {{::column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"styleCols[$index]\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\r" +
-    "\n" +
-    "                        \r" +
-    "\n" +
-    "                        <div class=\"wrap\">\r" +
-    "\n" +
-    "                            <span fs-lister-compile=\"column.title\" fs-column=\"column\" class=\"title\"></span>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                            <div class=\"direction\" ng-if=\"column.order\">\r" +
-    "\n" +
-    "                                <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\">\r" +
-    "\n" +
-    "                                    <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
-    "\n" +
-    "                                    <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\r" +
-    "\n" +
-    "                                </span>\r" +
-    "\n" +
-    "                            </div>\r" +
-    "\n" +
-    "                        </div>\r" +
-    "\n" +
-    "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\r" +
-    "\n" +
-    "\r" +
-    "\n" +
-    "                    </div>\r" +
-    "\n" +
-    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.actions.length || options.action\">\r" +
-    "\n" +
-    "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\r" +
-    "\n" +
-    "                    </div>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
-    "            <div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"sortStop($item,$partTo,$indexFrom,$indexTo)\">\r" +
-    "\n" +
-    "                <div class=\"lister-row\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
-    "\n" +
-    "                    <div class=\"lister-col lister-col-sort\" ng-if=\"options.sort\"><div class=\"sort-handle\"><md-icon>drag_handle</md-icon></div></div>\r" +
-    "\n" +
-    "                    <div class=\"lister-col\" ng-if=\"options.selection\">\r" +
-    "\n" +
-    "                        <md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\" class=\"select-checkbox\"></md-checkbox>\r" +
-    "\n" +
-    "                    </div>\r" +
-    "\n" +
-    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" fs-column=\"col\" fs-data=\"item\" ng-style=\"styleCols[$index]\"></div>\r" +
-    "\n" +
-    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
-    "\n" +
-    "                        <md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
-    "\n" +
-    "                            <md-icon class=\"material-icons\">{{::options.action.icon}}</md-icon>\r" +
-    "\n" +
-    "                        </md-button>\r" +
-    "\n" +
-    "                    </div>\r" +
-    "\n" +
-    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\r" +
-    "\n" +
-    "                        <md-menu ng-if=\"actionsShow(item)\">\r" +
-    "\n" +
-    "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
-    "\n" +
-    "                                <md-icon class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
-    "\n" +
-    "                            </md-button>\r" +
-    "\n" +
-    "                            <md-menu-content>\r" +
-    "\n" +
-    "                                <md-menu-item ng-if=\"action.show(item)\" ng-repeat=\"action in options.actions\">\r" +
-    "\n" +
-    "                                    <md-button ng-click=\"actionClick(action,item,$event)\">\r" +
-    "\n" +
-    "                                        <md-icon class=\"material-icons\" ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
-    "\n" +
-    "                                        {{::action.label}}\r" +
-    "\n" +
-    "                                    </md-button>\r" +
-    "\n" +
-    "                                </md-menu-item>\r" +
-    "\n" +
-    "                            </md-menu-content>\r" +
-    "\n" +
-    "                        </md-menu>\r" +
-    "\n" +
-    "                    </div>\r" +
-    "\n" +
-    "                </div>\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "        <div class=\"status\" ng-if=\"options.paging.infinite\">\r" +
-    "\n" +
-    "            <div class=\"norecords ng-hide\" ng-show=\"!loading && options.norecords && !data.length\">{{::options.norecords}}</div>\r" +
-    "\n" +
-    "            <div class=\"progress-infinite ng-hide\" ng-show=\"loading\">\r" +
-    "\n" +
-    "                <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\r" +
-    "\n" +
-    "            </div>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "    </div>\r" +
-    "\n" +
-    "    <div class=\"paging\" ng-if=\"options.paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
-    "\n" +
-    "        <div class=\"records\">\r" +
-    "\n" +
-    "            <label>Total</label>\r" +
-    "\n" +
-    "            <div>{{paging.records}} Records</div>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "        <div flex>\r" +
-    "\n" +
-    "            <ul class=\"pages\" ng-if=\"paging.pages>1 && options.paging.pages\">\r" +
-    "\n" +
-    "                <li ng-class=\"{ disabled : paging.page == 1 }\">\r" +
-    "\n" +
-    "                    <a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a>\r" +
-    "\n" +
-    "                </li>\r" +
-    "\n" +
-    "                <li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\">\r" +
-    "\n" +
-    "                    <a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a>\r" +
-    "\n" +
-    "                </li>\r" +
-    "\n" +
-    "                <li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\r" +
-    "\n" +
-    "                    <a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a>\r" +
-    "\n" +
-    "                </li>\r" +
-    "\n" +
-    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\">\r" +
-    "\n" +
-    "                    <a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a>\r" +
-    "\n" +
-    "                </li>\r" +
-    "\n" +
-    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\">\r" +
-    "\n" +
-    "                    <a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a>\r" +
-    "\n" +
-    "                </li>\r" +
-    "\n" +
-    "            </ul>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "        <div class=\"limits\">\r" +
-    "\n" +
-    "            <md-input-container>\r" +
-    "\n" +
-    "                <label>Show</label>\r" +
-    "\n" +
-    "                <md-select ng-model=\"options.paging.limit\" md-on-close=\"reload()\">\r" +
-    "\n" +
-    "                    <md-option ng-repeat=\"limit in options.paging.limits\" value=\"{{limit}}\">\r" +
-    "\n" +
-    "                        {{::limit}} records\r" +
-    "\n" +
-    "                    </md-option>\r" +
-    "\n" +
-    "                </md-select>\r" +
-    "\n" +
-    "            </md-input-container>\r" +
-    "\n" +
-    "        </div>\r" +
-    "\n" +
-    "    </div>\r" +
-    "\n" +
-    "</div>\r" +
-    "\n" +
-    "\r" +
+    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\n" +
+    "\n" +
+    "    <div layout=\"row\" layout-align=\"start\" class=\"lister-search\" ng-if=\"options.filters.length || options.topActions.length\" layout-align=\" end\">\n" +
+    "        <div ng-if=\"options.inline\" layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex>\n" +
+    "            <div class=\"inline-search-input\" flex=\"grow\">\n" +
+    "                <div layout=\"row\" layout-align=\"start center\">\n" +
+    "\n" +
+    "                    <div ng-click=\"reload()\" class=\"search-reload\"><i class=\"material-icons reload\">refresh</i><i class=\"material-icons search\">search</i></div>\n" +
+    "                    <md-input-container md-no-float>\n" +
+    "                        <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\" />\n" +
+    "                    </md-input-container>\n" +
+    "                </div>\n" +
+    "\n" +
+    "                <div class=\"ng-hide filters\" layout=\"column\" ng-show=\"extended_search\">\n" +
+    "                    <div class=\"wrap\">\n" +
+    "                        <div ng-repeat=\"filter in options.filters\" class=\"filter-group\">\n" +
+    "\n" +
+    "                            <div class=\"filter filter-{{filter.type}}\">\n" +
+    "\n" +
+    "                                <div class=\"filter-label\">\n" +
+    "                                    {{::filter.label}}\n" +
+    "                                </div>\n" +
+    "\n" +
+    "                                <div class=\"interface\" ng-if=\"filter.type == 'select'\">\n" +
+    "\n" +
+    "                                    <md-input-container class=\"md-no-float\" ng-if=\"filter.multiple\">\n" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"selectSearch(filter)\">\n" +
+    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\n" +
+    "                                                {{::item.name}}\n" +
+    "                                            </md-option>\n" +
+    "                                        </md-select>\n" +
+    "                                    </md-input-container>\n" +
+    "\n" +
+    "                                    <md-input-container class=\"md-no-float\" ng-if=\"!filter.multiple\">\n" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\n" +
+    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" class=\"depth-{{::item.depth}}\">\n" +
+    "                                                {{::item.name}}\n" +
+    "                                            </md-option>\n" +
+    "                                        </md-select>\n" +
+    "                                    </md-input-container>\n" +
+    "\n" +
+    "                                </div>\n" +
+    "\n" +
+    "                                <div class=\"interface \" ng-if=\"filter.type == 'text'\">\n" +
+    "                                    <md-input-container class=\"md-no-float\">\n" +
+    "                                        <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"search()\"/>\n" +
+    "                                    </md-input-container>\n" +
+    "                                </div>\n" +
+    "\n" +
+    "                                <div class=\"interface\" ng-if=\"filter.type == 'range'\" >\n" +
+    "\n" +
+    "                                    <span layout=\"row\" class=\"md-block\">\n" +
+    "                                         <md-input-container class=\"filter-range-min\">\n" +
+    "\n" +
+    "                                            <label>{{::filter.label}}</label>\n" +
+    "                                            <input\n" +
+    "                                                placeholder=\"{{::filter.placeholder[0]}}\"\n" +
+    "                                                ng-model=\"filter.model['min']\"\n" +
+    "                                                aria-label=\"{{::filter.label}}\"\n" +
+    "                                                ng-model-options=\"{debounce: 400}\"\n" +
+    "                                                ng-change=\"search()\" />\n" +
+    "                                         </md-input-container>\n" +
+    "\n" +
+    "                                         <md-input-container class=\"filter-range-max\">\n" +
+    "\n" +
+    "                                            <label>{{::filter.label}}</label>\n" +
+    "                                            <input\n" +
+    "                                                placeholder=\"{{::filter.placeholder[1]}}\"\n" +
+    "                                                ng-model=\"filter.model['max']\"\n" +
+    "                                                aria-label=\"{{::filter.label}}\"\n" +
+    "                                                ng-model-options=\"{debounce: 400}\"\n" +
+    "                                                ng-change=\"search()\" />\n" +
+    "                                         </md-input-container>\n" +
+    "                                    </span>\n" +
+    "                                </div>\n" +
+    "\n" +
+    "                                <div class=\"interface\" ng-if=\"filter.type == 'date'\" >\n" +
+    "\n" +
+    "                                    <span class=\"md-block\">\n" +
+    "                                        <md-datepicker-container>\n" +
+    "                                            <label>{{::filter.label}}</label>\n" +
+    "                                            <md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\"></md-datepicker>\n" +
+    "                                        </md-datepicker-container>\n" +
+    "                                    </span>\n" +
+    "                                </div>\n" +
+    "\n" +
+    "                                <div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\">\n" +
+    "                                    <md-checkbox ng-change=\"search()\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox>\n" +
+    "                                </div>\n" +
+    "\n" +
+    "                            </div>\n" +
+    "\n" +
+    "                            <div ng-if=\"filter.isolate\" class=\"filter isolate\">\n" +
+    "\n" +
+    "                                <div class=\"filter-label\"></div>\n" +
+    "\n" +
+    "                                <div class=\"interface\">\n" +
+    "                                    <md-checkbox ng-change=\"isolateSearch(filter)\" ng-model=\"filter.isolate.enabled\" ng-true-value=\"true\" ng-false-value=\"false\" aria-label=\"Checkbox filter\"></md-checkbox>\n" +
+    "                                    {{filter.isolate.label}}\n" +
+    "                                </div>\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
+    "\n" +
+    "                        <md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"done()\">Done</md-button>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "            <!--\n" +
+    "            <md-button ng-click=\"toggleFilters()\" md-no-ink class=\"md-icon-button md-icon-button-filters\" aria-label=\"Search filters\">\n" +
+    "                <div class=\"material-icons icon-collapsed\" ng-show=\"extended_search\">expand_more</div>\n" +
+    "                <div class=\"material-icons icon-expanded\" ng-show=\"!extended_search\">chevron_right</div>\n" +
+    "            </md-button>\n" +
+    "            -->\n" +
+    "            <div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div ng-if=\"!options.inline\" class=\"full-search\" flex=\"grow\">\n" +
+    "            <div ng-repeat=\"filters in groupedFilters\" layout=\"row\">\n" +
+    "                <div ng-repeat=\"filter in filters\" class=\"filter filter-{{::filter.type}}\">\n" +
+    "                    <md-input-container ng-if=\"filter.type == 'select'\">\n" +
+    "                        <label>{{::filter.label}}</label>\n" +
+    "                        <md-select ng-model=\"filter.model\" ng-change=\"filterChange(filter)\">\n" +
+    "                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\n" +
+    "                                {{::item.name}}\n" +
+    "                            </md-option>\n" +
+    "                        </md-select>\n" +
+    "                    </md-input-container>\n" +
+    "                    <md-input-container class=\"md-input-has-placeholder\" ng-if=\"filter.type == 'text'\">\n" +
+    "                        <label>{{::filter.label}}</label>\n" +
+    "                        <input ng-model=\"filter.model\" ng-model-options=\"{debounce: 300}\" ng-change=\"filterChange(filter)\" aria-label=\"{{::filter.label}}\" />\n" +
+    "                    </md-input-container>\n" +
+    "                    <span ng-if=\"filter.type == 'range'\" layout=\"row\">\n" +
+    "                         <md-input-container class=\"filter-range-min\">\n" +
+    "\n" +
+    "                            <label>{{::filter.label}}</label>\n" +
+    "\n" +
+    "                            <input\n" +
+    "                                placeholder=\"{{::filter.placeholder[0]}}\"\n" +
+    "                                ng-model=\"filter.model['min']\"\n" +
+    "                                ng-model-options=\"{debounce: 300}\"\n" +
+    "                                ng-change=\"filterChange(filter)\"\n" +
+    "                                aria-label=\"{{::filter.label}}\" />\n" +
+    "                         </md-input-container>\n" +
+    "\n" +
+    "                         <md-input-container class=\"filter-range-max\">\n" +
+    "\n" +
+    "                            <label>{{::filter.label}}</label>\n" +
+    "\n" +
+    "                            <input\n" +
+    "                                placeholder=\"{{::filter.placeholder[1]}}\"\n" +
+    "                                ng-model=\"filter.model['max']\"\n" +
+    "                                ng-model-options=\"{debounce: 300}\"\n" +
+    "                                ng-change=\"filterChange(filter)\"\n" +
+    "                                aria-label=\"{{::filter.label}}\" />\n" +
+    "                         </md-input-container>\n" +
+    "                    </span>\n" +
+    "                    <span ng-if=\"filter.type == 'date'\">\n" +
+    "                        <md-datepicker-container>\n" +
+    "                            <label>{{::filter.label}}</label>\n" +
+    "                            <md-datepicker ng-model=\"filter.model\" ng-change=\"filterChange(filter)\"></md-datepicker>\n" +
+    "                        </md-datepicker-container>\n" +
+    "                    </span>\n" +
+    "                    <span ng-if=\"filter.type == 'newline'\">\n" +
+    "                        <br>\n" +
+    "                    </span>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"top-actions\">\n" +
+    "            <md-button ng-repeat=\"action in options.topActions\" ng-if=\"!action.more\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{::action.label}}</md-button>\n" +
+    "            <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\n" +
+    "                <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\">\n" +
+    "                    <md-icon>more_vert</md-icon>\n" +
+    "                </md-button>\n" +
+    "                <md-menu-content>\n" +
+    "                    <md-menu-item ng-repeat=\"action in options.topActions\" ng-if=\"action.more\">\n" +
+    "                        <md-button ng-click=\"action.click($event)\">\n" +
+    "                            <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\n" +
+    "                            {{::action.label}}\n" +
+    "                        </md-button>\n" +
+    "                    </md-menu-item>\n" +
+    "                </md-menu-content>\n" +
+    "            </md-menu>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div ng-if=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records\">{{paging.records}} Records</div>\n" +
+    "    <div class=\"results\" ng-if=\"options.columns.length\">\n" +
+    "        <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\n" +
+    "            <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\n" +
+    "        </div>\n" +
+    "        <div class=\"lister-table\">\n" +
+    "            <div class=\"lister-head\">\n" +
+    "                <div class=\"lister-row\">\n" +
+    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.sort\"></div>\n" +
+    "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection\">\n" +
+    "\n" +
+    "                        <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox>\n" +
+    "                        <md-menu md-offset=\"6 32\">\n" +
+    "                            <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\n" +
+    "                                <md-icon>arrow_drop_down</md-icon>\n" +
+    "                            </md-button>\n" +
+    "                            <md-menu-content>\n" +
+    "                                <md-menu-item ng-repeat=\"action in options.selection.actions\">\n" +
+    "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\n" +
+    "                                        <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\n" +
+    "                                        {{::action.label}}\n" +
+    "                                    </md-button>\n" +
+    "                                </md-menu-item>\n" +
+    "                            </md-menu-content>\n" +
+    "                        </md-menu>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"lister-col lister-col-header {{::column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"styleCols[$index]\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\n" +
+    "\n" +
+    "                        <div class=\"wrap\">\n" +
+    "                            <span fs-lister-compile=\"column.title\" fs-column=\"column\" class=\"title\"></span>\n" +
+    "\n" +
+    "                            <div class=\"direction\" ng-if=\"column.order\">\n" +
+    "                                <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\">\n" +
+    "                                    <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\n" +
+    "                                    <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\n" +
+    "                                </span>\n" +
+    "                            </div>\n" +
+    "                        </div>\n" +
+    "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\n" +
+    "\n" +
+    "                    </div>\n" +
+    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.actions.length || options.action\">\n" +
+    "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"sortStop($item,$partTo,$indexFrom,$indexTo)\">\n" +
+    "                <div class=\"lister-row\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\n" +
+    "                    <div class=\"lister-col lister-col-sort\" ng-if=\"options.sort\"><div class=\"sort-handle\"><md-icon>drag_handle</md-icon></div></div>\n" +
+    "                    <div class=\"lister-col\" ng-if=\"options.selection\">\n" +
+    "                        <md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\" class=\"select-checkbox\"></md-checkbox>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" fs-column=\"col\" fs-data=\"item\" ng-style=\"styleCols[$index]\"></div>\n" +
+    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\n" +
+    "                        <md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\">\n" +
+    "                            <md-icon class=\"material-icons\">{{::options.action.icon}}</md-icon>\n" +
+    "                        </md-button>\n" +
+    "                    </div>\n" +
+    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\n" +
+    "                        <md-menu ng-if=\"actionsShow(item)\">\n" +
+    "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\n" +
+    "                                <md-icon class=\"md-default-theme material-icons\">more_vert</md-icon>\n" +
+    "                            </md-button>\n" +
+    "                            <md-menu-content>\n" +
+    "                                <md-menu-item ng-if=\"action.show(item)\" ng-repeat=\"action in options.actions\">\n" +
+    "                                    <md-button ng-click=\"actionClick(action,item,$event)\">\n" +
+    "                                        <md-icon class=\"material-icons\" ng-if=\"action.icon\">{{::action.icon}}</md-icon>\n" +
+    "                                        {{::action.label}}\n" +
+    "                                    </md-button>\n" +
+    "                                </md-menu-item>\n" +
+    "                            </md-menu-content>\n" +
+    "                        </md-menu>\n" +
+    "                    </div>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"status\" ng-if=\"options.paging.infinite\">\n" +
+    "            <div class=\"norecords ng-hide\" ng-show=\"!loading && options.norecords && !data.length\">{{::options.norecords}}</div>\n" +
+    "            <div class=\"progress-infinite ng-hide\" ng-show=\"loading\">\n" +
+    "                <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"paging\" ng-if=\"options.paging.enabled && !options.paging.infinite\" layout=\"row\">\n" +
+    "        <div class=\"records\">\n" +
+    "            <label>Total</label>\n" +
+    "            <div>{{paging.records}} Records</div>\n" +
+    "        </div>\n" +
+    "        <div flex>\n" +
+    "            <ul class=\"pages\" ng-if=\"paging.pages>1 && options.paging.pages\">\n" +
+    "                <li ng-class=\"{ disabled : paging.page == 1 }\">\n" +
+    "                    <a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a>\n" +
+    "                </li>\n" +
+    "                <li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\">\n" +
+    "                    <a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a>\n" +
+    "                </li>\n" +
+    "                <li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\n" +
+    "                    <a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a>\n" +
+    "                </li>\n" +
+    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\">\n" +
+    "                    <a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a>\n" +
+    "                </li>\n" +
+    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\">\n" +
+    "                    <a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a>\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "        <div class=\"limits\">\n" +
+    "            <md-input-container>\n" +
+    "                <label>Show</label>\n" +
+    "                <md-select ng-model=\"options.paging.limit\" md-on-close=\"reload()\">\n" +
+    "                    <md-option ng-repeat=\"limit in options.paging.limits\" value=\"{{limit}}\">\n" +
+    "                        {{::limit}} records\n" +
+    "                    </md-option>\n" +
+    "                </md-select>\n" +
+    "            </md-input-container>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
     "\n"
   );
 

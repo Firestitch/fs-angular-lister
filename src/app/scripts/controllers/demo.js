@@ -6,7 +6,7 @@
 
     $scope.modal = modal;
     $scope.listerInstance = {};
-    
+
     $scope.load = function() {
         $scope.listerInstance.load();
     }
@@ -22,7 +22,7 @@
     function modal() {
         fsModal.show('DemoCtrl',
                     'views/listermodal.html'
-                    );     
+                    );
     }
 
     $scope.listerConf = {
@@ -37,7 +37,7 @@
         inline: true,
         sort: {
             stop: function(item,list,$indexFrom,$indexTo) {
-                debugger;   
+                debugger;
             }
         },
 
@@ -46,14 +46,14 @@
         },
 
         data: function(query, cb) {
-            
-            //return setTimeout(function() { cb([]); }, 2000); 
+
+            //return setTimeout(function() { cb([]); }, 2000);
 
             query.count = 50;
 
             return DummyService.gets(query,{ url: 'https://service.firestitch.com/api/', key: 'objects', datapaging: true });
 
-            
+
             DummyService
                 .gets(query,{ url: 'https://spec.local.firestitch.com/api/' })
                 .then(function(result) {
@@ -66,7 +66,7 @@
 
         load: true,
 
-        
+
         paging: {
 
             //infinite: true,
@@ -77,12 +77,12 @@
         //paging: false,
         /*
         action:
-        {   
+        {
             click: function(data, event) {
 
                 if(this.delete) {
-                   
-                }                
+
+                }
             },
             delete: {
                 title: 'Attention',
@@ -124,11 +124,11 @@
                 click: function() {
                     alert('Menu 2');
                 }
-            }      
+            }
         ],
 
         actions: [
-             
+
             {
                 label: 'Edit',
                 icon: 'edit',
@@ -137,13 +137,13 @@
                     //alert("Edit Action Click: " + JSON.stringify(data));
                 }
             },
-           
+
             {
                 label: 'Delete',
                 show: function() { return true },
-                delete:  {  
+                delete:  {
                             content: 'Are you sure you would like to remove this?',
-                            ok: function(data) {                            
+                            ok: function(data) {
                                 alert("Delete Action Click: " + JSON.stringify(data));
 
                                 var deferred = $q.defer();
@@ -152,18 +152,18 @@
                             }
                         }
             }
-           
+
         ],
 
         columns: [
-            {   title: 'Name' , 
+            {   title: 'Name' ,
                 order: { name: 'name', default: true },
-                value: function(data) {                
+                value: function(data) {
                     return "<b>" + data['name'] + "</b>";
                 },
                 width: '20%'
             },
-            {   title: 'GUID' , 
+            {   title: 'GUID' ,
                 center: true,
                 order: 'guid',
                 value: function(data) {
@@ -181,8 +181,8 @@
                 value: function(data, $scope, myresolve) {
                     return data["date"];
                 }
-            }, 
-            {   title: 'Select', 
+            },
+            {   title: 'Select',
                 value: function (label, $scope, data, list) {
                     return '<md-input-container><md-select ng-model="someModel" placeholder="{{label}}" ng-change="click()"><md-option ng-value="opt" ng-repeat="opt in list">{{ opt.label }}</md-option></md-select></md-input-container>';
                 },
@@ -234,7 +234,7 @@
                 }
             }]
         },
-        
+
         filters: [
             {
                 name: 'search',
@@ -252,10 +252,10 @@
                     pending: 'Pending',
                     completed: 'Completed',
                     deleted: 'Deleted'
-                },                
+                },
                 isolate: { label: 'Show Deleted', value: 'deleted' },
                 multiple: true
-            },           
+            },
             {
                 name: 'multiple',
                 type: 'select',
@@ -274,6 +274,48 @@
                     apple: 'Apple',
                 },
             },
+            {
+                name: 'nested_values',
+                type: 'select',
+                label: 'Nested - Values',
+                nested: {children_field: 'children'},
+                values: { //objects with nested child objects
+                    a: 'A',
+                    b: {	name:'B',
+                    		children:{
+                    			b1: 'B1',
+                    			b2: {	name:'B2',
+                    					children: {
+                    						b2_1: 'B2-1',
+                    						b2_2: 'B2-2',
+                    					}
+                    				},
+                    		}
+                    	},
+                    c: 'C',
+                }
+            },
+            {
+                name: 'nested_gen',
+                type: 'select',
+                label: 'Nested - Gen',
+                nested: {
+                    objects: [	//flat array of objects with parent_id->id values.
+                    	{id: 1, parent_id:null, name: 'ball'},
+                    	{id: 2, parent_id:1, name: 'soccer'},
+                    	{id: 3, parent_id:1, name: 'pool'},
+                    	{id: 4, parent_id:3, name: 'billards'},
+                    	{id: 5, parent_id:3, name: 'snooker'},
+                    	{id: 6, parent_id:null, name: 'stick'},
+                    	{id: 7, parent_id:6, name: 'javelin'},
+                    ],
+                    parent_id_field: 'parent_id',
+                    label_field: 'name',
+                    value_field: 'id',
+                    include_all: true
+                }
+            },
+
             {
                 name: 'date',
                 type: 'date',
@@ -297,7 +339,7 @@
                 label: 'Checkbox',
                 checked: 'active',
                 unchecked: 'delete'
-            }            
+            }
         ]
     };
 });

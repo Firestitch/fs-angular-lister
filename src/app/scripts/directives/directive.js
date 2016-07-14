@@ -1,12 +1,12 @@
 (function () {
     'use strict';
-    
+
     /**
      * @ngdoc directive
      * @name app.directives:fs-lister
      * @restrict E
      * @param {object} ls-options Options to configure the Lister.
-     * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback. 
+     * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback.
                 <ul>
                     <li><label>query</label> An object with the filters</li>
                     <li><label>callback</label>Call back function to populate lister dataset and paging</li>
@@ -20,7 +20,7 @@
                             <li><label>pages</label> The total number of pages in the entire dataset</li>
                         </ul>
                     </ul>
-                </ul>  
+                </ul>
      * @param {function} ls-options.rowClick Called when the row is clicked
      * @param {array} ls-options.actions Adds a column to the right side of the lister and places a button that a user can click to perform custom events
                 <ul>
@@ -53,7 +53,7 @@
                         <li><label>click</label>Is triggered when the contextual menu item is clicked. First param an array of selected objects and the second param is the $event</li>
                         <li><label>icon</label>Used in the contextual menu item icon</li>
                     </ul>
-                </ul>        
+                </ul>
     * @param {array} ls-options.columns Defines the columns for the lister
                 <ul>
                     <li><label>title</label>Specifies the column tile</li>
@@ -76,18 +76,18 @@
                     ```
 
                     ```js
-                    $scope.listerInstance = {}; 
+                    $scope.listerInstance = {};
 
                     function click() {
                         $scope.listerInstance.load();
                     }
                     ```
      */
-    
-    var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$timeout', '$mdDialog', 
+
+    var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$timeout', '$mdDialog',
                             'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache',
-                            function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog, 
-                                    fsStore, $rootScope, fsLister, $location, $templateCache) {            
+                            function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog,
+                                    fsStore, $rootScope, fsLister, $location, $templateCache) {
         return {
             template: function(element, attr) {
                 var template = $templateCache.get('views/directives/lister.html');
@@ -105,15 +105,15 @@
 
                 return template;
             },
-            restrict: 'E',            
+            restrict: 'E',
             scope: {
                 lsOptions: '=',
                 lsInstance: '='
             },
             controller: ['$scope', function($scope) {
 
-                var options     = angular.extend({},fsLister.options(),$scope.lsOptions);                
-                var dataIndex   = 0;                
+                var options     = angular.extend({},fsLister.options(),$scope.lsOptions);
+                var dataIndex   = 0;
                 var persists    = fsStore.get('lister-persist',{});
 
                 if(options.paging===false)
@@ -128,6 +128,11 @@
                 options.load = options.load===undefined ? true : options.load;
                 options.actions = options.actions || [];
                 options.filters = options.filters || [];
+
+                angular.forEach(options.filters, function(filter,key) {
+                	if(filter.type=='select')
+                		filter.values = prepSelectValues(filter);
+                });
 
                 if(options.persist) {
 
@@ -201,12 +206,12 @@
                         if(search[filter.param]) {
                             filter.model = search[filter.param];
                         }
-                    }  
+                    }
 
-                    if(!filter.model) {                 
+                    if(!filter.model) {
 
                         if(filter.type=='date') {
-                            
+
                             if(typeof filter.model == 'string') {
                                 filter.model = new Date(filter.model);
                             }
@@ -252,7 +257,7 @@
                             col.order = { name: col.order };
                         }
 
-                        if(!col.order.direction) { 
+                        if(!col.order.direction) {
                             col.order.direction = 'asc';
                         }
 
@@ -273,7 +278,7 @@
                 angular.forEach(options.actions,function(action) {
                     sanitizeAction(action);
                 });
-                
+
                 $scope.groupedFilters = function() {
 
                     var index = 0, filters = [];
@@ -329,7 +334,7 @@
 
                     $scope.options.sort.stop(item,list,indexFrom,indexTo);
                 }
-                
+
                 $scope.actionClick = function(action, item, event) {
 
                     var index = $scope.data.indexOf(item);
@@ -378,13 +383,13 @@
                                                         $mdDialog.hide(true);
                                                     }
                                                 }
-                                                
+
                                             };
                                             this.cancel = function($event) {
 
                                                 if(action.delete.cancel) {
                                                     action.delete.cancel(item, event, helper);
-                                                }                                                
+                                                }
                                                 $mdDialog.hide();
                                             };
                                         },
@@ -396,7 +401,7 @@
                                         targetEvent: event,
                                         ariaLabel: 'Confirm',
                                         skipHide: true };
-                            
+
                         $mdDialog.show(confirm);
 
                     } else if(action.click) {
@@ -405,10 +410,10 @@
                 }
 
                 $scope.selectionsToggle = function(toogle) {
-                    
+
                     $scope.selectionsClear();
                     if(!toogle) {
-                        
+
                         for(var i=0;i<$scope.data.length;i++) {
                             $scope.checked.push(1);
                         }
@@ -435,11 +440,11 @@
 
                     click(selected, $event);
                 }
-                
+
                 $scope.selectionsClear = function() {
                     $scope.checked = [];
                     $scope.selectToogled = false;
-                } 
+                }
 
                 $scope.toggleFilters = function() {
                     $scope.extended_search = !$scope.extended_search;
@@ -454,18 +459,18 @@
                 }
 
                 $scope.selectSearch = function(filter) {
-                   
+
                     if(filter.isolate) {
                         filter.isolate.enabled = false;
                     }
-                    
+
                     $scope.search();
                 }
 
                 $scope.dateSearch = function(filter) {
                     $scope.search();
                 }
-                
+
                 $scope.topActionsClick = function(action,$event) {
                     if(action.click) {
                         action.click(filterValues(),$event);
@@ -479,7 +484,7 @@
                     } else {
                         filter.model = null;
                     }
-                    
+
                     $scope.search();
                 }
 
@@ -526,7 +531,7 @@
                                         value = values.join(',');
 
                                     } else {
-                                        
+
                                         angular.forEach(filter.values,function(filter_item) {
                                             if(!String(filter_item.value).localeCompare(String(value))) {
                                                 value = filter_item.name;
@@ -539,7 +544,7 @@
 
                                 var matches = value.match(/(\d{4}-\d{2}-\d{2})/);
                                 value = matches[1];
-                            
+
                             } else if(filter.type=='checkbox') {
 
                                 if(filter.model==filter.unchecked) {
@@ -556,7 +561,7 @@
                             } else {
                                 var label = filter.label.match(/\s/) ? '(' + filter.label + ')' : filter.label;
                             }
-                            
+
                             var value = value.match(/\s/) ? '(' + value + ')' : value;
 
                             searches.push(label + ':' + value);
@@ -598,13 +603,13 @@
                         }
                         $scope.filterValue(filter);
                     });
-                    
+
                     angular.forEach(values,function(value, label) {
-                        
+
                         var filter = $filter('filteri')(options.filters,{ label: label },true)[0];
 
-                        if(filter) {                           
-                           
+                        if(filter) {
+
                             if(filter.type=='date') {
 
                                 filter.model = new Date(value);
@@ -616,7 +621,7 @@
                             } else if(filter.type=='range') {
                                 var parts = value.split(',');
                                 filter.model = { min: parts[0], max: parts[1] };
-                            
+
                             } else if(filter.type=='select') {
 
                                 if(filter.multiple) {
@@ -632,13 +637,13 @@
                                     });
 
                                     filter.model = values;
-                                
+
                                 } else {
 
                                     var item = $filter('filteri')(filter.values,{ name: value },true)[0];
 
                                     if(item) {
-                                       filter.model = item.value; 
+                                       filter.model = item.value;
                                     }
                                 }
 
@@ -701,7 +706,7 @@
                         }
 
                     } else if(filter.type=='range') {
-                        
+
                         if(filter.model) {
                             var min = filter.model['min'];
                             var max = filter.model['max'];
@@ -730,6 +735,74 @@
                     reload();
                 }
 
+                function prepSelectValues(filter) {
+                	var values = [];
+
+                	if(filter.values) {
+                		//if filter has values then sort through them in case they have nested children and build a single list
+                		var children_field = filter.nested && filter.nested.children_field ? filter.nested.children_field : 'children';
+
+                		function walkValues(values, depth) {
+                			var depth = depth || 0;
+                			var prepped_values = [];
+                			angular.forEach(values, function(obj,key) {
+                				var value = {value: key, name: '', depth: depth};
+                				if(typeof obj=='string')
+                					value.name = obj;
+                				else
+                					value.name = obj.name;
+
+								prepped_values.push(value);
+
+
+                				if(typeof obj=='object' && obj[children_field])
+                					prepped_values.push(...walkValues(obj[children_field], depth+1));
+                			});
+                			return prepped_values;
+                		}
+
+                		values = walkValues(filter.values);
+
+
+	               	} else if(filter.nested && filter.nested.objects) {
+	               		//generate a list of values from objects that have not been nested.
+
+	               		var value_field = filter.nested.value_field || 'id';
+	               		var parent_id_field = filter.nested.parent_id_field || 'parent_id';
+	               		var name_field = filter.nested.label_field || 'name';
+
+	               		function walkValues(parent_id, values, depth) {
+                			var depth = depth || 0;
+                			var prepped_values = [];
+                			angular.forEach(values, function(obj,key) {
+                				if(obj[parent_id_field]!=parent_id)
+                					return;
+
+                				var value = {
+                					value: obj[value_field],
+                					name: obj[name_field],
+                					depth: depth
+                				};
+								prepped_values.push(value);
+
+
+                				var children = walkValues(obj[value_field], values, depth+1);
+                				if(children.length>0)
+                					prepped_values.push(...children);
+                			});
+
+                			return prepped_values;
+	               		}
+
+	               		if(filter.nested.include_all)
+	               			values.push({value:'__all', name:'All', depth:0});
+
+	               		values.push(...walkValues(null, filter.nested.objects));
+                	}
+
+                	return values;
+                }
+
                 function columnStyle(col) {
                     var styles = {};
 
@@ -755,18 +828,18 @@
                         action.label = (action.label !== undefined) ?  action.label : 'Remove';
                         action.icon = (action.icon !== undefined) ? action.icon  : 'delete';
                     }
-                    
+
                     if(!action.show) {
                         action.show = function() { return true }
                     }
-                    
+
                     return action;
                 }
 
                 function filterValues() {
                     var query = {};
                     angular.forEach(options.filters,function(filter) {
-                        
+
                         if(filter.value!==null && String(filter.value).length) {
                             query[filter.name] = filter.value;
                         }
@@ -777,7 +850,7 @@
 
                 function clearData() {
                     dataIndex = 0;
-                    $scope.data = [];                    
+                    $scope.data = [];
                     $scope.dataCols = [];
                 }
 
@@ -797,7 +870,7 @@
                             return;
                         }
                     }
-                    
+
                     if(opts.page) {
 
                         if(opts.clear) {
@@ -810,7 +883,7 @@
                         $scope.paging.page = opts.page;
                     }
 
-                    $scope.selectionsClear();          
+                    $scope.selectionsClear();
 
                     var query = filterValues();
 
@@ -839,7 +912,7 @@
                     }
 
                     log("Calling data()", query);
-                    
+
                     var dataCallback = function(data, paging) {
                         if(opts.clear) {
                             $scope.max_bottom = 0;
@@ -850,7 +923,7 @@
                     }
 
                     try {
-                        
+
                         $scope.loading = true;
 
                         if(options.data) {
@@ -865,20 +938,20 @@
                                 });
                             }
                         }
-                   
+
                    } catch(e) {
                         $scope.loading = false;
                         throw e;
                     }
                 }
-           
+
                  function page(page) {
                     $scope.paging.page = page;
                     load();
                 }
 
                 function callback(objects, paging) {
-                    
+
                     log("dataCallback()",objects,paging);
 
                     if(!$scope.options.paging.infinite) {
@@ -886,13 +959,13 @@
                     }
 
                     var ol = objects.length;
-                    for (var o = 0; o < ol; o++) { 
+                    for (var o = 0; o < ol; o++) {
 
                         var cl = options.columns.length;
                         var cols = [];
 
                         for (var c = 0; c < cl; c++) {
-                        
+
                             var col = options.columns[c];
                             var value = col.value;
 
@@ -909,8 +982,8 @@
                         $scope.data.push(objects[o]);
 
                         dataIndex++;
-                    }    
-                    
+                    }
+
                     $scope.paging.records = null;
 
                     if(paging) {
@@ -921,21 +994,21 @@
 
                         $scope.paging.records = paging.records;
                         $scope.paging.pages = paging.pages;
-                        
+
                         if(paging.limit) {
                             $scope.options.paging.limit = paging.limit;
                             //options.limit = paging.limit;
                         }
-                    
+
                     } else {
                         $scope.options.paging.enabled = false;
                     }
 
                     $scope.paged = paging;
 
-                    if($scope.options.paging.infinite) {                       
+                    if($scope.options.paging.infinite) {
                         $scope.paging.page++;
-                       
+
                     } else if(paging) {
                         $scope.paging.page = paging.page;
                     }
@@ -951,8 +1024,8 @@
                     }
                 }
 
-                function numeric(n) { 
-                      return !isNaN(parseFloat(n)) && isFinite(n); 
+                function numeric(n) {
+                      return !isNaN(parseFloat(n)) && isFinite(n);
                 }
 
                 angular.forEach(options.filters,function(filter) {
@@ -983,7 +1056,7 @@
                             }
                         });
                     }
-                           
+
                     $scope.filterValue(filter);
                 });
 
@@ -1011,9 +1084,9 @@
 
                 return {
 
-                    post: function($scope, element, attr, ctrl) {               
-                       
-                        var widthHolders = function() {                    
+                    post: function($scope, element, attr, ctrl) {
+
+                        var widthHolders = function() {
 
                             if(!$scope.loading) {
 
@@ -1028,7 +1101,7 @@
                                             element.style.width = (col.clientWidth - parseInt(style.paddingLeft, 10) - parseInt(style.paddingRight, 10)) + 'px';
                                         }
                                     });
-                                }); 
+                                });
                             }
 
                             $timeout(widthHolders,2500);
@@ -1097,8 +1170,8 @@
     angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view'])
     .directive('lister',ListerDirective)
     .directive('fsLister',ListerDirective)
-    .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope', 
-                                    function ($compile, $injector, $location, $timeout, $rootScope) {        
+    .directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',
+                                    function ($compile, $injector, $location, $timeout, $rootScope) {
         return {    scope: {
                         column: '=fsColumn',
                         data: '=fsData',
@@ -1127,32 +1200,32 @@
 
                         element.html($scope.value);
                         $compile(element.contents())(scope);
-                       
+
                         var elements = element.find('a');
                         for(var i=0;i<elements.length;i++) {
 
                             angular.element(elements[i]).on('click',function(event) {
 
                                 var el = angular.element(this);
-                                
+
                                 if(event.isDefaultPrevented() || el.attr('href').match(/^http/)) {
                                     return;
                                 }
-                                
-                                if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;                                
+
+                                if (!$location.$$html5 || event.metaKey || event.shiftKey || event.which == 2 || event.button == 2) return;
 
                                 if(event.ctrlKey) {
 
                                     var href = el.attr('href');
                                     el.attr('href',el.attr('href').replace(/^#/,''));
-                                    
+
                                     $timeout(function() {
                                         el.attr('href', href);
                                     });
 
                                     return;
                                 }
-                               
+
                                 $location.path(el.attr('href').replace(/^#/,''));
                                 $scope.$apply();
 
@@ -1184,7 +1257,7 @@
     .filter('filteri', function() {
       return function(list, filters) {
 
-        var result = [];        
+        var result = [];
         angular.forEach(list,function(value,key) {
 
             var valid = true;
@@ -1195,7 +1268,7 @@
                     valid = String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
                 }
             });
-            
+
             if(valid) {
                 result.push(value);
             }
@@ -1211,7 +1284,7 @@
 
         for (var i=0; i<total; i++) {
           input.push(i);
-        }  
+        }
 
         if(page<total)
             input = input.slice(page - padding - total , page - total).concat(input.slice(page, page + padding));
