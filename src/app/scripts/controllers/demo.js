@@ -260,12 +260,12 @@
                 name: 'multiple',
                 type: 'select',
                 label: 'Multiple',
-                values: {
+                values: function(){ return {
                     pear: 'Pear',
                     orange: 'Orange',
                     banana: 'Banana',
                     apple: 'Apple',
-                },
+                }; },
                 multiple: true,
                 default: {
                     pear: 'Pear',

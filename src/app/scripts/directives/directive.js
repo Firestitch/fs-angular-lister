@@ -180,10 +180,6 @@
                 var primary = false;
                 angular.forEach(options.filters,function(filter) {
 
-                	if(filter.type=='select')
-                		filter.values = prepSelectValues(filter);
-
-
                     if(filter.primary) {
                         primary = true;
                     } else {
@@ -1042,6 +1038,9 @@
                     if(typeof filter.values=='function') {
                         filter.values = filter.values();
                     }
+
+                	if(filter.type=='select')
+                		filter.values = prepSelectValues(filter);
 
                     var valuename = true;
                     angular.forEach(filter.values,function(value, key) {
