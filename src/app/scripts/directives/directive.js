@@ -750,10 +750,14 @@
                 			var prepped_values = [];
                 			angular.forEach(values, function(obj,key) {
                 				var value = {value: key, name: '', depth: depth};
-                				if(typeof obj=='string')
+                				if(typeof obj=='string') {
                 					value.name = obj;
-                				else
+                				} else {
+	                				if(obj.value)
+    	            					value.value = obj.value;
+
                 					value.name = obj.name;
+                				}
 
 								prepped_values.push(value);
 

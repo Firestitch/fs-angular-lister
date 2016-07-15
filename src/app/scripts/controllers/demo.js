@@ -275,6 +275,27 @@
                 },
             },
             {
+                name: 'multiple_objs',
+                type: 'select',
+                label: 'Multiple Objs',
+                values: function(){
+                    return [
+                    	{value: 'red', name: 'Red'},
+                    	{value: 'green', name: 'Green'},
+                    	{value: 'blue', name: 'Blue'},
+                    	{value: 'yellow', name: 'Yellow'},
+                	];
+            	},
+                multiple: true,
+                default: {
+                    pear: 'Pear',
+                    orange: 'Orange',
+                    banana: 'Banana',
+                    apple: 'Apple',
+                },
+            },
+
+            {
                 name: 'nested_values',
                 type: 'select',
                 label: 'Nested - Values',
