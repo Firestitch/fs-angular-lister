@@ -192,7 +192,8 @@
 
                         var persisted = persists[options.persist.name]['data'];
 
-                        if(persisted[filter.name]!==undefined) {
+                        if(persisted[filter.name]) {
+
 
                             filter.model = persisted[filter.name];
 
