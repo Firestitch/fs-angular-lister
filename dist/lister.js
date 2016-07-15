@@ -1248,7 +1248,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                <div class=\"interface\" ng-if=\"filter.type == 'select'\">\n" +
     "\n" +
-    "                                    <md-input-container class=\"md-no-label md-no-hints-errors md-block md-no-float\" ng-if=\"filter.multiple\">\n" +
+    "                                    <md-input-container class=\"md-no-label md-no-message md-block md-no-float\" ng-if=\"filter.multiple\">\n" +
     "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"selectSearch(filter)\">\n" +
     "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\n" +
     "                                                {{::item.name}}\n" +
@@ -1256,7 +1256,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                                        </md-select>\n" +
     "                                    </md-input-container>\n" +
     "\n" +
-    "                                    <md-input-container class=\"md-no-label md-no-hints-errors md-block md-no-float\" ng-if=\"!filter.multiple\">\n" +
+    "                                    <md-input-container class=\"md-no-label md-no-message md-block md-no-float\" ng-if=\"!filter.multiple\">\n" +
     "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\n" +
     "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\">\n" +
     "                                                {{::item.name}}\n" +
@@ -1267,7 +1267,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                                </div>\n" +
     "\n" +
     "                                <div class=\"interface \" ng-if=\"filter.type == 'text'\">\n" +
-    "                                    <md-input-container class=\"md-no-label md-no-hints-errors md-block md-no-float\">\n" +
+    "                                    <md-input-container class=\"md-no-label md-no-message md-block md-no-float\">\n" +
     "                                        <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"search()\"/>\n" +
     "                                    </md-input-container>\n" +
     "                                </div>\n" +
@@ -1275,7 +1275,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                                <div class=\"interface\" ng-if=\"filter.type == 'range'\" >\n" +
     "\n" +
     "                                    <span layout=\"row\" class=\"md-block\">\n" +
-    "                                         <md-input-container class=\"md-no-label md-no-hints-errors md-block filter-range-min\">\n" +
+    "                                         <md-input-container class=\"md-no-label md-no-message md-block filter-range-min\">\n" +
     "\n" +
     "                                            <label>{{::filter.label}}</label>\n" +
     "                                            <input\n" +
@@ -1286,7 +1286,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                                                ng-change=\"search()\" />\n" +
     "                                         </md-input-container>\n" +
     "\n" +
-    "                                         <md-input-container class=\"md-no-label md-no-hints-errors md-block filter-range-max\">\n" +
+    "                                         <md-input-container class=\"md-no-label md-no-message md-block filter-range-max\">\n" +
     "\n" +
     "                                            <label>{{::filter.label}}</label>\n" +
     "                                            <input\n" +
@@ -1302,7 +1302,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                                <div class=\"interface\" ng-if=\"filter.type == 'date'\" >\n" +
     "\n" +
     "                                    <span class=\"md-block\">                \n" +
-    "                                        <md-datepicker-container class=\"md-no-label md-no-hints-errors md-block\">\n" +
+    "                                        <md-datepicker-container class=\"md-no-label md-no-message md-block\">\n" +
     "                                            <label>{{::filter.label}}</label>\n" +
     "                                            <md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\"></md-datepicker>\n" +
     "                                        </md-datepicker-container>\n" +
