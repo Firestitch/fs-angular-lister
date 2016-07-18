@@ -768,9 +768,6 @@
                 			return prepped_values;
                 		}
 
-	              		if(!filter.multiple)
-	               			values.push({value:'__all', name:'All', depth:0});
-
                 		Array.prototype.push.apply(values, walkValues(filter.values));
 
 
