@@ -483,9 +483,28 @@
                 $scope.isolateSearch = function(filter) {
 
                     if(filter.isolate.enabled) {
-                        filter.model = filter.multiple ? [filter.isolate.value] : filter.isolate.value;
+
+                        if(filter.multiple) {
+                            filter.model.push(filter.isolate.value);    
+                        }
+                        else {
+                            filter.model = filter.isolate.value;
+                        }
                     } else {
-                        filter.model = null;
+
+                        if(filter.multiple && filter.model) {
+
+                            var index = filter.model.indexOf(filter.isolate.value);
+
+                            if(index > -1) {
+                                delete filter.model[index];
+                            }
+
+                        }
+                        else {
+                            
+                            filter.model = null;
+                        }
                     }
 
                     $scope.search();
