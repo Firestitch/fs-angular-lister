@@ -23,7 +23,7 @@
 
                                 <div class="interface" ng-if="filter.type == 'select'">
 
-                                    <md-input-container class="md-no-float" ng-if="filter.multiple">
+                                    <md-input-container class="md-no-float md-no-label md-no-message" ng-if="filter.multiple">
                                         <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectSearch(filter)">
                                             <md-option ng-repeat="item in filter.values" value="{{::item.value}}" style="padding-left: {{(item.depth*16)+40}}px">
                                                 {{::item.name}}
@@ -31,7 +31,7 @@
                                         </md-select>
                                     </md-input-container>
 
-                                    <md-input-container class="md-no-float" ng-if="!filter.multiple">
+                                    <md-input-container class="md-no-float md-no-label md-no-message" ng-if="!filter.multiple">
                                         <md-select ng-model="filter.model" aria-label="select" ng-change="selectSearch(filter)">
                                             <md-option ng-repeat="item in filter.values" value="{{::item.value}}" style="padding-left: {{(item.depth*16)+16}}px">
                                                 {{::item.name}}
@@ -41,8 +41,8 @@
 
                                 </div>
 
-                                <div class="interface " ng-if="filter.type == 'text'">
-                                    <md-input-container class="md-no-float">
+                                <div class="interface" ng-if="filter.type == 'text'">
+                                    <md-input-container class="md-no-float md-no-label md-no-message">
                                         <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-keydown="searchKeydown($event, 'closePopupOnEnter')" ng-change="search()"/>
                                     </md-input-container>
                                 </div>
@@ -50,7 +50,7 @@
                                 <div class="interface" ng-if="filter.type == 'range'" >
 
                                     <span layout="row" class="md-block">
-                                         <md-input-container class="filter-range-min">
+                                         <md-input-container class="filter-range-min md-no-label md-no-message">
 
                                             <label>{{::filter.label}}</label>
                                             <input
@@ -61,7 +61,7 @@
                                                 ng-change="search()" />
                                          </md-input-container>
 
-                                         <md-input-container class="filter-range-max">
+                                         <md-input-container class="filter-range-max md-no-label md-no-message">
 
                                             <label>{{::filter.label}}</label>
                                             <input

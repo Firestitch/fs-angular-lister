@@ -465,6 +465,14 @@
 
                     if(filter.isolate) {
                         filter.isolate.enabled = false;
+
+                        if(filter.multiple) {
+                            var index = filter.model.indexOf(filter.isolate.value);
+
+                            if(index > -1) {
+                                filter.model.splice(index,1);
+                            }
+                        }
                     }
 
                     $scope.search();
@@ -849,6 +857,21 @@
 
                         if(filter.value!==null && String(filter.value).length) {
                             query[filter.name] = filter.value;
+                        }
+
+                        if(filter.isolate && !filter.isolate.enabled) {
+
+                            if(!filter.model || filter.model=='__all' || (angular.isArray(filter.model) && !filter.model.length)) {
+                                var values = [];
+                                angular.forEach(filter.values,function(value) {
+                                    if(value.value=='__all') {
+                                        return;
+                                    }
+
+                                    values.push(value.value);
+                                });
+                                query[filter.name] = values.join(',');
+                            }
                         }
                     });
 

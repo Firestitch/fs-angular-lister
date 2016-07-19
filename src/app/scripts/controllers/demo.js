@@ -53,7 +53,6 @@
 
             return DummyService.gets(query,{ url: 'https://service.firestitch.com/api/', key: 'objects', datapaging: true });
 
-
             DummyService
                 .gets(query,{ url: 'https://spec.local.firestitch.com/api/' })
                 .then(function(result) {
@@ -253,9 +252,36 @@
                     completed: 'Completed',
                     deleted: 'Deleted'
                 },
-                isolate: { label: 'Show Deleted', value: 'deleted' },
                 multiple: true
             },
+
+            {
+                name: 'isolate',
+                type: 'select',
+                label: 'Isolate',
+                values: {
+                    __all: 'All',
+                    active: 'Active',
+                    pending: 'Pending',
+                    completed: 'Completed',
+                    deleted: 'Deleted'
+                },
+                isolate: { label: 'Show Deleted', value: 'deleted' }
+            },
+
+            {
+                name: 'isolatemultiple',
+                type: 'select',
+                label: 'Isolate Multiple',
+                values: {
+                    active: 'Active',
+                    pending: 'Pending',
+                    completed: 'Completed',
+                    deleted: 'Deleted'
+                },
+                isolate: { label: 'Show Deleted', value: 'deleted' },
+                multiple: true
+            },                        
             {
                 name: 'multiple',
                 type: 'select',
