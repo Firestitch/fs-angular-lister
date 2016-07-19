@@ -1342,13 +1342,13 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"inline-search-input\" flex=\"grow\">\r" +
     "\n" +
-    "                <div layout=\"row\" layout-align=\"start center\">\r" +
+    "                <div class=\"main-search-bar\" layout=\"row\" layout-align=\"start center\">\r" +
     "\n" +
     "\r" +
     "\n" +
     "                    <div ng-click=\"reload()\" class=\"search-reload\"><i class=\"material-icons reload\">refresh</i><i class=\"material-icons search\">search</i></div>\r" +
     "\n" +
-    "                    <md-input-container md-no-float>\r" +
+    "                    <md-input-container class=\"md-no-label md-no-message\">\r" +
     "\n" +
     "                        <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\" />\r" +
     "\n" +
@@ -1372,7 +1372,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                <div class=\"filter-label\">\r" +
     "\n" +
-    "                                    {{::filter.label}}\r" +
+    "                                    <div class=\"filter-label-content\">\r" +
+    "\n" +
+    "                                        {{::filter.label}}\r" +
+    "\n" +
+    "                                    </div>\r" +
     "\n" +
     "                                </div>\r" +
     "\n" +
@@ -1398,6 +1402,8 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
+    "\r" +
+    "\n" +
     "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-if=\"!filter.multiple\">\r" +
     "\n" +
     "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\r" +
@@ -1418,6 +1424,8 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
+    "      \r" +
+    "\n" +
     "                                <div class=\"interface\" ng-if=\"filter.type == 'text'\">\r" +
     "\n" +
     "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\">\r" +
@@ -1436,7 +1444,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <span layout=\"row\" class=\"md-block\">\r" +
     "\n" +
-    "                                         <md-input-container class=\"filter-range-min md-no-label md-no-message\">\r" +
+    "                                 \r" +
+    "\n" +
+    "                                         <md-input-container class=\"md-no-label md-no-message md-block filter-range-min\">\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1458,7 +1468,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                                         <md-input-container class=\"filter-range-max md-no-label md-no-message\">\r" +
+    "                        \r" +
+    "\n" +
+    "                                         <md-input-container class=\"md-no-label md-no-message md-block filter-range-max\">\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1490,7 +1502,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <span class=\"md-block\">\r" +
     "\n" +
-    "                                        <md-datepicker-container>\r" +
+    "                                        <md-datepicker-container class=\"md-no-label md-no-message md-block\">\r" +
     "\n" +
     "                                            <label>{{::filter.label}}</label>\r" +
     "\n" +
@@ -1576,7 +1588,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div ng-repeat=\"filter in filters\" class=\"filter filter-{{::filter.type}}\">\r" +
     "\n" +
-    "                    <md-input-container ng-if=\"filter.type == 'select'\">\r" +
+    "                    <md-input-container class=\"md-short-container\" ng-if=\"filter.type == 'select'\">\r" +
     "\n" +
     "                        <label>{{::filter.label}}</label>\r" +
     "\n" +
@@ -1592,7 +1604,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </md-input-container>\r" +
     "\n" +
-    "                    <md-input-container class=\"md-input-has-placeholder\" ng-if=\"filter.type == 'text'\">\r" +
+    "                    <md-input-container class=\"md-short-container md-input-has-placeholder\" ng-if=\"filter.type == 'text'\">\r" +
     "\n" +
     "                        <label>{{::filter.label}}</label>\r" +
     "\n" +
@@ -1602,7 +1614,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <span ng-if=\"filter.type == 'range'\" layout=\"row\">\r" +
     "\n" +
-    "                         <md-input-container class=\"filter-range-min\">\r" +
+    "                         <md-input-container class=\"md-short-container filter-range-min\">\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1626,7 +1638,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                         <md-input-container class=\"filter-range-max\">\r" +
+    "                         <md-input-container class=\"md-short-container filter-range-max\">\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -1652,7 +1664,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <span ng-if=\"filter.type == 'date'\">\r" +
     "\n" +
-    "                        <md-datepicker-container>\r" +
+    "                        <md-datepicker-container class=\"md-short-container\">\r" +
     "\n" +
     "                            <label>{{::filter.label}}</label>\r" +
     "\n" +
