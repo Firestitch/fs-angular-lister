@@ -77,10 +77,10 @@
                         <li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>
                         <li><label>children_field</label>name of field containing child objects in the filter.values array</li>
                     </ul>
-                    
+
                 </ul>
     * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive during run time.
-    * @param {function} ls-instance.load Will load the lister with the current filters and page 
+    * @param {function} ls-instance.load Will load the lister with the current filters and page
     * @param {function} ls-instance.reload Will load the lister with the current filters and on the first page
     * @param {function} ls-instance.filterValues Will return the current filter values
     * @param {function} ls-instance.data Will return the current data set
@@ -1109,10 +1109,10 @@
                 }
 
                 if($scope.lsInstance) {
-                    angular.extend($scope.lsInstance,{  load: load, 
-                                                        page: page, 
+                    angular.extend($scope.lsInstance,{  load: load,
+                                                        page: page,
                                                         reload: reload,
-                                                        filterValues: filterValues, 
+                                                        filterValues: filterValues,
                                                         data: data,
                                                         options: function() {
                                                             if(arguments.length==1) {
