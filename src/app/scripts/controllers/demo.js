@@ -26,7 +26,8 @@
     }
 
     $scope.newFilters = function() {
-       $scope.listerInstance.options('filters',[]);
+        $scope.listerConf.filters[0].disabled = true;
+       //$scope.listerInstance.options('filters',[]);
     }
 
     $scope.listerConf = {
@@ -38,7 +39,7 @@
             timeout: 60
         },
 
-        inline: true,
+        //inline: true,
         sort: {
             stop: function(item,list,$indexFrom,$indexTo) {
                 debugger;

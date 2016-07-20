@@ -13,7 +13,7 @@
 
                 <div class="ng-hide filters" layout="column" ng-show="extended_search">
                     <div class="wrap">
-                        <div ng-repeat="filter in options.filters" class="filter-group">
+                        <div ng-repeat="filter in options.filters" class="filter-group" ng-if="!filter.disabled">
 
                             <div class="filter filter-{{filter.type}}">
 

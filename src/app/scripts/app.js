@@ -9,7 +9,9 @@ angular
     'fs-angular-api',
     'ui.router'
 ])
-.config(function ($stateProvider, $urlRouterProvider) {
+.config(function ($stateProvider, $urlRouterProvider, fsListerProvider) {
+
+    fsListerProvider.options({ inline: true });
 
     $urlRouterProvider
     .otherwise('/404')

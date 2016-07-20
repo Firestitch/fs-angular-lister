@@ -68,6 +68,8 @@
                     <li><label>type</label>select (single selection dropdown) or text (one line input box) or date</li>
                     <li><label>label</label>The label of the interface</li>
                     <li><label>values</label>An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.</li>
+                    <li><label>default</label>Sets the default filter value</li>
+                    <li><label>disabled</label>When set to true the filter will not be visible</li>
                     <li><label>nested</label>An key/value paired object with options related to showing nested select options</li>
                     <ul>
                         <li><label>parent_field</label>name of field used to link to parent row. typically 'parent_id' or similar</li>
@@ -75,7 +77,7 @@
                         <li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>
                         <li><label>children_field</label>name of field containing child objects in the filter.values array</li>
                     </ul>
-                    <li><label>default</label>Sets the default filter value</li>
+                    
                 </ul>
     * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive during run time.
     * @param {function} ls-instance.load Will load the lister with the current filters and page 
@@ -113,7 +115,7 @@
             },
             controller: ['$scope', function($scope) {
 
-                var options     = angular.extend({},fsLister.options(),$scope.lsOptions);
+                var options     = angular.extend($scope.lsOptions,fsLister.options(),$scope.lsOptions);
                 var dataIndex   = 0;
                 var persists    = fsStore.get('lister-persist',{});
 
