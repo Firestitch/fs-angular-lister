@@ -25,6 +25,10 @@
                     );
     }
 
+    $scope.newFilters = function() {
+       $scope.listerInstance.options('filters',[]);
+    }
+
     $scope.listerConf = {
 
         debug: false,

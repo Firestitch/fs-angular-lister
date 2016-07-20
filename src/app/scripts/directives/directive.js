@@ -77,19 +77,13 @@
                     </ul>
                     <li><label>default</label>Sets the default filter value</li>
                 </ul>
-     * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive functions.
-                    ```html
-                    <lister ls-instance="listerInstance"></lister>
-                    ```
-
-                    ```js
-                    $scope.listerInstance = {};
-
-                    function click() {
-                        $scope.listerInstance.load();
-                    }
-                    ```
-     */
+    * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive during run time.
+    * @param {function} ls-instance.load Will load the lister with the current filters and page 
+    * @param {function} ls-instance.reload Will load the lister with the current filters and on the first page
+    * @param {function} ls-instance.filterValues Will return the current filter values
+    * @param {function} ls-instance.data Will return the current data set
+    * @param {function} ls-instance.options Set/Gets options. Zero arguments passed will return all options. One argument passed will return that option's value. Two arguments passed will set option with the value.
+    */
 
     var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$timeout', '$mdDialog',
                             'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache',
@@ -1110,7 +1104,22 @@
                 }
 
                 if($scope.lsInstance) {
-                    angular.extend($scope.lsInstance,{ load: load, page: page, reload: reload , filterValues: filterValues, data: data });
+                    angular.extend($scope.lsInstance,{  load: load, 
+                                                        page: page, 
+                                                        reload: reload,
+                                                        filterValues: filterValues, 
+                                                        data: data,
+                                                        options: function() {
+                                                            if(arguments.length==1) {
+                                                                return options[arguments[0]];
+                                                            }
+
+                                                            if(arguments.length==2) {
+                                                                return options[arguments[0]] = arguments[1];
+                                                            }
+
+                                                            return options;
+                                                        } });
                 }
             }],
             compile: function(element, tAttrs) {

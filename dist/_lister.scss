@@ -133,6 +133,17 @@
 
             md-input-container {
                 width: 100%;
+
+                md-select-value {
+
+                    .md-container {
+                        display: inline;
+
+                        .md-icon {
+                            display: inline;
+                        }
+                    }
+                }
             }
 
             .main-search-bar {
