@@ -2,7 +2,7 @@
 
 
 angular.module('app')
-  .controller('DemoCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog, $q) {
+  .controller('DemoCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog, $q, $filter) {
 
     $scope.modal = modal;
     $scope.listerInstance = {};
@@ -26,8 +26,11 @@
     }
 
     $scope.newFilters = function() {
-        $scope.listerConf.filters[0].disabled = true;
-       //$scope.listerInstance.options('filters',[]);
+        
+        var filter = $filter('filter')($scope.listerConf.filters,{ name: 'range' })[0];
+        if(filter) {
+            filter.disabled = true;
+        }
     }
 
     $scope.listerConf = {
