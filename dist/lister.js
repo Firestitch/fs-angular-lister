@@ -77,19 +77,19 @@
                         <li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>
                         <li><label>children_field</label>name of field containing child objects in the filter.values array</li>
                     </ul>
-                    
+
                 </ul>
     * @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive during run time.
-    * @param {function} ls-instance.load Will load the lister with the current filters and page 
+    * @param {function} ls-instance.load Will load the lister with the current filters and page
     * @param {function} ls-instance.reload Will load the lister with the current filters and on the first page
     * @param {function} ls-instance.filterValues Will return the current filter values
     * @param {function} ls-instance.data Will return the current data set
     * @param {function} ls-instance.options Set/Gets options. Zero arguments passed will return all options. One argument passed will return that option's value. Two arguments passed will set option with the value.
     */
 
-    var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$timeout', '$mdDialog',
+    var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$interval', '$mdDialog',
                             'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache',
-                            function ($compile, $sce, $filter, $window, $log, $q, $timeout, $mdDialog,
+                            function ($compile, $sce, $filter, $window, $log, $q, $interval, $mdDialog,
                                     fsStore, $rootScope, fsLister, $location, $templateCache) {
         return {
             template: function(element, attr) {
@@ -742,77 +742,80 @@
                     reload();
                 }
 
-                function prepSelectValues(filter) {
-                	var values = [];
 
-                	if(filter.values) {
-                		//if filter has values then sort through them in case they have nested children and build a single list
-                		var children_field = filter.nested && filter.nested.children_field ? filter.nested.children_field : 'children';
+                function walkValues(filter, values, depth) {
+                    var depth = depth || 0;
+                    var prepped_values = [];
+                    var children_field = filter.nested && filter.nested.children_field ? filter.nested.children_field : 'children';
 
-                		function walkValues(values, depth) {
-                			var depth = depth || 0;
-                			var prepped_values = [];
-                			angular.forEach(values, function(obj,key) {
-                				var value = {value: key, name: '', depth: depth};
-                				if(typeof obj=='string') {
-                					value.name = obj;
-                				} else {
-	                				if(obj.value)
-    	            					value.value = obj.value;
+                    angular.forEach(values, function(obj,key) {
+                        var value = {value: key, name: '', depth: depth};
+                        if(typeof obj=='string') {
+                            value.name = obj;
+                        } else {
+                            if(obj.value)
+                                value.value = obj.value;
 
-                					value.name = obj.name;
-                				}
+                            value.name = obj.name;
+                        }
 
-								prepped_values.push(value);
+                        prepped_values.push(value);
 
-
-                				if(typeof obj=='object' && obj[children_field])
-                					Array.prototype.push.apply(prepped_values, walkValues(obj[children_field], depth+1));
-                			});
-                			return prepped_values;
-                		}
-
-                		Array.prototype.push.apply(values, walkValues(filter.values));
-
-
-	               	} else if(filter.nested && filter.nested.objects) {
-	               		//generate a list of values from objects that have not been nested.
-
-	               		var value_field = filter.nested.value_field || 'id';
-	               		var parent_field = filter.nested.parent_field || 'parent_id';
-	               		var name_field = filter.nested.label_field || 'name';
-
-	               		function walkValues(parent_id, values, depth) {
-                			var depth = depth || 0;
-                			var prepped_values = [];
-                			angular.forEach(values, function(obj,key) {
-                				if(obj[parent_field]!=parent_id)
-                					return;
-
-                				var value = {
-                					value: obj[value_field],
-                					name: obj[name_field],
-                					depth: depth
-                				};
-								prepped_values.push(value);
-
-
-                				var children = walkValues(obj[value_field], values, depth+1);
-                				if(children.length>0)
-                					Array.prototype.push.apply(prepped_values, children);
-                			});
-
-                			return prepped_values;
-	               		}
-
-	               		if(!filter.multiple)
-	               			values.push({value:'__all', name:'All', depth:0});
-
-	               		Array.prototype.push.apply(values, walkValues(null, filter.nested.objects));
-                	}
-
-                	return values;
+                        if(typeof obj=='object' && obj[children_field])
+                            Array.prototype.push.apply(prepped_values, walkValues(filter, obj[children_field], depth+1));
+                    });
+                    return prepped_values;
                 }
+
+                function walkNestedValues(filter, parent_id, values, depth) {
+                    var depth = depth || 0;
+                    var prepped_values = [];
+                    var value_field = filter.nested.value_field || 'id';
+                    var parent_field = filter.nested.parent_field || 'parent_id';
+                    var name_field = filter.nested.label_field || 'name';
+
+
+                    angular.forEach(values, function(obj,key) {
+                        if(obj[parent_field]!=parent_id)
+                            return;
+
+                        var value = {
+                            value: obj[value_field],
+                            name: obj[name_field],
+                            depth: depth
+                        };
+                        prepped_values.push(value);
+
+
+                        var children = walkNestedValues(filter, obj[value_field], values, depth+1);
+                        if(children.length>0)
+                            Array.prototype.push.apply(prepped_values, children);
+                    });
+
+                    return prepped_values;
+                }
+
+                function prepSelectValues(filter) {
+                    var values = [];
+
+                    if(filter.values) {
+                        //if filter has values then sort through them in case they have nested children and build a single list
+
+                        values = walkValues(filter, filter.values);
+
+                    } else if(filter.nested && filter.nested.objects) {
+                        //generate a list of values from objects that have not been nested.
+
+                        if(!filter.multiple)
+                            values.push({value:'__all', name:'All', depth:0});
+
+                        Array.prototype.push.apply(values, walkNestedValues(filter, null, filter.nested.objects));
+                    }
+
+                    return values;
+                }
+
+
 
                 function columnStyle(col) {
                     var styles = {};
@@ -829,7 +832,7 @@
                 }
 
                 function reload() {
-                    load({ page: 1, clear: true });
+                    return load({ page: 1, clear: true });
                 }
 
                 function sanitizeAction(action) {
@@ -851,7 +854,7 @@
                     var query = {};
                     angular.forEach(options.filters,function(filter) {
 
-                        if(filter.value!==null && String(filter.value).length) {
+                        if(filter.value!==null && filter.value!==undefined && String(filter.value).length) {
                             query[filter.name] = filter.value;
                         }
 
@@ -1054,46 +1057,70 @@
                       return !isNaN(parseFloat(n)) && isFinite(n);
                 }
 
+                var promises = [];
                 angular.forEach(options.filters,function(filter) {
 
                     if(typeof filter.values=='function') {
                         filter.values = filter.values();
                     }
 
-                	if(filter.type=='select')
-                		filter.values = prepSelectValues(filter);
+                    $q(function(resolve,reject) {
 
-                    var valuename = true;
-                    angular.forEach(filter.values,function(value, key) {
-                        valuename &= !!value.value;
-                    });
+                        if(angular.isObject(filter.values) && filter.values.then) {
 
-                    if(!valuename) {
-                        var values = [];
-                        angular.forEach(filter.values,function(name, value) {
-                            values.push({ name: name, value: value });
-                        });
+                            filter.values
+                            .then(function(values) {
+                                resolve(values);
+                            });
+
+                            promises.push(filter.values);
+                        } else {
+                            resolve(filter.values);
+                        }
+
+                    }).then(function(values) {
 
                         filter.values = values;
-                    }
 
-                    if(filter.isolate) {
-                        angular.forEach(filter.values,function(item, index) {
+                        if(filter.type=='select')
+                            filter.values = prepSelectValues(filter);
 
-                            if(item.value==filter.isolate.value) {
-                                filter.values.splice(index,1);
-                            }
+                        var valuename = true;
+                        angular.forEach(filter.values,function(value, key) {
+                            valuename &= !!value.value;
                         });
-                    }
 
-                    $scope.filterValue(filter);
+                        if(!valuename) {
+                            var values = [];
+                            angular.forEach(filter.values,function(name, value) {
+                                values.push({ name: name, value: value });
+                            });
+
+                            filter.values = values;
+                        }
+
+                        if(filter.isolate) {
+                            angular.forEach(filter.values,function(item, index) {
+
+                                if(item.value==filter.isolate.value) {
+                                    filter.values.splice(index,1);
+                                }
+                            });
+                        }
+
+                        $scope.filterValue(filter);
+                    });
                 });
 
-                $scope.searchInputUpdate();
+                    if(options.load) {
+                        reload();
+                    }
 
-                if(options.load) {
-                    reload();
-                }
+
+                $q.all(promises)
+                .then(function() {
+                    $scope.searchInputUpdate();
+                });
 
                 function data() {
 
@@ -1106,10 +1133,10 @@
                 }
 
                 if($scope.lsInstance) {
-                    angular.extend($scope.lsInstance,{  load: load, 
-                                                        page: page, 
+                    angular.extend($scope.lsInstance,{  load: load,
+                                                        page: page,
                                                         reload: reload,
-                                                        filterValues: filterValues, 
+                                                        filterValues: filterValues,
                                                         data: data,
                                                         options: function() {
                                                             if(arguments.length==1) {
@@ -1130,6 +1157,8 @@
 
                     post: function($scope, element, attr, ctrl) {
 
+                        /*
+                        Removed to see if this is what is causing performance issues
                         var widthHolders = function() {
 
                             if(!$scope.loading) {
@@ -1152,6 +1181,7 @@
                         }
 
                         widthHolders();
+                        */
 
                         $scope.max_bottom = 0;
                         if($scope.lsOptions && $scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
@@ -1162,15 +1192,9 @@
                                 html = document.documentElement,
                                 threshhold = 200;
 
-                            $scope.$on('$destroy', function () {
-                                $timeout.cancel(timeout);
-                            });
+                            var timeout = $interval(function() {
 
-                            var timeout = null;
-
-                            var load = function() {
-
-                                if(!$scope.loading) {
+                              if(!$scope.loading && $scope.data.length) {
 
                                     var scrollTop = parseInt($window.pageYOffset);
                                     var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
@@ -1199,11 +1223,11 @@
                                         $scope.load();
                                     }
                                 }
+                            },500);
 
-                                timeout = $timeout(load,100);
-                            }
-
-                            load();
+                            $scope.$on('$destroy', function () {
+                                $interval.cancel(timeout);
+                            });
                         }
                     }
                 }
@@ -1339,6 +1363,7 @@
       };
     });
 })();
+
 angular.module('fs-angular-lister').run(['$templateCache', function($templateCache) {
   'use strict';
 
