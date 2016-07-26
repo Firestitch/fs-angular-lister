@@ -190,7 +190,6 @@
 
                         if(persisted[filter.name]) {
 
-
                             filter.model = persisted[filter.name];
 
                             if(filter.type=='date') {
@@ -214,13 +213,11 @@
                             if(typeof filter.model == 'string') {
                                 filter.model = new Date(filter.model);
                             }
-                        }
-
-                        if(filter.type=='checkbox') {
+                        
+                        } else if(filter.type=='checkbox') {
                             filter.model = filter.unchecked;
-                        }
-
-                        if(filter.type=='select') {
+                        
+                        } else if(filter.type=='select') {
 
                             if(filter.multiple) {
                                 if(!angular.isArray(filter.default)) {
@@ -496,13 +493,16 @@
                 }
 
                 $scope.search = function() {
+                    $scope.filterValueUpdate();
+                    $scope.searchInputUpdate();
+                    reload();
+                }
+
+                $scope.filterValueUpdate = function() {
 
                     angular.forEach(options.filters,function(filter) {
                         $scope.filterValue(filter);
                     });
-
-                    $scope.searchInputUpdate();
-                    reload();
                 }
 
                 $scope.searchInputUpdate = function() {
@@ -743,76 +743,76 @@
                 }
 
 
-        		function walkValues(filter, values, depth) {
-        			var depth = depth || 0;
-        			var prepped_values = [];
-        			var children_field = filter.nested && filter.nested.children_field ? filter.nested.children_field : 'children';
+                function walkValues(filter, values, depth) {
+                    var depth = depth || 0;
+                    var prepped_values = [];
+                    var children_field = filter.nested && filter.nested.children_field ? filter.nested.children_field : 'children';
 
-        			angular.forEach(values, function(obj,key) {
-        				var value = {value: key, name: '', depth: depth};
-        				if(typeof obj=='string') {
-        					value.name = obj;
-        				} else {
-            				if(obj.value)
-            					value.value = obj.value;
+                    angular.forEach(values, function(obj,key) {
+                        var value = {value: key, name: '', depth: depth};
+                        if(typeof obj=='string') {
+                            value.name = obj;
+                        } else {
+                            if(obj.value)
+                                value.value = obj.value;
 
-        					value.name = obj.name;
-        				}
+                            value.name = obj.name;
+                        }
 
-						prepped_values.push(value);
+                        prepped_values.push(value);
 
-        				if(typeof obj=='object' && obj[children_field])
-        					Array.prototype.push.apply(prepped_values, walkValues(filter, obj[children_field], depth+1));
-        			});
-        			return prepped_values;
-        		}
+                        if(typeof obj=='object' && obj[children_field])
+                            Array.prototype.push.apply(prepped_values, walkValues(filter, obj[children_field], depth+1));
+                    });
+                    return prepped_values;
+                }
 
-				function walkNestedValues(filter, parent_id, values, depth) {
-        			var depth = depth || 0;
-        			var prepped_values = [];
-               		var value_field = filter.nested.value_field || 'id';
-               		var parent_field = filter.nested.parent_field || 'parent_id';
-               		var name_field = filter.nested.label_field || 'name';
-
-
-        			angular.forEach(values, function(obj,key) {
-        				if(obj[parent_field]!=parent_id)
-        					return;
-
-        				var value = {
-        					value: obj[value_field],
-        					name: obj[name_field],
-        					depth: depth
-        				};
-						prepped_values.push(value);
+                function walkNestedValues(filter, parent_id, values, depth) {
+                    var depth = depth || 0;
+                    var prepped_values = [];
+                    var value_field = filter.nested.value_field || 'id';
+                    var parent_field = filter.nested.parent_field || 'parent_id';
+                    var name_field = filter.nested.label_field || 'name';
 
 
-        				var children = walkNestedValues(filter, obj[value_field], values, depth+1);
-        				if(children.length>0)
-        					Array.prototype.push.apply(prepped_values, children);
-        			});
+                    angular.forEach(values, function(obj,key) {
+                        if(obj[parent_field]!=parent_id)
+                            return;
 
-        			return prepped_values;
-           		}
+                        var value = {
+                            value: obj[value_field],
+                            name: obj[name_field],
+                            depth: depth
+                        };
+                        prepped_values.push(value);
+
+
+                        var children = walkNestedValues(filter, obj[value_field], values, depth+1);
+                        if(children.length>0)
+                            Array.prototype.push.apply(prepped_values, children);
+                    });
+
+                    return prepped_values;
+                }
 
                 function prepSelectValues(filter) {
-                	var values = [];
+                    var values = [];
 
-                 	if(filter.values) {
-                		//if filter has values then sort through them in case they have nested children and build a single list
+                    if(filter.values) {
+                        //if filter has values then sort through them in case they have nested children and build a single list
 
-                		values = walkValues(filter, filter.values);
+                        values = walkValues(filter, filter.values);
 
-	               	} else if(filter.nested && filter.nested.objects) {
-	               		//generate a list of values from objects that have not been nested.
+                    } else if(filter.nested && filter.nested.objects) {
+                        //generate a list of values from objects that have not been nested.
 
-	               		if(!filter.multiple)
-	               			values.push({value:'__all', name:'All', depth:0});
+                        if(!filter.multiple)
+                            values.push({value:'__all', name:'All', depth:0});
 
-	               		Array.prototype.push.apply(values, walkNestedValues(filter, null, filter.nested.objects));
-                	}
+                        Array.prototype.push.apply(values, walkNestedValues(filter, null, filter.nested.objects));
+                    }
 
-                	return values;
+                    return values;
                 }
 
                 function walkValues(filter, values, depth) {
@@ -1184,11 +1184,14 @@
                     });
                 });
 
-                    if(options.load) {
-                        reload();
-                    }
+                $scope.filterValueUpdate();
 
+                if(options.load) {
+                    reload();
+                }
 
+                //This promise is needed because the all the select filter values 
+                //have to be loaded to render the textual inputs
                 $q.all(promises)
                 .then(function() {
                     $scope.searchInputUpdate();
