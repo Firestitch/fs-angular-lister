@@ -269,6 +269,18 @@
                         $scope.order = angular.copy(col.order);
                     }
                 });
+                
+                angular.forEach(options.columns, function(col) {
+
+                    if(col.className && !angular.isFunction(col.className)) {
+                        
+                        var className = col.className;
+                        
+                        col.className = function () {
+                            return className;
+                        }
+                    }
+                });
 
                 sanitizeAction(options.action);
                 angular.forEach(options.actions,function(action) {
