@@ -704,12 +704,7 @@
                         var date = filter.model;
 
                         if(date) {
-
-                            if(filter.time===undefined || filter.time) {
-                                filter.value = moment(date).utc().format();
-                            } else {
-                                filter.value = moment(date).utc().add(moment(filter.model).utcOffset(), 'm').format();
-                            }
+                            filter.value = moment(date).format();
                         }
 
                     } else if(filter.type=='range') {
