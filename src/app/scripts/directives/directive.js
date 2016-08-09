@@ -3,7 +3,7 @@
 
     /**
      * @ngdoc directive
-     * @name app.directives:fs-lister
+     * @name fs.directives:fs-lister
      * @restrict E
      * @param {object} ls-options Options to configure the Lister.
      * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback.
