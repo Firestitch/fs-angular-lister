@@ -24,26 +24,42 @@
                                 </div>
 
                                 <div class="interface" ng-if="filter.type == 'select'">
-
-                                    <md-input-container class="md-no-float md-no-label md-no-message" ng-if="filter.multiple">
+                                    <md-input-container class="md-no-float md-no-label md-no-message" ng-show="filter.multiple && !filter.groups">
                                         <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectSearch(filter)">
-                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}" style="padding-left: {{(item.depth*16)+40}}px">
+                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}" ng-style="item.style">
                                                 {{::item.name}}
                                             </md-option>
                                         </md-select>
                                     </md-input-container>
 
-
-                                    <md-input-container class="md-no-float md-no-label md-no-message" ng-if="!filter.multiple">
+                                    <md-input-container class="md-no-float md-no-label md-no-message" ng-show="!filter.multiple && !filter.groups">
                                         <md-select ng-model="filter.model" aria-label="select" ng-change="selectSearch(filter)">
-                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}" style="padding-left: {{(item.depth*16)+16}}px">
+                                            <md-option ng-repeat="item in filter.values" value="{{::item.value}}" ng-style="item.style">
                                                 {{::item.name}}
                                             </md-option>
                                         </md-select>
                                     </md-input-container>
 
-                                </div>
+                                    <md-input-container class="md-no-float md-no-label md-no-message" ng-show="!filter.multiple && filter.groups">
+                                        <md-select ng-model="filter.model" aria-label="select" ng-change="selectSearch(filter)">
+                                            <md-optgroup label="{{group}}" ng-repeat="(group, values) in filter.groups">
+                                                <md-option ng-repeat="item in values" value="{{::item.value}}" ng-style="item.style">
+                                                    {{::item.name}}
+                                                </md-option>
+                                            </md-optgroup>
+                                        </md-select>
+                                    </md-input-container>
 
+                                    <md-input-container class="md-no-float md-no-label md-no-message" ng-show="filter.multiple && filter.groups">
+                                        <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectSearch(filter)">
+                                            <md-optgroup label="{{group}}" ng-repeat="(group, values) in filter.groups">
+                                                <md-option ng-repeat="item in values" value="{{::item.value}}" ng-style="item.style">
+                                                    {{::item.name}}
+                                                </md-option>
+                                            </md-optgroup>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
 
                                 <div class="interface" ng-if="filter.type == 'text'">
                                     <md-input-container class="md-no-float md-no-label md-no-message">

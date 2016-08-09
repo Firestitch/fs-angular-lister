@@ -76,7 +76,7 @@
 
         paging: {
 
-            //infinite: true,
+            infinite: true,
             //pages: false,
             limit: 5
         },
@@ -291,9 +291,9 @@
                 multiple: true
             },                        
             {
-                name: 'multiple',
+                name: 'multiple_key_value',
                 type: 'select',
-                label: 'Multiple',
+                label: 'Multiple (Key/Value)',
                 values: function(){ return {
                     pear: 'Pear',
                     orange: 'Orange',
@@ -309,9 +309,9 @@
                 },
             },
             {
-                name: 'multiple_objs',
+                name: 'multiple_objects',
                 type: 'select',
-                label: 'Multiple Objs',
+                label: 'Multiple (Object)',
                 values: function(){
                     return [
                     	{value: 'red', name: 'Red'},
@@ -328,49 +328,38 @@
                     apple: 'Apple',
                 },
             },
-
-            {
-                name: 'nested_values',
-                type: 'select',
-                label: 'Nested - Values',
-                nested: {children_field: 'children'},
-                values: { //objects with nested child objects
-                    a: 'A',
-                    b: {	name:'B',
-                    		children:{
-                    			b1: 'B1',
-                    			b2: {	name:'B2',
-                    					children: {
-                    						b2_1: 'B2-1',
-                    						b2_2: 'B2-2',
-                    					}
-                    				},
-                    		}
-                    	},
-                    c: 'C',
-                }
-            },
             {
                 name: 'nested_gen',
                 type: 'select',
-                label: 'Nested - Gen',
+                label: 'Nested',
+                values: [  //flat array of objects with parent_id->id values.
+                        {id: 1, parent_id:null, name: 'ball'},
+                        {id: 2, parent_id:1, name: 'soccer'},
+                        {id: 3, parent_id:1, name: 'pool'},
+                        {id: 4, parent_id:3, name: 'billards'},
+                        {id: 5, parent_id:3, name: 'snooker'},
+                        {id: 6, parent_id:null, name: 'stick'},
+                        {id: 7, parent_id:6, name: 'javelin'}
+                ],
                 nested: {
-                    objects: [	//flat array of objects with parent_id->id values.
-                    	{id: 1, parent_id:null, name: 'ball'},
-                    	{id: 2, parent_id:1, name: 'soccer'},
-                    	{id: 3, parent_id:1, name: 'pool'},
-                    	{id: 4, parent_id:3, name: 'billards'},
-                    	{id: 5, parent_id:3, name: 'snooker'},
-                    	{id: 6, parent_id:null, name: 'stick'},
-                    	{id: 7, parent_id:6, name: 'javelin'},
-                    ],
                     parent_field: 'parent_id',
                     label_field: 'name',
                     value_field: 'id'
                 },
                 multiple: true
             },
-
+            {
+                name: 'multiple',
+                type: 'select',
+                label: 'Multiple With Grouping',
+                values: function() { 
+                    return  [   {    value: 'pear', name: 'Pear', group: 'Group B' },
+                                {    value: 'orange', name: 'Orange', group: 'Group B' },
+                                {    value: 'banana', name: 'Banana', group: 'Group A' },
+                                {    value: 'apple', name: 'Apple', group: 'Group A' }];
+                },
+                multiple: true
+            },
             {
                 name: 'date',
                 type: 'date',

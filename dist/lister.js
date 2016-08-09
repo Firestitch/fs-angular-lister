@@ -74,8 +74,7 @@
                     <ul>
                         <li><label>parent_field</label>name of field used to link to parent row. typically 'parent_id' or similar</li>
                         <li><label>label_field</label>name of field to use as rows label</li>
-                        <li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>
-                        <li><label>children_field</label>name of field containing child objects in the filter.values array</li>
+                        <li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>z
                     </ul>
 
                 </ul>
@@ -239,8 +238,11 @@
                         filter.primary = primary = true;
                     }
 
-                     if(filter.type=='select' && filter.isolate && filter.isolate.value==filter.model) {
-                        filter.isolate.enabled = true;
+                     if(filter.type=='select') {
+
+                        if(filter.isolate && filter.isolate.value==filter.model) {
+                            filter.isolate.enabled = true;
+                        }
                     }
                 });
 
@@ -737,28 +739,19 @@
                     reload();
                 }
 
-
-                function walkValues(filter, values, depth) {
-                    var depth = depth || 0;
+                function walkValues(filter, values) {
                     var prepped_values = [];
-                    var children_field = filter.nested && filter.nested.children_field ? filter.nested.children_field : 'children';
-
+                    
                     angular.forEach(values, function(obj,key) {
-                        var value = {value: key, name: '', depth: depth};
-                        if(typeof obj=='string') {
-                            value.name = obj;
-                        } else {
-                            if(obj.value)
-                                value.value = obj.value;
-
-                            value.name = obj.name;
+                        var value = { value: key, name: obj };
+                        
+                        if(typeof obj=='object') {
+                            value = obj;
                         }
 
                         prepped_values.push(value);
-
-                        if(typeof obj=='object' && obj[children_field])
-                            Array.prototype.push.apply(prepped_values, walkValues(filter, obj[children_field], depth+1));
                     });
+
                     return prepped_values;
                 }
 
@@ -769,120 +762,28 @@
                     var parent_field = filter.nested.parent_field || 'parent_id';
                     var name_field = filter.nested.label_field || 'name';
 
-
                     angular.forEach(values, function(obj,key) {
-                        if(obj[parent_field]!=parent_id)
+                        if(obj[parent_field]!=parent_id) {
                             return;
-
-                        var value = {
-                            value: obj[value_field],
-                            name: obj[name_field],
-                            depth: depth
-                        };
-                        prepped_values.push(value);
-
-
-                        var children = walkNestedValues(filter, obj[value_field], values, depth+1);
-                        if(children.length>0)
-                            Array.prototype.push.apply(prepped_values, children);
-                    });
-
-                    return prepped_values;
-                }
-
-                function prepSelectValues(filter) {
-                    var values = [];
-
-                    if(filter.values) {
-                        //if filter has values then sort through them in case they have nested children and build a single list
-
-                        values = walkValues(filter, filter.values);
-
-                    } else if(filter.nested && filter.nested.objects) {
-                        //generate a list of values from objects that have not been nested.
-
-                        if(!filter.multiple)
-                            values.push({value:'__all', name:'All', depth:0});
-
-                        Array.prototype.push.apply(values, walkNestedValues(filter, null, filter.nested.objects));
-                    }
-
-                    return values;
-                }
-
-                function walkValues(filter, values, depth) {
-                    var depth = depth || 0;
-                    var prepped_values = [];
-                    var children_field = filter.nested && filter.nested.children_field ? filter.nested.children_field : 'children';
-
-                    angular.forEach(values, function(obj,key) {
-                        var value = {value: key, name: '', depth: depth};
-                        if(typeof obj=='string') {
-                            value.name = obj;
-                        } else {
-                            if(obj.value)
-                                value.value = obj.value;
-
-                            value.name = obj.name;
                         }
 
-                        prepped_values.push(value);
-
-                        if(typeof obj=='object' && obj[children_field])
-                            Array.prototype.push.apply(prepped_values, walkValues(filter, obj[children_field], depth+1));
-                    });
-                    return prepped_values;
-                }
-
-                function walkNestedValues(filter, parent_id, values, depth) {
-                    var depth = depth || 0;
-                    var prepped_values = [];
-                    var value_field = filter.nested.value_field || 'id';
-                    var parent_field = filter.nested.parent_field || 'parent_id';
-                    var name_field = filter.nested.label_field || 'name';
-
-
-                    angular.forEach(values, function(obj,key) {
-                        if(obj[parent_field]!=parent_id)
-                            return;
-
                         var value = {
                             value: obj[value_field],
                             name: obj[name_field],
-                            depth: depth
+                            depth: depth,
+                            style: { 'margin-left': (depth * 16) + 'px' }
                         };
+
                         prepped_values.push(value);
 
-
                         var children = walkNestedValues(filter, obj[value_field], values, depth+1);
-                        if(children.length>0)
+                        if(children.length>0) {
                             Array.prototype.push.apply(prepped_values, children);
+                        }
                     });
 
                     return prepped_values;
                 }
-
-                function prepSelectValues(filter) {
-                    var values = [];
-
-                    if(filter.values) {
-                        //if filter has values then sort through them in case they have nested children and build a single list
-
-                        values = walkValues(filter, filter.values);
-
-                    } else if(filter.nested && filter.nested.objects) {
-                        //generate a list of values from objects that have not been nested.
-
-                        if(!filter.multiple)
-                            values.push({value:'__all', name:'All', depth:0});
-
-                        Array.prototype.push.apply(values, walkNestedValues(filter, null, filter.nested.objects));
-                    }
-
-                    return values;
-                }
-
-
 
                 function columnStyle(col) {
                     var styles = {};
@@ -1121,11 +1022,11 @@
                 }
 
                 function numeric(n) {
-                      return !isNaN(parseFloat(n)) && isFinite(n);
+                    return !isNaN(parseFloat(n)) && isFinite(n);
                 }
 
                 var promises = [];
-                angular.forEach(options.filters,function(filter) {
+                angular.forEach($scope.options.filters,function(filter, index) {
 
                     if(typeof filter.values=='function') {
                         filter.values = filter.values();
@@ -1148,13 +1049,39 @@
                     }).then(function(values) {
 
                         filter.values = values;
+                        filter.groups = null;
 
-                        if(filter.type=='select')
-                            filter.values = prepSelectValues(filter);
+                        if(filter.type=='select') {
+
+                            var values = [];
+                            if(filter.nested) {
+                                //generate a list of values from objects that have not been nested.
+                                if(!filter.multiple)
+                                    values.push({ value:'__all', name:'All', depth: 0 });
+
+                                Array.prototype.push.apply(values, walkNestedValues(filter, null, filter.values));
+                            } else {
+                                values = walkValues(filter, filter.values);
+                            }
+
+                            filter.values = values;
+                        }
 
                         var valuename = true;
-                        angular.forEach(filter.values,function(value, key) {
+                        angular.forEach(filter.values,function(value) {
                             valuename &= !!value.value;
+                            if(value.group) {
+
+                                if(!filter.groups) {
+                                    filter.groups = {};
+                                }
+
+                                if(!filter.groups[value.group]) {
+                                    filter.groups[value.group] = [];
+                                }
+
+                                filter.groups[value.group].push(value);
+                            }
                         });
 
                         if(!valuename) {
@@ -1489,13 +1416,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                <div class=\"interface\" ng-if=\"filter.type == 'select'\">\r" +
     "\n" +
-    "\r" +
-    "\n" +
-    "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-if=\"filter.multiple\">\r" +
+    "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && !filter.groups\">\r" +
     "\n" +
     "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"selectSearch(filter)\">\r" +
     "\n" +
-    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" style=\"padding-left: {{(item.depth*16)+40}}px\">\r" +
+    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
     "\n" +
     "                                                {{::item.name}}\r" +
     "\n" +
@@ -1507,13 +1432,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "\r" +
-    "\n" +
-    "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-if=\"!filter.multiple\">\r" +
+    "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && !filter.groups\">\r" +
     "\n" +
     "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\r" +
     "\n" +
-    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" style=\"padding-left: {{(item.depth*16)+16}}px\">\r" +
+    "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
     "\n" +
     "                                                {{::item.name}}\r" +
     "\n" +
@@ -1525,9 +1448,45 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                                </div>\r" +
+    "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && filter.groups\">\r" +
+    "\n" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\r" +
+    "\n" +
+    "                                            <md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\">\r" +
+    "\n" +
+    "                                                <md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
+    "\n" +
+    "                                                    {{::item.name}}\r" +
+    "\n" +
+    "                                                </md-option>\r" +
+    "\n" +
+    "                                            </md-optgroup>\r" +
+    "\n" +
+    "                                        </md-select>\r" +
+    "\n" +
+    "                                    </md-input-container>\r" +
     "\n" +
     "\r" +
+    "\n" +
+    "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && filter.groups\">\r" +
+    "\n" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"selectSearch(filter)\">\r" +
+    "\n" +
+    "                                            <md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\">\r" +
+    "\n" +
+    "                                                <md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
+    "\n" +
+    "                                                    {{::item.name}}\r" +
+    "\n" +
+    "                                                </md-option>\r" +
+    "\n" +
+    "                                            </md-optgroup>\r" +
+    "\n" +
+    "                                        </md-select>\r" +
+    "\n" +
+    "                                    </md-input-container>\r" +
+    "\n" +
+    "                                </div>\r" +
     "\n" +
     "\r" +
     "\n" +
