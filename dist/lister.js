@@ -3,7 +3,7 @@
 
     /**
      * @ngdoc directive
-     * @name app.directives:fs-lister
+     * @name fs.directives:fs-lister
      * @restrict E
      * @param {object} ls-options Options to configure the Lister.
      * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback.
@@ -456,21 +456,28 @@
                     $scope.extended_search = false;
                 }
 
+                $scope.selectOpen = function(filter) {
+                    filter.oldModel = angular.copy(filter.model);
+                }
+
                 $scope.selectSearch = function(filter) {
 
-                    if(filter.isolate) {
-                        filter.isolate.enabled = false;
+                    if(!angular.equals(filter.model,filter.oldModel)) {
 
-                        if(filter.multiple) {
-                            var index = filter.model.indexOf(filter.isolate.value);
+                        if(filter.isolate) {
+                            filter.isolate.enabled = false;
 
-                            if(index > -1) {
-                                filter.model.splice(index,1);
+                            if(filter.multiple) {
+                                var index = filter.model.indexOf(filter.isolate.value);
+
+                                if(index > -1) {
+                                    filter.model.splice(index,1);
+                                }
                             }
                         }
-                    }
 
-                    $scope.search();
+                        $scope.search();
+                    }
                 }
 
                 $scope.dateSearch = function(filter) {
@@ -1378,13 +1385,15 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "                    <div ng-click=\"reload()\" class=\"search-reload\"><i class=\"material-icons reload\">refresh</i><i class=\"material-icons search\">search</i></div>\r" +
+    "                    <div class=\"search\"><i class=\"material-icons\">search</i></div>                    \r" +
     "\n" +
     "                    <md-input-container class=\"md-no-label md-no-message\">\r" +
     "\n" +
     "                        <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\" />\r" +
     "\n" +
     "                    </md-input-container>\r" +
+    "\n" +
+    "                    <a href ng-click=\"reload()\" class=\"reload\"><i class=\"material-icons\">refresh</i></a>\r" +
     "\n" +
     "                </div>\r" +
     "\n" +
@@ -1418,7 +1427,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && !filter.groups\">\r" +
     "\n" +
-    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"selectSearch(filter)\">\r" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-open=\"selectOpen(filter)\" md-on-close=\"selectSearch(filter)\">\r" +
     "\n" +
     "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
     "\n" +
@@ -1434,7 +1443,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && !filter.groups\">\r" +
     "\n" +
-    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\r" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"selectSearch(filter,filter.model)\">\r" +
     "\n" +
     "                                            <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
     "\n" +
@@ -1450,7 +1459,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && filter.groups\">\r" +
     "\n" +
-    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" ng-change=\"selectSearch(filter)\">\r" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"selectSearch(filter)\">\r" +
     "\n" +
     "                                            <md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\">\r" +
     "\n" +
@@ -1470,7 +1479,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && filter.groups\">\r" +
     "\n" +
-    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-close=\"selectSearch(filter)\">\r" +
+    "                                        <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-open=\"selectOpen(filter)\" md-on-close=\"selectSearch(filter)\">\r" +
     "\n" +
     "                                            <md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\">\r" +
     "\n" +

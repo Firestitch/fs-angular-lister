@@ -456,21 +456,28 @@
                     $scope.extended_search = false;
                 }
 
+                $scope.selectOpen = function(filter) {
+                    filter.oldModel = angular.copy(filter.model);
+                }
+
                 $scope.selectSearch = function(filter) {
 
-                    if(filter.isolate) {
-                        filter.isolate.enabled = false;
+                    if(!angular.equals(filter.model,filter.oldModel)) {
 
-                        if(filter.multiple) {
-                            var index = filter.model.indexOf(filter.isolate.value);
+                        if(filter.isolate) {
+                            filter.isolate.enabled = false;
 
-                            if(index > -1) {
-                                filter.model.splice(index,1);
+                            if(filter.multiple) {
+                                var index = filter.model.indexOf(filter.isolate.value);
+
+                                if(index > -1) {
+                                    filter.model.splice(index,1);
+                                }
                             }
                         }
-                    }
 
-                    $scope.search();
+                        $scope.search();
+                    }
                 }
 
                 $scope.dateSearch = function(filter) {

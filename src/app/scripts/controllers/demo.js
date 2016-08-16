@@ -259,8 +259,7 @@
                     pending: 'Pending',
                     completed: 'Completed',
                     deleted: 'Deleted'
-                },
-                multiple: true
+                }
             },
 
             {

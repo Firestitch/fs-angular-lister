@@ -5,10 +5,11 @@
             <div class="inline-search-input" flex="grow">
                 <div class="main-search-bar" layout="row" layout-align="start center">
 
-                    <div ng-click="reload()" class="search-reload"><i class="material-icons reload">refresh</i><i class="material-icons search">search</i></div>
+                    <div class="search"><i class="material-icons">search</i></div>                    
                     <md-input-container class="md-no-label md-no-message">
                         <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="openFilters()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />
                     </md-input-container>
+                    <a href ng-click="reload()" class="reload"><i class="material-icons">refresh</i></a>
                 </div>
 
                 <div class="ng-hide filters" layout="column" ng-show="extended_search">
@@ -25,7 +26,7 @@
 
                                 <div class="interface" ng-if="filter.type == 'select'">
                                     <md-input-container class="md-no-float md-no-label md-no-message" ng-show="filter.multiple && !filter.groups">
-                                        <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectSearch(filter)">
+                                        <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-open="selectOpen(filter)" md-on-close="selectSearch(filter)">
                                             <md-option ng-repeat="item in filter.values" value="{{::item.value}}" ng-style="item.style">
                                                 {{::item.name}}
                                             </md-option>
@@ -33,7 +34,7 @@
                                     </md-input-container>
 
                                     <md-input-container class="md-no-float md-no-label md-no-message" ng-show="!filter.multiple && !filter.groups">
-                                        <md-select ng-model="filter.model" aria-label="select" ng-change="selectSearch(filter)">
+                                        <md-select ng-model="filter.model" aria-label="select" md-on-open="selectOpen(filter)" ng-change="selectSearch(filter,filter.model)">
                                             <md-option ng-repeat="item in filter.values" value="{{::item.value}}" ng-style="item.style">
                                                 {{::item.name}}
                                             </md-option>
@@ -41,7 +42,7 @@
                                     </md-input-container>
 
                                     <md-input-container class="md-no-float md-no-label md-no-message" ng-show="!filter.multiple && filter.groups">
-                                        <md-select ng-model="filter.model" aria-label="select" ng-change="selectSearch(filter)">
+                                        <md-select ng-model="filter.model" aria-label="select" md-on-open="selectOpen(filter)" ng-change="selectSearch(filter)">
                                             <md-optgroup label="{{group}}" ng-repeat="(group, values) in filter.groups">
                                                 <md-option ng-repeat="item in values" value="{{::item.value}}" ng-style="item.style">
                                                     {{::item.name}}
@@ -51,7 +52,7 @@
                                     </md-input-container>
 
                                     <md-input-container class="md-no-float md-no-label md-no-message" ng-show="filter.multiple && filter.groups">
-                                        <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectSearch(filter)">
+                                        <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-open="selectOpen(filter)" md-on-close="selectSearch(filter)">
                                             <md-optgroup label="{{group}}" ng-repeat="(group, values) in filter.groups">
                                                 <md-option ng-repeat="item in values" value="{{::item.value}}" ng-style="item.style">
                                                     {{::item.name}}

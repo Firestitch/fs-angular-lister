@@ -108,31 +108,27 @@
             position: relative;
             margin-right: -25px;
 
-            .search-reload {
-                cursor: pointer;
-                outline: none;
+            .reload {
+                position: absolute;
+                right: 0;
+                bottom: 2px;
+                color: #cdcdcd;
 
-                .reload {
-                    display: none;
-                }
-
-                .search {
-                    display: block;
+                i {
+                    transform: scale(.9);
                 }
 
                 &:hover {
-                    .reload {
-                        display: block;
-                    }
-
-                    .search {
-                        display: none;
-                    }
+                    color: inherit;
                 }
             }
 
             md-input-container {
                 width: 100%;
+
+                input {
+                    padding-right: 25px;
+                }
 
                 md-select-value {
 
