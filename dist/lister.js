@@ -448,7 +448,7 @@
                     $scope.extended_search = !$scope.extended_search;
                 }
 
-                $scope.openFilters = function() {
+                $scope.openFilters = function(event) {
                     $scope.extended_search = true;
                 }
 
