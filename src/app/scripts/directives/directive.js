@@ -601,22 +601,28 @@
                     var matches = search.match(/(\([^\)]+\):[^\s]+|\([^\)]+\):\([^\)]+\)|[^:]+:\([^\)]+\)|[^\s]+)/g);
 
                     var values = {};
+                    var textSearch = [];
                     angular.forEach(matches, function(match) {
 
                         var filter_match = match.match(/\(?([^:\)]+)\)?:\(?([^)]+)/);
 
                         if(filter_match) {
-                            values[filter_match[1]] = filter_match[2];
+                            values[filter_match[1].trim()] = filter_match[2];
+                        } else {
+                            textSearch.push(match);
                         }
-                    });
-
+                    });   
+                  
                     angular.forEach(options.filters,function(filter) {
                         if (filter.type == 'checkbox') {
                             filter.model = filter.unchecked;
                             filter.value = filter.unchecked;
+                        } else if(textSearch.length && filter.primary && filter.type=='text') {
+                            filter.model = textSearch.join(' ');
                         } else {
                             filter.model = null;
                         }
+
                         $scope.filterValue(filter);
                     });
 
