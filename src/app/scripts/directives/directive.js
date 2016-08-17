@@ -44,6 +44,11 @@
                     <li><label>infinite</label>Enables infinite scroll</li>
                     <li><label>limit</label>Sets the limit per page</li>
                 </ul>
+    * @param {array} ls-options.orders Custom order bys that are not configured in the column ordered by
+                <ul>
+                    <li><label>name</label>The name sent to the backend to be ordered by</li>
+                    <li><label>label</label>The label to be displayed to the user</li>
+                </ul>                
     * @param {object} ls-options.norecords The message to be displayed when there are no records in the search
     * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side
                 <ul>
