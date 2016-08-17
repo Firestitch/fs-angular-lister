@@ -159,6 +159,7 @@
                 $scope.dataCols = [];
                 $scope.styleCols = [];
                 $scope.options = options;
+                $scope.options.orders = $scope.options.orders || [];
                 $scope.paging = { records: 0, page: 1, pages: 0 };
                 $scope.loading = false;
                 $scope.checked = [];
@@ -171,6 +172,7 @@
                 $scope.extended_search = false;
                 $scope.searchinput = { value: '' };
                 $scope.paged = null;
+                $scope.orderDirections = { 'asc': 'Ascending', 'desc': 'Descending' };
 
                 var primary = false;
                 angular.forEach(options.filters,function(filter) {
@@ -259,8 +261,16 @@
                             col.order.direction = 'asc';
                         }
 
+                        col.order.label = col.title;
+
                         if(col.order.default) {
                             $scope.order = angular.copy(col.order);
+                        }
+
+                        var order = $filter('filter')($scope.options.orders,{ name: col.order.name });
+
+                        if(!order.length) {
+                            $scope.options.orders.push(col.order);
                         }
                     }
                 });
@@ -420,8 +430,15 @@
                     }
                 }
 
-                $scope.selectMenu = function($mdOpenMenu, ev) {
-                    $mdOpenMenu(ev);
+                $scope.orderNameSelect = function(order) {
+                    $scope.order.name = order.name;
+                    $scope.order.label = order.label;
+                    reload();
+                }
+
+                $scope.orderDirectionSelect = function(direction) {
+                    $scope.order.direction = direction;
+                    reload();
                 }
 
                 $scope.select = function() {
@@ -1389,8 +1406,6 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"main-search-bar\" layout=\"row\" layout-align=\"start center\">\r" +
     "\n" +
-    "\r" +
-    "\n" +
     "                    <div class=\"search\"><i class=\"material-icons\">search</i></div>                    \r" +
     "\n" +
     "                    <md-input-container class=\"md-no-label md-no-message\">\r" +
@@ -1799,7 +1814,51 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <div ng-if=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records\">{{paging.records}} Records</div>\r" +
+    "    <div ng-if=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records\">{{paging.records}} Records \r" +
+    "\n" +
+    "        <md-menu ng-show=\"order.name\">\r" +
+    "\n" +
+    "            <span ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">Ordered by {{order.label}}</span>\r" +
+    "\n" +
+    "            <md-menu-content>\r" +
+    "\n" +
+    "                <md-menu-item ng-repeat=\"order in options.orders\">\r" +
+    "\n" +
+    "                    <md-button ng-click=\"orderNameSelect(order)\">\r" +
+    "\n" +
+    "                        {{order.label}}\r" +
+    "\n" +
+    "                    </md-button>\r" +
+    "\n" +
+    "                </md-menu-item>\r" +
+    "\n" +
+    "            </md-menu-content>\r" +
+    "\n" +
+    "        </md-menu>   \r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "        <md-menu ng-show=\"order.name\">\r" +
+    "\n" +
+    "            <span ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">{{orderDirections[order.direction]}}</span>\r" +
+    "\n" +
+    "            <md-menu-content>\r" +
+    "\n" +
+    "                <md-menu-item ng-repeat=\"(key, value) in orderDirections\">\r" +
+    "\n" +
+    "                    <md-button ng-click=\"orderDirectionSelect(key)\">\r" +
+    "\n" +
+    "                        {{value}}\r" +
+    "\n" +
+    "                    </md-button>\r" +
+    "\n" +
+    "                </md-menu-item>\r" +
+    "\n" +
+    "            </md-menu-content>\r" +
+    "\n" +
+    "        </md-menu>   \r" +
+    "\n" +
+    "    </div>\r" +
     "\n" +
     "    <div class=\"results\" ng-if=\"options.columns.length\">\r" +
     "\n" +
@@ -1875,15 +1934,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        </div>\r" +
     "\n" +
-    "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\r" +
-    "\n" +
     "\r" +
     "\n" +
     "                    </div>\r" +
     "\n" +
     "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.actions.length || options.action\">\r" +
-    "\n" +
-    "                        <div class=\"width-holder\" ng-show=\"loading\"></div>\r" +
     "\n" +
     "                    </div>\r" +
     "\n" +

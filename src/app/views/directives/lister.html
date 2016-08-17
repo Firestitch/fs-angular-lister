@@ -4,7 +4,6 @@
         <div ng-if="options.inline" layout="row" layout-align="start center" class="inline-search" flex>
             <div class="inline-search-input" flex="grow">
                 <div class="main-search-bar" layout="row" layout-align="start center">
-
                     <div class="search"><i class="material-icons">search</i></div>                    
                     <md-input-container class="md-no-label md-no-message">
                         <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="openFilters()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />
@@ -209,7 +208,29 @@
             </md-menu>
         </div>
     </div>
-    <div ng-if="options.paging.infinite && numeric(paging.records)" class="infinite-records">{{paging.records}} Records</div>
+    <div ng-if="options.paging.infinite && numeric(paging.records)" class="infinite-records">{{paging.records}} Records 
+        <md-menu ng-show="order.name">
+            <span ng-click="$mdOpenMenu($event)" class="order-toggle">Ordered by {{order.label}}</span>
+            <md-menu-content>
+                <md-menu-item ng-repeat="order in options.orders">
+                    <md-button ng-click="orderNameSelect(order)">
+                        {{order.label}}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>   
+
+        <md-menu ng-show="order.name">
+            <span ng-click="$mdOpenMenu($event)" class="order-toggle">{{orderDirections[order.direction]}}</span>
+            <md-menu-content>
+                <md-menu-item ng-repeat="(key, value) in orderDirections">
+                    <md-button ng-click="orderDirectionSelect(key)">
+                        {{value}}
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>   
+    </div>
     <div class="results" ng-if="options.columns.length">
         <div class="progress-paged ng-hide" ng-show="loading && !options.paging.infinite">
             <md-progress-circular md-mode="indeterminate"></md-progress-circular>
@@ -247,11 +268,9 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="width-holder" ng-show="loading"></div>
 
                     </div>
                     <div class="lister-col lister-col-header" ng-if="options.actions.length || options.action">
-                        <div class="width-holder" ng-show="loading"></div>
                     </div>
                 </div>
             </div>

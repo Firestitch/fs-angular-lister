@@ -35,7 +35,7 @@
     }
 
     .lister-search {
-        margin: 25px 0 25px 0;
+        margin-top: 25px;
     }
 
     .results {
@@ -112,7 +112,7 @@
                 position: absolute;
                 right: 0;
                 bottom: 2px;
-                color: #cdcdcd;
+                color: rgba(0,0,0,0.54);
                 z-index: 52;
 
                 i {
@@ -273,8 +273,13 @@
 
     .infinite-records {
         color: #999;
-        font-size: 14px;
-        margin-top: 5px;
+        font-size: 13px;
+        margin-left: 25px;
+        margin-bottom: 18px;
+        
+        .order-toggle {
+            cursor: pointer;
+        }
     }
 
     .lister-table {

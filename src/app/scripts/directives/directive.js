@@ -159,6 +159,7 @@
                 $scope.dataCols = [];
                 $scope.styleCols = [];
                 $scope.options = options;
+                $scope.options.orders = $scope.options.orders || [];
                 $scope.paging = { records: 0, page: 1, pages: 0 };
                 $scope.loading = false;
                 $scope.checked = [];
@@ -171,6 +172,7 @@
                 $scope.extended_search = false;
                 $scope.searchinput = { value: '' };
                 $scope.paged = null;
+                $scope.orderDirections = { 'asc': 'Ascending', 'desc': 'Descending' };
 
                 var primary = false;
                 angular.forEach(options.filters,function(filter) {
@@ -259,8 +261,16 @@
                             col.order.direction = 'asc';
                         }
 
+                        col.order.label = col.title;
+
                         if(col.order.default) {
                             $scope.order = angular.copy(col.order);
+                        }
+
+                        var order = $filter('filter')($scope.options.orders,{ name: col.order.name });
+
+                        if(!order.length) {
+                            $scope.options.orders.push(col.order);
                         }
                     }
                 });
@@ -420,8 +430,15 @@
                     }
                 }
 
-                $scope.selectMenu = function($mdOpenMenu, ev) {
-                    $mdOpenMenu(ev);
+                $scope.orderNameSelect = function(order) {
+                    $scope.order.name = order.name;
+                    $scope.order.label = order.label;
+                    reload();
+                }
+
+                $scope.orderDirectionSelect = function(direction) {
+                    $scope.order.direction = direction;
+                    reload();
                 }
 
                 $scope.select = function() {

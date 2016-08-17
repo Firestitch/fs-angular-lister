@@ -207,6 +207,11 @@
             }
         ],
 
+        orders: [
+            {   label: 'Custom Order By',
+                name: 'custom_order' }
+        ],
+
         selection: {
             actions: [{
                 icon: 'delete',
