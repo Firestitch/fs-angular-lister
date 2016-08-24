@@ -357,6 +357,7 @@
                                     remove: function() {
                                         if(this.index!==null) {
                                             $scope.data.splice(this.index, 1);
+                                            $scope.paging.records--;
                                         }
                                     },
                                     index: index>=0 ? index : null
