@@ -75,7 +75,13 @@
         margin-right: 10px;
 
         .search {
-            margin-top: 4px;
+            margin-top: 1px;
+            position: absolute;
+            margin-left: 1px;
+
+            i {
+                transform: scale(.9);
+            }
         }
 
         .backdrop {
@@ -131,6 +137,10 @@
 
             md-input-container {
                 width: 100%;
+
+                &:not(.md-input-focused):not(.md-input-has-value) label:not(.md-no-float):not(.md-container-ignore) {
+                    padding-left: 25px;
+                }
 
                 input {
                     padding-right: 25px;
@@ -279,10 +289,10 @@
     .infinite-records {
         color: #999;
         font-size: 13px;
-        margin-left: 25px;
+        margin-left: 4px;
         position: absolute;
         top: 37px;
-        
+
         .order-toggle {
             cursor: pointer;
         }
