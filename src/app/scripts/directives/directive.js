@@ -48,7 +48,7 @@
                 <ul>
                     <li><label>name</label>The name sent to the backend to be ordered by</li>
                     <li><label>label</label>The label to be displayed to the user</li>
-                </ul>                
+                </ul>
     * @param {object} ls-options.norecords The message to be displayed when there are no records in the search
     * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side
                 <ul>
@@ -177,7 +177,7 @@
                 $scope.extended_search = false;
                 $scope.searchinput = { value: '' };
                 $scope.paged = null;
-                $scope.orderDirections = { 'asc': 'Ascending', 'desc': 'Descending' };
+                $scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
                 var primary = false;
                 angular.forEach(options.filters,function(filter) {
@@ -219,10 +219,10 @@
                             if(typeof filter.model == 'string') {
                                 filter.model = new Date(filter.model);
                             }
-                        
+
                         } else if(filter.type=='checkbox') {
                             filter.model = filter.unchecked;
-                        
+
                         } else if(filter.type=='select') {
 
                             if(filter.multiple) {
@@ -441,8 +441,8 @@
                     reload();
                 }
 
-                $scope.orderDirectionSelect = function(direction) {
-                    $scope.order.direction = direction;
+                $scope.orderDirectionToggle = function() {
+                    $scope.order.direction = $scope.order.direction=='asc' ? 'desc' : 'asc';
                     reload();
                 }
 
@@ -633,8 +633,8 @@
                         } else {
                             textSearch.push(match);
                         }
-                    });   
-                  
+                    });
+
                     angular.forEach(options.filters,function(filter) {
                         if (filter.type == 'checkbox') {
                             filter.model = filter.unchecked;
@@ -776,10 +776,10 @@
 
                 function walkValues(filter, values) {
                     var prepped_values = [];
-                    
+
                     angular.forEach(values, function(obj,key) {
                         var value = { value: key, name: obj };
-                        
+
                         if(typeof obj=='object') {
                             value = obj;
                         }
@@ -1147,7 +1147,7 @@
                     reload();
                 }
 
-                //This promise is needed because the all the select filter values 
+                //This promise is needed because the all the select filter values
                 //have to be loaded to render the textual inputs
                 $q.all(promises)
                 .then(function() {

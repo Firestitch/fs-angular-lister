@@ -48,7 +48,7 @@
                 <ul>
                     <li><label>name</label>The name sent to the backend to be ordered by</li>
                     <li><label>label</label>The label to be displayed to the user</li>
-                </ul>                
+                </ul>
     * @param {object} ls-options.norecords The message to be displayed when there are no records in the search
     * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side
                 <ul>
@@ -177,7 +177,7 @@
                 $scope.extended_search = false;
                 $scope.searchinput = { value: '' };
                 $scope.paged = null;
-                $scope.orderDirections = { 'asc': 'Ascending', 'desc': 'Descending' };
+                $scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
                 var primary = false;
                 angular.forEach(options.filters,function(filter) {
@@ -219,10 +219,10 @@
                             if(typeof filter.model == 'string') {
                                 filter.model = new Date(filter.model);
                             }
-                        
+
                         } else if(filter.type=='checkbox') {
                             filter.model = filter.unchecked;
-                        
+
                         } else if(filter.type=='select') {
 
                             if(filter.multiple) {
@@ -441,8 +441,8 @@
                     reload();
                 }
 
-                $scope.orderDirectionSelect = function(direction) {
-                    $scope.order.direction = direction;
+                $scope.orderDirectionToggle = function() {
+                    $scope.order.direction = $scope.order.direction=='asc' ? 'desc' : 'asc';
                     reload();
                 }
 
@@ -633,8 +633,8 @@
                         } else {
                             textSearch.push(match);
                         }
-                    });   
-                  
+                    });
+
                     angular.forEach(options.filters,function(filter) {
                         if (filter.type == 'checkbox') {
                             filter.model = filter.unchecked;
@@ -776,10 +776,10 @@
 
                 function walkValues(filter, values) {
                     var prepped_values = [];
-                    
+
                     angular.forEach(values, function(obj,key) {
                         var value = { value: key, name: obj };
-                        
+
                         if(typeof obj=='object') {
                             value = obj;
                         }
@@ -1147,7 +1147,7 @@
                     reload();
                 }
 
-                //This promise is needed because the all the select filter values 
+                //This promise is needed because the all the select filter values
                 //have to be loaded to render the textual inputs
                 $q.all(promises)
                 .then(function() {
@@ -1411,7 +1411,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                <div class=\"main-search-bar\" layout=\"row\" layout-align=\"start center\">\r" +
     "\n" +
-    "                    <div class=\"search\"><i class=\"material-icons\">search</i></div>                    \r" +
+    "                    <div class=\"search\"><i class=\"material-icons\">search</i></div>\r" +
     "\n" +
     "                    <md-input-container class=\"md-no-label md-no-message\">\r" +
     "\n" +
@@ -1819,11 +1819,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    </div>\r" +
     "\n" +
-    "    <div ng-if=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records\">{{paging.records}} Records \r" +
+    "    <div ng-if=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records\">{{paging.records}} results\r" +
     "\n" +
     "        <md-menu ng-show=\"order.name\">\r" +
     "\n" +
-    "            <span ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">Ordered by {{order.label}}</span>\r" +
+    "            <span ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">ordered by {{order.label}}</span>\r" +
     "\n" +
     "            <md-menu-content>\r" +
     "\n" +
@@ -1839,29 +1839,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            </md-menu-content>\r" +
     "\n" +
-    "        </md-menu>   \r" +
+    "        </md-menu>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "        <md-menu ng-show=\"order.name\">\r" +
-    "\n" +
-    "            <span ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">{{orderDirections[order.direction]}}</span>\r" +
-    "\n" +
-    "            <md-menu-content>\r" +
-    "\n" +
-    "                <md-menu-item ng-repeat=\"(key, value) in orderDirections\">\r" +
-    "\n" +
-    "                    <md-button ng-click=\"orderDirectionSelect(key)\">\r" +
-    "\n" +
-    "                        {{value}}\r" +
-    "\n" +
-    "                    </md-button>\r" +
-    "\n" +
-    "                </md-menu-item>\r" +
-    "\n" +
-    "            </md-menu-content>\r" +
-    "\n" +
-    "        </md-menu>   \r" +
+    "        <span ng-show=\"order.name\" ng-click=\"orderDirectionToggle($event)\" class=\"order-toggle\">{{orderDirections[order.direction]}}</span>\r" +
     "\n" +
     "    </div>\r" +
     "\n" +
