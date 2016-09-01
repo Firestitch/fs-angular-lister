@@ -26,7 +26,7 @@
     }
 
     $scope.newFilters = function() {
-        
+
         var filter = $filter('filter')($scope.listerConf.filters,{ name: 'range' })[0];
         if(filter) {
             filter.disabled = true;
@@ -217,6 +217,7 @@
                 icon: 'delete',
                 label: 'Delete',
                 click: function(selected, $event, helper) {
+                    debugger;
                     //alert("delete");
                 }
             },
@@ -268,6 +269,19 @@
             },
 
             {
+                name: 'state',
+                type: 'select',
+                label: 'State (key,name)',
+                values: [
+                    { value: null, name: 'Null Value' },
+                    { value: 'active', name: 'Active' },
+                    { value: 'pending', name: 'Pending' },
+                    { value: 'completed', name: 'Completed' },
+                    { value: 'deleted', name: 'Deleted' }
+                ]
+            },
+
+            {
                 name: 'isolate',
                 type: 'select',
                 label: 'Isolate',
@@ -293,7 +307,7 @@
                 },
                 isolate: { label: 'Show Deleted', value: 'deleted' },
                 multiple: true
-            },                        
+            },
             {
                 name: 'multiple_key_value',
                 type: 'select',
@@ -356,7 +370,7 @@
                 name: 'multiple',
                 type: 'select',
                 label: 'Multiple With Grouping',
-                values: function() { 
+                values: function() {
                     return  [   {    value: 'pear', name: 'Pear', group: 'Group B' },
                                 {    value: 'orange', name: 'Orange', group: 'Group B' },
                                 {    value: 'banana', name: 'Banana', group: 'Group A' },

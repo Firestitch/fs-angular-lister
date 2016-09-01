@@ -385,7 +385,7 @@
                                             this.ok = function() {
 
                                                 if(action.delete.ok) {
-                                                    var result = action.delete.ok(item, event, helper);
+                                                    var result = action.delete.ok(item, event, $scope.lsInstance);
 
                                                     if(result && angular.isFunction(result.then)) {
                                                         result.then(function() {
@@ -459,7 +459,7 @@
                             selected.push($scope.data[index]);
                     });
 
-                    click(selected, $event);
+                    click(selected, $event, $scope.lsInstance);
                 }
 
                 $scope.selectionsClear = function() {
@@ -509,7 +509,7 @@
 
                 $scope.topActionsClick = function(action,$event) {
                     if(action.click) {
-                        action.click(filterValues(),$event);
+                        action.click(filterValues(), $event, $scope.lsInstance);
                     }
                 }
 
@@ -775,7 +775,7 @@
                     reload();
                 }
 
-                function walkValues(filter, values) {
+                function walkSelectValues(filter, values) {
                     var prepped_values = [];
 
                     angular.forEach(values, function(obj,key) {
@@ -785,13 +785,17 @@
                             value = obj;
                         }
 
+                        if(value.value===null) {
+                            value.value = 'null';
+                        }
+
                         prepped_values.push(value);
                     });
 
                     return prepped_values;
                 }
 
-                function walkNestedValues(filter, parent_id, values, depth) {
+                function walkSelectNestedValues(filter, parent_id, values, depth) {
                     var depth = depth || 0;
                     var prepped_values = [];
                     var value_field = filter.nested.value_field || 'id';
@@ -812,7 +816,7 @@
 
                         prepped_values.push(value);
 
-                        var children = walkNestedValues(filter, obj[value_field], values, depth+1);
+                        var children = walkSelectNestedValues(filter, obj[value_field], values, depth+1);
                         if(children.length>0) {
                             Array.prototype.push.apply(prepped_values, children);
                         }
@@ -1095,9 +1099,9 @@
                                 if(!filter.multiple)
                                     values.push({ value:'__all', name:'All', depth: 0 });
 
-                                Array.prototype.push.apply(values, walkNestedValues(filter, null, filter.values));
+                                Array.prototype.push.apply(values, walkSelectNestedValues(filter, null, filter.values));
                             } else {
-                                values = walkValues(filter, filter.values);
+                                values = walkSelectValues(filter, filter.values);
                             }
 
                             filter.values = values;
