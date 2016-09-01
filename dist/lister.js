@@ -385,7 +385,7 @@
                                             this.ok = function() {
 
                                                 if(action.delete.ok) {
-                                                    var result = action.delete.ok(item, event, $scope.lsInstance);
+                                                    var result = action.delete.ok(item, event, helper);
 
                                                     if(result && angular.isFunction(result.then)) {
                                                         result.then(function() {
