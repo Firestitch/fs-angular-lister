@@ -142,13 +142,6 @@
                     padding-left: 25px;
                 }
 
-                input {
-                    padding-right: 25px;
-                    padding-left: 26px;
-                    z-index: 51;
-                    position: relative;
-                }
-
                 md-select-value {
 
                     .md-container {
@@ -168,6 +161,12 @@
             .main-search-bar {
                 md-input-container {
                     width: 100%;
+                    input {
+                        padding-right: 25px;
+                        padding-left: 26px;
+                        z-index: 51;
+                        position: relative;
+                    }
                 }
             }
 
