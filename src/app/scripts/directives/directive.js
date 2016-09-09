@@ -66,6 +66,7 @@
                     <li><label>className</label>A css class name that is appened to the column element</li>
                     <li><label>resolve</label>Used to inject objects in the value() function and inserts the values into the $scope variable</li>
                     <li><label>scope</label>Appended to the $scope object which is injected into the value() function</li>
+                    <li><label>order</label>Enables the column to be orderable. The value is used as the order value in the http request. ie: order=name,asc</li>
                 </ul>
      * @param {array} ls-options.filters Defines the filters found above the lister table
                 <ul>
