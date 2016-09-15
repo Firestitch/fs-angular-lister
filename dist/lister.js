@@ -120,7 +120,13 @@
             },
             controller: ['$scope', function($scope) {
 
-                var options     = angular.extend($scope.lsOptions,fsLister.options(),$scope.lsOptions);
+                var options = $scope.lsOptions;
+                angular.forEach(fsLister.options(),function(value,key) {
+                    if(!(key in options)) {
+                        options[key] = value;
+                    }
+                });
+
                 var dataIndex   = 0;
                 var persists    = fsStore.get('lister-persist',{});
 

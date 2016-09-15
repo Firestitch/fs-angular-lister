@@ -11,7 +11,7 @@ angular
 ])
 .config(function ($stateProvider, $urlRouterProvider, fsListerProvider) {
 
-    fsListerProvider.options({ inline: true });
+    fsListerProvider.options({ paging: { infinite: true, limit: 10 }, inline: true });
 
     $urlRouterProvider
     .otherwise('/404')
@@ -33,5 +33,5 @@ angular
 })
 .run(function ($rootScope, BOWER) {
     $rootScope.app_name = BOWER.name;
-    $rootScope.app_namespace = BOWER.namespace;    
+    $rootScope.app_namespace = BOWER.namespace;
 });

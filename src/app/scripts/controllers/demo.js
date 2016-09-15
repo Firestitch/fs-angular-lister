@@ -37,6 +37,8 @@
 
         debug: false,
 
+        paging: false,
+
         persist: {
             name: 'lister',
             timeout: 60
@@ -74,12 +76,12 @@
         load: true,
 
 
-        paging: {
+        /*paging: {
 
             infinite: true,
             //pages: false,
             limit: 5
-        },
+        },*/
 
         //paging: false,
         /*
