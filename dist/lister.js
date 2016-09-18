@@ -963,13 +963,13 @@
 
                         if(options.data) {
 
-                            var response = options.data(query, dataCallback);
+                            var response = options.data(query,angular.bind(this,dataCallback,opts));
 
                             if(response && response.then) {
 
                                 response
                                 .then(function(response) {
-                                    dataCallback(response.data, response.paging);
+                                    dataCallback(opts,response.data,response.paging);
                                 })
                                 .catch(function(response) {
                                     loadCleanup();
@@ -983,7 +983,10 @@
                     }
                 }
 
-                function dataCallback(data, paging) {
+                function dataCallback(opts, data, paging) {
+
+                    log("dataCallback()",data,paging);
+
                     if(opts.clear) {
                         $scope.max_bottom = 0;
                         clearData();
@@ -1002,8 +1005,6 @@
                 }
 
                 function callback(objects, paging) {
-
-                    log("dataCallback()",objects,paging);
 
                     if(!$scope.options.paging.infinite) {
                         clearData();
