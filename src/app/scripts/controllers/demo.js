@@ -61,16 +61,25 @@
 
             query.count = 50;
 
-            return DummyService.gets(query,{ url: 'https://service.firestitch.com/api/', key: 'objects', datapaging: true });
+            var url = 'https://service.firestitch.com/api/';
+
+            url = 'http://spec.local.firestitch.com/api/uuuu';
+
+            return DummyService.gets(query,{ url: url, key: 'objects', datapaging: true })
+                    .then(function(response) {
+                        return { data: response.data, paging: response.paging };
+                    });
 
             DummyService
-                .gets(query,{ url: 'https://spec.local.firestitch.com/api/' })
+                .gets(query,{ url: url })
                 .then(function(result) {
                     cb(result.objects,result.paging);
                 })
-                .catch(function (response) {
+
+                /*.catch(function (response) {
+                        debugger;
                     console.log(response);
-                });
+                });*/
         },
 
         load: true,

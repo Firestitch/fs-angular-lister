@@ -31,7 +31,32 @@ angular
     });
 
 })
-.run(function ($rootScope, BOWER) {
+.run(function ($rootScope, BOWER, fsApi) {
     $rootScope.app_name = BOWER.name;
     $rootScope.app_namespace = BOWER.namespace;
+
+    fsApi.on("begin",function(data, headers, options) {
+
+
+    })
+    .on("fail",function(response) {
+
+        if (response.code === 401) {
+            alert('Please login to access this page', { mode: 'toast' });
+            throw response;
+        }
+
+        if (response.code === 403) {
+            alert('You do not have access to complete this request.');
+            throw response;
+        }
+
+        var messages = [];
+        angular.forEach(response.response.data.messages,function(message) {
+            messages.push(message.message);
+        });
+
+        alert(messages.join('<br/>'));
+    });
+
 });

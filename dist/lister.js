@@ -957,15 +957,6 @@
 
                     log("Calling data()", query);
 
-                    var dataCallback = function(data, paging) {
-                        if(opts.clear) {
-                            $scope.max_bottom = 0;
-                            clearData();
-                        }
-
-                        callback(data, paging);
-                    }
-
                     try {
 
                         $scope.loading = true;
@@ -979,17 +970,33 @@
                                 response
                                 .then(function(response) {
                                     dataCallback(response.data, response.paging);
+                                })
+                                .catch(function(response) {
+                                    loadCleanup();
                                 });
                             }
                         }
 
                    } catch(e) {
-                        $scope.loading = false;
+                        loadCleanup();
                         throw e;
                     }
                 }
 
-                 function page(page) {
+                function dataCallback(data, paging) {
+                    if(opts.clear) {
+                        $scope.max_bottom = 0;
+                        clearData();
+                    }
+
+                    callback(data, paging);
+                }
+
+                function loadCleanup() {
+                     $scope.loading = false;
+                }
+
+                function page(page) {
                     $scope.paging.page = page;
                     load();
                 }
@@ -1041,7 +1048,6 @@
 
                         if(paging.limit) {
                             $scope.options.paging.limit = paging.limit;
-                            //options.limit = paging.limit;
                         }
 
                     } else {
@@ -1057,7 +1063,7 @@
                         $scope.paging.page = paging.page;
                     }
 
-                    $scope.loading = false;
+                    loadCleanup();
                 }
 
                 function log(message) {
