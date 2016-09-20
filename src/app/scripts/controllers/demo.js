@@ -63,7 +63,7 @@
 
             var url = 'https://service.firestitch.com/api/';
 
-            url = 'http://spec.local.firestitch.com/api/uuuu';
+            //url = 'http://spec.local.firestitch.com/api/uuuu';
 
             return DummyService.gets(query,{ url: url, key: 'objects', datapaging: true })
                     .then(function(response) {
@@ -260,7 +260,7 @@
         },
 
         filters: [
-            {
+           {
                 name: 'search',
                 type: 'text',
                 label: 'Search',
@@ -296,12 +296,18 @@
                 name: 'isolate',
                 type: 'select',
                 label: 'Isolate',
-                values: {
-                    __all: 'All',
-                    active: 'Active',
-                    pending: 'Pending',
-                    completed: 'Completed',
-                    deleted: 'Deleted'
+                values: function() {
+
+                    return $q(function(resolve,reject) {
+
+                           resolve({
+                                __all: 'All',
+                                active: 'Active',
+                                pending: 'Pending',
+                                completed: 'Completed',
+                                deleted: 'Deleted'
+                            });
+                    });
                 },
                 isolate: { label: 'Show Deleted', value: 'deleted' }
             },

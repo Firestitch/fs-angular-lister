@@ -1086,7 +1086,7 @@
                         filter.values = filter.values();
                     }
 
-                    $q(function(resolve,reject) {
+                    var promise = $q(function(resolve,reject) {
 
                         if(angular.isObject(filter.values) && filter.values.then) {
 
@@ -1095,7 +1095,6 @@
                                 resolve(values);
                             });
 
-                            promises.push(filter.values);
                         } else {
                             resolve(filter.values);
                         }
@@ -1158,18 +1157,22 @@
 
                         $scope.filterValue(filter);
                     });
+
+                    promises.push(promise);
                 });
 
-                $scope.filterValueUpdate();
-
-                if(options.load) {
-                    reload();
-                }
 
                 //This promise is needed because the all the select filter values
                 //have to be loaded to render the textual inputs
                 $q.all(promises)
                 .then(function() {
+
+                    $scope.filterValueUpdate();
+
+                    if(options.load) {
+                        reload();
+                    }
+
                     $scope.searchInputUpdate();
                 });
 
