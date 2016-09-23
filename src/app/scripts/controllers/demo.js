@@ -117,7 +117,6 @@
             {
                 label: 'Export',
                 click: function(data,event) {
-                    debugger;
                     alert('Export');
                 }
             },

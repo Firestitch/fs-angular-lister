@@ -197,14 +197,6 @@
 
                     filter.model = filter.default;
 
-                     if(options.topActions) {
-                        angular.forEach(options.topActions,function(action) {
-                            if(action.show===undefined) {
-                                action.show = true;
-                            }
-                        });
-                     }
-
                     if(options.persist) {
 
                         var persisted = persists[options.persist.name]['data'];

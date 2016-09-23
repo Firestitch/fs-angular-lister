@@ -197,14 +197,6 @@
 
                     filter.model = filter.default;
 
-                     if(options.topActions) {
-                        angular.forEach(options.topActions,function(action) {
-                            if(action.show===undefined) {
-                                action.show = true;
-                            }
-                        });
-                     }
-
                     if(options.persist) {
 
                         var persisted = persists[options.persist.name]['data'];
@@ -1734,7 +1726,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"top-actions\">\r" +
     "\n" +
-    "                <md-button ng-repeat=\"action in options.topActions\" ng-if=\"!action.more && action.show()\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
+    "                <md-button ng-repeat=\"action in options.topActions\" ng-if=\"!action.more\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
     "\n" +
     "                <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\r" +
     "\n" +
@@ -1746,7 +1738,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <md-menu-content>\r" +
     "\n" +
-    "                        <md-menu-item ng-repeat=\"action in options.topActions\" ng-if=\"action.more && action.show()\">\r" +
+    "                        <md-menu-item ng-repeat=\"action in options.topActions\" ng-if=\"action.more\">\r" +
     "\n" +
     "                            <md-button ng-click=\"action.click($event)\">\r" +
     "\n" +
