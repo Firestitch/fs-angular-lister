@@ -197,6 +197,14 @@
 
                     filter.model = filter.default;
 
+                     if(options.topActions) {
+                        angular.forEach(options.topActions,function(action) {
+                            if(action.show===undefined) {
+                                action.show = true;
+                            }
+                        });
+                     }
+
                     if(options.persist) {
 
                         var persisted = persists[options.persist.name]['data'];
@@ -1192,6 +1200,25 @@
                                                         reload: reload,
                                                         filterValues: filterValues,
                                                         data: data,
+                                                        option: function(option,name,value) {
+                                                            if(option=='filter') {
+                                                                var filter = $filter('filter')(options.filters,{ name: name },true)[0];
+
+                                                                if(2 in arguments && filter) {
+
+                                                                    filter.model = arguments[2];
+                                                                    if (moment.isMoment(filter.model)) {
+                                                                        filter.model = filter.model.toDate();
+                                                                    }
+
+                                                                    $scope.filterValueUpdate();
+                                                                    $scope.searchInputUpdate();
+                                                                }
+
+                                                                return filter;
+                                                            }
+                                                        },
+
                                                         options: function() {
                                                             if(arguments.length==1) {
                                                                 return options[arguments[0]];
