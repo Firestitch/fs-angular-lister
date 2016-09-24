@@ -1186,42 +1186,48 @@
                     return this;
                 }
 
+                var instance = {  load: load,
+                                page: page,
+                                reload: reload,
+                                filterValues: filterValues,
+                                data: data,
+                                option: function(option,name,value) {
+                                    if(option=='filter') {
+                                        var filter = $filter('filter')(options.filters,{ name: name },true)[0];
+
+                                        if(2 in arguments && filter) {
+
+                                            filter.model = arguments[2];
+                                            if (moment.isMoment(filter.model)) {
+                                                filter.model = filter.model.toDate();
+                                            }
+
+                                            $scope.filterValueUpdate();
+                                            $scope.searchInputUpdate();
+                                        }
+
+                                        return filter;
+                                    }
+                                },
+
+                                options: function() {
+                                    if(arguments.length==1) {
+                                        return options[arguments[0]];
+                                    }
+
+                                    if(arguments.length==2) {
+                                        return options[arguments[0]] = arguments[1];
+                                    }
+
+                                    return options;
+                                }};
+
                 if($scope.lsInstance) {
-                    angular.extend($scope.lsInstance,{  load: load,
-                                                        page: page,
-                                                        reload: reload,
-                                                        filterValues: filterValues,
-                                                        data: data,
-                                                        option: function(option,name,value) {
-                                                            if(option=='filter') {
-                                                                var filter = $filter('filter')(options.filters,{ name: name },true)[0];
+                    angular.extend($scope.lsInstance,instance);
+                }
 
-                                                                if(2 in arguments && filter) {
-
-                                                                    filter.model = arguments[2];
-                                                                    if (moment.isMoment(filter.model)) {
-                                                                        filter.model = filter.model.toDate();
-                                                                    }
-
-                                                                    $scope.filterValueUpdate();
-                                                                    $scope.searchInputUpdate();
-                                                                }
-
-                                                                return filter;
-                                                            }
-                                                        },
-
-                                                        options: function() {
-                                                            if(arguments.length==1) {
-                                                                return options[arguments[0]];
-                                                            }
-
-                                                            if(arguments.length==2) {
-                                                                return options[arguments[0]] = arguments[1];
-                                                            }
-
-                                                            return options;
-                                                        } });
+                if($scope.options.instance) {
+                    angular.extend($scope.options.instance,instance);
                 }
             }],
             compile: function(element, tAttrs) {
