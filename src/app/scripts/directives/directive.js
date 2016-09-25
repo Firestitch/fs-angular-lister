@@ -1226,9 +1226,7 @@
                     angular.extend($scope.lsInstance,instance);
                 }
 
-                if($scope.options.instance) {
-                    angular.extend($scope.options.instance,instance);
-                }
+                $scope.options.instance = instance;
             }],
             compile: function(element, tAttrs) {
 
