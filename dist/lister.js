@@ -1181,7 +1181,7 @@
                     if(!arguments.length)
                         return $scope.data;
 
-                    $scope.data = arguments[0];
+                    callback(arguments[0], {});
 
                     return this;
                 }
