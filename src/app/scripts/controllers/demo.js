@@ -264,7 +264,7 @@
                 type: 'text',
                 label: 'Search',
                 param: 'search'
-            },
+            }/*,
             {
                 name: 'state',
                 type: 'select',
@@ -417,8 +417,10 @@
                 label: 'Checkbox',
                 checked: 'active',
                 unchecked: 'delete'
-            }
+            }*/
         ]
     };
+
+    //$scope.listerConf = undefined;
 });
 

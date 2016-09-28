@@ -120,7 +120,7 @@
             },
             controller: ['$scope', function($scope) {
 
-                var options = $scope.lsOptions;
+                var options = $scope.lsOptions || {};
                 angular.forEach(fsLister.options(),function(value,key) {
                     if(!(key in options)) {
                         options[key] = value;
@@ -1450,7 +1450,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    <div class=\"lister-search\">\r" +
     "\n" +
-    "        <div layout=\"row\" layout-align=\"start\" ng-if=\"options.filters.length\" layout-align=\" end\">\r" +
+    "        <div layout=\"row\" layout-align=\"start\" ng-if=\"options.filters.length\" layout-align=\"start end\">\r" +
     "\n" +
     "            <div layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex>\r" +
     "\n" +
