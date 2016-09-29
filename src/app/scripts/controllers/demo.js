@@ -44,6 +44,9 @@
             timeout: 60
         },
 
+        //order: { name: 'date', direction: 'desc' },
+        //order: 'date',
+
         //inline: true,
         sort: {
             stop: function(item,list,$indexFrom,$indexTo) {
@@ -264,7 +267,7 @@
                 type: 'text',
                 label: 'Search',
                 param: 'search'
-            }/*,
+            },
             {
                 name: 'state',
                 type: 'select',
@@ -281,16 +284,16 @@
             {
                 name: 'state',
                 type: 'select',
-                label: 'State (key,name)',
+                label: 'State [key,name]',
                 values: [
-                    { value: null, name: 'Null Value' },
+                    { value: null, name: 'All (Null Value)' },
                     { value: 'active', name: 'Active' },
                     { value: 'pending', name: 'Pending' },
                     { value: 'completed', name: 'Completed' },
                     { value: 'deleted', name: 'Deleted' }
                 ]
             },
-
+/*
             {
                 name: 'isolate',
                 type: 'select',
@@ -420,7 +423,5 @@
             }*/
         ]
     };
-
-    //$scope.listerConf = undefined;
 });
 

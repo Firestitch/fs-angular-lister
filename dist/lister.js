@@ -49,6 +49,12 @@
                     <li><label>name</label>The name sent to the backend to be ordered by</li>
                     <li><label>label</label>The label to be displayed to the user</li>
                 </ul>
+    * @param {object} ls-options.order Sets the default ordering
+                <ul>
+                    <li><label>name</label>The name of the order specified in option.orders </li>
+                    <li><label>direction</label>The direction of the ordering asc or desc</li>
+                </ul>
+    * @param {string} ls-options.order Sets the default ordering name which is specified in option.orders
     * @param {object} ls-options.norecords The message to be displayed when there are no records in the search
     * @param {object} ls-options.selection Enables the checkbox selection interface found on the left side
                 <ul>
@@ -274,10 +280,7 @@
                         }
 
                         col.order.label = col.title;
-
-                        if(col.order.default) {
-                            $scope.order = angular.copy(col.order);
-                        }
+                        col.order.column = true;
 
                         var order = $filter('filter')($scope.options.orders,{ name: col.order.name });
 
@@ -286,6 +289,28 @@
                         }
                     }
                 });
+
+                if(options.order) {
+
+                    var orderName = options.order;
+                    var orderDirection = 'asc';
+
+                    if(angular.isObject(options.order)) {
+                        orderName = options.order.name;
+                        orderDirection = options.order.direction || 'asc';
+                    }
+
+                    var order = $filter('filter')($scope.options.orders,{ name: orderName },true)[0];
+                    if(order) {
+                        $scope.order = angular.copy(order);
+                        $scope.order.direction = orderDirection;
+                    }
+                }
+
+                if(!$scope.order) {
+                    var order = $filter('filter')($scope.options.orders,{ column: true, default: true },true)[0];
+                    $scope.order = angular.copy(order);
+                }
 
                 angular.forEach(options.columns,function(col) {
 
@@ -1762,7 +1787,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        </div>\r" +
     "\n" +
-    "        <div ng-if=\"options.paging.infinite && numeric(paging.records)\" class=\"infinite-records\">{{paging.records}} results\r" +
+    "        <div class=\"infinite-records\">\r" +
+    "\n" +
+    "            <span ng-if=\"options.paging.infinite && numeric(paging.records)\">{{paging.records}} results</span>\r" +
     "\n" +
     "            <md-menu ng-show=\"order.name\">\r" +
     "\n" +

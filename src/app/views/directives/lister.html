@@ -157,7 +157,8 @@
                 </md-menu>
             </div>
         </div>
-        <div ng-if="options.paging.infinite && numeric(paging.records)" class="infinite-records">{{paging.records}} results
+        <div class="infinite-records">
+            <span ng-if="options.paging.infinite && numeric(paging.records)">{{paging.records}} results</span>
             <md-menu ng-show="order.name">
                 <span ng-click="$mdOpenMenu($event)" class="order-toggle">ordered by {{order.label}}</span>
                 <md-menu-content>
