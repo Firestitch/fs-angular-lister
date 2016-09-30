@@ -282,7 +282,7 @@
                         col.order.label = col.title;
                         col.order.column = true;
 
-                        var order = $filter('filter')($scope.options.orders,{ name: col.order.name });
+                        var order = $filter('filter')($scope.options.orders,{ name: col.order.name },true);
 
                         if(!order.length) {
                             $scope.options.orders.push(col.order);

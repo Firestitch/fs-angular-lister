@@ -51,7 +51,7 @@
                 </ul>
     * @param {object} ls-options.order Sets the default ordering
                 <ul>
-                    <li><label>name</label>The name of the order specified in option.orders </li>
+                    <li><label>name</label>The name of the order which is specified in option.orders </li>
                     <li><label>direction</label>The direction of the ordering asc or desc</li>
                 </ul>
     * @param {string} ls-options.order Sets the default ordering name which is specified in option.orders
@@ -282,7 +282,7 @@
                         col.order.label = col.title;
                         col.order.column = true;
 
-                        var order = $filter('filter')($scope.options.orders,{ name: col.order.name });
+                        var order = $filter('filter')($scope.options.orders,{ name: col.order.name },true);
 
                         if(!order.length) {
                             $scope.options.orders.push(col.order);
