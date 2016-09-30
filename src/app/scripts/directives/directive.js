@@ -653,7 +653,7 @@
 
                 $scope.searchChange = function(search) {
 
-                    var matches = search.match(/(\([^\)]+\):[^\s]+|\([^\)]+\):\([^\)]+\)|[^:]+:\([^\)]+\)|[^\s]+)/g);
+                    var matches = search.match(/(\([^\)]+\):\([^\)]+\)|\([^\)]+\):[^\s]+|[^:]+:\([^\)]+\)|[^\s]+)/g);
 
                     var values = {};
                     var textSearch = [];

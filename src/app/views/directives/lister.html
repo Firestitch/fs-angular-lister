@@ -160,7 +160,7 @@
         <div class="infinite-records">
             <span ng-if="options.paging.infinite && numeric(paging.records)">{{paging.records}} results</span>
             <md-menu ng-show="order.name">
-                <span ng-click="$mdOpenMenu($event)" class="order-toggle">ordered by {{order.label}}</span>
+                <a href ng-click="$mdOpenMenu($event)" class="order-toggle">ordered by {{order.label}}</a>
                 <md-menu-content>
                     <md-menu-item ng-repeat="order in options.orders">
                         <md-button ng-click="orderNameSelect(order)">
@@ -170,7 +170,7 @@
                 </md-menu-content>
             </md-menu>
 
-            <span ng-show="order.name" ng-click="orderDirectionToggle($event)" class="order-toggle">{{orderDirections[order.direction]}}</span>
+            <a href ng-show="order.name" ng-click="orderDirectionToggle($event)" class="order-toggle">{{orderDirections[order.direction]}}</a>
         </div>
     </div>
     <div class="results" ng-if="options.columns.length">
