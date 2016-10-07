@@ -290,6 +290,13 @@
                     }
                 });
 
+                if(options.topActions) {
+                    angular.forEach(options.topActions,function(action) {
+                        if(action.show===undefined)
+                            action.show = true;
+                    });
+                }
+
                 if(options.order) {
 
                     var orderName = options.order;
