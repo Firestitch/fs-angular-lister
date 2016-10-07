@@ -37,6 +37,13 @@
                         <li><label>cancelLabel</label> Cancel label. Default 'Cancel'</li>
                     </ul>
                 </ul>
+     * @param {array} ls-options.topActions Adds action buttons to the right of the search interface
+                <ul>
+                    <li><label>label</label>Used in the contextual menu item's label</li>
+                    <li><label>click</label>Triggered when clicked</li>
+                    <li><label>show</label>Show the action. Defaults to true</li>
+                    <li><label>more</label>Places the action in the ... menu</li>
+                </ul>
     * @param {object} ls-options.action Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.
     * @param {bool} ls-options.load Loads the lister data on directive load. Default true
     * @param {object} ls-options.paging Configures paging
