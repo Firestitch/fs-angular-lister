@@ -1487,7 +1487,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "    <div class=\"lister-search\">\r" +
+    "    <div class=\"lister-search\" ng-show=\"options.filters.length || options.topActions\">\r" +
     "\n" +
     "        <div layout=\"row\" layout-align=\"start\" ng-if=\"options.filters.length\" layout-align=\"start end\">\r" +
     "\n" +

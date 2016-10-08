@@ -116,7 +116,7 @@
         },
         */
 
-        topActions: [
+        stopActions: [
             {
                 label: 'Export',
                 click: function(data,event) {
@@ -261,7 +261,7 @@
             }]
         },
 
-        filters: [
+        sfilters: [
            {
                 name: 'search',
                 type: 'text',
