@@ -156,6 +156,9 @@
 
             md-datepicker-container {
                 width: 100%;
+                .md-datepicker-input-container {
+                    margin-left: 0;
+                }
             }
 
             .main-search-bar {

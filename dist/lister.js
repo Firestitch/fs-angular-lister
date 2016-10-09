@@ -1691,7 +1691,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                                <label>{{::filter.label}}</label>\r" +
     "\n" +
-    "                                                <md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\"></md-datepicker>\r" +
+    "                                                <md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\" md-open-on-focus></md-datepicker>\r" +
     "\n" +
     "                                            </md-datepicker-container>\r" +
     "\n" +

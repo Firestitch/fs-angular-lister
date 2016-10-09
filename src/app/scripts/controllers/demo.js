@@ -116,7 +116,7 @@
         },
         */
 
-        stopActions: [
+        topActions: [
             {
                 label: 'Export',
                 click: function(data,event) {
@@ -261,7 +261,7 @@
             }]
         },
 
-        sfilters: [
+        filters: [
            {
                 name: 'search',
                 type: 'text',
@@ -293,7 +293,7 @@
                     { value: 'deleted', name: 'Deleted' }
                 ]
             },
-/*
+
             {
                 name: 'isolate',
                 type: 'select',
@@ -420,7 +420,7 @@
                 label: 'Checkbox',
                 checked: 'active',
                 unchecked: 'delete'
-            }*/
+            }
         ]
     };
 });
