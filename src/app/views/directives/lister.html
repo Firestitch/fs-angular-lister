@@ -158,9 +158,10 @@
             </div>
         </div>
         <div class="infinite-records">
-            <span ng-if="options.paging.infinite && numeric(paging.records)">{{paging.records}} results</span>
+            <span ng-if="numeric(paging.records)">{{paging.records}} results ordered by</span>
+            <span ng-if="!numeric(paging.records)">Ordered by</span>
             <md-menu ng-show="order.name">
-                <a href ng-click="$mdOpenMenu($event)" class="order-toggle">ordered by {{order.label}}</a>
+                <a href ng-click="$mdOpenMenu($event)" class="order-toggle">{{order.label}}</a>,
                 <md-menu-content>
                     <md-menu-item ng-repeat="order in options.orders">
                         <md-button ng-click="orderNameSelect(order)">
@@ -254,10 +255,7 @@
         </div>
     </div>
     <div class="paging" ng-if="options.paging.enabled && !options.paging.infinite" layout="row">
-        <div class="records">
-            <label>Total</label>
-            <div>{{paging.records}} Records</div>
-        </div>
+        <div class="records"></div>
         <div flex>
             <ul class="pages" ng-if="paging.pages>1 && options.paging.pages">
                 <li ng-class="{ disabled : paging.page == 1 }">

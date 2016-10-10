@@ -286,7 +286,10 @@
                             col.order.direction = 'asc';
                         }
 
-                        col.order.label = col.title;
+                        if(!col.order.label) {
+                            col.order.label = col.title;
+                        }
+
                         col.order.column = true;
 
                         var order = $filter('filter')($scope.options.orders,{ name: col.order.name },true);
@@ -367,6 +370,7 @@
                         }
 
                         $scope.order.name = col.order.name;
+                        $scope.order.label = col.order.label;
 
                         reload();
                     }

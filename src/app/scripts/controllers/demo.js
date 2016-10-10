@@ -177,7 +177,7 @@
 
         columns: [
             {   title: 'Name' ,
-                order: { name: 'name', default: true },
+                order: { name: 'name', default: true, label: 'Name!!' },
                 value: function(data) {
                     return "<b>" + data['name'] + "</b>";
                 },

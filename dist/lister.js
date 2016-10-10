@@ -286,7 +286,10 @@
                             col.order.direction = 'asc';
                         }
 
-                        col.order.label = col.title;
+                        if(!col.order.label) {
+                            col.order.label = col.title;
+                        }
+
                         col.order.column = true;
 
                         var order = $filter('filter')($scope.options.orders,{ name: col.order.name },true);
@@ -367,6 +370,7 @@
                         }
 
                         $scope.order.name = col.order.name;
+                        $scope.order.label = col.order.label;
 
                         reload();
                     }
@@ -1803,11 +1807,13 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "        <div class=\"infinite-records\">\r" +
     "\n" +
-    "            <span ng-if=\"options.paging.infinite && numeric(paging.records)\">{{paging.records}} results</span>\r" +
+    "            <span ng-if=\"numeric(paging.records)\">{{paging.records}} results ordered by</span>\r" +
+    "\n" +
+    "            <span ng-if=\"!numeric(paging.records)\">Ordered by</span>\r" +
     "\n" +
     "            <md-menu ng-show=\"order.name\">\r" +
     "\n" +
-    "                <a href ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">ordered by {{order.label}}</a>\r" +
+    "                <a href ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">{{order.label}}</a>,\r" +
     "\n" +
     "                <md-menu-content>\r" +
     "\n" +
@@ -1995,13 +2001,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "    <div class=\"paging\" ng-if=\"options.paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
     "\n" +
-    "        <div class=\"records\">\r" +
-    "\n" +
-    "            <label>Total</label>\r" +
-    "\n" +
-    "            <div>{{paging.records}} Records</div>\r" +
-    "\n" +
-    "        </div>\r" +
+    "        <div class=\"records\"></div>\r" +
     "\n" +
     "        <div flex>\r" +
     "\n" +
