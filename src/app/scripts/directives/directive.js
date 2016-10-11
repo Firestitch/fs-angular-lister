@@ -920,20 +920,39 @@
 
                             if(!filter.model || filter.model=='__all' || (angular.isArray(filter.model) && !filter.model.length)) {
                                 var values = [];
-                                angular.forEach(filter.values,function(value) {
-                                    if(value.value=='__all') {
-                                        return;
-                                    }
+                                angular.forEach(filter.values,function(value, index) {
+                                	if(angular.isObject(value)) {
+	                                    if(value.value=='__all') {
+	                                        return;
+	                                    }
 
-                                    values.push(value.value);
+	                                    values.push(value.value);
+	                                } else {
+	                                	if(index=='__all')
+	                                		return;
+
+	                                	values.push(index);
+	                                }
                                 });
                                 query[filter.name] = values.join(',');
                             }
+                        }
+
+
+                        //if we have a model but no value yet (because of persist) use the model
+                        if(filter.model && typeof filter.value == 'undefined') {
+                        	if(angular.isArray(filter.model)) {
+                        		if(filter.model.length > 0)
+                        			query[filter.name] = filter.model.join(',');
+                        	} else if(filter.model!=="__all") {
+                        		query[filter.name] = filter.model;
+                        	}
                         }
                     });
 
                     return query;
                 }
+
 
                 function clearData() {
                     dataIndex = 0;
@@ -1122,12 +1141,19 @@
                     return !isNaN(parseFloat(n)) && isFinite(n);
                 }
 
-                var promises = [];
-                angular.forEach($scope.options.filters,function(filter, index) {
 
+                angular.forEach($scope.options.filters,function(filter, index) {
                     if(typeof filter.values=='function') {
                         filter.values = filter.values();
                     }
+				});
+
+                if(options.load) {
+                    reload();
+                }
+
+                var promises = [];
+                angular.forEach($scope.options.filters,function(filter, index) {
 
                     var promise = $q(function(resolve,reject) {
 
@@ -1209,15 +1235,11 @@
                 //have to be loaded to render the textual inputs
                 $q.all(promises)
                 .then(function() {
-
                     $scope.filterValueUpdate();
-
-                    if(options.load) {
-                        reload();
-                    }
-
                     $scope.searchInputUpdate();
                 });
+
+
 
                 function data() {
 
