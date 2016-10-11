@@ -1,6 +1,6 @@
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }">
 
-    <div class="lister-search">
+    <div class="lister-search" ng-show="options.filters.length || options.topActions">
         <div layout="row" layout-align="start" ng-if="options.filters.length" layout-align="start end">
             <div layout="row" layout-align="start center" class="inline-search" flex>
                 <div class="inline-search-input" flex="grow">
@@ -102,7 +102,7 @@
                                         <span class="md-block">
                                             <md-datepicker-container class="md-no-label md-no-message md-block">
                                                 <label>{{::filter.label}}</label>
-                                                <md-datepicker ng-model="filter.model" ng-change="dateSearch(filter)"></md-datepicker>
+                                                <md-datepicker ng-model="filter.model" ng-change="dateSearch(filter)" md-open-on-focus></md-datepicker>
                                             </md-datepicker-container>
                                         </span>
                                     </div>
@@ -141,13 +141,13 @@
             </div>
 
             <div class="top-actions">
-                <md-button ng-repeat="action in options.topActions" ng-if="!action.more" ng-click="topActionsClick(action,$event)" class="md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{action.label}}</md-button>
+                <md-button ng-repeat="action in options.topActions" ng-show="action.show" ng-if="!action.more" ng-click="topActionsClick(action,$event)" class="md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{action.label}}</md-button>
                 <md-menu ng-if="(options.topActions | filter:{ more: true }).length > 0">
                     <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
                         <md-icon>more_vert</md-icon>
                     </md-button>
                     <md-menu-content>
-                        <md-menu-item ng-repeat="action in options.topActions" ng-if="action.more">
+                        <md-menu-item ng-repeat="action in options.topActions" ng-if="action.more" ng-show="action.show">
                             <md-button ng-click="action.click($event)">
                                 <md-icon ng-if="action.icon">{{::action.icon}}</md-icon>
                                 {{::action.label}}
@@ -158,9 +158,10 @@
             </div>
         </div>
         <div class="infinite-records">
-            <span ng-if="options.paging.infinite && numeric(paging.records)">{{paging.records}} results</span>
+            <span ng-if="numeric(paging.records)">{{paging.records}} results ordered by</span>
+            <span ng-if="!numeric(paging.records)">Ordered by</span>
             <md-menu ng-show="order.name">
-                ordered by <a href ng-click="$mdOpenMenu($event)" class="order-toggle">{{order.label}}</a>
+                <a href ng-click="$mdOpenMenu($event)" class="order-toggle">{{order.label}}</a>,
                 <md-menu-content>
                     <md-menu-item ng-repeat="order in options.orders">
                         <md-button ng-click="orderNameSelect(order)">
@@ -170,7 +171,7 @@
                 </md-menu-content>
             </md-menu>
 
-            <span ng-show="order.name">, <a href  ng-click="orderDirectionToggle($event)" class="order-toggle">{{orderDirections[order.direction]}}</a></span>
+            <a href ng-show="order.name" ng-click="orderDirectionToggle($event)" class="order-toggle">{{orderDirections[order.direction]}}</a>
         </div>
     </div>
     <div class="results" ng-if="options.columns.length">
@@ -254,10 +255,7 @@
         </div>
     </div>
     <div class="paging" ng-if="options.paging.enabled && !options.paging.infinite" layout="row">
-        <div class="records">
-            <label>Total</label>
-            <div>{{paging.records}} Records</div>
-        </div>
+        <div class="records"></div>
         <div flex>
             <ul class="pages" ng-if="paging.pages>1 && options.paging.pages">
                 <li ng-class="{ disabled : paging.page == 1 }">
@@ -289,4 +287,3 @@
         </div>
     </div>
 </div>
-
