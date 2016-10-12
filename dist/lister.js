@@ -922,13 +922,13 @@
                                 var values = [];
                                 angular.forEach(filter.values,function(value, index) {
                                 	if(angular.isObject(value)) {
-	                                    if(value.value=='__all') {
+	                                    if(value.value=='__all' || value.value==filter.isolate.value)
 	                                        return;
-	                                    }
 
 	                                    values.push(value.value);
+
 	                                } else {
-	                                	if(index=='__all')
+	                                	if(index=='__all' || index==filter.isolate.value)
 	                                		return;
 
 	                                	values.push(index);
