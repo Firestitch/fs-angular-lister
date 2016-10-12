@@ -135,7 +135,7 @@
             controller: ['$scope', function($scope) {
 
                 var options = $scope.lsOptions || {};
-                angular.forEach(fsLister.options(),function(value,key) {
+                angular.forEach(angular.copy(fsLister.options()),function(value,key) {
                     if(!(key in options)) {
                         options[key] = value;
                     }
