@@ -21,6 +21,7 @@
                         </ul>
                     </ul>
                 </ul>
+	 * @param {function} ls-options.init Called when all of the filter data has loaded
      * @param {function} ls-options.rowClick Called when the row is clicked
      * @param {array} ls-options.actions Adds a column to the right side of the lister and places a button that a user can click to perform custom events
                 <ul>
@@ -1237,6 +1238,10 @@
                 .then(function() {
                     $scope.filterValueUpdate();
                     $scope.searchInputUpdate();
+
+                    if(options.init)
+                    	options.init();
+
                 });
 
 
