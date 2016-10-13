@@ -1517,8 +1517,8 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\n" +
     "\n" +
     "    <div class=\"lister-search\" ng-show=\"options.filters.length || options.topActions\">\n" +
-    "        <div layout=\"row\" layout-align=\"start\" ng-if=\"options.filters.length\" layout-align=\"start end\">\n" +
-    "            <div layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex>\n" +
+    "        <div layout=\"row\" layout-align=\"{{options.filters.length ? 'start' : 'end'}}\">\n" +
+    "            <div layout=\"row\" ng-if=\"options.filters.length\" layout-align=\"start center\" class=\"inline-search\" flex>\n" +
     "                <div class=\"inline-search-input\" flex=\"grow\">\n" +
     "                    <div class=\"main-search-bar\" layout=\"row\" layout-align=\"start center\">\n" +
     "                        <div class=\"search\"><i class=\"material-icons\">search</i></div>\n" +
@@ -1656,7 +1656,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                <div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div>\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"top-actions\">\n" +
+    "            <div ng-if=\"options.topActions\" class=\"top-actions\">\n" +
     "                <md-button ng-repeat=\"action in options.topActions\" ng-show=\"action.show\" ng-if=\"!action.more\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\n" +
     "                <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\n" +
     "                    <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\">\n" +
@@ -1674,7 +1674,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "            </div>\n" +
     "        </div>\n" +
     "        <div class=\"infinite-records\">\n" +
-    "            <span ng-if=\"numeric(paging.records)\">{{paging.records}} results ordered by</span>\n" +
+    "            <span ng-if=\"numeric(paging.records)\">{{paging.records}} results<span ng-show=\"order.name\"> ordered by</span></span>\n" +
     "            <span ng-if=\"!numeric(paging.records) && order.name\">Ordered by</span>\n" +
     "            <md-menu ng-show=\"order.name\">\n" +
     "                <a href ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">{{order.label}}</a>,\n" +
