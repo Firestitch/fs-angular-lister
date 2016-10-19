@@ -781,6 +781,8 @@
 
 								if(angular.isArray(filter.model)) {
 									filter.value = filter.model.join(',');
+								} else {
+									filter.value = filter.model;
 								}
 
 							} else if(filter.model!='__all')  {
