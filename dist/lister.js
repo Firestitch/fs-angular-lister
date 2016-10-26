@@ -1815,7 +1815,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\r" +
     "\n" +
-    "            <div class=\"top-actions\">\r" +
+    "            <div class=\"top-actions\" ng-if=\"options.topActions.length\">\r" +
     "\n" +
     "                <md-button ng-repeat=\"action in options.topActions\" ng-show=\"action.show\" ng-if=\"!action.more\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
     "\n" +
