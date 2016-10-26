@@ -184,6 +184,7 @@
                 $scope.data = [];
                 $scope.dataCols = [];
                 $scope.styleCols = [];
+                $scope.actionCols = [];
                 $scope.options = options;
                 $scope.options.orders = $scope.options.orders || [];
                 $scope.paging = { records: 0, page: 1, pages: 0 };
@@ -379,6 +380,8 @@
 
                 $scope.actionsShow = function(data) {
 
+                	return true;
+/*
                     var show = false;
                     angular.forEach($scope.options.actions,function(action) {
                         if(action.show(data)) {
@@ -386,7 +389,7 @@
                         }
                     });
 
-                    return show;
+                    return show;*/
                 }
 
                 $scope.sortStop = function(item,partTo,indexFrom,indexTo) {
@@ -903,7 +906,10 @@
                     }
 
                     if(!action.show) {
-                        action.show = function() { return true }
+
+
+                    	action.show = false;
+                        //action.show = function() { return true }
                     }
 
                     return action;
@@ -959,6 +965,7 @@
                     dataIndex = 0;
                     $scope.data = [];
                     $scope.dataCols = [];
+                    $scope.actionCols = [];
                 }
 
                 function load(opts) {
@@ -1092,6 +1099,15 @@
                         }
 
                         $scope.dataCols[dataIndex] = cols;
+
+                        $scope.actionCols[dataIndex] = [];
+                        angular.forEach(options.actions,function(action,aindex) {
+                        	if(action.show) {
+                        		if(action.show(objects[o])) {
+                        			$scope.actionCols[dataIndex][aindex] = true;
+                        		}
+                        	}
+                        });
 
                         objects[o].$$index = dataIndex;
                         $scope.data.push(objects[o]);

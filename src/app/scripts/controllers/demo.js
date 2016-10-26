@@ -37,7 +37,9 @@
 
         debug: false,
 
-        paging: false,
+        sspaging: {
+        	limit: 1
+        },
 
         persist: {
             name: 'lister',
@@ -48,12 +50,12 @@
         //order: 'date',
 
         //inline: true,
-        sort: {
+/*        sort: {
             stop: function(item,list,$indexFrom,$indexTo) {
                 debugger;
             }
         },
-
+*/
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
         },
@@ -152,6 +154,9 @@
             {
                 label: 'Edit',
                 icon: 'edit',
+                show: function(data) {
+                	return 1;
+                },
                 click: function(data, event, helper) {
                     helper.reload();
                     //alert("Edit Action Click: " + JSON.stringify(data));
@@ -160,7 +165,9 @@
 
             {
                 label: 'Delete',
-                show: function() { return true },
+                show: function(data) {
+                	return 1;
+                },
                 delete:  {
                             content: 'Are you sure you would like to remove this?',
                             ok: function(data) {

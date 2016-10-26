@@ -184,6 +184,7 @@
                 $scope.data = [];
                 $scope.dataCols = [];
                 $scope.styleCols = [];
+                $scope.actionCols = [];
                 $scope.options = options;
                 $scope.options.orders = $scope.options.orders || [];
                 $scope.paging = { records: 0, page: 1, pages: 0 };
@@ -379,6 +380,8 @@
 
                 $scope.actionsShow = function(data) {
 
+                	return true;
+/*
                     var show = false;
                     angular.forEach($scope.options.actions,function(action) {
                         if(action.show(data)) {
@@ -386,7 +389,7 @@
                         }
                     });
 
-                    return show;
+                    return show;*/
                 }
 
                 $scope.sortStop = function(item,partTo,indexFrom,indexTo) {
@@ -903,7 +906,10 @@
                     }
 
                     if(!action.show) {
-                        action.show = function() { return true }
+
+
+                    	action.show = false;
+                        //action.show = function() { return true }
                     }
 
                     return action;
@@ -959,6 +965,7 @@
                     dataIndex = 0;
                     $scope.data = [];
                     $scope.dataCols = [];
+                    $scope.actionCols = [];
                 }
 
                 function load(opts) {
@@ -1092,6 +1099,15 @@
                         }
 
                         $scope.dataCols[dataIndex] = cols;
+
+                        $scope.actionCols[dataIndex] = [];
+                        angular.forEach(options.actions,function(action,aindex) {
+                        	if(action.show) {
+                        		if(action.show(objects[o])) {
+                        			$scope.actionCols[dataIndex][aindex] = true;
+                        		}
+                        	}
+                        });
 
                         objects[o].$$index = dataIndex;
                         $scope.data.push(objects[o]);
@@ -1978,7 +1994,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\r" +
     "\n" +
-    "                        <md-menu ng-if=\"actionsShow(item)\">\r" +
+    "                        <md-menu ng-if=\"actionCols[item.$$index].length\">\r" +
     "\n" +
     "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
     "\n" +
@@ -1988,7 +2004,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                            <md-menu-content>\r" +
     "\n" +
-    "                                <md-menu-item ng-if=\"action.show(item)\" ng-repeat=\"action in options.actions\">\r" +
+    "                                <md-menu-item ng-if=\"actionCols[item.$$index][$index]\" ng-repeat=\"action in options.actions\">\r" +
     "\n" +
     "                                    <md-button ng-click=\"actionClick(action,item,$event)\">\r" +
     "\n" +

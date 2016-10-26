@@ -230,12 +230,12 @@
                         </md-button>
                     </div>
                     <div class="lister-col lister-actions" ng-if="options.actions.length">
-                        <md-menu ng-if="actionsShow(item)">
+                        <md-menu ng-if="actionCols[item.$$index].length">
                             <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
                                 <md-icon class="md-default-theme material-icons">more_vert</md-icon>
                             </md-button>
                             <md-menu-content>
-                                <md-menu-item ng-if="action.show(item)" ng-repeat="action in options.actions">
+                                <md-menu-item ng-if="actionCols[item.$$index][$index]" ng-repeat="action in options.actions">
                                     <md-button ng-click="actionClick(action,item,$event)">
                                         <md-icon class="material-icons" ng-if="action.icon">{{::action.icon}}</md-icon>
                                         {{::action.label}}
