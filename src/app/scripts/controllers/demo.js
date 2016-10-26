@@ -338,19 +338,21 @@
                 name: 'multiple_key_value',
                 type: 'select',
                 label: 'Multiple (Key/Value)',
-                values: function(){ return {
-                    pear: 'Pear',
-                    orange: 'Orange',
-                    banana: 'Banana',
-                    apple: 'Apple',
-                }; },
+                values: function(){
+                	return {
+	                    pear: 'Pear',
+	                    orange: 'Orange',
+	                    banana: 'Banana',
+	                    apple: 'Apple',
+	                };
+	            },
                 multiple: true,
-                default: {
-                    pear: 'Pear',
-                    orange: 'Orange',
-                    banana: 'Banana',
-                    apple: 'Apple',
-                },
+                default: [
+                    'pear',
+                    'orange',
+                    'banana',
+                    'apple'
+                ],
             },
             {
                 name: 'multiple_objects',
@@ -365,12 +367,12 @@
                 	];
             	},
                 multiple: true,
-                default: {
-                    pear: 'Pear',
-                    orange: 'Orange',
-                    banana: 'Banana',
-                    apple: 'Apple',
-                },
+                default: [
+                    'pear',
+                    'orange',
+                    'banana',
+                    'apple'
+                ],
             },
             {
                 name: 'nested_gen',

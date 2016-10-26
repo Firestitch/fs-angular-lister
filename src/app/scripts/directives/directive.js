@@ -184,6 +184,7 @@
 				$scope.data = [];
 				$scope.dataCols = [];
 				$scope.styleCols = [];
+				$scope.actionCols = [];
 				$scope.options = options;
 				$scope.options.orders = $scope.options.orders || [];
 				$scope.paging = { records: 0, page: 1, pages: 0 };
@@ -961,6 +962,7 @@
 					dataIndex = 0;
 					$scope.data = [];
 					$scope.dataCols = [];
+					$scope.actionCols = [];
 				}
 
 				function load(opts) {
@@ -1094,6 +1096,15 @@
 						}
 
 						$scope.dataCols[dataIndex] = cols;
+
+                        $scope.actionCols[dataIndex] = [];
+                        angular.forEach(options.actions,function(action,aindex) {
+                        	if(action.show) {
+                        		if(action.show(objects[o])) {
+                        			$scope.actionCols[dataIndex][aindex] = true;
+                        		}
+                        	}
+                        });
 
 						objects[o].$$index = dataIndex;
 						$scope.data.push(objects[o]);
