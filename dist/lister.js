@@ -90,6 +90,7 @@
 					<li><label>values</label>An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.</li>
 					<li><label>default</label>Sets the default filter value</li>
 					<li><label>disabled</label>When set to true the filter will not be visible</li>
+					<li><label>wait</label>When set to true the filters values will be prepared before the lister data is fetched</li>
 					<li><label>nested</label>An key/value paired object with options related to showing nested select options</li>
 					<ul>
 						<li><label>parent_field</label>name of field used to link to parent row. typically 'parent_id' or similar</li>
@@ -1156,19 +1157,8 @@
 				}
 
 
-				angular.forEach($scope.options.filters,function(filter, index) {
-					if(typeof filter.values=='function' && filter.isolate) {
-						filter.values = filter.values();
-					}
-				});
 
-				if(options.load) {
-					reload();
-				}
-
-				var promises = [];
-				angular.forEach($scope.options.filters,function(filter, index) {
-
+				function prep_filter(filter) {
 					if(typeof filter.values=='function') {
 						filter.values = filter.values();
 					}
@@ -1245,22 +1235,48 @@
 						$scope.filterValue(filter);
 					});
 
-					promises.push(promise);
+					return promise;
+				}
+
+
+				//preload any filters which have .wait.  once they are all loaded then proceed to load main data & rest of filters.
+				var preload_promises = [];
+				angular.forEach($scope.options.filters,function(filter, index) {
+					if(typeof filter.values=='function' && filter.wait) {
+						var promise = prep_filter(filter);
+						preload_promises.push(promise);
+					}
 				});
 
-
-				//This promise is needed because the all the select filter values
-				//have to be loaded to render the textual inputs
-				$q.all(promises)
+				$q.all(preload_promises)
 				.then(function() {
-					$scope.filterValueUpdate();
-					$scope.searchInputUpdate();
 
-					if(options.init)
-						options.init();
+					//load main data
+					if(options.load) {
+						reload();
+					}
+
+					//load rest of filters
+					var promises = [];
+					angular.forEach($scope.options.filters,function(filter, index) {
+						var promise = prep_filter(filter);
+						promises.push(promise);
+					});
+
+
+					//This promise is needed because the all the select filter values
+					//have to be loaded to render the textual inputs
+					$q.all(promises)
+					.then(function() {
+						$scope.filterValueUpdate();
+						$scope.searchInputUpdate();
+
+						if(options.init)
+							options.init();
+
+					});
 
 				});
-
 
 
 				function data() {
