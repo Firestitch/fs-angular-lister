@@ -6,6 +6,7 @@
 	 * @name fs.directives:fs-lister
 	 * @restrict E
 	 * @param {object} ls-options Options to configure the Lister.
+	 * @param {object} ls-options.instance A variable that will be extended with the instance of the lister
 	 * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback.
 				<ul>
 					<li><label>query</label> An object with the filters</li>
@@ -1289,11 +1290,24 @@
 					return this;
 				}
 
-				var instance = {  load: load,
+				var instance = {load: load,
 								page: page,
 								reload: reload,
 								filterValues: filterValues,
 								data: data,
+								find: function(filters) {
+									return $filter('filter')($scope.data,filters,true);
+								},
+								update: function(object,filters) {
+
+									var item = this.find(filters)[0];
+
+									if(item) {
+										angular.extend(item,object);
+									} else {
+										this.reload();
+									}
+								},
 								option: function(option,name,value) {
 									if(option=='filter') {
 										var filter = $filter('filter')(options.filters,{ name: name },true)[0];
@@ -1329,7 +1343,10 @@
 					angular.extend($scope.lsInstance,instance);
 				}
 
-				$scope.options.instance = instance;
+				if(!$scope.options.instance)
+					$scope.options.instance = {};
+
+				angular.extend($scope.options.instance,instance);
 			}],
 			compile: function(element, tAttrs) {
 
