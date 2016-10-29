@@ -1296,11 +1296,26 @@
 								filterValues: filterValues,
 								data: data,
 								find: function(filters) {
-									return $filter('filter')($scope.data,filters,true);
+									var flen = filters.length;
+									var len = $scope.data.length;
+									for(var i=0; i<len; i++) {
+
+										var valid = true;
+
+										angular.forEach(filters,function(value,name) {
+											if(!valid || $scope.data[i][name]!==value)
+												valid = false;
+										});
+
+										if(valid)
+											return $scope.data[i];
+									}
+
+									return undefined;
 								},
 								update: function(object,filters) {
 
-									var item = this.find(filters)[0];
+									var item = this.find(filters);
 
 									if(item) {
 										angular.extend(item,object);
@@ -1326,7 +1341,6 @@
 										return filter;
 									}
 								},
-
 								options: function() {
 									if(arguments.length==1) {
 										return options[arguments[0]];
