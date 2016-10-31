@@ -64,7 +64,7 @@ angular.module('app')
 
             //return setTimeout(function() { cb([]); }, 2000);
 
-            query.count = 50;
+            query.count = 25;
 
             var url = 'https://service.firestitch.com/api/';
 

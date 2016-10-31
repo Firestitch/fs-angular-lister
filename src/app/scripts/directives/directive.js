@@ -996,7 +996,9 @@
 						$scope.paging.page = opts.page;
 					}
 
-					$scope.selectionsClear();
+					if(opts.clear)
+						$scope.selectionsClear();
+
 
 					var query = filterValues();
 
