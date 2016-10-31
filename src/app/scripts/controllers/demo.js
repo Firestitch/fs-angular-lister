@@ -122,13 +122,20 @@ angular.module('app')
             {
                 label: 'Export',
                 click: function(data,event) {
-                    alert('Export');
+                	//...
+                },
+                show: function() {
+                	return true;
+                	//return aclService.read(ACL.PERMISSION_PROJECT_EXPORT);
                 }
             },
             {
-                label: 'Add Something',
+                label: 'Add Project',
                 click: function() {
-                    alert('Add Something');
+                   //...
+                },
+                show: function() {
+                	//return aclService.(ACL.PERMISSION_PROJECT);
                 }
             },
             {
@@ -143,6 +150,9 @@ angular.module('app')
                 label: 'Menu 2',
                 more: true,
                 icon: 'delete',
+                show: function() {
+                	return 1;
+                },
                 click: function() {
                     alert('Menu 2');
                 }
@@ -155,7 +165,7 @@ angular.module('app')
                 label: 'Edit',
                 icon: 'edit',
                 show: function(data) {
-                	return 1;
+                	return 0;
                 },
                 click: function(data, event, helper) {
                     helper.reload();

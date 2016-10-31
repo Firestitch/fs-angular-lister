@@ -43,7 +43,7 @@
 				<ul>
 					<li><label>label</label>Used in the contextual menu item's label</li>
 					<li><label>click</label>Triggered when clicked</li>
-					<li><label>show</label>Show the action. Defaults to true</li>
+					<li><label>show</label>A boolean or function which when resolved will show/hide the button. Defaults to true</li>
 					<li><label>more</label>Places the action in the ... menu</li>
 				</ul>
 	* @param {object} ls-options.action Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.
@@ -306,8 +306,13 @@
 
 				if(options.topActions) {
 					angular.forEach(options.topActions,function(action) {
-						if(action.show===undefined)
+						if(action.show===undefined) {
 							action.show = true;
+						}
+
+						if(angular.isFunction(action.show)) {
+							action.show = action.show();
+						}
 					});
 				}
 
@@ -378,18 +383,6 @@
 
 						reload();
 					}
-				}
-
-				$scope.actionsShow = function(data) {
-
-					var show = false;
-					angular.forEach($scope.options.actions,function(action) {
-						if(action.show(data)) {
-							show = true;
-						}
-					});
-
-					return show;
 				}
 
 				$scope.sortStop = function(item,partTo,indexFrom,indexTo) {
@@ -907,8 +900,8 @@
 						action.icon = (action.icon !== undefined) ? action.icon  : 'delete';
 					}
 
-					if(!action.show) {
-						action.show = function() { return true }
+					if(action.show===undefined) {
+						action.show = true;
 					}
 
 					return action;
@@ -1103,7 +1096,7 @@
 
                         $scope.actionCols[dataIndex] = [];
                         angular.forEach(options.actions,function(action,aindex) {
-                        	if(action.show) {
+                        	if(angular.isFunction(action.show)) {
                         		if(action.show(objects[o])) {
                         			$scope.actionCols[dataIndex][aindex] = true;
                         		}
