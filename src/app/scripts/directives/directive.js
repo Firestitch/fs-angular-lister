@@ -1096,9 +1096,10 @@
 
                         $scope.actionCols[dataIndex] = [];
                         angular.forEach(options.actions,function(action,aindex) {
+                        	$scope.actionCols[dataIndex][aindex] = true;
                         	if(angular.isFunction(action.show)) {
-                        		if(action.show(objects[o])) {
-                        			$scope.actionCols[dataIndex][aindex] = true;
+                        		if(!action.show(objects[o])) {
+                        			$scope.actionCols[dataIndex][aindex] = false;
                         		}
                         	}
                         });
