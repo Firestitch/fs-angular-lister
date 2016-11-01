@@ -100,6 +100,7 @@
 					</ul>
 
 				</ul>
+	* @param {array} ls-options.container Specifies the container that is listened to for scroll events and triggers page loads in infinite listers. If no container is specified the browser window is used.
 	* @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive during run time.
 	* @param {function} ls-instance.load Will load the lister with the current filters and page
 	* @param {function} ls-instance.reload Will load the lister with the current filters and on the first page
@@ -131,12 +132,12 @@
 			},
 			restrict: 'E',
 			scope: {
-				lsOptions: '=',
-				lsInstance: '='
+				options: '=lsOptions',
+				instance: '=?lsInstance'
 			},
 			controller: ['$scope', function($scope) {
 
-				var options = $scope.lsOptions || {};
+				var options = $scope.options || {};
 				angular.forEach(angular.copy(fsLister.options()),function(value,key) {
 					if(!(key in options)) {
 						options[key] = value;
@@ -506,7 +507,7 @@
 							selected.push($scope.data[index]);
 					});
 
-					click(selected, $event, $scope.lsInstance);
+					click(selected, $event, $scope.instance);
 				}
 
 				$scope.selectionsClear = function() {
@@ -556,7 +557,7 @@
 
 				$scope.topActionsClick = function(action,$event) {
 					if(action.click) {
-						action.click(filterValues(), $event, $scope.lsInstance);
+						action.click(filterValues(), $event, $scope.instance);
 					}
 				}
 
@@ -1349,8 +1350,8 @@
 									return options;
 								}};
 
-				if($scope.lsInstance) {
-					angular.extend($scope.lsInstance,instance);
+				if($scope.instance) {
+					angular.extend($scope.instance,instance);
 				}
 
 				if(!$scope.options.instance)
@@ -1358,87 +1359,65 @@
 
 				angular.extend($scope.options.instance,instance);
 			}],
-			compile: function(element, tAttrs) {
+			link: function($scope, element, attr, ctrl) {
 
-				return {
+				$scope.max_bottom = 0;
+				if($scope.options && $scope.options.paging && $scope.options.paging.infinite) {
 
-					post: function($scope, element, attr, ctrl) {
+					element = angular.element(element[0].children[0]);
 
-						/*
-						Removed to see if this is what is causing performance issues
-						var widthHolders = function() {
+					var height,
+						el_bottom,
+						wn_bottom,
+						scrollTop,
+						condition,
+						threshhold = 200;
 
-							if(!$scope.loading) {
+					var container = $scope.options.container ? document.querySelector($scope.options.container) : null;
 
-								var elements = document.getElementsByClassName('lister-col-header');
+					var timeout = $interval(function() {
 
-								angular.forEach(elements,function(col) {
+						if(!$scope.loading && $scope.data.length) {
 
-									angular.forEach(col.childNodes,function(element) {
-										if(angular.element(element).hasClass('width-holder')) {
+							height = container ? container.clientHeight : window.innerHeight;
+							scrollTop = container ? parseInt(container.scrollTop) : $window.pageYOffset;
+							el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
+							wn_bottom = scrollTop + parseInt(height);
+							condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
 
-											var style = window.getComputedStyle(col);
-											element.style.width = (col.clientWidth - parseInt(style.paddingLeft, 10) - parseInt(style.paddingRight, 10)) + 'px';
-										}
-									});
-								});
+							if($scope.options.debug) {
+								var body = document.body,
+									html = document.documentElement;
+
+								var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+
+								$log.log("Element top=" + element.prop('offsetTop'));
+								$log.log("Element height=" + element.prop('offsetHeight'));
+								$log.log("Scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
+								$log.log("Total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
+								$log.log("Threshhold= " + threshhold);
+								$log.log("Element Bottom: " + el_bottom);
+								$log.log("Window Height: " + window.innerHeight);
+								$log.log("Window Bottom: " + wn_bottom);
+								$log.log("Max Bottom: " + $scope.max_bottom);
+								$log.log("If: ( (el_bottom - threshhold) ) <=  wn_bottom  && ( (el_bottom > ($scope.max_bottom + threshhold)) )");
+								$log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + el_bottom  + " > " + ($scope.max_bottom + threshhold) + ") = " + condition);
+								$log.log("----------------------------------------------------------");
 							}
 
-							$timeout(widthHolders,2500);
+							if(condition) {
+								$scope.max_bottom = el_bottom;
+								$scope.load();
+							}
 						}
+					},400);
 
-						widthHolders();
-						*/
-
-						$scope.max_bottom = 0;
-						if($scope.lsOptions && $scope.lsOptions.paging && $scope.lsOptions.paging.infinite) {
-
-							element = angular.element(element[0].children[0]);
-
-							var body = document.body,
-								html = document.documentElement,
-								threshhold = 200;
-
-							var timeout = $interval(function() {
-
-							  if(!$scope.loading && $scope.data.length) {
-
-									var scrollTop = parseInt($window.pageYOffset);
-									var el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
-									var wn_bottom = scrollTop + parseInt(window.innerHeight);
-									var condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
-
-									if($scope.lsOptions.debug) {
-										var height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
-
-										$log.log("Element top=" + element.prop('offsetTop'));
-										$log.log("Element height=" + element.prop('offsetHeight'));
-										$log.log("Scroll top=" + scrollTop + ", doc height=" + height + ", win height=" + window.innerHeight );
-										$log.log("Total= " + parseInt(scrollTop) + parseInt(window.innerHeight));
-										$log.log("Threshhold= " + threshhold);
-										$log.log("Element Bottom: " + el_bottom);
-										$log.log("Window Height: " + window.innerHeight);
-										$log.log("Window Bottom: " + wn_bottom);
-										$log.log("Max Bottom: " + $scope.max_bottom);
-										$log.log("If: ( (el_bottom - threshhold) ) <=  wn_bottom  && ( (el_bottom > ($scope.max_bottom + threshhold)) )");
-										$log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + el_bottom  + " > " + ($scope.max_bottom + threshhold) + ") = " + condition);
-										$log.log("----------------------------------------------------------");
-									}
-
-									if(condition) {
-										$scope.max_bottom = el_bottom;
-										$scope.load();
-									}
-								}
-							},500);
-
-							$scope.$on('$destroy', function () {
-								$interval.cancel(timeout);
-							});
-						}
-					}
+					$scope.$on('$destroy', function() {
+						$interval.cancel(timeout);
+					});
 				}
 			}
+
 		}
 	}];
 

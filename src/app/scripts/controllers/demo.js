@@ -36,9 +36,11 @@ angular.module('app')
     $scope.listerConf = {
 
         debug: false,
+        //container: '#frame',
 
-        sspaging: {
-        	limit: 1
+        paging: {
+        	limit: 5,
+        	infinite: true
         },
 
         // persist: {
