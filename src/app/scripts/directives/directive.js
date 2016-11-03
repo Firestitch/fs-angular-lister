@@ -272,8 +272,15 @@
 
 					 if(filter.type=='select') {
 
-						if(filter.isolate && filter.isolate.value==filter.model) {
-							filter.isolate.enabled = true;
+						if(filter.isolate) {
+
+							if(filter.wait===undefined) {
+								filter.wait = true;
+							}
+
+							if(filter.isolate.value==filter.model) {
+								filter.isolate.enabled = true;
+							}
 						}
 					}
 				});
@@ -1237,12 +1244,11 @@
 				}
 
 
-				//preload any filters which have .wait.  once they are all loaded then proceed to load main data & rest of filters.
+				//preload any filters which have filter.wait.  Once they are all loaded then proceed to load main data & rest of filters.
 				var preload_promises = [];
 				angular.forEach($scope.options.filters,function(filter, index) {
 					if(typeof filter.values=='function' && filter.wait) {
-						var promise = prep_filter(filter);
-						preload_promises.push(promise);
+						preload_promises.push(prep_filter(filter));
 					}
 				});
 

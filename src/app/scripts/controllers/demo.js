@@ -317,7 +317,6 @@ angular.module('app')
                 name: 'isolate',
                 type: 'select',
                 label: 'Isolate',
-                wait: true,
                 values: function() {
 
                     return $q(function(resolve,reject) {
