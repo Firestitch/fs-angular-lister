@@ -1115,6 +1115,7 @@
 						$scope.dataCols[dataIndex] = cols;
 
                         $scope.actionCols[dataIndex] = [];
+                        var showActions = false;
                         angular.forEach(options.actions,function(action,aindex) {
                         	$scope.actionCols[dataIndex][aindex] = true;
                         	if(angular.isFunction(action.show)) {
@@ -1122,7 +1123,12 @@
                         			$scope.actionCols[dataIndex][aindex] = false;
                         		}
                         	}
+
+                        	showActions |= $scope.actionCols[dataIndex][aindex];
                         });
+                        if(!showActions) {
+                        	$scope.actionCols[dataIndex] = [];
+                        }
 
 						objects[o].$$index = dataIndex;
 						$scope.data.push(objects[o]);
