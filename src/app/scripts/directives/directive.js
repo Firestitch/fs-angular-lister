@@ -88,6 +88,7 @@
 					<li><label>name</label>the name in the query object passed to the fetch data process</li>
 					<li><label>type</label>select (single selection dropdown) or text (one line input box) or date</li>
 					<li><label>label</label>The label of the interface</li>
+	 				<li><label>alias</label>The another label what can be shown in search line instead main label</li>
 					<li><label>values</label>An key/value paired object with a list of filterable values. To avoid specifying a filter value use the key '__all'.  Applies only ror select type filters.</li>
 					<li><label>default</label>Sets the default filter value</li>
 					<li><label>disabled</label>When set to true the filter will not be visible</li>
