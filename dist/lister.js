@@ -587,10 +587,11 @@
 				}
 
 				$scope.search = function(filter) {
+					$scope.filterValueUpdate();
+
 					if(filter.change)
 						filter.change();
 
-					$scope.filterValueUpdate();
 					$scope.searchInputUpdate();
 					reload();
 				}
