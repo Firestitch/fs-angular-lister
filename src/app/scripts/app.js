@@ -9,9 +9,13 @@ angular
     'fs-angular-api',
     'ui.router'
 ])
-.config(function ($stateProvider, $urlRouterProvider, fsListerProvider) {
+.config(function ($stateProvider, $urlRouterProvider, fsListerProvider, $mdDateLocaleProvider) {
 
     fsListerProvider.options({ paging: { infinite: true, limit: 10 }, inline: true });
+
+	$mdDateLocaleProvider.formatDate = function(date) {
+		return moment(date).format('MMM D, YYYY');
+    };
 
     $urlRouterProvider
     .otherwise('/404')
