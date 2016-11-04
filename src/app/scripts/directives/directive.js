@@ -1103,25 +1103,19 @@
 						$scope.dataCols[dataIndex] = cols;
 
                         $scope.actionCols[dataIndex] = [];
-                        var showKebab = false;
-                        var actionCols = [];
+                        var showActions = false;
                         angular.forEach(options.actions,function(action,aindex) {
+                        	$scope.actionCols[dataIndex][aindex] = true;
                         	if(angular.isFunction(action.show)) {
-                        		if(action.show(objects[o])) {
-		                    		showKebab = true;
-                        			actionCols[aindex] = true;
-                        		}
-                        		else {
-                        			actionCols[aindex] = false;
+                        		if(!action.show(objects[o])) {
+                        			$scope.actionCols[dataIndex][aindex] = false;
                         		}
                         	}
-                        	else {
-	                        	actionCols[aindex] = true;
-		                        showKebab = true;
-                        	}
+
+                        	showActions |= $scope.actionCols[dataIndex][aindex];
                         });
-                        if(showKebab) {
-                        	$scope.actionCols[dataIndex] = actionCols;
+                        if(!showActions) {
+                        	$scope.actionCols[dataIndex] = [];
                         }
 
 						objects[o].$$index = dataIndex;
