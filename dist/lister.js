@@ -93,6 +93,7 @@
 					<li><label>default</label>Sets the default filter value</li>
 					<li><label>disabled</label>When set to true the filter will not be visible</li>
 					<li><label>wait</label>When set to true the filters values will be prepared before the lister data is fetched</li>
+					<li><label>change</label>Callback function which fires when the filter values changes. change: function(instance) {...}</li>
 					<li><label>nested</label>An key/value paired object with options related to showing nested select options</li>
 					<ul>
 						<li><label>parent_field</label>name of field used to link to parent row. typically 'parent_id' or similar</li>
@@ -106,14 +107,15 @@
 	* @param {function} ls-instance.load Will load the lister with the current filters and page
 	* @param {function} ls-instance.reload Will load the lister with the current filters and on the first page
 	* @param {function} ls-instance.filterValues Will return the current filter values
+	* @param {function} ls-instance.filter Will return the filter object with the specified name.  var filter = instance.filter('state');
 	* @param {function} ls-instance.data Will return the current data set
 	* @param {function} ls-instance.options Set/Gets options. Zero arguments passed will return all options. One argument passed will return that option's value. Two arguments passed will set option with the value.
 	*/
 
 	var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$interval', '$mdDialog',
-							'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache',
+							'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache', 'fsArray',
 							function ($compile, $sce, $filter, $window, $log, $q, $interval, $mdDialog,
-									fsStore, $rootScope, fsLister, $location, $templateCache) {
+									fsStore, $rootScope, fsLister, $location, $templateCache, fsArray) {
 		return {
 			template: function(element, attr) {
 				var template = $templateCache.get('views/directives/lister.html');
@@ -137,8 +139,8 @@
 				instance: '=?lsInstance'
 			},
 			controller: ['$scope', function($scope) {
-
 				var options = $scope.options || {};
+				options.instance = {};
 				angular.forEach(angular.copy(fsLister.options()),function(value,key) {
 					if(!(key in options)) {
 						options[key] = value;
@@ -284,6 +286,11 @@
 							}
 						}
 					}
+
+
+					if(filter.change)
+						filter.change = angular.bind(filter,filter.change, options.instance);
+
 				});
 
 				angular.forEach(options.columns,function(col,index) {
@@ -555,12 +562,12 @@
 							}
 						}
 
-						$scope.search();
+						$scope.search(filter);
 					}
 				}
 
 				$scope.dateSearch = function(filter) {
-					$scope.search();
+					$scope.search(filter);
 				}
 
 				$scope.topActionsClick = function(action,$event) {
@@ -577,10 +584,13 @@
 						filter.model = null;
 					}
 
-					$scope.search();
+					$scope.search(filter);
 				}
 
-				$scope.search = function() {
+				$scope.search = function(filter) {
+					if(filter.change)
+						filter.change();
+
 					$scope.filterValueUpdate();
 					$scope.searchInputUpdate();
 					reload();
@@ -1317,6 +1327,9 @@
 
 									return undefined;
 								},
+								filter: function(name) {
+									return fsArray.filter(options.filters, {name:name})[0];
+								},
 								update: function(object,filters) {
 
 									var item = this.find(filters);
@@ -1428,7 +1441,7 @@
 		}
 	}];
 
-	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view'])
+	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array'])
 	.directive('lister',ListerDirective)
 	.directive('fsLister',ListerDirective)
 	.directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',
@@ -1626,7 +1639,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <div class=\"interface\" ng-if=\"filter.type == 'text'\">\n" +
     "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\">\n" +
-    "                                            <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"search()\"/>\n" +
+    "                                            <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"search(filter)\"/>\n" +
     "                                        </md-input-container>\n" +
     "                                    </div>\n" +
     "\n" +
@@ -1642,7 +1655,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                                                    ng-model=\"filter.model['min']\"\n" +
     "                                                    aria-label=\"{{::filter.label}}\"\n" +
     "                                                    ng-model-options=\"{debounce: 400}\"\n" +
-    "                                                    ng-change=\"search()\" />\n" +
+    "                                                    ng-change=\"search(filter)\" />\n" +
     "                                             </md-input-container>\n" +
     "\n" +
     "\n" +
@@ -1654,7 +1667,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                                                    ng-model=\"filter.model['max']\"\n" +
     "                                                    aria-label=\"{{::filter.label}}\"\n" +
     "                                                    ng-model-options=\"{debounce: 400}\"\n" +
-    "                                                    ng-change=\"search()\" />\n" +
+    "                                                    ng-change=\"search(filter)\" />\n" +
     "                                             </md-input-container>\n" +
     "                                        </span>\n" +
     "                                    </div>\n" +
@@ -1670,7 +1683,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                                    </div>\n" +
     "\n" +
     "                                    <div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\">\n" +
-    "                                        <md-checkbox ng-change=\"search()\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox>\n" +
+    "                                        <md-checkbox ng-change=\"search(filter)\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox>\n" +
     "                                    </div>\n" +
     "\n" +
     "                                </div>\n" +
