@@ -1103,14 +1103,26 @@
 						$scope.dataCols[dataIndex] = cols;
 
                         $scope.actionCols[dataIndex] = [];
+                        var showKebab = false;
+                        var actionCols = [];
                         angular.forEach(options.actions,function(action,aindex) {
-                        	$scope.actionCols[dataIndex][aindex] = true;
                         	if(angular.isFunction(action.show)) {
-                        		if(!action.show(objects[o])) {
-                        			$scope.actionCols[dataIndex][aindex] = false;
+                        		if(action.show(objects[o])) {
+		                    		showKebab = true;
+                        			actionCols[aindex] = true;
+                        		}
+                        		else {
+                        			actionCols[aindex] = false;
                         		}
                         	}
+                        	else {
+	                        	actionCols[aindex] = true;
+		                        showKebab = true;
+                        	}
                         });
+                        if(showKebab) {
+                        	$scope.actionCols[dataIndex] = actionCols;
+                        }
 
 						objects[o].$$index = dataIndex;
 						$scope.data.push(objects[o]);
@@ -1791,7 +1803,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                        </md-button>\n" +
     "                    </div>\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\n" +
-    "                        <md-menu ng-if=\"actionCols[item.$$index].length && actionCols[item.$$index].indexOf(true) >= 0\">\n" +
+    "                        <md-menu ng-if=\"actionCols[item.$$index].length\">\n" +
     "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\n" +
     "                                <md-icon class=\"md-default-theme material-icons\">more_vert</md-icon>\n" +
     "                            </md-button>\n" +
