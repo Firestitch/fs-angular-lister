@@ -64,7 +64,7 @@
 
                                     <div class="interface" ng-if="filter.type == 'text'">
                                         <md-input-container class="md-no-float md-no-label md-no-message">
-                                            <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-keydown="searchKeydown($event, 'closePopupOnEnter')" ng-change="search()"/>
+                                            <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-keydown="searchKeydown($event, 'closePopupOnEnter')" ng-change="search(filter)"/>
                                         </md-input-container>
                                     </div>
 
@@ -80,7 +80,7 @@
                                                     ng-model="filter.model['min']"
                                                     aria-label="{{::filter.label}}"
                                                     ng-model-options="{debounce: 400}"
-                                                    ng-change="search()" />
+                                                    ng-change="search(filter)" />
                                              </md-input-container>
 
 
@@ -92,7 +92,7 @@
                                                     ng-model="filter.model['max']"
                                                     aria-label="{{::filter.label}}"
                                                     ng-model-options="{debounce: 400}"
-                                                    ng-change="search()" />
+                                                    ng-change="search(filter)" />
                                              </md-input-container>
                                         </span>
                                     </div>
@@ -108,7 +108,7 @@
                                     </div>
 
                                     <div class="interface interface-checkbox" ng-if="filter.type == 'checkbox'">
-                                        <md-checkbox ng-change="search()" ng-model="filter.model" ng-true-value="'{{filter.checked}}'" ng-false-value="'{{filter.unchecked}}'" aria-label="Checkbox filter"></md-checkbox>
+                                        <md-checkbox ng-change="search(filter)" ng-model="filter.model" ng-true-value="'{{filter.checked}}'" ng-false-value="'{{filter.unchecked}}'" aria-label="Checkbox filter"></md-checkbox>
                                     </div>
 
                                 </div>

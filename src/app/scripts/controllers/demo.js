@@ -291,6 +291,9 @@ angular.module('app')
                 name: 'state',
                 type: 'select',
                 label: 'State',
+                change: function(instance) {
+                	console.log('state filter changed', this, instance);
+                },
                 values: {
                     __all: 'All',
                     active: 'Active',
