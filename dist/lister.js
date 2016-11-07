@@ -1579,295 +1579,584 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
   'use strict';
 
   $templateCache.put('views/directives/lister.html',
-    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\n" +
+    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\r" +
     "\n" +
-    "    <div class=\"lister-search\" ng-show=\"options.filters.length || options.topActions\">\n" +
-    "        <div layout=\"row\" layout-align=\"start\" ng-if=\"options.filters.length\" layout-align=\"start end\">\n" +
-    "            <div layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex>\n" +
-    "                <div class=\"inline-search-input\" flex=\"grow\">\n" +
-    "                    <div class=\"main-search-bar\" layout=\"row\" layout-align=\"start center\">\n" +
-    "                        <div class=\"search\"><i class=\"material-icons\">search</i></div>\n" +
-    "                        <md-input-container class=\"md-no-label md-no-message\">\n" +
-    "                            <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\" />\n" +
-    "                        </md-input-container>\n" +
-    "                        <a href ng-click=\"reload()\" class=\"reload\"><i class=\"material-icons\">refresh</i></a>\n" +
-    "                    </div>\n" +
+    "\r" +
     "\n" +
-    "                    <div class=\"ng-hide filters\" layout=\"column\" ng-show=\"extended_search\">\n" +
-    "                        <div class=\"wrap\">\n" +
-    "                            <div ng-repeat=\"filter in options.filters\" class=\"filter-group\" ng-if=\"!filter.disabled\">\n" +
+    "    <div class=\"lister-search\" ng-show=\"options.filters.length || options.topActions\">\r" +
     "\n" +
-    "                                <div class=\"filter filter-{{filter.type}}\">\n" +
+    "        <div layout=\"row\" layout-align=\"start\" ng-if=\"options.filters.length\" layout-align=\"start end\">\r" +
     "\n" +
-    "                                    <div class=\"filter-label\">\n" +
-    "                                        <div class=\"filter-label-content\">\n" +
-    "                                            {{::filter.label}}\n" +
-    "                                        </div>\n" +
-    "                                    </div>\n" +
+    "            <div layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex>\r" +
     "\n" +
-    "                                    <div class=\"interface\" ng-if=\"filter.type == 'select'\">\n" +
-    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && !filter.groups\">\n" +
-    "                                            <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-open=\"selectOpen(filter)\" md-on-close=\"selectSearch(filter)\">\n" +
-    "                                                <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\n" +
-    "                                                    {{::item.name}}\n" +
-    "                                                </md-option>\n" +
-    "                                            </md-select>\n" +
-    "                                        </md-input-container>\n" +
+    "                <div class=\"inline-search-input\" flex=\"grow\">\r" +
     "\n" +
-    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && !filter.groups\">\n" +
-    "                                            <md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"selectSearch(filter,filter.model)\">\n" +
-    "                                                <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\n" +
-    "                                                    {{::item.name}}\n" +
-    "                                                </md-option>\n" +
-    "                                            </md-select>\n" +
-    "                                        </md-input-container>\n" +
+    "                    <div class=\"main-search-bar\" layout=\"row\" layout-align=\"start center\">\r" +
     "\n" +
-    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && filter.groups\">\n" +
-    "                                            <md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"selectSearch(filter)\">\n" +
-    "                                                <md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\">\n" +
-    "                                                    <md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\n" +
-    "                                                        {{::item.name}}\n" +
-    "                                                    </md-option>\n" +
-    "                                                </md-optgroup>\n" +
-    "                                            </md-select>\n" +
-    "                                        </md-input-container>\n" +
+    "                        <div class=\"search\"><i class=\"material-icons\">search</i></div>\r" +
     "\n" +
-    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && filter.groups\">\n" +
-    "                                            <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-open=\"selectOpen(filter)\" md-on-close=\"selectSearch(filter)\">\n" +
-    "                                                <md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\">\n" +
-    "                                                    <md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\n" +
-    "                                                        {{::item.name}}\n" +
-    "                                                    </md-option>\n" +
-    "                                                </md-optgroup>\n" +
-    "                                            </md-select>\n" +
-    "                                        </md-input-container>\n" +
-    "                                    </div>\n" +
+    "                        <md-input-container class=\"md-no-label md-no-message\">\r" +
     "\n" +
-    "                                    <div class=\"interface\" ng-if=\"filter.type == 'text'\">\n" +
-    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\">\n" +
-    "                                            <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"search(filter)\"/>\n" +
-    "                                        </md-input-container>\n" +
-    "                                    </div>\n" +
+    "                            <input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\" />\r" +
     "\n" +
-    "                                    <div class=\"interface\" ng-if=\"filter.type == 'range'\" >\n" +
+    "                        </md-input-container>\r" +
     "\n" +
-    "                                        <span layout=\"row\" class=\"md-block\">\n" +
+    "                        <a href ng-click=\"reload()\" class=\"reload\"><i class=\"material-icons\">refresh</i></a>\r" +
     "\n" +
-    "                                             <md-input-container class=\"md-no-label md-no-message md-block filter-range-min\">\n" +
+    "                    </div>\r" +
     "\n" +
-    "                                                <label>{{::filter.label}}</label>\n" +
-    "                                                <input\n" +
-    "                                                    placeholder=\"{{::filter.placeholder[0]}}\"\n" +
-    "                                                    ng-model=\"filter.model['min']\"\n" +
-    "                                                    aria-label=\"{{::filter.label}}\"\n" +
-    "                                                    ng-model-options=\"{debounce: 400}\"\n" +
-    "                                                    ng-change=\"search(filter)\" />\n" +
-    "                                             </md-input-container>\n" +
+    "\r" +
     "\n" +
+    "                    <div class=\"ng-hide filters\" layout=\"column\" ng-show=\"extended_search\">\r" +
     "\n" +
-    "                                             <md-input-container class=\"md-no-label md-no-message md-block filter-range-max\">\n" +
+    "                        <div class=\"wrap\">\r" +
     "\n" +
-    "                                                <label>{{::filter.label}}</label>\n" +
-    "                                                <input\n" +
-    "                                                    placeholder=\"{{::filter.placeholder[1]}}\"\n" +
-    "                                                    ng-model=\"filter.model['max']\"\n" +
-    "                                                    aria-label=\"{{::filter.label}}\"\n" +
-    "                                                    ng-model-options=\"{debounce: 400}\"\n" +
-    "                                                    ng-change=\"search(filter)\" />\n" +
-    "                                             </md-input-container>\n" +
-    "                                        </span>\n" +
-    "                                    </div>\n" +
+    "                            <div ng-repeat=\"filter in options.filters\" class=\"filter-group\" ng-if=\"!filter.disabled\">\r" +
     "\n" +
-    "                                    <div class=\"interface\" ng-if=\"filter.type == 'date'\" >\n" +
+    "\r" +
     "\n" +
-    "                                        <span class=\"md-block\">\n" +
-    "                                            <md-datepicker-container class=\"md-no-label md-no-message md-block\">\n" +
-    "                                                <label>{{::filter.label}}</label>\n" +
-    "                                                <md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\" md-open-on-focus></md-datepicker>\n" +
-    "                                            </md-datepicker-container>\n" +
-    "                                        </span>\n" +
-    "                                    </div>\n" +
+    "                                <div class=\"filter filter-{{filter.type}}\">\r" +
     "\n" +
-    "                                    <div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\">\n" +
-    "                                        <md-checkbox ng-change=\"search(filter)\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox>\n" +
-    "                                    </div>\n" +
+    "\r" +
     "\n" +
-    "                                </div>\n" +
+    "                                    <div class=\"filter-label\">\r" +
     "\n" +
-    "                                <div ng-if=\"filter.isolate\" class=\"filter isolate\">\n" +
+    "                                        <div class=\"filter-label-content\">\r" +
     "\n" +
-    "                                    <div class=\"filter-label\"></div>\n" +
+    "                                            {{::filter.label}}\r" +
     "\n" +
-    "                                    <div class=\"interface\">\n" +
-    "                                        <md-checkbox ng-change=\"isolateSearch(filter)\" ng-model=\"filter.isolate.enabled\" ng-true-value=\"true\" ng-false-value=\"false\" aria-label=\"Checkbox filter\"></md-checkbox>\n" +
-    "                                        {{filter.isolate.label}}\n" +
-    "                                    </div>\n" +
-    "                                </div>\n" +
-    "                            </div>\n" +
+    "                                        </div>\r" +
     "\n" +
-    "                            <md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"done()\">Done</md-button>\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
+    "                                    </div>\r" +
     "\n" +
+    "\r" +
     "\n" +
+    "                                    <div class=\"interface\" ng-if=\"filter.type == 'select'\">\r" +
     "\n" +
-    "                <!--\n" +
-    "                <md-button ng-click=\"toggleFilters()\" md-no-ink class=\"md-icon-button md-icon-button-filters\" aria-label=\"Search filters\">\n" +
-    "                    <div class=\"material-icons icon-collapsed\" ng-show=\"extended_search\">expand_more</div>\n" +
-    "                    <div class=\"material-icons icon-expanded\" ng-show=\"!extended_search\">chevron_right</div>\n" +
-    "                </md-button>\n" +
-    "                -->\n" +
-    "                <div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div>\n" +
-    "            </div>\n" +
+    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && !filter.groups\">\r" +
     "\n" +
-    "            <div class=\"top-actions\" ng-if=\"options.topActions.length\">\n" +
-    "                <md-button ng-repeat=\"action in options.topActions\" ng-show=\"action.show\" ng-if=\"!action.more\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\n" +
-    "                <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\n" +
-    "                    <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\">\n" +
-    "                        <md-icon>more_vert</md-icon>\n" +
-    "                    </md-button>\n" +
-    "                    <md-menu-content>\n" +
-    "                        <md-menu-item ng-repeat=\"action in options.topActions\" ng-if=\"action.more\" ng-show=\"action.show\">\n" +
-    "                            <md-button ng-click=\"action.click($event)\">\n" +
-    "                                <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\n" +
-    "                                {{::action.label}}\n" +
-    "                            </md-button>\n" +
-    "                        </md-menu-item>\n" +
-    "                    </md-menu-content>\n" +
-    "                </md-menu>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"infinite-records\">\n" +
-    "            <span ng-if=\"numeric(paging.records) && paging.records>=0\">{{paging.records}} results<span ng-show=\"order.name\"> ordered by</span></span>\n" +
-    "            <span ng-if=\"(!numeric(paging.records) || paging.records<0) && order.name\">Ordered by</span>\n" +
-    "            <md-menu ng-show=\"order.name\">\n" +
-    "                <a href ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">{{order.label}}</a>,\n" +
-    "                <md-menu-content>\n" +
-    "                    <md-menu-item ng-repeat=\"order in options.orders\">\n" +
-    "                        <md-button ng-click=\"orderNameSelect(order)\">\n" +
-    "                            {{order.label}}\n" +
-    "                        </md-button>\n" +
-    "                    </md-menu-item>\n" +
-    "                </md-menu-content>\n" +
-    "            </md-menu>\n" +
+    "                                            <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-open=\"selectOpen(filter)\" md-on-close=\"selectSearch(filter)\">\r" +
     "\n" +
-    "            <a href ng-show=\"order.name\" ng-click=\"orderDirectionToggle($event)\" class=\"order-toggle\">{{orderDirections[order.direction]}}</a>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"results\" ng-if=\"options.columns.length\">\n" +
-    "        <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\n" +
-    "            <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\n" +
-    "        </div>\n" +
-    "        <div class=\"lister-table\">\n" +
-    "            <div class=\"lister-head\">\n" +
-    "                <div class=\"lister-row\">\n" +
-    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.sort\"></div>\n" +
-    "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection\">\n" +
+    "                                                <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
     "\n" +
-    "                        <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox>\n" +
-    "                        <md-menu md-offset=\"6 32\">\n" +
-    "                            <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\n" +
-    "                                <md-icon>arrow_drop_down</md-icon>\n" +
-    "                            </md-button>\n" +
-    "                            <md-menu-content>\n" +
-    "                                <md-menu-item ng-repeat=\"action in options.selection.actions\">\n" +
-    "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\n" +
-    "                                        <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\n" +
-    "                                        {{::action.label}}\n" +
-    "                                    </md-button>\n" +
-    "                                </md-menu-item>\n" +
-    "                            </md-menu-content>\n" +
-    "                        </md-menu>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"lister-col lister-col-header {{::column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"styleCols[$index]\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\n" +
+    "                                                    {{::item.name}}\r" +
     "\n" +
-    "                        <div class=\"wrap\">\n" +
-    "                            <span fs-lister-compile=\"column.title\" fs-column=\"column\" class=\"title\"></span>\n" +
+    "                                                </md-option>\r" +
     "\n" +
-    "                            <div class=\"direction\" ng-if=\"column.order\">\n" +
-    "                                <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\">\n" +
-    "                                    <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\n" +
-    "                                    <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\n" +
-    "                                </span>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
+    "                                            </md-select>\r" +
     "\n" +
-    "                    </div>\n" +
-    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.actions.length || options.action\">\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"sortStop($item,$partTo,$indexFrom,$indexTo)\">\n" +
-    "                <div class=\"lister-row\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\n" +
-    "                    <div class=\"lister-col lister-col-sort\" ng-if=\"options.sort\"><div class=\"sort-handle\"><md-icon>drag_handle</md-icon></div></div>\n" +
-    "                    <div class=\"lister-col\" ng-if=\"options.selection\">\n" +
-    "                        <md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\" class=\"select-checkbox\"></md-checkbox>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" fs-column=\"col\" fs-data=\"item\" ng-style=\"styleCols[$index]\"></div>\n" +
-    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\n" +
-    "                        <md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\">\n" +
-    "                            <md-icon class=\"material-icons\">{{::options.action.icon}}</md-icon>\n" +
-    "                        </md-button>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\n" +
-    "                        <md-menu ng-if=\"actionCols[item.$$index].length\">\n" +
-    "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\n" +
-    "                                <md-icon class=\"md-default-theme material-icons\">more_vert</md-icon>\n" +
-    "                            </md-button>\n" +
-    "                            <md-menu-content>\n" +
-    "                                <md-menu-item ng-if=\"actionCols[item.$$index][$index]\" ng-repeat=\"action in options.actions\">\n" +
-    "                                    <md-button ng-click=\"actionClick(action,item,$event)\">\n" +
-    "                                        <md-icon class=\"material-icons\" ng-if=\"action.icon\">{{::action.icon}}</md-icon>\n" +
-    "                                        {{::action.label}}\n" +
-    "                                    </md-button>\n" +
-    "                                </md-menu-item>\n" +
-    "                            </md-menu-content>\n" +
-    "                        </md-menu>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"status\" ng-if=\"options.paging.infinite\">\n" +
-    "            <div class=\"norecords ng-hide\" ng-show=\"!loading && options.norecords && !data.length\">{{::options.norecords}}</div>\n" +
-    "            <div class=\"progress-infinite ng-hide\" ng-show=\"loading\">\n" +
-    "                <md-progress-circular md-mode=\"indeterminate\"></md-progress-circular>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"paging\" ng-if=\"options.paging.enabled && !options.paging.infinite\" layout=\"row\">\n" +
-    "        <div class=\"records\"></div>\n" +
-    "        <div flex>\n" +
-    "            <ul class=\"pages\" ng-if=\"paging.pages>1 && options.paging.pages\">\n" +
-    "                <li ng-class=\"{ disabled : paging.page == 1 }\">\n" +
-    "                    <a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a>\n" +
-    "                </li>\n" +
-    "                <li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\">\n" +
-    "                    <a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a>\n" +
-    "                </li>\n" +
-    "                <li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\n" +
-    "                    <a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a>\n" +
-    "                </li>\n" +
-    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\">\n" +
-    "                    <a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a>\n" +
-    "                </li>\n" +
-    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\">\n" +
-    "                    <a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a>\n" +
-    "                </li>\n" +
-    "            </ul>\n" +
-    "        </div>\n" +
-    "        <div class=\"limits\">\n" +
-    "            <md-input-container>\n" +
-    "                <label>Show</label>\n" +
-    "                <md-select ng-model=\"options.paging.limit\" md-on-close=\"reload()\">\n" +
-    "                    <md-option ng-repeat=\"limit in options.paging.limits\" value=\"{{limit}}\">\n" +
-    "                        {{::limit}} records\n" +
-    "                    </md-option>\n" +
-    "                </md-select>\n" +
-    "            </md-input-container>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "</div>\n"
+    "                                        </md-input-container>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && !filter.groups\">\r" +
+    "\n" +
+    "                                            <md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"selectSearch(filter,filter.model)\">\r" +
+    "\n" +
+    "                                                <md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
+    "\n" +
+    "                                                    {{::item.name}}\r" +
+    "\n" +
+    "                                                </md-option>\r" +
+    "\n" +
+    "                                            </md-select>\r" +
+    "\n" +
+    "                                        </md-input-container>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && filter.groups\">\r" +
+    "\n" +
+    "                                            <md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"selectSearch(filter)\">\r" +
+    "\n" +
+    "                                                <md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\">\r" +
+    "\n" +
+    "                                                    <md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
+    "\n" +
+    "                                                        {{::item.name}}\r" +
+    "\n" +
+    "                                                    </md-option>\r" +
+    "\n" +
+    "                                                </md-optgroup>\r" +
+    "\n" +
+    "                                            </md-select>\r" +
+    "\n" +
+    "                                        </md-input-container>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && filter.groups\">\r" +
+    "\n" +
+    "                                            <md-select ng-model=\"filter.model\" aria-label=\"select\" multiple=\"filter.multiple\" md-on-open=\"selectOpen(filter)\" md-on-close=\"selectSearch(filter)\">\r" +
+    "\n" +
+    "                                                <md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\">\r" +
+    "\n" +
+    "                                                    <md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">\r" +
+    "\n" +
+    "                                                        {{::item.name}}\r" +
+    "\n" +
+    "                                                    </md-option>\r" +
+    "\n" +
+    "                                                </md-optgroup>\r" +
+    "\n" +
+    "                                            </md-select>\r" +
+    "\n" +
+    "                                        </md-input-container>\r" +
+    "\n" +
+    "                                    </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                    <div class=\"interface\" ng-if=\"filter.type == 'text'\">\r" +
+    "\n" +
+    "                                        <md-input-container class=\"md-no-float md-no-label md-no-message\">\r" +
+    "\n" +
+    "                                            <input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"search(filter)\"/>\r" +
+    "\n" +
+    "                                        </md-input-container>\r" +
+    "\n" +
+    "                                    </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                    <div class=\"interface\" ng-if=\"filter.type == 'range'\" >\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                        <span layout=\"row\" class=\"md-block\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                             <md-input-container class=\"md-no-label md-no-message md-block filter-range-min\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                                <label>{{::filter.label}}</label>\r" +
+    "\n" +
+    "                                                <input\r" +
+    "\n" +
+    "                                                    placeholder=\"{{::filter.placeholder[0]}}\"\r" +
+    "\n" +
+    "                                                    ng-model=\"filter.model['min']\"\r" +
+    "\n" +
+    "                                                    aria-label=\"{{::filter.label}}\"\r" +
+    "\n" +
+    "                                                    ng-model-options=\"{debounce: 400}\"\r" +
+    "\n" +
+    "                                                    ng-change=\"search(filter)\" />\r" +
+    "\n" +
+    "                                             </md-input-container>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                             <md-input-container class=\"md-no-label md-no-message md-block filter-range-max\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                                <label>{{::filter.label}}</label>\r" +
+    "\n" +
+    "                                                <input\r" +
+    "\n" +
+    "                                                    placeholder=\"{{::filter.placeholder[1]}}\"\r" +
+    "\n" +
+    "                                                    ng-model=\"filter.model['max']\"\r" +
+    "\n" +
+    "                                                    aria-label=\"{{::filter.label}}\"\r" +
+    "\n" +
+    "                                                    ng-model-options=\"{debounce: 400}\"\r" +
+    "\n" +
+    "                                                    ng-change=\"search(filter)\" />\r" +
+    "\n" +
+    "                                             </md-input-container>\r" +
+    "\n" +
+    "                                        </span>\r" +
+    "\n" +
+    "                                    </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                    <div class=\"interface\" ng-if=\"filter.type == 'date'\" >\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                        <span class=\"md-block\">\r" +
+    "\n" +
+    "                                            <md-datepicker-container class=\"md-no-label md-no-message md-block\">\r" +
+    "\n" +
+    "                                                <label>{{::filter.label}}</label>\r" +
+    "\n" +
+    "                                                <md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\" md-open-on-focus></md-datepicker>\r" +
+    "\n" +
+    "                                            </md-datepicker-container>\r" +
+    "\n" +
+    "                                        </span>\r" +
+    "\n" +
+    "                                    </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                    <div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\">\r" +
+    "\n" +
+    "                                        <md-checkbox ng-change=\"search(filter)\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox>\r" +
+    "\n" +
+    "                                    </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                <div ng-if=\"filter.isolate\" class=\"filter isolate\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                    <div class=\"filter-label\"></div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                    <div class=\"interface\">\r" +
+    "\n" +
+    "                                        <md-checkbox ng-change=\"isolateSearch(filter)\" ng-model=\"filter.isolate.enabled\" ng-true-value=\"true\" ng-false-value=\"false\" aria-label=\"Checkbox filter\"></md-checkbox>\r" +
+    "\n" +
+    "                                        {{filter.isolate.label}}\r" +
+    "\n" +
+    "                                    </div>\r" +
+    "\n" +
+    "                                </div>\r" +
+    "\n" +
+    "                            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                            <md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"done()\">Done</md-button>\r" +
+    "\n" +
+    "                        </div>\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                <!--\r" +
+    "\n" +
+    "                <md-button ng-click=\"toggleFilters()\" md-no-ink class=\"md-icon-button md-icon-button-filters\" aria-label=\"Search filters\">\r" +
+    "\n" +
+    "                    <div class=\"material-icons icon-collapsed\" ng-show=\"extended_search\">expand_more</div>\r" +
+    "\n" +
+    "                    <div class=\"material-icons icon-expanded\" ng-show=\"!extended_search\">chevron_right</div>\r" +
+    "\n" +
+    "                </md-button>\r" +
+    "\n" +
+    "                -->\r" +
+    "\n" +
+    "                <div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <div class=\"top-actions\" ng-if=\"options.topActions.length\">\r" +
+    "\n" +
+    "                <md-button ng-repeat=\"action in options.topActions\" ng-show=\"action.show\" ng-if=\"!action.more\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
+    "\n" +
+    "                <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\r" +
+    "\n" +
+    "                    <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\">\r" +
+    "\n" +
+    "                        <md-icon>more_vert</md-icon>\r" +
+    "\n" +
+    "                    </md-button>\r" +
+    "\n" +
+    "                    <md-menu-content>\r" +
+    "\n" +
+    "                        <md-menu-item ng-repeat=\"action in options.topActions\" ng-if=\"action.more\" ng-show=\"action.show\">\r" +
+    "\n" +
+    "                            <md-button ng-click=\"action.click($event)\">\r" +
+    "\n" +
+    "                                <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
+    "\n" +
+    "                                {{::action.label}}\r" +
+    "\n" +
+    "                            </md-button>\r" +
+    "\n" +
+    "                        </md-menu-item>\r" +
+    "\n" +
+    "                    </md-menu-content>\r" +
+    "\n" +
+    "                </md-menu>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "        <div class=\"infinite-records\">\r" +
+    "\n" +
+    "            <span ng-if=\"numeric(paging.records) && paging.records>=0\">{{paging.records}} results<span ng-show=\"order.name\"> ordered by</span></span>\r" +
+    "\n" +
+    "            <span ng-if=\"(!numeric(paging.records) || paging.records<0) && order.name\">Ordered by</span>\r" +
+    "\n" +
+    "            <md-menu ng-show=\"order.name\">\r" +
+    "\n" +
+    "                <a href ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">{{order.label}}</a>,\r" +
+    "\n" +
+    "                <md-menu-content>\r" +
+    "\n" +
+    "                    <md-menu-item ng-repeat=\"order in options.orders\">\r" +
+    "\n" +
+    "                        <md-button ng-click=\"orderNameSelect(order)\">\r" +
+    "\n" +
+    "                            {{order.label}}\r" +
+    "\n" +
+    "                        </md-button>\r" +
+    "\n" +
+    "                    </md-menu-item>\r" +
+    "\n" +
+    "                </md-menu-content>\r" +
+    "\n" +
+    "            </md-menu>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "            <a href ng-show=\"order.name\" ng-click=\"orderDirectionToggle($event)\" class=\"order-toggle\">{{orderDirections[order.direction]}}</a>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "    <div class=\"results\" ng-if=\"options.columns.length\">\r" +
+    "\n" +
+    "        <div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\">\r" +
+    "\n" +
+    "            <md-progress-circular md-diameter=\"40\" md-mode=\"indeterminate\"></md-progress-circular>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "        <div class=\"lister-table\">\r" +
+    "\n" +
+    "            <div class=\"lister-head\">\r" +
+    "\n" +
+    "                <div class=\"lister-row\">\r" +
+    "\n" +
+    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.sort\"></div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                        <md-checkbox ng-click=\"selectionsToggle(selectToogled);\" ng-model=\"selectToogled\"  ng-true-value=\"true\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox>\r" +
+    "\n" +
+    "                        <md-menu md-offset=\"6 32\">\r" +
+    "\n" +
+    "                            <md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\">\r" +
+    "\n" +
+    "                                <md-icon>arrow_drop_down</md-icon>\r" +
+    "\n" +
+    "                            </md-button>\r" +
+    "\n" +
+    "                            <md-menu-content>\r" +
+    "\n" +
+    "                                <md-menu-item ng-repeat=\"action in options.selection.actions\">\r" +
+    "\n" +
+    "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
+    "\n" +
+    "                                        <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
+    "\n" +
+    "                                        {{::action.label}}\r" +
+    "\n" +
+    "                                    </md-button>\r" +
+    "\n" +
+    "                                </md-menu-item>\r" +
+    "\n" +
+    "                            </md-menu-content>\r" +
+    "\n" +
+    "                        </md-menu>\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col lister-col-header {{::column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"styleCols[$index]\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                        <div class=\"wrap\">\r" +
+    "\n" +
+    "                            <span fs-lister-compile=\"column.title\" fs-column=\"column\" class=\"title\"></span>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                            <div class=\"direction\" ng-if=\"column.order\">\r" +
+    "\n" +
+    "                                <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\">\r" +
+    "\n" +
+    "                                    <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
+    "\n" +
+    "                                    <md-icon ng-switch-when=\"desc\">arrow_upward</md-icon>\r" +
+    "\n" +
+    "                                </span>\r" +
+    "\n" +
+    "                            </div>\r" +
+    "\n" +
+    "                        </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.actions.length || options.action\">\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "            <div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"sortStop($item,$partTo,$indexFrom,$indexTo)\">\r" +
+    "\n" +
+    "                <div class=\"lister-row\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
+    "\n" +
+    "                    <div class=\"lister-col lister-col-sort\" ng-if=\"options.sort\"><div class=\"sort-handle\"><md-icon>drag_handle</md-icon></div></div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col\" ng-if=\"options.selection\">\r" +
+    "\n" +
+    "                        <md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\" class=\"select-checkbox\"></md-checkbox>\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" fs-column=\"col\" fs-data=\"item\" ng-style=\"styleCols[$index]\"></div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
+    "\n" +
+    "                        <md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\">\r" +
+    "\n" +
+    "                            <md-icon class=\"material-icons\">{{::options.action.icon}}</md-icon>\r" +
+    "\n" +
+    "                        </md-button>\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                    <div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\">\r" +
+    "\n" +
+    "                        <md-menu ng-if=\"actionCols[item.$$index].length\">\r" +
+    "\n" +
+    "                            <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\">\r" +
+    "\n" +
+    "                                <md-icon class=\"md-default-theme material-icons\">more_vert</md-icon>\r" +
+    "\n" +
+    "                            </md-button>\r" +
+    "\n" +
+    "                            <md-menu-content>\r" +
+    "\n" +
+    "                                <md-menu-item ng-if=\"actionCols[item.$$index][$index]\" ng-repeat=\"action in options.actions\">\r" +
+    "\n" +
+    "                                    <md-button ng-click=\"actionClick(action,item,$event)\">\r" +
+    "\n" +
+    "                                        <md-icon class=\"material-icons\" ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
+    "\n" +
+    "                                        {{::action.label}}\r" +
+    "\n" +
+    "                                    </md-button>\r" +
+    "\n" +
+    "                                </md-menu-item>\r" +
+    "\n" +
+    "                            </md-menu-content>\r" +
+    "\n" +
+    "                        </md-menu>\r" +
+    "\n" +
+    "                    </div>\r" +
+    "\n" +
+    "                </div>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "        <div class=\"status\" ng-if=\"(options.paging.infinite && !data.length) || (!data.length && !paging.records)\">\r" +
+    "\n" +
+    "            <div class=\"norecords ng-hide\" ng-show=\"!loading && options.norecords && !data.length\">{{::options.norecords}}</div>\r" +
+    "\n" +
+    "            <div class=\"progress-infinite ng-hide\" ng-show=\"options.paging.infinite && loading\">\r" +
+    "\n" +
+    "                <md-progress-circular md-diameter=\"40\" md-mode=\"indeterminate\"></md-progress-circular>\r" +
+    "\n" +
+    "            </div>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "    <div class=\"paging\" ng-if=\"options.paging.enabled && !options.paging.infinite\" layout=\"row\">\r" +
+    "\n" +
+    "        <div class=\"records\"></div>\r" +
+    "\n" +
+    "        <div flex>\r" +
+    "\n" +
+    "            <ul class=\"pages\" ng-if=\"paging.pages>1 && options.paging.pages\">\r" +
+    "\n" +
+    "                <li ng-class=\"{ disabled : paging.page == 1 }\">\r" +
+    "\n" +
+    "                    <a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "                <li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\">\r" +
+    "\n" +
+    "                    <a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "                <li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\">\r" +
+    "\n" +
+    "                    <a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\">\r" +
+    "\n" +
+    "                    <a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "                <li ng-class=\"{ disabled : paging.page == paging.pages }\">\r" +
+    "\n" +
+    "                    <a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a>\r" +
+    "\n" +
+    "                </li>\r" +
+    "\n" +
+    "            </ul>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "        <div class=\"limits\">\r" +
+    "\n" +
+    "            <md-input-container>\r" +
+    "\n" +
+    "                <label>Show</label>\r" +
+    "\n" +
+    "                <md-select ng-model=\"options.paging.limit\" md-on-close=\"reload()\">\r" +
+    "\n" +
+    "                    <md-option ng-repeat=\"limit in options.paging.limits\" value=\"{{limit}}\">\r" +
+    "\n" +
+    "                        {{::limit}} records\r" +
+    "\n" +
+    "                    </md-option>\r" +
+    "\n" +
+    "                </md-select>\r" +
+    "\n" +
+    "            </md-input-container>\r" +
+    "\n" +
+    "        </div>\r" +
+    "\n" +
+    "    </div>\r" +
+    "\n" +
+    "</div>\r" +
+    "\n"
   );
 
 }]);

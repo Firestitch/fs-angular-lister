@@ -42,6 +42,7 @@ angular.module('app')
         	limit: 5,
         	infinite: true
         },
+        //paging: false,
 
         // persist: {
         //     name: 'lister',
@@ -66,7 +67,7 @@ angular.module('app')
 
             //return setTimeout(function() { cb([]); }, 2000);
 
-            query.count = 25;
+            query.count = 10;
 
             var url = 'https://service.firestitch.com/api/';
 
@@ -74,6 +75,7 @@ angular.module('app')
 
             return DummyService.gets(query,{ url: url, key: 'objects', datapaging: true })
                     .then(function(response) {
+                    	//return { data: {} };
                         return { data: response.data, paging: response.paging };
                     });
 

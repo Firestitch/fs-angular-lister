@@ -176,7 +176,7 @@
     </div>
     <div class="results" ng-if="options.columns.length">
         <div class="progress-paged ng-hide" ng-show="loading && !options.paging.infinite">
-            <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+            <md-progress-circular md-diameter="40" md-mode="indeterminate"></md-progress-circular>
         </div>
         <div class="lister-table">
             <div class="lister-head">
@@ -247,10 +247,10 @@
                 </div>
             </div>
         </div>
-        <div class="status" ng-if="options.paging.infinite">
+        <div class="status" ng-if="(options.paging.infinite && !data.length) || (!data.length && !paging.records)">
             <div class="norecords ng-hide" ng-show="!loading && options.norecords && !data.length">{{::options.norecords}}</div>
-            <div class="progress-infinite ng-hide" ng-show="loading">
-                <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+            <div class="progress-infinite ng-hide" ng-show="options.paging.infinite && loading">
+                <md-progress-circular md-diameter="40" md-mode="indeterminate"></md-progress-circular>
             </div>
         </div>
     </div>
