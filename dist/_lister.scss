@@ -1,5 +1,6 @@
 lister, fs-lister {
     width: 100%;
+    display: block;
 }
 
 .lister {
@@ -12,6 +13,7 @@ lister, fs-lister {
 
     .progress-infinite {
         md-progress-circular {
+        	margin-top: 30px;
             margin: auto;
         }
     }
