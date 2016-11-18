@@ -89,6 +89,7 @@
 						<li><label>right</label>Align the right</li>
 						<li><label>className</label>The class name used in the footer cell</li>
 						<li><label>value</label>A function or template used for the footer formatting</li>
+						<li><label>scope</label>The scope used when rendering the footer cell</li>
 					</ul>
 				</ul>
 
@@ -1545,6 +1546,10 @@
 						$scope.style = {};
 						var footer = $scope.column.footer;
 						if(footer) {
+
+							if(footer.scope) {
+								angular.extend($scope,footer.scope);
+							}
 
 							$scope.style = footer.style || {};
 

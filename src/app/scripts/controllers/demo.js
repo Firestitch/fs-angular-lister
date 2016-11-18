@@ -220,8 +220,13 @@ angular.module('app')
                 footer: {
                 	right: true,
                 	value: function() {
-                		return "fffffffff";
-                	}
+                		return '<a href ng-click="click()">fffffffff</a>';
+                	},
+                	scope: {
+	                	click: function() {
+	                        alert("You Clicked me!");
+	                    }
+	                }
                 }
             },
             {   title: 'Date',
