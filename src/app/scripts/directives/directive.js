@@ -20,6 +20,7 @@
 							<li><label>page</label> The page number starting at one</li>
 							<li><label>pages</label> The total number of pages in the entire dataset</li>
 						</ul>
+						<li><label>locals</label> An object used to store local data. Used in the footer.</li>
 					</ul>
 				</ul>
 	 * @param {function} ls-options.init Called when all of the filter data has loaded
@@ -82,7 +83,15 @@
 					<li><label>resolve</label>Used to inject objects in the value() function and inserts the values into the $scope variable</li>
 					<li><label>scope</label>Appended to the $scope object which is injected into the value() function</li>
 					<li><label>order</label>Enables the column to be orderable. The value is used as the order value in the http request. ie: order=name,asc</li>
+					<li><label>footer</label>Configuration for the column footer</li>
+					<ul>
+						<li><label>center</label>Align center</li>
+						<li><label>right</label>Align the right</li>
+						<li><label>className</label>The class name used in the footer cell</li>
+						<li><label>value</label>A function or template used for the footer formatting</li>
+					</ul>
 				</ul>
+
 	 * @param {array} ls-options.filters Defines the filters found above the lister table
 				<ul>
 					<li><label>name</label>the name in the query object passed to the fetch data process</li>
@@ -205,6 +214,7 @@
 				$scope.extended_search = false;
 				$scope.searchinput = { value: '' };
 				$scope.paged = null;
+				$scope.locals = {};
 				$scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
 				var primary = false;
@@ -1052,7 +1062,7 @@
 
 								response
 								.then(function(response) {
-									dataCallback(opts,response.data,response.paging);
+									dataCallback(opts,response.data,response.paging,response.locals);
 								})
 								.catch(function(response) {
 									loadCleanup();
@@ -1066,16 +1076,16 @@
 					}
 				}
 
-				function dataCallback(opts, data, paging) {
+				function dataCallback(opts, data, paging, locals) {
 
-					log("dataCallback()",data,paging);
+					log("dataCallback()", data, paging, locals);
 
 					if(opts.clear) {
 						$scope.max_bottom = 0;
 						clearData();
 					}
 
-					callback(data, paging);
+					callback(data, paging, locals);
 				}
 
 				function loadCleanup() {
@@ -1087,13 +1097,18 @@
 					load();
 				}
 
-				function callback(objects, paging) {
+				function callback(data, paging, locals) {
 
 					if(!$scope.options.paging.infinite) {
 						clearData();
 					}
 
-					var ol = objects.length;
+					if(locals) {
+						angular.extend($scope.locals,locals);
+						$scope.locals = locals;
+					}
+
+					var ol = data.length;
 					for (var o = 0; o < ol; o++) {
 
 						var cl = options.columns.length;
@@ -1105,7 +1120,7 @@
 							var value = col.value;
 
 							if(typeof col.value =='function') {
-								value = col.value(objects[o]);
+								value = col.value(data[o]);
 							}
 
 							cols[c] = value;
@@ -1118,7 +1133,7 @@
                         angular.forEach(options.actions,function(action,aindex) {
                         	$scope.actionCols[dataIndex][aindex] = true;
                         	if(angular.isFunction(action.show)) {
-                        		if(!action.show(objects[o])) {
+                        		if(!action.show(data[o])) {
                         			$scope.actionCols[dataIndex][aindex] = false;
                         		}
                         	}
@@ -1129,8 +1144,8 @@
                         	$scope.actionCols[dataIndex] = [];
                         }
 
-						objects[o].$$index = dataIndex;
-						$scope.data.push(objects[o]);
+						data[o].$$index = dataIndex;
+						$scope.data.push(data[o]);
 
 						dataIndex++;
 					}
@@ -1511,6 +1526,39 @@
 
 								return false;
 							});
+						}
+					}
+		}
+	}])
+	.directive('fsListerFooterCompile', ['$compile','$rootScope',function ($compile, $rootScope) {
+		return {    scope: {
+						column: '=',
+						style: '=',
+						locals: '='
+					},
+					link: function($scope, element, attrs, ctrl) {
+
+						$scope.$watch('locals',function () {
+							angular.extend($scope,$scope.locals);
+						});
+
+						$scope.style = {};
+						var footer = $scope.column.footer;
+						if(footer) {
+
+							$scope.style = footer.style || {};
+
+							if(footer.center || footer.right) {
+								$scope.style.textAlign = footer.center ? 'center' : 'right';
+							}
+
+							var value = footer.value;
+							if (typeof value == 'function') {
+								value = value();
+							}
+
+							element.html(value);
+							$compile(element.contents())($scope);
 						}
 					}
 		}

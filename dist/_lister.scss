@@ -395,6 +395,15 @@ lister, fs-lister {
             }
         }
 
+		.lister-foot {
+
+            display: table-footer-group;
+
+            .lister-col {
+            	font-size: 17px;
+                padding: 10px;
+            }
+        }
         .lister-body {
 
             .lister-row:hover .lister-col {

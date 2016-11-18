@@ -38,11 +38,11 @@ angular.module('app')
         debug: false,
         //container: '#frame',
 
-        paging: {
+        /*paging: {
         	limit: 5,
         	infinite: true
-        },
-        //paging: false,
+        },*/
+        paging: false,
 
         // persist: {
         //     name: 'lister',
@@ -67,22 +67,24 @@ angular.module('app')
 
             //return setTimeout(function() { cb([]); }, 2000);
 
-            query.count = 10;
+            query.count = 3;
 
             var url = 'https://service.firestitch.com/api/';
 
             //url = 'http://spec.local.firestitch.com/api/uuuu';
 
+            var locals = { total: 100, subtotal: 830 };
+
             return DummyService.gets(query,{ url: url, key: 'objects', datapaging: true })
                     .then(function(response) {
                     	//return { data: {} };
-                        return { data: response.data, paging: response.paging };
+                        return { data: response.data, paging: response.paging, locals: locals };
                     });
 
             DummyService
                 .gets(query,{ url: url })
                 .then(function(result) {
-                    cb(result.objects,result.paging);
+                    cb(result.objects,result.paging,locals);
                 })
 
                 /*.catch(function (response) {
@@ -214,6 +216,12 @@ angular.module('app')
                     test :function(data, event, x,c,v) {
                         debugger;
                     }
+                },
+                footer: {
+                	right: true,
+                	value: function() {
+                		return "fffffffff";
+                	}
                 }
             },
             {   title: 'Date',
@@ -221,6 +229,11 @@ angular.module('app')
                 order: { name: 'date' },
                 value: function(data, $scope, myresolve) {
                     return data["date"];
+                },
+                footer: {
+                	center: true,
+                	className: 'footy',
+                	value: "{{total}}"
                 }
             },
             {   title: 'Select',
