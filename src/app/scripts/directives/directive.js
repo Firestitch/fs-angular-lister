@@ -1485,8 +1485,9 @@
 	.directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',
 									function ($compile, $injector, $location, $timeout, $rootScope) {
 		return {    scope: {
-						column: '=fsColumn',
-						data: '=fsData',
+						column: '=',
+						data: '=',
+						locals: '=',
 						value: '=fsListerCompile'
 					},
 					link: function($scope, element, attrs, ctrl) {
@@ -1494,8 +1495,12 @@
 						var scope = $scope;
 
 						if($scope.column.scope) {
-							scope = angular.extend($scope,$scope.column.scope);
+							angular.extend($scope,$scope.column.scope);
 						}
+
+						$scope.$watch('locals',function () {
+							angular.extend(scope,$scope.locals);
+						});
 
 						if($scope.column.resolve) {
 							angular.forEach($scope.column.resolve, function(elem, index) {

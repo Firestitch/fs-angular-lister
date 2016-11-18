@@ -87,7 +87,6 @@
 					<ul>
 						<li><label>center</label>Align center</li>
 						<li><label>right</label>Align the right</li>
-						<li><label>className</label>The class name used in the footer cell</li>
 						<li><label>value</label>A function or template used for the footer formatting</li>
 						<li><label>scope</label>The scope used when rendering the footer cell</li>
 					</ul>
@@ -1486,8 +1485,9 @@
 	.directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',
 									function ($compile, $injector, $location, $timeout, $rootScope) {
 		return {    scope: {
-						column: '=fsColumn',
-						data: '=fsData',
+						column: '=',
+						data: '=',
+						locals: '=',
 						value: '=fsListerCompile'
 					},
 					link: function($scope, element, attrs, ctrl) {
@@ -1495,8 +1495,12 @@
 						var scope = $scope;
 
 						if($scope.column.scope) {
-							scope = angular.extend($scope,$scope.column.scope);
+							angular.extend($scope,$scope.column.scope);
 						}
+
+						$scope.$watch('locals',function () {
+							angular.extend(scope,$scope.locals);
+						});
 
 						if($scope.column.resolve) {
 							angular.forEach($scope.column.resolve, function(elem, index) {
@@ -2057,7 +2061,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                        <div class=\"wrap\">\r" +
     "\n" +
-    "                            <span fs-lister-compile=\"column.title\" fs-column=\"column\" class=\"title\"></span>\r" +
+    "                            <span fs-lister-compile=\"column.title\" column=\"column\" locals=\"locals\" class=\"title\"></span>\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -2099,7 +2103,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" fs-column=\"col\" fs-data=\"item\" ng-style=\"styleCols[$index]\"></div>\r" +
+    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" column=\"col\" data=\"item\" locals=\"locals\" ng-style=\"styleCols[$index]\"></div>\r" +
     "\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
     "\n" +

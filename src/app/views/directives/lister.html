@@ -202,7 +202,7 @@
                     <div class="lister-col lister-col-header {{::column.className}}" ng-repeat="column in options.columns" ng-style="styleCols[$index]" ng-class="{ order: column.order }" ng-click="headerClick(column)">
 
                         <div class="wrap">
-                            <span fs-lister-compile="column.title" fs-column="column" class="title"></span>
+                            <span fs-lister-compile="column.title" column="column" locals="locals" class="title"></span>
 
                             <div class="direction" ng-if="column.order">
                                 <span ng-switch="order.direction" ng-show="order.name==column.order.name">
@@ -223,7 +223,7 @@
                     <div class="lister-col" ng-if="options.selection">
                         <md-checkbox ng-model="checked[rowIndex]" ng-true-value="1" ng-click="select(item)" aria-label="Select" class="select-checkbox"></md-checkbox>
                     </div>
-                    <div class="lister-col {{::col.className}}" ng-repeat="col in options.columns" fs-lister-compile="dataCols[item.$$index][$index]" fs-column="col" fs-data="item" ng-style="styleCols[$index]"></div>
+                    <div class="lister-col {{::col.className}}" ng-repeat="col in options.columns" fs-lister-compile="dataCols[item.$$index][$index]" column="col" data="item" locals="locals" ng-style="styleCols[$index]"></div>
                     <div class="lister-col lister-actions" ng-if="options.action">
                         <md-button ng-click="actionClick(options.action,item,$event); $event.stopPropagation();" class="md-icon-button">
                             <md-icon class="material-icons">{{::options.action.icon}}</md-icon>
