@@ -1326,11 +1326,28 @@
 					return this;
 				}
 
+				function locals() {
+
+					if(!arguments.length)
+						return $scope.locals;
+
+					if(arguments.length==1)
+						return $scope.locals[arguments[0]];
+
+					if(arguments.length==2) {
+						$scope.locals[arguments[0]] = arguments[1];
+						$scope.locals = angular.copy($scope.locals);
+					}
+
+					return this;
+				}
+
 				var instance = {load: load,
 								page: page,
 								reload: reload,
 								filterValues: filterValues,
 								data: data,
+								locals: locals,
 								find: function(filters) {
 									var flen = filters.length;
 									var len = $scope.data.length;
