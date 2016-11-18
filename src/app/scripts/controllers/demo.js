@@ -237,7 +237,6 @@ angular.module('app')
                 },
                 footer: {
                 	center: true,
-                	className: 'footy',
                 	value: "{{total}}"
                 }
             },

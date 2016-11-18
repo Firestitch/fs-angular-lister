@@ -250,7 +250,7 @@
                 <div class="lister-row">
                     <div class="lister-col lister-col-footer" ng-if="options.sort"></div>
                     <div class="lister-col lister-col-footer lister-select-toogle" ng-if="options.selection"></div>
-                    <div class="lister-col lister-col-footer {{::column.footer.className}}" ng-repeat="column in options.columns" fs-lister-footer-compile locals="locals" column="column" style="footerStyle[$index]" ng-style="footerStyle[$index]"></div>
+                    <div class="lister-col lister-col-footer {{::column.className}}" ng-repeat="column in options.columns" fs-lister-footer-compile locals="locals" column="column" style="footerStyle[$index]" ng-style="footerStyle[$index]"></div>
                     <div class="lister-col lister-col-footer" ng-if="options.actions.length || options.action">
                     </div>
                 </div>

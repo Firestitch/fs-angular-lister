@@ -2153,7 +2153,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"lister-col lister-col-footer lister-select-toogle\" ng-if=\"options.selection\"></div>\r" +
     "\n" +
-    "                    <div class=\"lister-col lister-col-footer {{::column.footer.className}}\" ng-repeat=\"column in options.columns\" fs-lister-footer-compile locals=\"locals\" column=\"column\" style=\"footerStyle[$index]\" ng-style=\"footerStyle[$index]\"></div>\r" +
+    "                    <div class=\"lister-col lister-col-footer {{::column.className}}\" ng-repeat=\"column in options.columns\" fs-lister-footer-compile locals=\"locals\" column=\"column\" style=\"footerStyle[$index]\" ng-style=\"footerStyle[$index]\"></div>\r" +
     "\n" +
     "                    <div class=\"lister-col lister-col-footer\" ng-if=\"options.actions.length || options.action\">\r" +
     "\n" +
