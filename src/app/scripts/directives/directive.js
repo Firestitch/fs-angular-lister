@@ -25,6 +25,10 @@
 				</ul>
 	 * @param {function} ls-options.init Called when all of the filter data has loaded
 	 * @param {function} ls-options.rowClick Called when the row is clicked
+	 * @param {function} ls-options.rowClass A function called per row to determine the row class.
+     *			<ul>
+	 *				<li><label>data</label>The row object</li>
+	 *			</ul>
 	 * @param {array} ls-options.actions Adds a column to the right side of the lister and places a button that a user can click to perform custom events
 				<ul>
 					<li><label>label</label>Used in the contextual menu item's label</li>
@@ -73,6 +77,7 @@
 						<li><label>label</label>Used in the contextual menu item's label</li>
 						<li><label>click</label>Is triggered when the contextual menu item is clicked. First param an array of selected objects and the second param is the $event</li>
 						<li><label>icon</label>Used in the contextual menu item icon</li>
+						<li><label>show</label>A boolean or function which when resolved will show/hide the menu item. Defaults to true</li>
 					</ul>
 				</ul>
 	* @param {array} ls-options.columns Defines the columns for the lister
@@ -215,6 +220,7 @@
 				$scope.searchinput = { value: '' };
 				$scope.paged = null;
 				$scope.locals = {};
+				$scope.rowClasses = [];
 				$scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
 				var primary = false;
@@ -329,6 +335,24 @@
 						}
 					}
 				});
+
+				if(options.selection) {
+
+					options.selection.show = false;
+					angular.forEach(options.selection.actions,function(action) {
+						if(action.show===undefined) {
+							action.show = true;
+						}
+
+						if(angular.isFunction(action.show)) {
+							action.show = action.show();
+						}
+
+						if(action.show) {
+							options.selection.show = true;
+						}
+					});
+				}
 
 				if(options.topActions) {
 					angular.forEach(options.topActions,function(action) {
@@ -1140,11 +1164,16 @@
 
                         	showActions |= $scope.actionCols[dataIndex][aindex];
                         });
+
                         if(!showActions) {
                         	$scope.actionCols[dataIndex] = [];
                         }
 
 						data[o].$$index = dataIndex;
+
+						if($scope.options.rowClass)
+							$scope.rowClasses[dataIndex] = $scope.options.rowClass(data[o]);
+
 						$scope.data.push(data[o]);
 
 						dataIndex++;

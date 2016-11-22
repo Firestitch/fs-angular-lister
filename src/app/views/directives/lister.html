@@ -182,7 +182,7 @@
             <div class="lister-head">
                 <div class="lister-row">
                     <div class="lister-col lister-col-header" ng-if="options.sort"></div>
-                    <div class="lister-col lister-col-header lister-select-toogle" ng-if="options.selection">
+                    <div class="lister-col lister-col-header lister-select-toogle" ng-if="options.selection.show">
 
                         <md-checkbox ng-click="selectionsToggle(selectToogled);" ng-model="selectToogled"  ng-true-value="true" aria-label="Toggle Selection" class="select-checkbox"></md-checkbox>
                         <md-menu md-offset="6 32">
@@ -190,7 +190,7 @@
                                 <md-icon>arrow_drop_down</md-icon>
                             </md-button>
                             <md-menu-content>
-                                <md-menu-item ng-repeat="action in options.selection.actions">
+                                <md-menu-item ng-repeat="action in options.selection.actions" ng-if="action.show">
                                     <md-button ng-click="selectMenu(action.click,$event)">
                                         <md-icon ng-if="action.icon">{{::action.icon}}</md-icon>
                                         {{::action.label}}
@@ -218,9 +218,9 @@
                 </div>
             </div>
             <div class="lister-body" sv-root sv-part="data" sv-on-sort="sortStop($item,$partTo,$indexFrom,$indexTo)">
-                <div class="lister-row" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: checked[rowIndex] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event); $event.stopPropagation();" ng-init="rowIndex = $index">
+                <div class="lister-row {{rowClasses[rowIndex]}}" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: checked[rowIndex] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event); $event.stopPropagation();" ng-init="rowIndex = $index">
                     <div class="lister-col lister-col-sort" ng-if="options.sort"><div class="sort-handle"><md-icon>drag_handle</md-icon></div></div>
-                    <div class="lister-col" ng-if="options.selection">
+                    <div class="lister-col" ng-if="options.selection.show">
                         <md-checkbox ng-model="checked[rowIndex]" ng-true-value="1" ng-click="select(item)" aria-label="Select" class="select-checkbox"></md-checkbox>
                     </div>
                     <div class="lister-col {{::col.className}}" ng-repeat="col in options.columns" fs-lister-compile="dataCols[item.$$index][$index]" column="col" data="item" locals="locals" ng-style="styleCols[$index]"></div>
@@ -249,7 +249,7 @@
 			<div class="lister-foot">
                 <div class="lister-row">
                     <div class="lister-col lister-col-footer" ng-if="options.sort"></div>
-                    <div class="lister-col lister-col-footer lister-select-toogle" ng-if="options.selection"></div>
+                    <div class="lister-col lister-col-footer lister-select-toogle" ng-if="options.selection.show"></div>
                     <div class="lister-col lister-col-footer {{::column.className}}" ng-repeat="column in options.columns" fs-lister-footer-compile locals="locals" column="column" style="footerStyle[$index]" ng-style="footerStyle[$index]"></div>
                     <div class="lister-col lister-col-footer" ng-if="options.actions.length || options.action">
                     </div>

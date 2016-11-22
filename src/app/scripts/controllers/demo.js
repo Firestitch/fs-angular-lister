@@ -63,6 +63,10 @@ angular.module('app')
            // alert("Row Click: " + JSON.stringify(data));
         },
 
+        rowClass: function(data) {
+           return 'guid-' + data.guid;
+        },
+
         data: function(query, cb) {
 
             //return setTimeout(function() { cb([]); }, 2000);
@@ -270,11 +274,15 @@ angular.module('app')
                 click: function(selected, $event, helper) {
                     debugger;
                     //alert("delete");
+                },
+                show: function() {
+                	return true;
                 }
             },
             {
                 icon: 'forward',
                 label: 'Move to Somewhere',
+                show: true,
                 click: function(selected, $event) {
                     fsModal
                     .show(  function($scope, modal) {

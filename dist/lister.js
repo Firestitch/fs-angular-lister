@@ -25,6 +25,10 @@
 				</ul>
 	 * @param {function} ls-options.init Called when all of the filter data has loaded
 	 * @param {function} ls-options.rowClick Called when the row is clicked
+	 * @param {function} ls-options.rowClass A function called per row to determine the row class.
+     *			<ul>
+	 *				<li><label>data</label>The row object</li>
+	 *			</ul>
 	 * @param {array} ls-options.actions Adds a column to the right side of the lister and places a button that a user can click to perform custom events
 				<ul>
 					<li><label>label</label>Used in the contextual menu item's label</li>
@@ -73,6 +77,7 @@
 						<li><label>label</label>Used in the contextual menu item's label</li>
 						<li><label>click</label>Is triggered when the contextual menu item is clicked. First param an array of selected objects and the second param is the $event</li>
 						<li><label>icon</label>Used in the contextual menu item icon</li>
+						<li><label>show</label>A boolean or function which when resolved will show/hide the menu item. Defaults to true</li>
 					</ul>
 				</ul>
 	* @param {array} ls-options.columns Defines the columns for the lister
@@ -215,6 +220,7 @@
 				$scope.searchinput = { value: '' };
 				$scope.paged = null;
 				$scope.locals = {};
+				$scope.rowClasses = [];
 				$scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
 				var primary = false;
@@ -329,6 +335,24 @@
 						}
 					}
 				});
+
+				if(options.selection) {
+
+					options.selection.show = false;
+					angular.forEach(options.selection.actions,function(action) {
+						if(action.show===undefined) {
+							action.show = true;
+						}
+
+						if(angular.isFunction(action.show)) {
+							action.show = action.show();
+						}
+
+						if(action.show) {
+							options.selection.show = true;
+						}
+					});
+				}
 
 				if(options.topActions) {
 					angular.forEach(options.topActions,function(action) {
@@ -1140,11 +1164,16 @@
 
                         	showActions |= $scope.actionCols[dataIndex][aindex];
                         });
+
                         if(!showActions) {
                         	$scope.actionCols[dataIndex] = [];
                         }
 
 						data[o].$$index = dataIndex;
+
+						if($scope.options.rowClass)
+							$scope.rowClasses[dataIndex] = $scope.options.rowClass(data[o]);
+
 						$scope.data.push(data[o]);
 
 						dataIndex++;
@@ -2021,7 +2050,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"lister-col lister-col-header\" ng-if=\"options.sort\"></div>\r" +
     "\n" +
-    "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection\">\r" +
+    "                    <div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection.show\">\r" +
     "\n" +
     "\r" +
     "\n" +
@@ -2037,7 +2066,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                            <md-menu-content>\r" +
     "\n" +
-    "                                <md-menu-item ng-repeat=\"action in options.selection.actions\">\r" +
+    "                                <md-menu-item ng-repeat=\"action in options.selection.actions\" ng-if=\"action.show\">\r" +
     "\n" +
     "                                    <md-button ng-click=\"selectMenu(action.click,$event)\">\r" +
     "\n" +
@@ -2093,11 +2122,11 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"sortStop($item,$partTo,$indexFrom,$indexTo)\">\r" +
     "\n" +
-    "                <div class=\"lister-row\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
+    "                <div class=\"lister-row {{rowClasses[rowIndex]}}\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\">\r" +
     "\n" +
     "                    <div class=\"lister-col lister-col-sort\" ng-if=\"options.sort\"><div class=\"sort-handle\"><md-icon>drag_handle</md-icon></div></div>\r" +
     "\n" +
-    "                    <div class=\"lister-col\" ng-if=\"options.selection\">\r" +
+    "                    <div class=\"lister-col\" ng-if=\"options.selection.show\">\r" +
     "\n" +
     "                        <md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" ng-click=\"select(item)\" aria-label=\"Select\" class=\"select-checkbox\"></md-checkbox>\r" +
     "\n" +
@@ -2155,7 +2184,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    <div class=\"lister-col lister-col-footer\" ng-if=\"options.sort\"></div>\r" +
     "\n" +
-    "                    <div class=\"lister-col lister-col-footer lister-select-toogle\" ng-if=\"options.selection\"></div>\r" +
+    "                    <div class=\"lister-col lister-col-footer lister-select-toogle\" ng-if=\"options.selection.show\"></div>\r" +
     "\n" +
     "                    <div class=\"lister-col lister-col-footer {{::column.className}}\" ng-repeat=\"column in options.columns\" fs-lister-footer-compile locals=\"locals\" column=\"column\" style=\"footerStyle[$index]\" ng-style=\"footerStyle[$index]\"></div>\r" +
     "\n" +
