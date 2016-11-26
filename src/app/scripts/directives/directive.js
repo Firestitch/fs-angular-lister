@@ -112,9 +112,8 @@
 					<ul>
 						<li><label>parent_field</label>name of field used to link to parent row. typically 'parent_id' or similar</li>
 						<li><label>label_field</label>name of field to use as rows label</li>
-						<li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>z
+						<li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>
 					</ul>
-
 				</ul>
 	* @param {array} ls-options.container Specifies the container that is listened to for scroll events and triggers page loads in infinite listers. If no container is specified the browser window is used.
 	* @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive during run time.
@@ -358,6 +357,14 @@
 					angular.forEach(options.topActions,function(action) {
 						if(action.show===undefined) {
 							action.show = true;
+						}
+
+						if(action.more===undefined) {
+							action.more = false;
+						}
+
+						if(action.type===undefined) {
+							action.type = 'button';
 						}
 
 						if(angular.isFunction(action.show)) {
@@ -1615,6 +1622,22 @@
 							element.html(value);
 							$compile(element.contents())($scope);
 						}
+					}
+		}
+	}])
+	.directive('fsListerTopactionCompile', ['$compile','$rootScope',function ($compile, $rootScope) {
+		return {    scope: {
+						scope: '=?',
+						template: '=fsListerTopactionCompile'
+					},
+					link: function($scope, element, attrs, ctrl) {
+
+						$scope.$watch('scope',function () {
+							angular.extend($scope,$scope.scope);
+						});
+
+						element.html($scope.template);
+						$compile(element.contents())($scope);
 					}
 		}
 	}])

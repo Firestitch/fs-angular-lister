@@ -166,6 +166,15 @@ angular.module('app')
                 click: function() {
                     alert('Menu 2');
                 }
+            },
+            {
+                type: 'template',
+                template: '<md-button ng-click="click()">Upload</md-button>',
+                scope: {
+                	click: function() {
+                		alert('asdasdasd');
+                	}
+                }
             }
         ],
 

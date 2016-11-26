@@ -112,9 +112,8 @@
 					<ul>
 						<li><label>parent_field</label>name of field used to link to parent row. typically 'parent_id' or similar</li>
 						<li><label>label_field</label>name of field to use as rows label</li>
-						<li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>z
+						<li><label>value_field</label>name of the field to use as the rows value.  typically 'id'</li>
 					</ul>
-
 				</ul>
 	* @param {array} ls-options.container Specifies the container that is listened to for scroll events and triggers page loads in infinite listers. If no container is specified the browser window is used.
 	* @param {object=} ls-instance Object to be two way binded. This can be useful when trying to access the directive during run time.
@@ -358,6 +357,14 @@
 					angular.forEach(options.topActions,function(action) {
 						if(action.show===undefined) {
 							action.show = true;
+						}
+
+						if(action.more===undefined) {
+							action.more = false;
+						}
+
+						if(action.type===undefined) {
+							action.type = 'button';
 						}
 
 						if(angular.isFunction(action.show)) {
@@ -1618,6 +1625,22 @@
 					}
 		}
 	}])
+	.directive('fsListerTopactionCompile', ['$compile','$rootScope',function ($compile, $rootScope) {
+		return {    scope: {
+						scope: '=?',
+						template: '=fsListerTopactionCompile'
+					},
+					link: function($scope, element, attrs, ctrl) {
+
+			/*			$scope.$watch('locals',function () {
+							angular.extend($scope,$scope.locals);
+						});
+*/
+						element.html($scope.template);
+						$compile(element.contents())($scope);
+					}
+		}
+	}])
 	.provider("fsLister",function() {
 
 		var _options = {};
@@ -1968,7 +1991,15 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"top-actions\" ng-if=\"options.topActions.length\">\r" +
     "\n" +
-    "                <md-button ng-repeat=\"action in options.topActions\" ng-show=\"action.show\" ng-if=\"!action.more\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
+    "                <span ng-repeat=\"action in options.topActions | filter: { more: false }\">\r" +
+    "\n" +
+    "                \t<md-button ng-show=\"action.show && action.type=='button'\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                \t<span ng-show=\"action.show && action.type=='template'\" fs-lister-topaction-compile=\"action.template\" scope=\"action.scope\"></span>\r" +
+    "\n" +
+    "                </span>\r" +
     "\n" +
     "                <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\r" +
     "\n" +

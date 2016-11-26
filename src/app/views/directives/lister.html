@@ -141,7 +141,11 @@
             </div>
 
             <div class="top-actions" ng-if="options.topActions.length">
-                <md-button ng-repeat="action in options.topActions" ng-show="action.show" ng-if="!action.more" ng-click="topActionsClick(action,$event)" class="md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{action.label}}</md-button>
+                <span ng-repeat="action in options.topActions | filter: { more: false }">
+                	<md-button ng-show="action.show && action.type=='button'" ng-click="topActionsClick(action,$event)" class="md-raised" ng-class="{ 'md-accent': action.primary!==false }">{{action.label}}</md-button>
+
+                	<span ng-show="action.show && action.type=='template'" fs-lister-topaction-compile="action.template" scope="action.scope"></span>
+                </span>
                 <md-menu ng-if="(options.topActions | filter:{ more: true }).length > 0">
                     <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
                         <md-icon>more_vert</md-icon>
