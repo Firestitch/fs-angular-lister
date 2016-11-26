@@ -1632,10 +1632,10 @@
 					},
 					link: function($scope, element, attrs, ctrl) {
 
-			/*			$scope.$watch('locals',function () {
-							angular.extend($scope,$scope.locals);
+						$scope.$watch('scope',function () {
+							angular.extend($scope,$scope.scope);
 						});
-*/
+
 						element.html($scope.template);
 						$compile(element.contents())($scope);
 					}
