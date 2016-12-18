@@ -1116,7 +1116,7 @@
 						clearData();
 					}
 
-					callback(data, paging, locals);
+					return callback(data, paging, locals);
 				}
 
 				function loadCleanup() {
@@ -1215,6 +1215,13 @@
 					}
 
 					loadCleanup();
+
+					//promise/timeout used to offset the timing for the template render time
+					return $q(function(resolve) {
+						setTimeout(function() {
+							resolve();
+						});
+					});
 				}
 
 				function log(message) {
@@ -1228,8 +1235,6 @@
 				function numeric(n) {
 					return !isNaN(parseFloat(n)) && isFinite(n);
 				}
-
-
 
 				function prep_filter(filter) {
 					if(typeof filter.values=='function') {
