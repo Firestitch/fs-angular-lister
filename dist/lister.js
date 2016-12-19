@@ -941,10 +941,6 @@
 						styles.width = col.width;
 					}
 
-					if(col.center) {
-						styles.textAlign = 'center';
-					}
-
 					return styles;
 				}
 
@@ -2120,19 +2116,17 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col lister-col-header {{::column.className}}\" ng-repeat=\"column in options.columns\" ng-style=\"styleCols[$index]\" ng-class=\"{ order: column.order }\" ng-click=\"headerClick(column)\">\r" +
-    "\n" +
-    "\r" +
+    "                    <div class=\"lister-col lister-col-header {{::col.className}}\" ng-repeat=\"col in options.columns\" ng-style=\"styleCols[$index]\" ng-class=\"{ order: col.order, center: col.center }\" ng-click=\"headerClick(col)\">\r" +
     "\n" +
     "                        <div class=\"wrap\">\r" +
     "\n" +
-    "                            <span fs-lister-compile=\"column.title\" column=\"column\" locals=\"locals\" class=\"title\"></span>\r" +
+    "                            <span fs-lister-compile=\"col.title\" column=\"col\" locals=\"locals\" class=\"title\"></span>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                            <div class=\"direction\" ng-if=\"column.order\">\r" +
+    "                            <div class=\"direction\" ng-if=\"col.order\">\r" +
     "\n" +
-    "                                <span ng-switch=\"order.direction\" ng-show=\"order.name==column.order.name\">\r" +
+    "                                <span ng-switch=\"order.direction\" ng-show=\"order.name==col.order.name\">\r" +
     "\n" +
     "                                    <md-icon ng-switch-when=\"asc\">arrow_downward</md-icon>\r" +
     "\n" +
@@ -2143,8 +2137,6 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                            </div>\r" +
     "\n" +
     "                        </div>\r" +
-    "\n" +
-    "\r" +
     "\n" +
     "                    </div>\r" +
     "\n" +
@@ -2168,7 +2160,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                    </div>\r" +
     "\n" +
-    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" column=\"col\" data=\"item\" locals=\"locals\" ng-style=\"styleCols[$index]\"></div>\r" +
+    "                    <div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" column=\"col\" data=\"item\" locals=\"locals\" ng-style=\"styleCols[$index]\" ng-class=\"{ center: col.center }\"></div>\r" +
     "\n" +
     "                    <div class=\"lister-col lister-actions\" ng-if=\"options.action\">\r" +
     "\n" +

@@ -941,10 +941,6 @@
 						styles.width = col.width;
 					}
 
-					if(col.center) {
-						styles.textAlign = 'center';
-					}
-
 					return styles;
 				}
 

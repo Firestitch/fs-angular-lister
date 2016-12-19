@@ -321,6 +321,11 @@ lister, fs-lister {
                     background-color: #F6F6F6;
                 }
             }
+
+            &.center,
+            &.center * {
+            	text-align: center;
+            }
         }
 
         .lister-row {
