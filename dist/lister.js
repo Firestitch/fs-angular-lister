@@ -1472,7 +1472,7 @@
 					function resize() {
 
 						if(!$scope.loading && $scope.data.length) {
-debugger;
+
 							height = parseInt(container.innerHeight || container.clientHeight);
 							scrollTop = container.pageYOffset || parseInt(container.scrollTop);
 							el_bottom = parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop'));
