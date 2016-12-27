@@ -42,7 +42,7 @@ angular.module('app')
         	limit: 5,
         	infinite: true
         },*/
-        paging: false,
+        //paging: false,
 
         // persist: {
         //     name: 'lister',
@@ -71,7 +71,7 @@ angular.module('app')
 
             //return setTimeout(function() { cb([]); }, 2000);
 
-            query.count = 3;
+            query.count = 20;
 
             var url = 'https://service.firestitch.com/api/';
 
@@ -254,7 +254,7 @@ angular.module('app')
                 	value: "{{total}}"
                 }
             },
-            {   title: 'Select',
+          /*  {   title: 'Select',
                 value: function (label, $scope, data, list) {
                     return '<md-input-container><md-select ng-model="someModel" placeholder="{{label}}" ng-change="click()"><md-option ng-value="opt" ng-repeat="opt in list">{{ opt.label }}</md-option></md-select></md-input-container>';
                 },
@@ -269,7 +269,7 @@ angular.module('app')
                         alert("You Clicked me!");
                     }
                 }
-            }
+            }*/
         ],
 
         orders: [

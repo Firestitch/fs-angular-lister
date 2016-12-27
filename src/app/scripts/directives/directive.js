@@ -1502,7 +1502,9 @@
 
 							if(condition) {
 								$scope.max_bottom = el_bottom;
-								$scope.load();
+								$scope.$apply(function() {
+									$scope.load();
+								});
 							}
 						}
 					},400,'fs-lister-resize');
