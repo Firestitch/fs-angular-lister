@@ -1466,20 +1466,20 @@
 						wn_bottom,
 						scrollTop,
 						condition,
-						threshhold = 200;
+						threshhold = 200,
+						container = $scope.options.container ? document.querySelector($scope.options.container) : window;
 
-					var container = $scope.options.container ? document.querySelector($scope.options.container) : null;
-
-					fsUtil.interval(function() {
+					function resize() {
 
 						if(!$scope.loading && $scope.data.length) {
 
-							height = container ? container.clientHeight : window.innerHeight;
-							scrollTop = container ? parseInt(container.scrollTop) : $window.pageYOffset;
-							el_bottom = (parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop')));
-							wn_bottom = scrollTop + parseInt(height);
+							height = parseInt(container.innerHeight || container.clientHeight);
+							scrollTop = container.pageYOffset || parseInt(container.scrollTop);
+							el_bottom = parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop'));
+							wn_bottom = scrollTop + height;
 							condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
 
+							/*
 							if($scope.options.debug) {
 								var body = document.body,
 									html = document.documentElement;
@@ -1499,6 +1499,7 @@
 								$log.log("If: (" + (el_bottom - threshhold) + ") <= " + wn_bottom + " && (" + el_bottom  + " > " + ($scope.max_bottom + threshhold) + ") = " + condition);
 								$log.log("----------------------------------------------------------");
 							}
+							*/
 
 							if(condition) {
 								$scope.max_bottom = el_bottom;
@@ -1507,10 +1508,14 @@
 								});
 							}
 						}
-					},400,'fs-lister-resize');
+					}
+
+					container.addEventListener('scroll', resize);
+					container.addEventListener('resize', resize);
 
 					$scope.$on('$destroy', function() {
-						fsUtil.clearInterval('fs-lister-resize');
+						container.removeventListener('scroll', resize);
+						container.removeEventListener('resize', resize);
 					});
 				}
 			}
