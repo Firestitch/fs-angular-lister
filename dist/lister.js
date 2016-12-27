@@ -125,9 +125,9 @@
 	* @param {function} ls-instance.options Set/Gets options. Zero arguments passed will return all options. One argument passed will return that option's value. Two arguments passed will set option with the value.
 	*/
 
-	var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', '$interval', '$mdDialog',
+	var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', 'fsUtil', '$mdDialog',
 							'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache', 'fsArray',
-							function ($compile, $sce, $filter, $window, $log, $q, $interval, $mdDialog,
+							function ($compile, $sce, $filter, $window, $log, $q, fsUtil, $mdDialog,
 									fsStore, $rootScope, fsLister, $location, $templateCache, fsArray) {
 		return {
 			template: function(element, attr) {
@@ -1470,7 +1470,7 @@
 
 					var container = $scope.options.container ? document.querySelector($scope.options.container) : null;
 
-					var timeout = $interval(function() {
+					fsUtil.interval(function() {
 
 						if(!$scope.loading && $scope.data.length) {
 
@@ -1505,10 +1505,10 @@
 								$scope.load();
 							}
 						}
-					},400);
+					},400,'fs-lister-resize');
 
 					$scope.$on('$destroy', function() {
-						$interval.cancel(timeout);
+						fsUtil.clearInterval('fs-lister-resize');
 					});
 				}
 			}
@@ -1516,7 +1516,7 @@
 		}
 	}];
 
-	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array'])
+	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array','fs-angular-util'])
 	.directive('lister',ListerDirective)
 	.directive('fsLister',ListerDirective)
 	.directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',

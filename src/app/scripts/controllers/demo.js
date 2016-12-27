@@ -79,16 +79,17 @@ angular.module('app')
 
             var locals = { total: 100, subtotal: 830 };
 
-            return DummyService.gets(query,{ url: url, key: 'objects', datapaging: true })
+/*            return DummyService.gets(query,{ url: url, key: 'objects', datapaging: true })
                     .then(function(response) {
                     	//return { data: {} };
                         return { data: response.data, paging: response.paging, locals: locals };
                     });
-
+*/
             DummyService
                 .gets(query,{ url: url })
                 .then(function(result) {
-                    cb(result.objects,result.paging,locals);
+                    cb(result.objects);
+                    //cb(result.objects,result.paging,locals);
                 })
 
                 /*.catch(function (response) {
