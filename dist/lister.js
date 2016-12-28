@@ -1514,7 +1514,7 @@
 					container.addEventListener('resize', resize);
 
 					$scope.$on('$destroy', function() {
-						container.removeventListener('scroll', resize);
+						container.removeEventListener('scroll', resize);
 						container.removeEventListener('resize', resize);
 					});
 				}
