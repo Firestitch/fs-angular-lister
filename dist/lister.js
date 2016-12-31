@@ -638,10 +638,6 @@
 					reload();
 				}
 
-				$scope.autocompleteSearch = function(filter) {
-					$scope.search(filter.search);
-				}
-
 				$scope.filterValueUpdate = function() {
 					angular.forEach(options.filters,function(filter) {
 						$scope.filterValue(filter);
@@ -1865,9 +1861,9 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\t\t\t\t\t\t\t\t\t\t\t        md-search-text=\"filter.search\"\r" +
     "\n" +
-    "\t\t\t\t\t\t\t\t\t\t\t        md-selected-item-change=\"autocompleteSearch(filter)\"\r" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-selected-item-change=\"search(filter)\"\r" +
     "\n" +
-    "\t\t\t\t\t\t\t\t\t\t\t        md-items=\"item in filter.values(filter)\"\r" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-items=\"item in filter.values(filter.values, filter)\"\r" +
     "\n" +
     "\t\t\t\t\t\t\t\t\t\t\t        md-item-text=\"filter.model.name\"\r" +
     "\n" +

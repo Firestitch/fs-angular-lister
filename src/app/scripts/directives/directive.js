@@ -638,10 +638,6 @@
 					reload();
 				}
 
-				$scope.autocompleteSearch = function(filter) {
-					$scope.search(filter.search, filter);
-				}
-
 				$scope.filterValueUpdate = function() {
 					angular.forEach(options.filters,function(filter) {
 						$scope.filterValue(filter);
