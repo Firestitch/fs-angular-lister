@@ -1851,7 +1851,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "                                    <div class=\"interface\" ng-if=\"filter.type == 'autocomplete'\">\r" +
     "\n" +
-    "\t\t\t\t\t\t\t\t\t\t<md-autocomplete-container>\r" +
+    "\t\t\t\t\t\t\t\t\t\t<md-autocomplete-container md-no-clear>\r" +
     "\n" +
     "\t\t\t\t\t\t\t\t\t\t\t<md-autocomplete\r" +
     "\n" +
