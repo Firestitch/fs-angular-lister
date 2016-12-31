@@ -639,18 +639,10 @@
 				}
 
 				$scope.autocompleteSearch = function(filter) {
-					$scope.search(filter);
-				}
-
-				$scope.autocompleteChagne = function(filter) {
-					filter.values(filter.search)
-					.then(function(items) {
-						filter._items = items;
-					});
+					$scope.search(filter.search, filter);
 				}
 
 				$scope.filterValueUpdate = function() {
-
 					angular.forEach(options.filters,function(filter) {
 						$scope.filterValue(filter);
 					});
@@ -890,7 +882,9 @@
 						}
 
 					} else if(filter.type=='autocomplete') {
-						filter.value = filter.model.value;
+						if(filter.model) {
+							filter.value = filter.model.value;
+						}
 
 					} else if(filter.model!==undefined && String(filter.model).length) {
 						filter.value = filter.model;
