@@ -62,6 +62,30 @@
                                         </md-input-container>
                                     </div>
 
+                                    <div class="interface" ng-if="filter.type == 'autocomplete'">
+										<md-autocomplete-container>
+											<md-autocomplete
+											        md-no-cache="true"
+											        md-selected-item="filter.model"
+											        md-search-text="filter.search"
+											        md-selected-item-change="autocompleteSearch(filter)"
+											        md-items="item in filter.values(filter)"
+											        md-item-text="filter.model.name"
+											        md-min-length="0"
+											        md-floating-label=""
+											        ng-model-options="{ debounce: 500 }"
+											        md-autoselect>
+											        <md-item-template>
+											        	<span md-highlight-text="filter.search" md-highlight-flags="^i">{{item.name}}</span>
+											        </md-item-template>
+											        <md-not-found>
+											        	No matches found
+											      	</md-not-found>
+											</md-autocomplete>
+										</md-autocomplete-container>
+                                    </div>
+
+
                                     <div class="interface" ng-if="filter.type == 'text'">
                                         <md-input-container class="md-no-float md-no-label md-no-message">
                                             <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-keydown="searchKeydown($event, 'closePopupOnEnter')" ng-change="search(filter)"/>

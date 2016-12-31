@@ -318,7 +318,36 @@ angular.module('app')
         },
 
         filters: [
-           {
+			{
+                name: 'search',
+                type: 'text',
+                label: 'Search',
+                param: 'search'
+            },
+			{
+                name: 'search',
+                type: 'text',
+                label: 'Search',
+                param: 'search'
+            },
+            {
+                name: 'autocomplete',
+                type: 'autocomplete',
+                label: 'Autocomplete',
+                values: function(text) {
+
+		           /* return DummyService.gets({ count: 20 },{ url: 'https://service.firestitch.com/api/' })
+		            .then(function(items) {
+		            	return items.objects;
+		            });*/
+
+                	return $q(function(resolve) {
+                		resolve([	{ name: 'ssss', value: 'SSSSS' },
+                					{ name: 'ddddd', value: 'DDDDD' }]);
+                	});
+                }
+            }
+           /*{
                 name: 'search',
                 type: 'text',
                 label: 'Search',
@@ -475,7 +504,7 @@ angular.module('app')
                 label: 'Checkbox',
                 checked: 'active',
                 unchecked: 'delete'
-            }
+            }*/
         ]
     };
 });

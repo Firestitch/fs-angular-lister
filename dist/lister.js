@@ -638,6 +638,17 @@
 					reload();
 				}
 
+				$scope.autocompleteSearch = function(filter) {
+					$scope.search(filter);
+				}
+
+				$scope.autocompleteChagne = function(filter) {
+					filter.values(filter.search)
+					.then(function(items) {
+						filter._items = items;
+					});
+				}
+
 				$scope.filterValueUpdate = function() {
 
 					angular.forEach(options.filters,function(filter) {
@@ -686,6 +697,10 @@
 										});
 									}
 								}
+
+							} else if(filter.type=='autocomplete') {
+
+								value = filter.model.name;
 
 							} else if(filter.type=='date') {
 
@@ -873,6 +888,9 @@
 								filter.value = parts.join(',');
 							}
 						}
+
+					} else if(filter.type=='autocomplete') {
+						filter.value = filter.model.value;
 
 					} else if(filter.model!==undefined && String(filter.model).length) {
 						filter.value = filter.model;
@@ -1233,7 +1251,7 @@
 				}
 
 				function prep_filter(filter) {
-					if(typeof filter.values=='function') {
+					if(typeof filter.values=='function' && !filter.type=='autocomplete') {
 						filter.values = filter.values();
 					}
 
@@ -1838,6 +1856,54 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "                                        </md-input-container>\r" +
     "\n" +
     "                                    </div>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                                    <div class=\"interface\" ng-if=\"filter.type == 'autocomplete'\">\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t<md-autocomplete-container>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t<md-autocomplete\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-no-cache=\"true\"\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-selected-item=\"filter.model\"\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-search-text=\"filter.search\"\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-selected-item-change=\"autocompleteSearch(filter)\"\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-items=\"item in filter.values(filter)\"\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-item-text=\"filter.model.name\"\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-min-length=\"0\"\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-floating-label=\"\"\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        ng-model-options=\"{ debounce: 500 }\"\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        md-autoselect>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        <md-item-template>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        \t<span md-highlight-text=\"filter.search\" md-highlight-flags=\"^i\">{{item.name}}</span>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        </md-item-template>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        <md-not-found>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t        \tNo matches found\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t      \t</md-not-found>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t\t</md-autocomplete>\r" +
+    "\n" +
+    "\t\t\t\t\t\t\t\t\t\t</md-autocomplete-container>\r" +
+    "\n" +
+    "                                    </div>\r" +
+    "\n" +
+    "\r" +
     "\n" +
     "\r" +
     "\n" +

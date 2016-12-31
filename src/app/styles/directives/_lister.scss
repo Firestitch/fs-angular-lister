@@ -227,6 +227,10 @@ lister, fs-lister {
                     }
                 }
 
+                md-autocomplete-container md-input-container {
+                	margin: 0;
+                }
+
                 .isolate  {
                     .interface {
                         line-height: 20px;

@@ -638,6 +638,17 @@
 					reload();
 				}
 
+				$scope.autocompleteSearch = function(filter) {
+					$scope.search(filter);
+				}
+
+				$scope.autocompleteChagne = function(filter) {
+					filter.values(filter.search)
+					.then(function(items) {
+						filter._items = items;
+					});
+				}
+
 				$scope.filterValueUpdate = function() {
 
 					angular.forEach(options.filters,function(filter) {
@@ -686,6 +697,10 @@
 										});
 									}
 								}
+
+							} else if(filter.type=='autocomplete') {
+
+								value = filter.model.name;
 
 							} else if(filter.type=='date') {
 
@@ -873,6 +888,9 @@
 								filter.value = parts.join(',');
 							}
 						}
+
+					} else if(filter.type=='autocomplete') {
+						filter.value = filter.model.value;
 
 					} else if(filter.model!==undefined && String(filter.model).length) {
 						filter.value = filter.model;
@@ -1233,7 +1251,7 @@
 				}
 
 				function prep_filter(filter) {
-					if(typeof filter.values=='function') {
+					if(typeof filter.values=='function' && !filter.type=='autocomplete') {
 						filter.values = filter.values();
 					}
 
