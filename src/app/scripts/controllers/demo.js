@@ -324,12 +324,6 @@ angular.module('app')
                 label: 'Search',
                 param: 'search'
             },
-			{
-                name: 'search',
-                type: 'text',
-                label: 'Search',
-                param: 'search'
-            },
             {
                 name: 'autocomplete',
                 type: 'autocomplete',
@@ -346,7 +340,22 @@ angular.module('app')
                 					{ name: 'ddddd', value: 'DDDDD' }]);
                 	});
                 }
-            }
+            },
+            {
+                name: 'state',
+                type: 'select',
+                label: 'State',
+                change: function(instance) {
+                	console.log('state filter changed', this, instance);
+                },
+                values: {
+                    __all: 'All',
+                    active: 'Active',
+                    pending: 'Pending',
+                    completed: 'Completed',
+                    deleted: 'Deleted'
+                }
+            },
            /*{
                 name: 'search',
                 type: 'text',

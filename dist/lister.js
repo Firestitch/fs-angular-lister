@@ -1251,7 +1251,7 @@
 				}
 
 				function prep_filter(filter) {
-					if(typeof filter.values=='function' && !filter.type=='autocomplete') {
+					if(typeof filter.values=='function' && filter.type!='autocomplete') {
 						filter.values = filter.values();
 					}
 
