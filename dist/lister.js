@@ -1869,8 +1869,6 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "\t\t\t\t\t\t\t\t\t\t\t        md-min-length=\"0\"\r" +
     "\n" +
-    "\t\t\t\t\t\t\t\t\t\t\t        md-floating-label=\"\"\r" +
-    "\n" +
     "\t\t\t\t\t\t\t\t\t\t\t        ng-model-options=\"{ debounce: 500 }\"\r" +
     "\n" +
     "\t\t\t\t\t\t\t\t\t\t\t        md-autoselect>\r" +
