@@ -2,7 +2,7 @@
 
 
 angular.module('app')
-  .controller('DemoCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog, $q, $filter) {
+  .controller('DemoCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog, $q, $filter, fsLister) {
 
     $scope.modal = modal;
     $scope.listerInstance = {};
@@ -25,6 +25,10 @@ angular.module('app')
                     );
     }
 
+    $scope.broadcastReload = function() {
+    	fsLister.reload('demo');
+    }
+
     $scope.newFilters = function() {
 
         var filter = $filter('filter')($scope.listerConf.filters,{ name: 'range' })[0];
@@ -34,7 +38,7 @@ angular.module('app')
     }
 
     $scope.listerConf = {
-
+    	id: 'demo',
         debug: false,
         //container: '#frame',
 

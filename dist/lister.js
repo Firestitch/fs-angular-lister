@@ -6,6 +6,7 @@
 	 * @name fs.directives:fs-lister
 	 * @restrict E
 	 * @param {object} ls-options Options to configure the Lister.
+	 * @param {string} ls-options.id An identifier used for lister boradcast reloading and the id placed in the markup
 	 * @param {object} ls-options.instance A variable that will be extended with the instance of the lister
 	 * @param {function} ls-options.data When the load() function is called this data function is called with two parameters query and callback.
 				<ul>
@@ -175,6 +176,18 @@
 				options.load = options.load===undefined ? true : options.load;
 				options.actions = options.actions || [];
 				options.filters = options.filters || [];
+
+				if(options.id) {
+
+					$scope.$on('lister-' + options.id,function(e,data) {
+
+						if(data.action=='reload') {
+							options.instance.reload();
+						}
+					});
+
+					options.id = 'lister-' + options.id;
+				}
 
 				if(options.persist) {
 
@@ -1657,25 +1670,6 @@
 					}
 		}
 	}])
-	.provider("fsLister",function() {
-
-		var _options = {};
-		this.options = function(options) {
-			_options = options;
-		}
-
-		this.$get = function () {
-
-			var service = { options: options };
-
-			return service;
-
-			function options() {
-				return _options;
-			}
-		}
-	})
-
 	.filter('filteri', function() {
 	  return function(list, filters) {
 
@@ -1717,11 +1711,41 @@
 	  };
 	});
 })();
+(function () {
+
+    angular.module('fs-angular-lister')
+	.provider("fsLister",function() {
+
+		var _options = {};
+		this.options = function(options) {
+			_options = options;
+		}
+
+		this.$get = function($rootScope) {
+
+			var service = {
+				options: options,
+				reload: reload
+			 };
+
+			return service;
+
+			function options() {
+				return _options;
+			}
+
+			function reload(name) {
+				$rootScope.$broadcast('lister-' + name,{ action: 'reload' });
+			}
+		}
+	});
+})();
+
 angular.module('fs-angular-lister').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('views/directives/lister.html',
-    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\">\r" +
+    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\" id=\"{{options.id}}\">\r" +
     "\n" +
     "\r" +
     "\n" +
