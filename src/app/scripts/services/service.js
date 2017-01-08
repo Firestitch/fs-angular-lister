@@ -3,7 +3,7 @@
     angular.module('fs-angular-lister')
 	.provider("fsLister",function() {
 
-		var _options = {};
+		var _options = {}, _instances = {};
 		this.options = function(options) {
 			_options = options;
 		}
@@ -12,7 +12,9 @@
 
 			var service = {
 				options: options,
-				reload: reload
+				reload: reload,
+				add: add,
+				get: get
 			 };
 
 			return service;
@@ -23,6 +25,14 @@
 
 			function reload(name) {
 				$rootScope.$broadcast('lister-' + name,{ action: 'reload' });
+			}
+
+			function add(id, instance) {
+				return _instances[id] = instance;
+			}
+
+			function get(id) {
+				return _instances[id];
 			}
 		}
 	});

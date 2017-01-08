@@ -29,6 +29,11 @@ angular.module('app')
     	fsLister.reload('demo');
     }
 
+    $scope.getInstance = function() {
+    	$scope.getInstanceObject = fsLister.get('demo');
+    	debugger;
+    }
+
     $scope.newFilters = function() {
 
         var filter = $filter('filter')($scope.listerConf.filters,{ name: 'range' })[0];

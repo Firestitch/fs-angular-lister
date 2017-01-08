@@ -180,13 +180,10 @@
 				if(options.id) {
 
 					$scope.$on('lister-' + options.id,function(e,data) {
-
 						if(data.action=='reload') {
 							options.instance.reload();
 						}
 					});
-
-					options.id = 'lister-' + options.id;
 				}
 
 				if(options.persist) {
@@ -233,6 +230,7 @@
 				$scope.paged = null;
 				$scope.locals = {};
 				$scope.rowClasses = [];
+				$scope.id = options.id ? 'lister-' + options.id : '';
 				$scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
 				var primary = false;
@@ -1474,6 +1472,10 @@
 					$scope.options.instance = {};
 
 				angular.extend($scope.options.instance,instance);
+
+				if($scope.options.id) {
+					fsLister.add($scope.options.id,instance);
+				}
 			}],
 			link: function($scope, element, attr, ctrl) {
 
@@ -1716,7 +1718,7 @@
     angular.module('fs-angular-lister')
 	.provider("fsLister",function() {
 
-		var _options = {};
+		var _options = {}, _instances = {};
 		this.options = function(options) {
 			_options = options;
 		}
@@ -1725,7 +1727,9 @@
 
 			var service = {
 				options: options,
-				reload: reload
+				reload: reload,
+				add: add,
+				get: get
 			 };
 
 			return service;
@@ -1737,6 +1741,14 @@
 			function reload(name) {
 				$rootScope.$broadcast('lister-' + name,{ action: 'reload' });
 			}
+
+			function add(id, instance) {
+				return _instances[id] = instance;
+			}
+
+			function get(id) {
+				return _instances[id];
+			}
 		}
 	});
 })();
@@ -1745,7 +1757,7 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
   'use strict';
 
   $templateCache.put('views/directives/lister.html',
-    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\" id=\"{{options.id}}\">\r" +
+    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }\" id=\"{{id}}\">\r" +
     "\n" +
     "\r" +
     "\n" +

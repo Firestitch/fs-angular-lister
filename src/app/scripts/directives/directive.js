@@ -184,8 +184,6 @@
 							options.instance.reload();
 						}
 					});
-
-					options.id = 'lister-' + options.id;
 				}
 
 				if(options.persist) {
@@ -232,6 +230,7 @@
 				$scope.paged = null;
 				$scope.locals = {};
 				$scope.rowClasses = [];
+				$scope.id = options.id ? 'lister-' + options.id : '';
 				$scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
 				var primary = false;
@@ -1473,6 +1472,10 @@
 					$scope.options.instance = {};
 
 				angular.extend($scope.options.instance,instance);
+
+				if($scope.options.id) {
+					fsLister.add($scope.options.id,instance);
+				}
 			}],
 			link: function($scope, element, attr, ctrl) {
 
