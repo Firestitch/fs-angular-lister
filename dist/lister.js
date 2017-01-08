@@ -465,19 +465,6 @@
 
 				$scope.actionClick = function(action, item, event) {
 
-					var index = $scope.data.indexOf(item);
-
-					var helper = {  load: load,
-									reload: reload,
-									remove: function() {
-										if(this.index!==null) {
-											$scope.data.splice(this.index, 1);
-											$scope.paging.records--;
-										}
-									},
-									index: index>=0 ? index : null
-								}
-
 					if(action.delete) {
 
 						var confirm = { template: [
@@ -495,20 +482,20 @@
 										'   </md-button>',
 										' </md-dialog-actions>',
 										'</md-dialog>'
-										].join('').replace(/\s\s+/g, ''),
+										].join(''),
 										controller: function () {
 											this.ok = function() {
 
 												if(action.delete.ok) {
-													var result = action.delete.ok(item, event, helper);
+													var result = action.delete.ok(item, event);
 
 													if(result && angular.isFunction(result.then)) {
 														result.then(function() {
-															helper.remove();
+															$scope.options.instance.remove(item);
 															$mdDialog.hide(true);
 														});
 													} else {
-														helper.remove();
+														$scope.options.instance.remove(item);
 														$mdDialog.hide(true);
 													}
 												}
@@ -517,7 +504,7 @@
 											this.cancel = function($event) {
 
 												if(action.delete.cancel) {
-													action.delete.cancel(item, event, helper);
+													action.delete.cancel(item, event);
 												}
 												$mdDialog.hide();
 											};
@@ -534,7 +521,7 @@
 						$mdDialog.show(confirm);
 
 					} else if(action.click) {
-						action.click(item, event, helper);
+						action.click(item, event);
 					}
 				}
 
@@ -1403,9 +1390,27 @@
 								filterValues: filterValues,
 								data: data,
 								locals: locals,
+								remove: function(filters) {
+
+									var items = this.find(filters);
+
+									angular.forEach(items,function(item) {
+
+										var index = $scope.data.indexOf(item);
+
+										if(index!==null) {
+											$scope.data.splice(index, 1);
+											if($scope.paging.records>0) {
+												$scope.paging.records--;
+											}
+										}
+									});
+
+								},
 								find: function(filters) {
-									var flen = filters.length;
-									var len = $scope.data.length;
+									var flen = filters.length,
+										len = $scope.data.length,
+										items = [];
 									for(var i=0; i<len; i++) {
 
 										var valid = true;
@@ -1415,24 +1420,19 @@
 										});
 
 										if(valid) {
-											return $scope.data[i];
+											items.push($scope.data[i]);
 										}
 									}
 
-									return undefined;
+									return items;
 								},
 								filter: function(name) {
 									return fsArray.filter(options.filters, {name:name})[0];
 								},
-								update: function(object,filters) {
-
-									var item = this.find(filters);
-
-									if(item) {
+								update: function(object, filters) {
+									angular.forEach(this.find(filters),function(item) {
 										angular.extend(item,object);
-									} else {
-										this.reload();
-									}
+									});
 								},
 								option: function(option,name,value) {
 									if(option=='filter') {
