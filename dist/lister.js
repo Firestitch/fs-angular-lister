@@ -1569,7 +1569,7 @@
 							angular.extend(scope,$scope.locals);
 						});
 
-						if($scope.column.resolve) {
+						if($scope.column.resolve && $scope.data) {
 							angular.forEach($scope.column.resolve, function(elem, index) {
 								var resolve = null;
 								if (typeof elem == 'function') {
