@@ -50,7 +50,16 @@
 					<li><label>label</label>Used in the contextual menu item's label</li>
 					<li><label>click</label>Triggered when clicked</li>
 					<li><label>show</label>A boolean or function which when resolved will show/hide the button. Defaults to true</li>
-					<li><label>more</label>Places the action in the ... menu</li>
+					<li><label>type</label>Supported types: button, icon template</li>
+					<li><label>icon</label>Icon used inside button</li>
+					<li><label>items[]</label>Items used in the menu when action.type=='menu'
+						<ul>
+							<li><label>label</label>Used in the contextual menu item's label</li>
+							<li><label>click</label>Triggered when clicked</li>
+							<li><label>show</label>A boolean or function which when resolved will show/hide the button. Defaults to true</li>
+							<li><label>icon</label>Icon used inside button</li>
+						</ul>
+					</li>
 				</ul>
 	* @param {object} ls-options.action Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.
 	* @param {bool} ls-options.load Loads the lister data on directive load. Default true
@@ -370,16 +379,29 @@
 							action.show = true;
 						}
 
-						if(action.more===undefined) {
-							action.more = false;
-						}
-
 						if(action.type===undefined) {
 							action.type = 'button';
 						}
 
 						if(angular.isFunction(action.show)) {
 							action.show = action.show();
+						}
+
+						if(action.type=='menu' && action.items) {
+
+							if(!action.icon) {
+								action.icon = 'more_vert';
+							}
+
+							angular.forEach(action.items,function(item) {
+								if(item.show===undefined) {
+									item.show = true;
+								}
+
+								if(angular.isFunction(item.show)) {
+									item.show = item.show();
+								}
+							});
 						}
 					});
 				}

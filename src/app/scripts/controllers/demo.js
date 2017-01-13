@@ -159,25 +159,6 @@ angular.module('app')
                 }
             },
             {
-                label: 'Menu 1',
-                more: true,
-                icon: 'delete',
-                click: function() {
-                    alert('Menu 1');
-                }
-            },
-            {
-                label: 'Menu 2',
-                more: true,
-                icon: 'delete',
-                show: function() {
-                	return 1;
-                },
-                click: function() {
-                    alert('Menu 2');
-                }
-            },
-            {
                 type: 'template',
                 template: '<md-button ng-click="click()">Upload</md-button>',
                 scope: {
@@ -185,7 +166,39 @@ angular.module('app')
                 		alert('asdasdasd');
                 	}
                 }
-            }
+            },
+/*            {
+                label: 'Settings',
+                icon: 'settings',
+                click: function(data,event) {
+                	alert('settings click');
+                },
+                type: 'icon'
+            },*/
+
+            {
+            	type: 'menu',
+            	icon: 'settings',
+	            items: [
+		            {
+		                label: 'Menu 1',
+		                icon: 'delete',
+		                click: function() {
+		                    alert('Menu 1');
+		                }
+		            },
+		            {
+		                label: 'Menu 2',
+		                icon: 'delete',
+		                show: function() {
+		                	return 1;
+		                },
+		                click: function() {
+		                    alert('Menu 2');
+		                }
+		            }
+		        ]
+	        }
         ],
 
         actions: [

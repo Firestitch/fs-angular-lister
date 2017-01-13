@@ -50,7 +50,18 @@
 					<li><label>label</label>Used in the contextual menu item's label</li>
 					<li><label>click</label>Triggered when clicked</li>
 					<li><label>show</label>A boolean or function which when resolved will show/hide the button. Defaults to true</li>
-					<li><label>more</label>Places the action in the ... menu</li>
+					<li><label>type</label>Supported types: button, icon template</li>
+					<li><label>icon</label>Icon used inside button</li>
+					<li><label>items[]</label>Items used in the menu when action.type=='menu'
+						<ul>
+							<li><label>label</label>Used in the contextual menu item's label</li>
+							<li><label>click</label>Triggered when clicked</li>
+							<li><label>show</label>A boolean or function which when resolved will show/hide the button. Defaults to true</li>
+							<li><label>type</label>Supported types: button, icon template</li>
+							<li><label>icon</label>Icon used inside button</li>
+							<li><label>items</label>Items used in the menu when action.type=='menu'</li>
+						</ul>
+					</li>
 				</ul>
 	* @param {object} ls-options.action Simular to ls-options.actions but directly places the icon in the row instead of having the multiple option.
 	* @param {bool} ls-options.load Loads the lister data on directive load. Default true
@@ -370,16 +381,29 @@
 							action.show = true;
 						}
 
-						if(action.more===undefined) {
-							action.more = false;
-						}
-
 						if(action.type===undefined) {
 							action.type = 'button';
 						}
 
 						if(angular.isFunction(action.show)) {
 							action.show = action.show();
+						}
+
+						if(action.type=='menu' && action.items) {
+
+							if(!action.icon) {
+								action.icon = 'more_vert';
+							}
+
+							angular.forEach(action.items,function(item) {
+								if(item.show===undefined) {
+									item.show = true;
+								}
+
+								if(angular.isFunction(item.show)) {
+									item.show = item.show();
+								}
+							});
 						}
 					});
 				}
@@ -2089,41 +2113,47 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
     "\n" +
     "            <div class=\"top-actions\" ng-if=\"options.topActions.length\">\r" +
     "\n" +
-    "                <span ng-repeat=\"action in options.topActions | filter: { more: false }\">\r" +
+    "                <span ng-repeat=\"action in options.topActions | filter\" ng-show=\"action.show\">\r" +
     "\n" +
-    "                \t<md-button ng-show=\"action.show && action.type=='button'\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\">{{action.label}}</md-button>\r" +
+    "                \t<md-button ng-show=\"action.type=='button'\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\"><md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon>{{action.label}}</md-button>\r" +
     "\n" +
     "\r" +
     "\n" +
-    "                \t<span ng-show=\"action.show && action.type=='template'\" fs-lister-topaction-compile=\"action.template\" scope=\"action.scope\"></span>\r" +
+    "                \t<md-button ng-show=\"action.type=='icon'\" ng-click=\"topActionsClick(action,$event)\" class=\"action-icon\"><md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip></md-button>\r" +
+    "\n" +
+    "                \t<md-menu ng-show=\"action.type=='menu'\">\r" +
+    "\n" +
+    "\t                    <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\">\r" +
+    "\n" +
+    "\t                        <md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip>\r" +
+    "\n" +
+    "\t                    </md-button>\r" +
+    "\n" +
+    "\t                    <md-menu-content>\r" +
+    "\n" +
+    "\t                        <md-menu-item ng-repeat=\"action in action.items\" ng-show=\"action.show\">\r" +
+    "\n" +
+    "\t                            <md-button ng-click=\"action.click($event)\">\r" +
+    "\n" +
+    "\t                                <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
+    "\n" +
+    "\t                                {{::action.label}}\r" +
+    "\n" +
+    "\t                            </md-button>\r" +
+    "\n" +
+    "\t                        </md-menu-item>\r" +
+    "\n" +
+    "\t                    </md-menu-content>\r" +
+    "\n" +
+    "\t                </md-menu>\r" +
+    "\n" +
+    "\r" +
+    "\n" +
+    "                \t<span ng-show=\"action.type=='template'\" fs-lister-topaction-compile=\"action.template\" scope=\"action.scope\"></span>\r" +
     "\n" +
     "                </span>\r" +
     "\n" +
-    "                <md-menu ng-if=\"(options.topActions | filter:{ more: true }).length > 0\">\r" +
-    "\n" +
-    "                    <md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\">\r" +
-    "\n" +
-    "                        <md-icon>more_vert</md-icon>\r" +
-    "\n" +
-    "                    </md-button>\r" +
-    "\n" +
-    "                    <md-menu-content>\r" +
-    "\n" +
-    "                        <md-menu-item ng-repeat=\"action in options.topActions\" ng-if=\"action.more\" ng-show=\"action.show\">\r" +
-    "\n" +
-    "                            <md-button ng-click=\"action.click($event)\">\r" +
-    "\n" +
-    "                                <md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>\r" +
-    "\n" +
-    "                                {{::action.label}}\r" +
-    "\n" +
-    "                            </md-button>\r" +
-    "\n" +
-    "                        </md-menu-item>\r" +
-    "\n" +
-    "                    </md-menu-content>\r" +
-    "\n" +
-    "                </md-menu>\r" +
+    "\r" +
     "\n" +
     "            </div>\r" +
     "\n" +
