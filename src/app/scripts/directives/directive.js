@@ -171,7 +171,7 @@
 				});
 
 				var dataIndex   = 0;
-				var persists    = fsStore.get('lister-persist',{});
+				var persists    = fsStore.get(options.namespace + '-persist',{});
 
 				if(options.paging===false)
 					options.paging = { enabled: false };
@@ -182,13 +182,14 @@
 				options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
 				options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
 				options.norecords = options.norecords===undefined ? 'No records found' : options.norecords;
+				options.namespace = options.namespace ? options.namespace : 'lister';
 				options.load = options.load===undefined ? true : options.load;
 				options.actions = options.actions || [];
 				options.filters = options.filters || [];
 
 				if(options.id) {
 
-					$scope.$on('lister-' + options.id,function(e,data) {
+					$scope.$on(options.namespace + '-' + options.id,function(e,data) {
 						if(data.action=='reload') {
 							options.instance.reload();
 						}
@@ -239,7 +240,7 @@
 				$scope.paged = null;
 				$scope.locals = {};
 				$scope.rowClasses = [];
-				$scope.id = options.id ? 'lister-' + options.id : '';
+				$scope.id = options.id ? options.namespace + '-' + options.id : '';
 				$scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
 				var primary = false;
