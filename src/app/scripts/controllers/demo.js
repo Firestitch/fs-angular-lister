@@ -45,10 +45,8 @@ angular.module('app')
     $scope.listerConf = {
     	id: 'demo',
         debug: false,
-
-
         savedFilter: {
-    		data: [
+    		filters: [
 	    		{
 	    			name: 'My Filter',
 	    			guid: 'asd09743asd',

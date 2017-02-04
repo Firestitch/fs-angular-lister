@@ -181,7 +181,7 @@
                         <md-icon>book</md-icon>
                     </md-button>
                     <md-menu-content>
-                    	<div ng-repeat="item in options.savedFilter.data">
+                    	<div ng-repeat="item in options.savedFilter.filters">
                     		<md-menu-item>
 	                            <md-button ng-click="savedFilterSelect(item)" layout="row" layout-align="start center">
 	                            	<div layout="row" layout-align="start center">
@@ -191,7 +191,7 @@
 	                            </md-button>
 	                        </md-menu-item>
                     	</div>
-                    	<md-menu-divider ng-show="options.savedFilter.data.length"></md-menu-divider>
+                    	<md-menu-divider ng-show="options.savedFilter.filters.length"></md-menu-divider>
                         <md-menu-item ng-show="options.savedFilter.active">
                             <md-button ng-click="savedFilterUpdate()"><md-icon>edit</md-icon> Update Active Filter</md-button>
                         </md-menu-item>

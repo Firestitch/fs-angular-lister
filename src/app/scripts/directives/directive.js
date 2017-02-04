@@ -485,24 +485,32 @@
 				}
 
 				$scope.savedFilterSelect = function(item) {
-					loadSavedFilter(item);
+					savedFilter(item);
 				}
 
-				function loadSavedFilter(item) {
-					options.savedFilter.active = item;
-					angular.forEach(item.values,function(value,name) {
+				function savedFilter(item) {
 
-						var filter = fsArray.filter(options.filters,{ name: name })[0];
-						if(filter) {
-							filter.model = value;
-							filter.value = value;
-						}
+					options.savedFilter.active = item;
+					angular.forEach(options.savedFilter.filters,function(value) {
+						value.active = false;
 					});
 
-					$scope.filterValueUpdate();
-					$scope.searchInputUpdate();
+					if(item) {
 
-					reload();
+						item.active = true;
+						angular.forEach(item.values,function(value,name) {
+							var filter = fsArray.filter(options.filters,{ name: name })[0];
+							if(filter) {
+								filter.model = value;
+								filter.value = value;
+							}
+						});
+
+						$scope.filterValueUpdate();
+						$scope.searchInputUpdate();
+
+						reload();
+					}
 				}
 
 				$scope.headerClick = function(col) {
@@ -1400,13 +1408,12 @@
 				.then(function() {
 
 					if(options.savedFilter) {
-						var item = fsArray.filter(options.savedFilter.data,{ active: true })[0];
+						var item = fsArray.filter(options.savedFilter.filters,{ active: true })[0];
 						if(item) {
-							loadSavedFilter(item);
+							savedFilter(item);
 							options.load = false;
 						}
 					}
-
 
 					//load main data
 					if(options.load) {
@@ -1465,6 +1472,7 @@
 								filterValues: filterValues,
 								data: data,
 								locals: locals,
+								savedFilter: savedFilter,
 								remove: function(filters) {
 
 									var items = this.find(filters);
@@ -1789,21 +1797,20 @@
 	})
 	.controller('listerSavedFiltersCtrl',function($scope, options, fsUtil, fsArray, mode, fsModal) {
 
-		options.savedFilter.data = options.savedFilter.data || [];
+		options.savedFilter.filters = options.savedFilter.filters || [];
 
+		$scope.mode = mode;
 		$scope.filter = {};
 
 		if(options.savedFilter.active) {
 			$scope.filter = options.savedFilter.active;
 		}
 
-		$scope.mode = mode;
-
 		$scope.save = function() {
 
 			if(!$scope.filter.guid) {
 				$scope.filter.guid = fsUtil.guid();
-				options.savedFilter.data.push($scope.filter);
+				options.savedFilter.filters.push($scope.filter);
 				options.savedFilter.active = $scope.filter;
 			}
 
@@ -1814,7 +1821,7 @@
 		$scope.lsOptions ={
 
 			data: function(query, cb) {
-				cb(options.savedFilter.data);
+				cb(options.savedFilter.filters);
 			},
 			columns: [
 				{
@@ -1830,7 +1837,7 @@
 			],
 			sort: {
                 stop: function(item,list) {
-                    options.savedFilter.data = list;
+                    options.savedFilter.filters = list;
                 }
             },
 			actions: [
@@ -1848,11 +1855,11 @@
 		                content: 'Are you sure you would like to remove this saved filter?',
 		                ok: function(data) {
 
-		                	if(options.savedFilter.active && options.savedFilter.active.guid==data.guid) {
-		                		options.savedFilter.active = null;
+		                	if(options.savedFilter.active==data) {
+		                		options.instance.savedFilter(null);
 		                	}
 
-		                	fsArray.remove(options.savedFilter.data,{ guid: data.guid });
+		                	fsArray.remove(options.savedFilter.filters,{ guid: data.guid });
 		                }
 		            }
 		        }
