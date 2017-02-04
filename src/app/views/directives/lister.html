@@ -151,19 +151,10 @@
                         </div>
                     </div>
                 </div>
-
-
-
-                <!--
-                <md-button ng-click="toggleFilters()" md-no-ink class="md-icon-button md-icon-button-filters" aria-label="Search filters">
-                    <div class="material-icons icon-collapsed" ng-show="extended_search">expand_more</div>
-                    <div class="material-icons icon-expanded" ng-show="!extended_search">chevron_right</div>
-                </md-button>
-                -->
                 <div class="backdrop" ng-show="extended_search" ng-click="toggleFilters()"></div>
             </div>
 
-            <div class="top-actions" ng-if="options.topActions.length">
+            <div class="top-actions" ng-if="options.topActions.length || options.savedFilters">
                 <span ng-repeat="action in options.topActions | filter" ng-show="action.show">
                 	<md-button ng-show="action.type=='button'" ng-click="topActionsClick(action,$event)" class="md-raised" ng-class="{ 'md-accent': action.primary!==false }"><md-icon ng-show="action.icon">{{action.icon}}</md-icon>{{action.label}}</md-button>
 
@@ -185,7 +176,36 @@
                 	<span ng-show="action.type=='template'" fs-lister-topaction-compile="action.template" scope="action.scope"></span>
                 </span>
 
+                <md-menu ng-if="options.savedFilter">
+                    <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
+                        <md-icon>book</md-icon>
+                    </md-button>
+                    <md-menu-content>
+                    	<div ng-repeat="item in options.savedFilter.data">
+                    		<md-menu-item>
+	                            <md-button ng-click="savedFilterSelect(item)" layout="row" layout-align="start center">
+	                            	<div layout="row" layout-align="start center">
+	                            		<div flex>{{item.name}}</div>
+	                            		<md-icon ng-show="item.guid==options.savedFilter.active.guid">done</md-icon>
+	                            	</div>
+	                            </md-button>
+	                        </md-menu-item>
+                    	</div>
+                    	<md-menu-divider ng-show="options.savedFilter.data.length"></md-menu-divider>
+                        <md-menu-item ng-show="options.savedFilter.active">
+                            <md-button ng-click="savedFilterUpdate()"><md-icon>edit</md-icon> Update Active Filter</md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="savedFilterCreate()"><md-icon>add</md-icon> Create New Filter</md-button>
+                        </md-menu-item>
+                        <md-menu-item>
+                            <md-button ng-click="savedFilterManage()"><md-icon>settings</md-icon> Manage Existing Filters</md-button>
+                        </md-menu-item>
+                    </md-menu-content>
+                </md-menu>
             </div>
+
+
         </div>
         <div class="infinite-records">
             <span ng-if="numeric(paging.records) && paging.records>=0">{{paging.records}} results<span ng-show="order.name"> ordered by</span></span>

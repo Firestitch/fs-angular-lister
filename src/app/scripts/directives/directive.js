@@ -136,9 +136,9 @@
 	*/
 
 	var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', 'fsUtil', '$mdDialog',
-							'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache', 'fsArray',
+							'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache', 'fsArray', 'fsModal',
 							function ($compile, $sce, $filter, $window, $log, $q, fsUtil, $mdDialog,
-									fsStore, $rootScope, fsLister, $location, $templateCache, fsArray) {
+									fsStore, $rootScope, fsLister, $location, $templateCache, fsArray, fsModal) {
 		return {
 			template: function(element, attr) {
 				var template = $templateCache.get('views/directives/lister.html');
@@ -458,6 +458,52 @@
 
 					return filters;
 				}();
+
+				$scope.savedFilterCreate = function() {
+					options.savedFilter.active = null;
+					$scope.savedFilterModal('update');
+				}
+
+				$scope.savedFilterUpdate = function() {
+					$scope.savedFilterModal('update');
+				}
+
+				$scope.savedFilterManage = function() {
+					$scope.savedFilterModal('listing');
+				}
+
+				$scope.savedFilterModal = function(mode) {
+					fsModal
+					.show(	'listerSavedFiltersCtrl',
+							'views/directives/listermodal.html',
+							{
+								resolve: {
+									options: function() { return options; },
+									mode: function() { return mode; }
+								}
+							});
+				}
+
+				$scope.savedFilterSelect = function(item) {
+					loadSavedFilter(item);
+				}
+
+				function loadSavedFilter(item) {
+					options.savedFilter.active = item;
+					angular.forEach(item.values,function(value,name) {
+
+						var filter = fsArray.filter(options.filters,{ name: name })[0];
+						if(filter) {
+							filter.model = value;
+							filter.value = value;
+						}
+					});
+
+					$scope.filterValueUpdate();
+					$scope.searchInputUpdate();
+
+					reload();
+				}
 
 				$scope.headerClick = function(col) {
 
@@ -1353,6 +1399,15 @@
 				$q.all(preload_promises)
 				.then(function() {
 
+					if(options.savedFilter) {
+						var item = fsArray.filter(options.savedFilter.data,{ active: true })[0];
+						if(item) {
+							loadSavedFilter(item);
+							options.load = false;
+						}
+					}
+
+
 					//load main data
 					if(options.load) {
 						reload();
@@ -1375,11 +1430,8 @@
 
 						if(options.init)
 							options.init();
-
 					});
-
 				});
-
 
 				function data() {
 
@@ -1734,5 +1786,72 @@
 
 		return input;
 	  };
+	})
+	.controller('listerSavedFiltersCtrl',function($scope, options, fsUtil, fsArray, mode, fsModal) {
+
+		options.savedFilter.data = options.savedFilter.data || [];
+
+		$scope.filter = {};
+
+		if(options.savedFilter.active) {
+			$scope.filter = options.savedFilter.active;
+		}
+
+		$scope.mode = mode;
+
+		$scope.save = function() {
+
+			if(!$scope.filter.guid) {
+				$scope.filter.guid = fsUtil.guid();
+				options.savedFilter.data.push($scope.filter);
+				options.savedFilter.active = $scope.filter;
+			}
+
+			$scope.filter.values = options.instance.filterValues();
+			fsModal.hide();
+		}
+
+		$scope.lsOptions ={
+
+			data: function(query, cb) {
+				cb(options.savedFilter.data);
+			},
+			columns: [
+				{
+					title: 'Name',
+					value: '<a href ng-click="edit(data)">{{data.name}}</a>',
+					scope: {
+						edit: function(data) {
+							$scope.filter = data;
+							$scope.mode = 'update';
+						}
+					}
+				}
+			],
+			sort: {
+                stop: function(item,list) {
+                    options.savedFilter.data = list;
+                }
+            },
+			actions: [
+				{
+					label: 'Edit',
+					icon: 'edit',
+					click: function(data) {
+						$scope.filter = data;
+						$scope.mode = 'update';
+					}
+				},
+				{
+					delete: {
+		                title: 'Attention',
+		                content: 'Are you sure you would like to remove this saved filter?',
+		                ok: function(data) {
+		                	fsArray.remove(options.savedFilter.data,{ guid: data.guid });
+		                }
+		            }
+		        }
+			]
+		}
 	});
 })();

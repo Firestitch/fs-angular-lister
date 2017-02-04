@@ -45,6 +45,20 @@ angular.module('app')
     $scope.listerConf = {
     	id: 'demo',
         debug: false,
+
+
+        savedFilter: {
+    		data: [
+	    		{
+	    			name: 'My Filter',
+	    			guid: 'asd09743asd',
+	    			values: {
+	    				search: 'xxxx'
+	    			},
+	    			active: true
+	    		}
+	    	]
+        },
         //container: '#frame',
 
         /*paging: {

@@ -1,0 +1,35 @@
+<md-dialog aria-label="Modal" style="width:400px">
+    <form>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <div ng-show="mode=='update'">
+                	{{filter.guid ? 'Update Filter' : 'Add New Filter'}}
+                </div>
+                <div ng-show="mode=='listing'">
+                	Existing Filters
+                </div>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+
+            	<div ng-show="mode=='update'">
+	                <form>
+	                    <md-input-container class="md-block">
+	                        <label>Filter Name</label>
+	                        <textarea ng-model="filter.name" md-select-on-focus></textarea>
+	                    </md-input-container>
+	                </form>
+	            </div>
+
+	            <div ng-show="mode=='listing'">
+                	<fs-lister ls-options="lsOptions" ls-sort></fs-lister>
+                </div>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions>
+            <md-button ng-click="cancel()">{{mode=='update' ? 'Cancel' : 'Done'}}</md-button>
+            <md-button ng-click="save()" class="md-accent" ng-show="mode=='update'">{{filter.guid ? 'Save' : 'Add'}}</md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
