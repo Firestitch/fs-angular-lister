@@ -1847,6 +1847,11 @@
 		                title: 'Attention',
 		                content: 'Are you sure you would like to remove this saved filter?',
 		                ok: function(data) {
+
+		                	if(options.savedFilter.active && options.savedFilter.active.guid==data.guid) {
+		                		options.savedFilter.active = null;
+		                	}
+
 		                	fsArray.remove(options.savedFilter.data,{ guid: data.guid });
 		                }
 		            }
