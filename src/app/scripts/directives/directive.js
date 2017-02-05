@@ -500,7 +500,11 @@
 
 				function savedFilter(item) {
 
-					options.savedFilter = options.savedFilter || {};
+					if(!options.savedFilter) {
+						options.savedFilter = {};
+					}
+
+					options.savedFilter.active = item;
 					angular.forEach(options.savedFilter.filters,function(value) {
 						value.active = false;
 					});
