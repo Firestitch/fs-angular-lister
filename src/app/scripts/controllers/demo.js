@@ -353,7 +353,7 @@ angular.module('app')
 
         filters: [
 
-
+/*
             {
                 name: 'isolate',
                 type: 'select',
@@ -538,7 +538,20 @@ angular.module('app')
                 	];
             	},
                 multiple: true,
-            },
+            },*/
+                {
+                    name: 'modify_date',
+                    type: 'select',
+                    label: 'Last Modified',
+                    values: function() {
+                        return [{ name: 'Any', value: 0 },
+                                { name: 'Past hour', value: 1 },
+                                { name: 'Past 24 hours', value: 24 },
+                                { name: 'Past week', value: 168 },
+                                { name: 'Past month', value: 173 },
+                                { name: 'Past year', value: 8760 }];
+                    }
+                },
         ]
     };
 });

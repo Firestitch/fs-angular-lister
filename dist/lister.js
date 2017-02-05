@@ -1350,9 +1350,7 @@
 							filter.values = values;
 						}
 
-						var valuename = true;
 						angular.forEach(filter.values,function(value) {
-							valuename &= !!value.value;
 							if(value.group) {
 
 								if(!filter.groups) {
@@ -1367,18 +1365,8 @@
 							}
 						});
 
-						if(!valuename) {
-							var values = [];
-							angular.forEach(filter.values,function(name, value) {
-								values.push({ name: name, value: value });
-							});
-
-							filter.values = values;
-						}
-
 						if(filter.isolate) {
 							angular.forEach(filter.values,function(item, index) {
-
 								if(item.value==filter.isolate.value) {
 									filter.values.splice(index,1);
 								}
@@ -1418,8 +1406,7 @@
 					//load rest of filters
 					var promises = [];
 					angular.forEach($scope.options.filters,function(filter, index) {
-						var promise = prep_filter(filter);
-						promises.push(promise);
+						promises.push(prep_filter(filter));
 					});
 
 
