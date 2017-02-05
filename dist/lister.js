@@ -492,7 +492,7 @@
 
 				function filtersClear() {
 					angular.forEach(options.filters,function(filter) {
-
+						filter.model = null;
 					});
 
 					$scope.searchInputUpdate();
@@ -1834,7 +1834,7 @@
 			sort: {
                 stop: function(item,list) {
                     options.savedFilter.filters = list;
-                }
+					change(item);
             },
 			actions: [
 				{
