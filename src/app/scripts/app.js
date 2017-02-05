@@ -9,12 +9,13 @@ angular
     'fs-angular-api',
     'ui.router'
 ])
-.config(function ($stateProvider, $urlRouterProvider, fsListerProvider, $mdDateLocaleProvider) {
+.config(function ($stateProvider, $urlRouterProvider, fsListerProvider, $mdDateLocaleProvider,$compileProvider) {
 
+	$compileProvider.preAssignBindingsEnabled(true);
     fsListerProvider.options({ paging: { infinite: true, limit: 10 }, inline: true });
 
 	$mdDateLocaleProvider.formatDate = function(date) {
-		return moment(date).format('MMM D, YYYY');
+		return moment(date).isValid() ? moment(date).format('MMM D, YYYY') : '';
     };
 
     $urlRouterProvider

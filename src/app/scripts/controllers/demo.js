@@ -65,10 +65,10 @@ angular.module('app')
         },*/
         //paging: false,
 
-        // persist: {
-        //     name: 'lister',
+        qqqpersist: {
+             name: 'lister-test',
         //     timeout: 60
-        // },
+        },
 
         //order: { name: 'date', direction: 'desc' },
         //order: 'date',
@@ -352,22 +352,35 @@ angular.module('app')
         },
 
         filters: [
-			{
-                name: 'search',
-                type: 'text',
-                label: 'Search',
-                param: 'search'
+
+
+            {
+                name: 'isolate',
+                type: 'select',
+                label: 'Isolate',
+                values: function() {
+
+                    return $q(function(resolve,reject) {
+
+                           resolve({
+                                __all: 'All',
+                                active: 'Active',
+                                pending: 'Pending',
+                                completed: 'Completed',
+                                deleted: 'Deleted'
+                            });
+                    });
+                },
+                isolate: { label: 'Show Deleted', value: 'deleted' }
             },
+
             {
                 name: 'autocomplete',
                 type: 'autocomplete',
                 label: 'Autocomplete',
                 values: function(text) {
 
-		           /* return DummyService.gets({ count: 20 },{ url: 'https://service.firestitch.com/api/' })
-		            .then(function(items) {
-		            	return items.objects;
-		            });*/
+
 
                 	return $q(function(resolve) {
                 		resolve([	{ name: 'ssss', value: 'SSSSS' },
@@ -390,7 +403,7 @@ angular.module('app')
                     deleted: 'Deleted'
                 }
             },
-           /*{
+           {
                 name: 'search',
                 type: 'text',
                 label: 'Search',
@@ -425,25 +438,6 @@ angular.module('app')
                 ]
             },
 
-            {
-                name: 'isolate',
-                type: 'select',
-                label: 'Isolate',
-                values: function() {
-
-                    return $q(function(resolve,reject) {
-
-                           resolve({
-                                __all: 'All',
-                                active: 'Active',
-                                pending: 'Pending',
-                                completed: 'Completed',
-                                deleted: 'Deleted'
-                            });
-                    });
-                },
-                isolate: { label: 'Show Deleted', value: 'deleted' }
-            },
 
             {
                 name: 'isolatemultiple',
@@ -478,22 +472,9 @@ angular.module('app')
                     'apple'
                 ],
             },
+
             {
-                name: 'multiple_objects',
-                type: 'select',
-                label: 'Multiple (Object)',
-                values: function(){
-                    return [
-                    	{value: 'red', name: 'Red'},
-                    	{value: 'green', name: 'Green'},
-                    	{value: 'blue', name: 'Blue'},
-                    	{value: 'yellow', name: 'Yellow'},
-                	];
-            	},
-                multiple: true,
-            },
-            {
-                name: 'nested_gen',
+                name: 'nested',
                 type: 'select',
                 label: 'Nested',
                 values: [  //flat array of objects with parent_id->id values.
@@ -528,12 +509,8 @@ angular.module('app')
                 name: 'date',
                 type: 'date',
                 label: 'Date',
-                time: false
-            },
-            {
-                name: 'datetime',
-                type: 'date',
-                label: 'Date with Time'
+                time: false,
+                default: null
             },
             {
                 name: 'range',
@@ -547,7 +524,21 @@ angular.module('app')
                 label: 'Checkbox',
                 checked: 'active',
                 unchecked: 'delete'
-            }*/
+            },
+            {
+                name: 'multiple_objects',
+                type: 'select',
+                label: 'Multiple (Object)',
+                values: function(){
+                    return [
+                    	{value: 'red', name: 'Red'},
+                    	{value: 'green', name: 'Green'},
+                    	{value: 'blue', name: 'Blue'},
+                    	{value: 'yellow', name: 'Yellow'},
+                	];
+            	},
+                multiple: true,
+            },
         ]
     };
 });

@@ -208,8 +208,8 @@
 
         </div>
         <div class="infinite-records">
-            <span ng-if="numeric(paging.records) && paging.records>=0">{{paging.records}} results<span ng-show="order.name"> ordered by</span></span>
-            <span ng-if="(!numeric(paging.records) || paging.records<0) && order.name">Ordered by</span>
+            <span ng-if="numeric(paging.records) && paging.records>=0">{{paging.records}} results<span ng-show="order.name">&nbsp;ordered by</span></span>
+            <span ng-if="(!numeric(paging.records) || paging.records<0) && order.name">Ordered by&nbsp;</span>
             <md-menu ng-show="order.name">
                 <a href ng-click="$mdOpenMenu($event)" class="order-toggle">{{order.label}}</a>,
                 <md-menu-content>
