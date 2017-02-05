@@ -492,7 +492,7 @@
 
 				function filtersClear() {
 					angular.forEach(options.filters,function(filter) {
-						filter.model = null;
+						filter.model = undefined;
 					});
 
 					$scope.searchInputUpdate();
@@ -500,7 +500,7 @@
 
 				function savedFilter(item) {
 
-					options.savedFilter.active = item;
+					options.savedFilter = options.savedFilter || {};
 					angular.forEach(options.savedFilter.filters,function(value) {
 						value.active = false;
 					});
