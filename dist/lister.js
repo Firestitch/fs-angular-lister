@@ -1835,6 +1835,7 @@
                 stop: function(item,list) {
                     options.savedFilter.filters = list;
 					change(item);
+				}
             },
 			actions: [
 				{
