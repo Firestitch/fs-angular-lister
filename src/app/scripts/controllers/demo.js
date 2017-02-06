@@ -353,7 +353,7 @@ angular.module('app')
 
         filters: [
 
-/*
+
             {
                 name: 'isolate',
                 type: 'select',
@@ -538,7 +538,7 @@ angular.module('app')
                 	];
             	},
                 multiple: true,
-            },*/
+            },
                 {
                     name: 'modify_date',
                     type: 'select',

@@ -1010,8 +1010,8 @@
 					$scope.searchinput = { value: searches.join(' ') };
 				}
 
-				function filterValues() {
-
+				function filterValues(opts) {
+					var opts = opts || {};
 					var query = {};
 					angular.forEach(options.filters,function(filter) {
 
@@ -1081,6 +1081,14 @@
 						query[filter.name] = value;
 					});
 
+					if(opts.flatten) {
+						angular.forEach(query,function(value,name) {
+							if(fsUtil.isArray(value)) {
+								query[name] = value.join(',');
+							}
+						});
+					}
+
 					return query;
 				}
 
@@ -1124,10 +1132,7 @@
 					if(opts.clear)
 						$scope.selectionsClear();
 
-					var query = {};
-					angular.forEach(filterValues(),function(value,name) {
-						query[name] = fsUtil.isArray(value) ? value.join(',') : value;
-					});
+					var query = filterValues({ flatten: true });
 
 					if(options.persist) {
 
