@@ -244,7 +244,7 @@
 				$scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
 				var primary = false;
-				angular.forEach(options.filters,function(filter) {
+				angular.forEach(options.filters,function(filter, index) {
 
 					if(filter.primary) {
 						primary = true;
@@ -325,7 +325,6 @@
 
 					if(filter.change)
 						filter.change = angular.bind(filter,filter.change, options.instance);
-
 				});
 
 				angular.forEach(options.columns,function(col,index) {
@@ -492,7 +491,12 @@
 
 				function filtersClear() {
 					angular.forEach(options.filters,function(filter) {
-						filter.model = undefined;
+
+						if(filter.type=='date') {
+							filter.model = null;
+						} else{
+							filter.model = undefined;
+						}
 					});
 
 					$scope.searchInputUpdate();

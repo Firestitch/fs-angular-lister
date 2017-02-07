@@ -352,9 +352,15 @@ angular.module('app')
         },
 
         filters: [
-
-
             {
+                name: 'date',
+                type: 'date',
+                label: 'Date',
+                time: false,
+                default: null
+            },
+
+           /* {
                 name: 'isolate',
                 type: 'select',
                 label: 'Isolate',
@@ -505,13 +511,7 @@ angular.module('app')
                 },
                 multiple: true
             },
-            {
-                name: 'date',
-                type: 'date',
-                label: 'Date',
-                time: false,
-                default: null
-            },
+
             {
                 name: 'range',
                 type: 'range',
@@ -551,7 +551,7 @@ angular.module('app')
                                 { name: 'Past month', value: 173 },
                                 { name: 'Past year', value: 8760 }];
                     }
-                },
+                },*/
         ]
     };
 });
