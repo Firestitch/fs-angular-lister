@@ -229,7 +229,7 @@
 				$scope.paging = { records: 0, page: 1, pages: 0 };
 				$scope.loading = false;
 				$scope.checked = [];
-				$scope.selectToogled = false;
+				$scope.selection = { all: false };
 				$scope.debug = false;
 				$scope.load = load;
 				$scope.reload = reload;
@@ -462,8 +462,8 @@
 					$scope.savedFilterModal('update');
 				}
 
-				$scope.savedFilterUpdate = function() {
-					$scope.savedFilterModal('update');
+				$scope.savedFilterSave = function() {
+					$scope.savedFilterModal('save');
 				}
 
 				$scope.savedFilterManage = function() {
@@ -492,7 +492,7 @@
 				function filtersClear() {
 					angular.forEach(options.filters,function(filter) {
 
-						if(filter.type=='date') {
+						if(filter.type=='date' || filter.type=='autocomplete') {
 							filter.model = null;
 						} else{
 							filter.model = undefined;
@@ -620,16 +620,13 @@
 					}
 				}
 
-				$scope.selectionsToggle = function(toogle) {
+				$scope.selectionsToggle = function() {
 
-					$scope.selectionsClear();
-					if(!toogle) {
-
+					$scope.checked = [];
+					if(!$scope.selection.all) {
 						for(var i=0;i<$scope.data.length;i++) {
 							$scope.checked.push(1);
 						}
-					} else {
-						$scope.selectToogled = true;
 					}
 				}
 
@@ -644,24 +641,23 @@
 					reload();
 				}
 
-				$scope.select = function() {
-					$scope.selectToogled = false;
-				}
-
-				$scope.selectMenu = function(click, $event) {
+				$scope.selectionClick = function(action, $event) {
 
 					var selected = [];
 					angular.forEach($scope.checked,function(value, index) {
-						if(value)
+						if(value) {
 							selected.push($scope.data[index]);
+						}
 					});
 
-					click(selected, $event, $scope.instance);
+					action.click(selected, $event, $scope.instance);
+
+					$scope.selectionsClear();
 				}
 
 				$scope.selectionsClear = function() {
 					$scope.checked = [];
-					$scope.selectToogled = false;
+					$scope.selection.all = false;
 				}
 
 				$scope.toggleFilters = function() {
@@ -678,26 +674,6 @@
 
 				$scope.selectOpen = function(filter) {
 					filter.oldModel = angular.copy(filter.model);
-				}
-
-				$scope.selectSearch = function(filter) {
-
-					if(!angular.equals(filter.model,filter.oldModel)) {
-
-						if(filter.isolate) {
-							filter.isolate.enabled = false;
-
-							if(filter.multiple) {
-								var index = filter.model.indexOf(filter.isolate.value);
-
-								if(index > -1) {
-									filter.model.splice(index,1);
-								}
-							}
-						}
-
-						$scope.search(filter);
-					}
 				}
 
 				$scope.dateSearch = function(filter) {
@@ -721,10 +697,37 @@
 					$scope.search(filter);
 				}
 
+				$scope.filterChange = function(filter, fromInterface) {
+
+					if(filter.type=='select') {
+
+						if(!angular.equals(filter.model,filter.oldModel)) {
+
+							if(filter.isolate) {
+								filter.isolate.enabled = false;
+
+								if(filter.multiple) {
+									var index = filter.model.indexOf(filter.isolate.value);
+
+									if(index > -1) {
+										filter.model.splice(index,1);
+									}
+								}
+							}
+
+							$scope.search(filter);
+						}
+					}
+
+					$scope.options.savedFilter.active = null;
+					$scope.search(filter);
+				}
+
 				$scope.search = function(filter) {
 
-					if(filter.change)
+					if(filter.change) {
 						filter.change();
+					}
 
 					$scope.searchInputUpdate();
 					reload();
@@ -742,8 +745,9 @@
 
 				$scope.searchChange = function(search) {
 
-					var matches = search.match(/(\([^\)]+\):\([^\)]+\)|\([^\)]+\):[^\s]+|[^:]+:\([^\)]+\)|[^\s]+)/g);
+					$scope.options.savedFilter.active = null;
 
+					var matches = search.match(/(\([^\)]+\):\([^\)]+\)|\([^\)]+\):[^\s]+|[^:]+:\([^\)]+\)|[^\s]+)/g);
 					var values = {};
 					var textSearch = [];
 					angular.forEach(matches, function(match) {
@@ -829,10 +833,6 @@
 						});
 					}
 
-					reload();
-				}
-
-				$scope.filterChange = function(filter) {
 					reload();
 				}
 
@@ -931,10 +931,6 @@
 								}
 							}
 
-							if(value=='__all') {
-								return;
-							}
-
 							if(filter.multiple) {
 
 								if(!fsUtil.isArray(value) || !value.length) {
@@ -953,6 +949,10 @@
 								value = values.join(',');
 
 							} else {
+
+								if(value=='__all' || value===null || value===undefined) {
+									return;
+								}
 
 								angular.forEach(filter.values,function(filter_item) {
 									if(!String(filter_item.value).localeCompare(String(value))) {
@@ -1133,8 +1133,9 @@
 						$scope.paging.page = opts.page;
 					}
 
-					if(opts.clear)
+					if(opts.clear) {
 						$scope.selectionsClear();
+					}
 
 					var query = filterValues({ flatten: true });
 
@@ -1791,6 +1792,7 @@
 
 		$scope.mode = mode;
 		$scope.filter = {};
+		$scope.savedFilters = options.savedFilter.filters;
 
 		if(options.savedFilter.active) {
 			$scope.filter = options.savedFilter.active;
@@ -1798,15 +1800,24 @@
 
 		$scope.save = function() {
 
-			if(!$scope.filter.guid) {
-				$scope.filter.guid = fsUtil.guid();
-				options.savedFilter.filters.push($scope.filter);
-				options.savedFilter.active = $scope.filter;
+			if($scope.mode=='save') {
+
+				if($scope.filter=='new') {
+					$scope.filter = { 	guid: fsUtil.guid(),
+										name: $scope.name };
+					options.savedFilter.filters.push($scope.filter);
+				}
+
+				$scope.filter.values = options.instance.filterValues();
+
+			} else if($scope.mode=='update') {
+
+
 			}
 
-			$scope.filter.values = options.instance.filterValues();
-			fsModal.hide();
+			options.savedFilter.active = $scope.filter;
 			change($scope.filter);
+			fsModal.hide();
 		}
 
 		function change(filter) {

@@ -316,7 +316,6 @@ angular.module('app')
                 icon: 'delete',
                 label: 'Delete',
                 click: function(selected, $event, helper) {
-                    debugger;
                     //alert("delete");
                 },
                 show: function() {
@@ -360,7 +359,7 @@ angular.module('app')
                 default: null
             },
 
-           /* {
+         {
                 name: 'isolate',
                 type: 'select',
                 label: 'Isolate',
@@ -386,9 +385,9 @@ angular.module('app')
                 label: 'Autocomplete',
                 values: function(text) {
 
-
-
                 	return $q(function(resolve) {
+
+console.log(text);
                 		resolve([	{ name: 'ssss', value: 'SSSSS' },
                 					{ name: 'ddddd', value: 'DDDDD' }]);
                 	});
@@ -436,7 +435,7 @@ angular.module('app')
                 type: 'select',
                 label: 'State [key,name]',
                 values: [
-                    { value: null, name: 'All (Null Value)' },
+                    { value: undefined, name: 'All (Null Value)' },
                     { value: 'active', name: 'Active' },
                     { value: 'pending', name: 'Pending' },
                     { value: 'completed', name: 'Completed' },
@@ -551,7 +550,7 @@ angular.module('app')
                                 { name: 'Past month', value: 173 },
                                 { name: 'Past year', value: 8760 }];
                     }
-                },*/
+                }
         ]
     };
 });
