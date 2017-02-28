@@ -255,7 +255,7 @@ angular.module('app')
                 width: '20%'
             },
             {   title: 'GUID' ,
-                center: true,
+                right: true,
                 order: 'guid',
                 value: function(data) {
                     return '<a href ng-click="test(data)">{{data.guid}}</a>';
@@ -278,7 +278,7 @@ angular.module('app')
                 }
             },
             {   title: 'Date',
-                className: 'center',
+                center: true,
                 order: { name: 'date' },
                 value: function(data, $scope, myresolve) {
                     return data["date"];

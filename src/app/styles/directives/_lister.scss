@@ -341,6 +341,11 @@ lister, fs-lister {
             &.center * {
             	text-align: center;
             }
+
+            &.right,
+            &.right * {
+            	text-align: right;
+            }
         }
 
         .lister-row {

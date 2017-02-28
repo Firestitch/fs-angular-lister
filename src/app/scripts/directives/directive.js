@@ -98,6 +98,8 @@
 					<li><label>resolve</label>Used to inject objects in the value() function and inserts the values into the $scope variable</li>
 					<li><label>scope</label>Appended to the $scope object which is injected into the value() function</li>
 					<li><label>order</label>Enables the column to be orderable. The value is used as the order value in the http request. ie: order=name,asc</li>
+					<li><label>center</label>Align center</li>
+					<li><label>right</label>Align the right</li>
 					<li><label>footer</label>Configuration for the column footer</li>
 					<ul>
 						<li><label>center</label>Align center</li>
