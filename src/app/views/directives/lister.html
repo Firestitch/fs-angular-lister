@@ -24,7 +24,7 @@
 
                                     <div class="interface" ng-if="filter.type == 'select'">
                                         <md-input-container class="md-no-float md-no-label md-no-message" ng-show="filter.multiple && !filter.groups">
-                                            <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-open="selectOpen(filter)" md-on-close="filterChange(filter,true)">
+                                            <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-open="selectOpen(filter)" md-on-close="filterChange(filter)">
                                                 <md-option ng-repeat="item in filter.values" value="{{::item.value}}" ng-style="item.style">
                                                     {{::item.name}}
                                                 </md-option>
@@ -32,7 +32,7 @@
                                         </md-input-container>
 
                                         <md-input-container class="md-no-float md-no-label md-no-message" ng-show="!filter.multiple && !filter.groups">
-                                            <md-select ng-model="filter.model" aria-label="select" md-on-open="selectOpen(filter)" ng-change="filterChange(filter,true)">
+                                            <md-select ng-model="filter.model" aria-label="select" md-on-open="selectOpen(filter)" ng-change="filterChange(filter)">
                                                 <md-option ng-repeat="item in filter.values" value="{{::item.value}}" ng-style="item.style">
                                                     {{::item.name}}
                                                 </md-option>
@@ -40,7 +40,7 @@
                                         </md-input-container>
 
                                         <md-input-container class="md-no-float md-no-label md-no-message" ng-show="!filter.multiple && filter.groups">
-                                            <md-select ng-model="filter.model" aria-label="select" md-on-open="selectOpen(filter)" ng-change="filterChange(filter,true)">
+                                            <md-select ng-model="filter.model" aria-label="select" md-on-open="selectOpen(filter)" ng-change="filterChange(filter)">
                                                 <md-optgroup label="{{group}}" ng-repeat="(group, values) in filter.groups">
                                                     <md-option ng-repeat="item in values" value="{{::item.value}}" ng-style="item.style">
                                                         {{::item.name}}
@@ -50,7 +50,7 @@
                                         </md-input-container>
 
                                         <md-input-container class="md-no-float md-no-label md-no-message" ng-show="filter.multiple && filter.groups">
-                                            <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-open="selectOpen(filter)" md-on-close="filterChange(filter,true)">
+                                            <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-open="selectOpen(filter)" md-on-close="filterChange(filter)">
                                                 <md-optgroup label="{{group}}" ng-repeat="(group, values) in filter.groups">
                                                     <md-option ng-repeat="item in values" value="{{::item.value}}" ng-style="item.style">
                                                         {{::item.name}}
@@ -66,7 +66,7 @@
 											        md-no-cache="true"
 											        md-selected-item="filter.model"
 											        md-search-text="filter.search"
-											        md-selected-item-change="filterChange(filter,true)"
+											        md-selected-item-change="filterChange(filter)"
 											        md-items="item in filter.values(filter.search, filter)"
 											        md-item-text="filter.model.name"
 											        md-min-length="0"
@@ -85,7 +85,7 @@
 
                                     <div class="interface" ng-if="filter.type == 'text'">
                                         <md-input-container class="md-no-float md-no-label md-no-message">
-                                            <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-keydown="searchKeydown($event, 'closePopupOnEnter')" ng-change="filterChange(filter,true)"/>
+                                            <input ng-model="filter.model" aria-label="{{::filter.label}}" ng-model-options="{debounce: 400}" ng-keydown="searchKeydown($event, 'closePopupOnEnter')" ng-change="filterChange(filter)"/>
                                         </md-input-container>
                                     </div>
 
@@ -101,7 +101,7 @@
                                                     ng-model="filter.model['min']"
                                                     aria-label="{{::filter.label}}"
                                                     ng-model-options="{debounce: 400}"
-                                                    ng-change="filterChange(filter,true)" />
+                                                    ng-change="filterChange(filter)" />
                                              </md-input-container>
 
 
@@ -113,7 +113,7 @@
                                                     ng-model="filter.model['max']"
                                                     aria-label="{{::filter.label}}"
                                                     ng-model-options="{debounce: 400}"
-                                                    ng-change="filterChange(filter,true)" />
+                                                    ng-change="filterChange(filter)" />
                                              </md-input-container>
                                         </span>
                                     </div>
@@ -129,7 +129,7 @@
                                     </div>
 
                                     <div class="interface interface-checkbox" ng-if="filter.type == 'checkbox'">
-                                        <md-checkbox ng-change="filterChange(filter,true)" ng-model="filter.model" ng-true-value="'{{filter.checked}}'" ng-false-value="'{{filter.unchecked}}'" aria-label="Checkbox filter"></md-checkbox>
+                                        <md-checkbox ng-change="filterChange(filter)" ng-model="filter.model" ng-true-value="'{{filter.checked}}'" ng-false-value="'{{filter.unchecked}}'" aria-label="Checkbox filter"></md-checkbox>
                                     </div>
 
                                 </div>

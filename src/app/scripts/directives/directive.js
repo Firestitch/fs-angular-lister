@@ -697,7 +697,7 @@
 					$scope.search(filter);
 				}
 
-				$scope.filterChange = function(filter, fromInterface) {
+				$scope.filterChange = function(filter) {
 
 					if(filter.type=='select') {
 
@@ -719,7 +719,10 @@
 						}
 					}
 
-					$scope.options.savedFilter.active = null;
+					if($scope.options.savedFilter) {
+						$scope.options.savedFilter.active = null;
+					}
+
 					$scope.search(filter);
 				}
 
@@ -745,7 +748,9 @@
 
 				$scope.searchChange = function(search) {
 
-					$scope.options.savedFilter.active = null;
+					if($scope.options.savedFilter) {
+						$scope.options.savedFilter.active = null;
+					}
 
 					var matches = search.match(/(\([^\)]+\):\([^\)]+\)|\([^\)]+\):[^\s]+|[^:]+:\([^\)]+\)|[^\s]+)/g);
 					var values = {};
