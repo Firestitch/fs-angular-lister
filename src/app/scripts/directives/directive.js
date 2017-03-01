@@ -550,7 +550,12 @@
 					}
 				}
 
+				$scope.sortStart = function() {
+					$scope.sorting = true;
+				}
+
 				$scope.sortStop = function(item,partTo,indexFrom,indexTo) {
+					$scope.sorting = false;
 
 					var list = [];
 					angular.forEach(partTo,function(object) {

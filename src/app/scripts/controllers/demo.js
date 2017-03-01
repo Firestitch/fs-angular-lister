@@ -74,12 +74,12 @@ angular.module('app')
         //order: 'date',
 
         //inline: true,
-/*        sort: {
+        sort: {
             stop: function(item,list,$indexFrom,$indexTo) {
-                debugger;
+                //debugger;
             }
         },
-*/
+
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
         },

@@ -322,6 +322,10 @@ lister, fs-lister {
         }
     }
 
+    &.sorting .lister-body .lister-row:nth-child(2) .lister-col {
+        border-top: 0px;
+    }
+
     .lister-table {
 
         display: table;
@@ -369,7 +373,7 @@ lister, fs-lister {
 
             .lister-col {
 
-                border-bottom: 2px solid #ddd;
+            	border-bottom: 2px solid #ddd;
                 color: #999;
                 font-size: 14px;
                 padding: 8px;
@@ -428,10 +432,12 @@ lister, fs-lister {
             display: table-footer-group;
 
             .lister-col {
+            	border-top: 2px solid #ddd;
             	font-size: 17px;
                 padding: 10px;
             }
         }
+
         .lister-body {
 
             .lister-row:hover .lister-col {
@@ -463,8 +469,9 @@ lister, fs-lister {
                 border-top: 0px;
             }
 
-            .lister-row:last-child .lister-col {
-                border-bottom: 2px solid #ddd;
+            .sv-helper {
+            	border: 0px;
+            	background-color: rgba(0,0,0,.05);
             }
         }
 

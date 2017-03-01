@@ -1,4 +1,4 @@
-<div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite }" id="{{id}}">
+<div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite, sorting: sorting }" id="{{id}}">
     <div class="lister-search" ng-show="options.filters.length || options.topActions">
         <div layout="row" layout-align="start" ng-if="options.filters.length" layout-align="start end">
             <div layout="row" layout-align="start center" class="inline-search" flex>
@@ -263,7 +263,7 @@
                     </div>
                 </div>
             </div>
-            <div class="lister-body" sv-root sv-part="data" sv-on-sort="sortStop($item,$partTo,$indexFrom,$indexTo)">
+            <div class="lister-body" sv-root sv-part="data" sv-on-sort="sortStop($item,$partTo,$indexFrom,$indexTo)"  sv-on-start="sortStart()">
                 <div class="lister-row {{rowClasses[rowIndex]}}" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: checked[rowIndex] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event); $event.stopPropagation();" ng-init="rowIndex = $index">
                     <div class="lister-col lister-col-sort" ng-if="options.sort"><div class="sort-handle" sv-handle><md-icon>drag_handle</md-icon></div></div>
                     <div class="lister-col" ng-if="options.selection.show">
