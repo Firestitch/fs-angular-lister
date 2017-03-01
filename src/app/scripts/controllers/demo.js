@@ -45,7 +45,7 @@ angular.module('app')
     $scope.listerConf = {
     	id: 'demo',
         debug: false,
-        savedFilter: {
+        /*savedFilter: {
     		filters: [
 	    		{
 	    			name: 'My Filter',
@@ -56,7 +56,7 @@ angular.module('app')
 	    			active: true
 	    		}
 	    	]
-        },
+        },*/
         //container: '#frame',
 
         /*paging: {
@@ -351,7 +351,7 @@ angular.module('app')
         },
 
         filters: [
-            {
+           /* {
                 name: 'date',
                 type: 'date',
                 label: 'Date',
@@ -392,8 +392,15 @@ console.log(text);
                 					{ name: 'ddddd', value: 'DDDDD' }]);
                 	});
                 }
-            },
+            },*/
             {
+                name: 'toggle',
+                type: 'checkbox',
+                label: 'Checkbox',
+                checked: 'active',
+                unchecked: 'delete'
+            },
+          /*  {
                 name: 'state',
                 type: 'select',
                 label: 'State',
@@ -407,13 +414,13 @@ console.log(text);
                     completed: 'Completed',
                     deleted: 'Deleted'
                 }
-            },
+            },*/
            {
                 name: 'search',
                 type: 'text',
                 label: 'Search',
                 param: 'search'
-            },
+            },/*
             {
                 name: 'state',
                 type: 'select',
@@ -517,13 +524,7 @@ console.log(text);
                 label: 'Numbered range',
                 placeholders: ['Min', 'Max']
             },
-            {
-                name: 'toggle',
-                type: 'checkbox',
-                label: 'Checkbox',
-                checked: 'active',
-                unchecked: 'delete'
-            },
+
             {
                 name: 'multiple_objects',
                 type: 'select',
@@ -550,7 +551,7 @@ console.log(text);
                                 { name: 'Past month', value: 173 },
                                 { name: 'Past year', value: 8760 }];
                     }
-                }
+                }*/
         ]
     };
 });

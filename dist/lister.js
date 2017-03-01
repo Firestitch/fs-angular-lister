@@ -771,8 +771,7 @@
 					angular.forEach(options.filters,function(filter) {
 						if (filter.type == 'checkbox') {
 							filter.model = filter.unchecked;
-							filter.value = filter.unchecked;
-						} else if(textSearch.length && filter.primary && filter.type=='text') {
+						} else if(filter.type=='text' && filter.primary) {
 							filter.model = textSearch.join(' ');
 						} else {
 							filter.model = null;
@@ -829,16 +828,6 @@
 							}
 						}
 					});
-
-					if(!Object.keys(values).length) {
-
-						angular.forEach(options.filters,function(filter) {
-							filter.model = null;
-							if(filter.primary) {
-								filter.model = search;
-							}
-						});
-					}
 
 					reload();
 				}
