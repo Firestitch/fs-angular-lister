@@ -326,6 +326,10 @@ lister, fs-lister {
         border-top: 0px;
     }
 
+    &.data .lister-foot .lister-col {
+        border-top: 2px solid #ddd;
+    }
+
     .lister-table {
 
         display: table;
@@ -432,7 +436,6 @@ lister, fs-lister {
             display: table-footer-group;
 
             .lister-col {
-            	border-top: 2px solid #ddd;
             	font-size: 17px;
                 padding: 10px;
             }

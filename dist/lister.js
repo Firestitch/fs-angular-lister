@@ -897,10 +897,6 @@
 					return styles;
 				}
 
-				function reload() {
-					return load({ page: 1, clear: true });
-				}
-
 				function sanitizeAction(action) {
 					action = action || {};
 
@@ -1105,94 +1101,112 @@
 					$scope.actionCols = [];
 				}
 
-				function load(opts) {
-
-					if($scope.loading)
-						return;
-
-					opts = opts || {};
-
-					if(opts.clear===true) {
-						$scope.paged = null;
-					}
-
-					if($scope.options.paging.infinite && $scope.paged) {
-						if($scope.paged.records <= ($scope.paged.limit * $scope.paged.page)) {
-							return;
-						}
-					}
-
-					if(opts.page) {
-
-						if(opts.clear) {
-							opts.page = 1;
-							if($scope.options.paging.infinite) {
-							   clearData();
-							}
-						}
-
-						$scope.paging.page = opts.page;
-					}
-
-					if(opts.clear) {
-						$scope.selectionsClear();
-					}
-
-					var query = filterValues({ flatten: true });
-
-					if(options.persist) {
-
-						var models = {};
-						angular.forEach(options.filters,function(filter) {
-							models[filter.name] = filter.model;
-						});
-
-						persists[options.persist.name] = { data: models, date: new Date() };
-					}
-
-					if($scope.options.paging.enabled) {
-						if($scope.paging.page!==undefined) {
-							query.page = $scope.paging.page;
-						}
-
-						if($scope.options.paging.limit!==undefined) {
-							query.limit = $scope.options.paging.limit;
-						}
-					}
-
-					if($scope.order) {
-						query.order = $scope.order.name + ',' + $scope.order.direction;
-					}
-
-					log("Calling data()", query);
-
-					try {
-
-						$scope.loading = true;
-
-						if(options.data) {
-
-							var response = options.data(query,angular.bind(this,dataCallback,opts));
-
-							if(response && response.then) {
-
-								response
-								.then(function(response) {
-									dataCallback(opts,response.data,response.paging,response.locals);
-								})
-								.catch(function(response) {
-									loadCleanup();
-								});
-							}
-						}
-
-				   } catch(e) {
-						loadCleanup();
-						throw e;
-					}
+				function reload() {
+					return load({ page: 1, clear: true })
+					.then(function() {
+						$scope.resize();
+					});
 				}
 
-				function dataCallback(opts, data, paging, locals) {
+				function load(opts) {
+
+					return $q(function(resolve, reject) {
+
+						if($scope.loading)
+							return resolve();
+
+						opts = opts || {};
+
+						if(opts.clear===true) {
+							$scope.paged = null;
+						}
+
+						if($scope.options.paging.infinite && $scope.paged) {
+							if($scope.paged.records <= ($scope.paged.limit * $scope.paged.page)) {
+								return resolve();
+							}
+						}
+
+						if(opts.page) {
+
+							if(opts.clear) {
+								opts.page = 1;
+								if($scope.options.paging.infinite) {
+								   clearData();
+								}
+							}
+
+							$scope.paging.page = opts.page;
+						}
+
+						if(opts.clear) {
+							$scope.selectionsClear();
+						}
+
+						var query = filterValues({ flatten: true });
+
+						if(options.persist) {
+
+							var models = {};
+							angular.forEach(options.filters,function(filter) {
+								models[filter.name] = filter.model;
+							});
+
+							persists[options.persist.name] = { data: models, date: new Date() };
+						}
+
+						if($scope.options.paging.enabled) {
+							if($scope.paging.page!==undefined) {
+								query.page = $scope.paging.page;
+							}
+
+							if($scope.options.paging.limit!==undefined) {
+								query.limit = $scope.options.paging.limit;
+							}
+						}
+
+						if($scope.order) {
+							query.order = $scope.order.name + ',' + $scope.order.direction;
+						}
+
+						log("Calling data()", query);
+
+						try {
+
+							$scope.loading = true;
+
+							if(options.data) {
+
+								var response = options.data(query,angular.bind(this,dataCallback,opts,resolve));
+
+								if(response && response.then) {
+
+									response
+									.then(function(response) {
+										dataCallback(opts,resolve,response.data,response.paging,response.locals);
+									})
+									.catch(function(e) {
+										reject();
+										throw e;
+									});
+								}
+							}
+
+					   	} catch(e) {
+							reject();
+							throw e;
+						}
+					})
+					.finally(function() {
+						$scope.loading = false;
+					});
+				}
+
+				function dataCallback(opts, resolve, data, paging, locals) {
+
+					if(!fsUtil.isArray(data)) {
+						throw 'Invalid callback data';
+					}
 
 					log("dataCallback()", data, paging, locals);
 
@@ -1201,11 +1215,7 @@
 						clearData();
 					}
 
-					return callback(data, paging, locals);
-				}
-
-				function loadCleanup() {
-					 $scope.loading = false;
+					return callback(data, paging, locals).then(resolve);
 				}
 
 				function page(page) {
@@ -1215,94 +1225,93 @@
 
 				function callback(data, paging, locals) {
 
-					if(!$scope.options.paging.infinite) {
-						clearData();
-					}
+					return $q(function(resolve) {
 
-					if(locals) {
-						angular.extend($scope.locals,locals);
-						$scope.locals = locals;
-					}
-
-					var ol = data.length;
-					for (var o = 0; o < ol; o++) {
-
-						var cl = options.columns.length;
-						var cols = [];
-
-						for (var c = 0; c < cl; c++) {
-
-							var col = options.columns[c];
-							var value = col.value;
-
-							if(typeof col.value =='function') {
-								value = col.value(data[o]);
-							}
-
-							cols[c] = value;
+						if(!$scope.options.paging.infinite) {
+							clearData();
 						}
 
-						$scope.dataCols[dataIndex] = cols;
+						if(locals) {
+							angular.extend($scope.locals,locals);
+							$scope.locals = locals;
+						}
 
-                        $scope.actionCols[dataIndex] = [];
-                        var showActions = false;
-                        angular.forEach(options.actions,function(action,aindex) {
-                        	$scope.actionCols[dataIndex][aindex] = true;
-                        	if(angular.isFunction(action.show)) {
-                        		if(!action.show(data[o])) {
-                        			$scope.actionCols[dataIndex][aindex] = false;
-                        		}
-                        	}
+						var ol = data.length;
+						for (var o = 0; o < ol; o++) {
 
-                        	showActions |= $scope.actionCols[dataIndex][aindex];
-                        });
+							var cl = options.columns.length;
+							var cols = [];
 
-                        if(!showActions) {
-                        	$scope.actionCols[dataIndex] = [];
-                        }
+							for (var c = 0; c < cl; c++) {
 
-						data[o].$$index = dataIndex;
+								var col = options.columns[c];
+								var value = col.value;
 
-						if($scope.options.rowClass)
-							$scope.rowClasses[dataIndex] = $scope.options.rowClass(data[o]);
+								if(typeof col.value =='function') {
+									value = col.value(data[o]);
+								}
 
-						$scope.data.push(data[o]);
+								cols[c] = value;
+							}
 
-						dataIndex++;
-					}
+							$scope.dataCols[dataIndex] = cols;
 
-					$scope.paging.records = null;
+	                        $scope.actionCols[dataIndex] = [];
+	                        var showActions = false;
+	                        angular.forEach(options.actions,function(action,aindex) {
+	                        	$scope.actionCols[dataIndex][aindex] = true;
+	                        	if(angular.isFunction(action.show)) {
+	                        		if(!action.show(data[o])) {
+	                        			$scope.actionCols[dataIndex][aindex] = false;
+	                        		}
+	                        	}
 
-					if(paging) {
+	                        	showActions |= $scope.actionCols[dataIndex][aindex];
+	                        });
 
-						if(paging.records===null) {
+	                        if(!showActions) {
+	                        	$scope.actionCols[dataIndex] = [];
+	                        }
+
+							data[o].$$index = dataIndex;
+
+							if($scope.options.rowClass)
+								$scope.rowClasses[dataIndex] = $scope.options.rowClass(data[o]);
+
+							$scope.data.push(data[o]);
+
+							dataIndex++;
+						}
+
+						$scope.paging.records = null;
+
+						if(paging) {
+
+							if(paging.records===null) {
+								$scope.options.paging.enabled = false;
+							}
+
+							$scope.paging.records = paging.records;
+							$scope.paging.pages = paging.pages;
+
+							if(paging.limit) {
+								$scope.options.paging.limit = paging.limit;
+							}
+
+						} else {
 							$scope.options.paging.enabled = false;
 						}
 
-						$scope.paging.records = paging.records;
-						$scope.paging.pages = paging.pages;
+						$scope.paged = paging;
 
-						if(paging.limit) {
-							$scope.options.paging.limit = paging.limit;
+						if($scope.options.paging.infinite) {
+							$scope.paging.page++;
+
+						} else if(paging) {
+							$scope.paging.page = paging.page;
 						}
 
-					} else {
-						$scope.options.paging.enabled = false;
-					}
-
-					$scope.paged = paging;
-
-					if($scope.options.paging.infinite) {
-						$scope.paging.page++;
-
-					} else if(paging) {
-						$scope.paging.page = paging.page;
-					}
-
-					loadCleanup();
-
-					//promise/timeout used to offset the timing for the template render time
-					return $q(function(resolve) {
+						//promise/timeout used to offset the timing for the template render time
 						setTimeout(function() {
 							resolve();
 						});
@@ -1554,28 +1563,27 @@
 			}],
 			link: function($scope, element, attr, ctrl) {
 
-				$scope.max_bottom = 0;
-				if($scope.options && $scope.options.paging && $scope.options.paging.infinite) {
-
+				var height,
+					el_bottom,
+					wn_bottom,
+					scrollTop,
+					condition,
+					threshhold = 200,
+					container = $scope.options.container ? document.querySelector($scope.options.container) : window,
 					element = angular.element(element[0].children[0]);
 
-					var height,
-						el_bottom,
-						wn_bottom,
-						scrollTop,
-						condition,
-						threshhold = 200,
-						container = $scope.options.container ? document.querySelector($scope.options.container) : window;
+				$scope.max_bottom = 0;
+				$scope.resize = function() {
 
-					function resize() {
+					if($scope.options && $scope.options.paging && $scope.options.paging.infinite) {
 
 						if(!$scope.loading && $scope.data.length) {
 
-							height = parseInt(container.innerHeight || container.clientHeight);
-							scrollTop = container.pageYOffset || parseInt(container.scrollTop);
-							el_bottom = parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop'));
-							wn_bottom = scrollTop + height;
-							condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
+							height 		= parseInt(container.innerHeight || container.clientHeight);
+							el_bottom 	= parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop'));
+							scrollTop 	= Math.max(container.scrollTop || 0,container.pageYOffset || 0);
+							wn_bottom 	= scrollTop + height;
+							condition 	= (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
 
 							/*
 							if($scope.options.debug) {
@@ -1601,19 +1609,20 @@
 
 							if(condition) {
 								$scope.max_bottom = el_bottom;
-								$scope.$apply(function() {
-									$scope.load();
-								});
+								$scope.load();
 							}
 						}
 					}
+				}
 
-					container.addEventListener('scroll', resize);
-					container.addEventListener('resize', resize);
+				if($scope.options && $scope.options.paging && $scope.options.paging.infinite) {
+
+					container.addEventListener('scroll', $scope.resize);
+					container.addEventListener('resize', $scope.resize);
 
 					$scope.$on('$destroy', function() {
-						container.removeEventListener('scroll', resize);
-						container.removeEventListener('resize', resize);
+						container.removeEventListener('scroll', $scope.resize);
+						container.removeEventListener('resize', $scope.resize);
 					});
 				}
 			}
@@ -1923,13 +1932,13 @@ angular.module('fs-angular-lister').run(['$templateCache', function($templateCac
   'use strict';
 
   $templateCache.put('views/directives/lister.html',
-    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite, sorting: sorting }\" id=\"{{id}}\"><div class=\"lister-search\" ng-show=\"options.filters.length || options.topActions\"><div layout=\"row\" layout-align=\"start\" ng-if=\"options.filters.length\" layout-align=\"start end\"><div layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex><div class=\"inline-search-input\" flex=\"grow\"><div class=\"main-search-bar\" layout=\"row\" layout-align=\"start center\"><div class=\"search\"><i class=\"material-icons\">search</i></div><md-input-container class=\"md-no-label md-no-message\"><input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\"></md-input-container><a href ng-click=\"reload()\" class=\"reload\"><i class=\"material-icons\">refresh</i></a></div><div class=\"ng-hide filters\" layout=\"column\" ng-show=\"extended_search\"><div class=\"wrap\"><div ng-repeat=\"filter in options.filters\" class=\"filter-group\" ng-if=\"!filter.disabled\"><div class=\"filter filter-{{filter.type}}\"><div class=\"filter-label\"><div class=\"filter-label-content\">{{::filter.label}}</div></div><div class=\"interface\" ng-if=\"filter.type == 'select'\"><md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && !filter.groups\"><md-select ng-model=\"filter.model\" aria-label=\"select\" multiple md-on-open=\"selectOpen(filter)\" md-on-close=\"filterChange(filter)\"><md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">{{::item.name}}</md-option></md-select></md-input-container><md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && !filter.groups\"><md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"filterChange(filter)\"><md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">{{::item.name}}</md-option></md-select></md-input-container><md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && filter.groups\"><md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"filterChange(filter)\"><md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\"><md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">{{::item.name}}</md-option></md-optgroup></md-select></md-input-container><md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && filter.groups\"><md-select ng-model=\"filter.model\" aria-label=\"select\" multiple md-on-open=\"selectOpen(filter)\" md-on-close=\"filterChange(filter)\"><md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\"><md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">{{::item.name}}</md-option></md-optgroup></md-select></md-input-container></div><div class=\"interface\" ng-if=\"filter.type == 'autocomplete'\"><md-autocomplete-container md-no-clear><md-autocomplete md-no-cache=\"true\" md-selected-item=\"filter.model\" md-search-text=\"filter.search\" md-selected-item-change=\"filterChange(filter)\" md-items=\"item in filter.values(filter.search, filter)\" md-item-text=\"filter.model.name\" md-min-length=\"0\" ng-model-options=\"{ debounce: 500 }\" md-autoselect><md-item-template><span md-highlight-text=\"filter.search\" md-highlight-flags=\"^i\">{{item.name}}</span></md-item-template><md-not-found>No matches found</md-not-found></md-autocomplete></md-autocomplete-container></div><div class=\"interface\" ng-if=\"filter.type == 'text'\"><md-input-container class=\"md-no-float md-no-label md-no-message\"><input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"filterChange(filter)\"></md-input-container></div><div class=\"interface\" ng-if=\"filter.type == 'range'\"><span layout=\"row\" class=\"md-block\"><md-input-container class=\"md-no-label md-no-message md-block filter-range-min\"><label>{{::filter.label}}</label><input placeholder=\"{{::filter.placeholder[0]}}\" ng-model=\"filter.model['min']\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-change=\"filterChange(filter)\"></md-input-container><md-input-container class=\"md-no-label md-no-message md-block filter-range-max\"><label>{{::filter.label}}</label><input placeholder=\"{{::filter.placeholder[1]}}\" ng-model=\"filter.model['max']\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-change=\"filterChange(filter)\"></md-input-container></span></div><div class=\"interface\" ng-if=\"filter.type == 'date'\"><span class=\"md-block\"><md-datepicker-container class=\"md-no-label md-no-message md-block\"><label>{{::filter.label}}</label><md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\" md-open-on-focus></md-datepicker></md-datepicker-container></span></div><div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\"><md-checkbox ng-change=\"filterChange(filter)\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox></div></div><div ng-if=\"filter.isolate\" class=\"filter isolate\"><div class=\"filter-label\"></div><div class=\"interface\"><md-checkbox ng-change=\"isolateSearch(filter)\" ng-model=\"filter.isolate.enabled\" ng-true-value=\"true\" ng-false-value=\"false\" aria-label=\"Checkbox filter\"></md-checkbox>{{filter.isolate.label}}</div></div></div><md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"done()\">Done</md-button></div></div><div class=\"infinite-records\" layout=\"row\" layout-align=\"start center\"><span ng-if=\"numeric(paging.records) && paging.records>=0\">{{paging.records}} results<span ng-show=\"order.name\">&nbsp;ordered by</span></span> <span ng-if=\"(!numeric(paging.records) || paging.records<0) && order.name\">Ordered by&nbsp;</span><md-menu ng-show=\"order.name\"><a href ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">{{order.label}}</a>,<md-menu-content><md-menu-item ng-repeat=\"order in options.orders\"><md-button ng-click=\"orderNameSelect(order)\">{{order.label}}</md-button></md-menu-item></md-menu-content></md-menu><a href ng-show=\"order.name\" ng-click=\"orderDirectionToggle($event)\" class=\"order-toggle\">{{orderDirections[order.direction]}}</a><div flex></div><md-menu ng-if=\"options.savedFilter\"><a href ng-click=\"$mdOpenMenu($event)\">Saved Filters<span ng-show=\"options.savedFilter.active\">: {{options.savedFilter.active.name}}</span></a><md-menu-content class=\"saved-filter-menu\"><md-menu-item class=\"my-saved-filters\">My Saved Filters</md-menu-item><div ng-repeat=\"item in options.savedFilter.filters\"><md-menu-item><md-button ng-click=\"savedFilterSelect(item)\" layout=\"row\" layout-align=\"start center\"><div layout=\"row\" layout-align=\"start center\"><div flex>{{item.name}}</div><md-icon ng-show=\"item.guid==options.savedFilter.active.guid\">done</md-icon></div></md-button></md-menu-item></div><md-menu-divider ng-show=\"options.savedFilter.filters.length\"></md-menu-divider><md-menu-item ng-show=\"!options.savedFilter.active\"><md-button ng-click=\"savedFilterSave()\"><md-icon>save</md-icon>Save Filter</md-button></md-menu-item><!--\r" +
+    "<div class=\"lister\" ng-class=\"{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite, sorting: sorting, data: data.length }\" id=\"{{id}}\"><div class=\"lister-search\" ng-show=\"options.filters.length || options.topActions\"><div layout=\"row\" layout-align=\"start\" ng-if=\"options.filters.length\" layout-align=\"start end\"><div layout=\"row\" layout-align=\"start center\" class=\"inline-search\" flex><div class=\"inline-search-input\" flex=\"grow\"><div class=\"main-search-bar\" layout=\"row\" layout-align=\"start center\"><div class=\"search\"><i class=\"material-icons\">search</i></div><md-input-container class=\"md-no-label md-no-message\"><input ng-model=\"searchinput.value\" ng-model-options=\"{debounce: 400}\" ng-change=\"searchChange(searchinput.value)\" ng-click=\"openFilters()\" ng-keydown=\"searchKeydown($event)\" aria-label=\"Search\" placeholder=\"Search\" autocomplete=\"off\"></md-input-container><a href ng-click=\"reload()\" class=\"reload\"><i class=\"material-icons\">refresh</i></a></div><div class=\"ng-hide filters\" layout=\"column\" ng-show=\"extended_search\"><div class=\"wrap\"><div ng-repeat=\"filter in options.filters\" class=\"filter-group\" ng-if=\"!filter.disabled\"><div class=\"filter filter-{{filter.type}}\"><div class=\"filter-label\"><div class=\"filter-label-content\">{{::filter.label}}</div></div><div class=\"interface\" ng-if=\"filter.type == 'select'\"><md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && !filter.groups\"><md-select ng-model=\"filter.model\" aria-label=\"select\" multiple md-on-open=\"selectOpen(filter)\" md-on-close=\"filterChange(filter)\"><md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">{{::item.name}}</md-option></md-select></md-input-container><md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && !filter.groups\"><md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"filterChange(filter)\"><md-option ng-repeat=\"item in filter.values\" value=\"{{::item.value}}\" ng-style=\"item.style\">{{::item.name}}</md-option></md-select></md-input-container><md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"!filter.multiple && filter.groups\"><md-select ng-model=\"filter.model\" aria-label=\"select\" md-on-open=\"selectOpen(filter)\" ng-change=\"filterChange(filter)\"><md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\"><md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">{{::item.name}}</md-option></md-optgroup></md-select></md-input-container><md-input-container class=\"md-no-float md-no-label md-no-message\" ng-show=\"filter.multiple && filter.groups\"><md-select ng-model=\"filter.model\" aria-label=\"select\" multiple md-on-open=\"selectOpen(filter)\" md-on-close=\"filterChange(filter)\"><md-optgroup label=\"{{group}}\" ng-repeat=\"(group, values) in filter.groups\"><md-option ng-repeat=\"item in values\" value=\"{{::item.value}}\" ng-style=\"item.style\">{{::item.name}}</md-option></md-optgroup></md-select></md-input-container></div><div class=\"interface\" ng-if=\"filter.type == 'autocomplete'\"><md-autocomplete-container md-no-clear><md-autocomplete md-no-cache=\"true\" md-selected-item=\"filter.model\" md-search-text=\"filter.search\" md-selected-item-change=\"filterChange(filter)\" md-items=\"item in filter.values(filter.search, filter)\" md-item-text=\"filter.model.name\" md-min-length=\"0\" ng-model-options=\"{ debounce: 500 }\" md-autoselect><md-item-template><span md-highlight-text=\"filter.search\" md-highlight-flags=\"^i\">{{item.name}}</span></md-item-template><md-not-found>No matches found</md-not-found></md-autocomplete></md-autocomplete-container></div><div class=\"interface\" ng-if=\"filter.type == 'text'\"><md-input-container class=\"md-no-float md-no-label md-no-message\"><input ng-model=\"filter.model\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-keydown=\"searchKeydown($event, 'closePopupOnEnter')\" ng-change=\"filterChange(filter)\"></md-input-container></div><div class=\"interface\" ng-if=\"filter.type == 'range'\"><span layout=\"row\" class=\"md-block\"><md-input-container class=\"md-no-label md-no-message md-block filter-range-min\"><label>{{::filter.label}}</label><input placeholder=\"{{::filter.placeholder[0]}}\" ng-model=\"filter.model['min']\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-change=\"filterChange(filter)\"></md-input-container><md-input-container class=\"md-no-label md-no-message md-block filter-range-max\"><label>{{::filter.label}}</label><input placeholder=\"{{::filter.placeholder[1]}}\" ng-model=\"filter.model['max']\" aria-label=\"{{::filter.label}}\" ng-model-options=\"{debounce: 400}\" ng-change=\"filterChange(filter)\"></md-input-container></span></div><div class=\"interface\" ng-if=\"filter.type == 'date'\"><span class=\"md-block\"><md-datepicker-container class=\"md-no-label md-no-message md-block\"><label>{{::filter.label}}</label><md-datepicker ng-model=\"filter.model\" ng-change=\"dateSearch(filter)\" md-open-on-focus></md-datepicker></md-datepicker-container></span></div><div class=\"interface interface-checkbox\" ng-if=\"filter.type == 'checkbox'\"><md-checkbox ng-change=\"filterChange(filter)\" ng-model=\"filter.model\" ng-true-value=\"'{{filter.checked}}'\" ng-false-value=\"'{{filter.unchecked}}'\" aria-label=\"Checkbox filter\"></md-checkbox></div></div><div ng-if=\"filter.isolate\" class=\"filter isolate\"><div class=\"filter-label\"></div><div class=\"interface\"><md-checkbox ng-change=\"isolateSearch(filter)\" ng-model=\"filter.isolate.enabled\" ng-true-value=\"true\" ng-false-value=\"false\" aria-label=\"Checkbox filter\"></md-checkbox>{{filter.isolate.label}}</div></div></div><md-button class=\"md-button md-raised md-accent search-button\" ng-click=\"done()\">Done</md-button></div></div><div class=\"infinite-records\" layout=\"row\" layout-align=\"start center\"><span ng-if=\"numeric(paging.records) && paging.records>=0\">{{paging.records}} results<span ng-show=\"order.name\">&nbsp;ordered by</span></span> <span ng-if=\"(!numeric(paging.records) || paging.records<0) && order.name\">Ordered by&nbsp;</span><md-menu ng-show=\"order.name\"><a href ng-click=\"$mdOpenMenu($event)\" class=\"order-toggle\">{{order.label}}</a>,<md-menu-content><md-menu-item ng-repeat=\"order in options.orders\"><md-button ng-click=\"orderNameSelect(order)\">{{order.label}}</md-button></md-menu-item></md-menu-content></md-menu><a href ng-show=\"order.name\" ng-click=\"orderDirectionToggle($event)\" class=\"order-toggle\">{{orderDirections[order.direction]}}</a><div flex></div><md-menu ng-if=\"options.savedFilter\"><a href ng-click=\"$mdOpenMenu($event)\">Saved Filters<span ng-show=\"options.savedFilter.active\">: {{options.savedFilter.active.name}}</span></a><md-menu-content class=\"saved-filter-menu\"><md-menu-item class=\"my-saved-filters\">My Saved Filters</md-menu-item><div ng-repeat=\"item in options.savedFilter.filters\"><md-menu-item><md-button ng-click=\"savedFilterSelect(item)\" layout=\"row\" layout-align=\"start center\"><div layout=\"row\" layout-align=\"start center\"><div flex>{{item.name}}</div><md-icon ng-show=\"item.guid==options.savedFilter.active.guid\">done</md-icon></div></md-button></md-menu-item></div><md-menu-divider ng-show=\"options.savedFilter.filters.length\"></md-menu-divider><md-menu-item ng-show=\"!options.savedFilter.active\"><md-button ng-click=\"savedFilterSave()\"><md-icon>save</md-icon>Save Filter</md-button></md-menu-item><!--\r" +
     "\n" +
     "\t\t\t                    <md-menu-item>\r" +
     "\n" +
     "\t\t\t                        <md-button ng-click=\"savedFilterCreate()\"><md-icon>add</md-icon> Create New Filter</md-button>\r" +
     "\n" +
-    "\t\t\t                    </md-menu-item> --><md-menu-item><md-button ng-click=\"savedFilterManage()\"><md-icon>settings</md-icon>Manage Saved Filters</md-button></md-menu-item></md-menu-content></md-menu></div></div><div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div></div><div class=\"top-actions\" ng-if=\"options.topActions.length || options.savedFilter\"><span ng-repeat=\"action in options.topActions | filter\" ng-show=\"action.show\"><md-button ng-show=\"action.type=='button'\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\"><md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon>{{action.label}}</md-button><md-button ng-show=\"action.type=='icon'\" ng-click=\"topActionsClick(action,$event)\" class=\"action-icon\"><md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip></md-button><md-menu ng-show=\"action.type=='menu'\"><md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\"><md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip></md-button><md-menu-content><md-menu-item ng-repeat=\"action in action.items\" ng-show=\"action.show\"><md-button ng-click=\"action.click($event)\"><md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>{{::action.label}}</md-button></md-menu-item></md-menu-content></md-menu><span ng-show=\"action.type=='template'\" fs-lister-topaction-compile=\"action.template\" scope=\"action.scope\"></span></span></div></div></div><div class=\"results\" ng-if=\"options.columns.length\"><div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\"><md-progress-circular md-diameter=\"40\" md-mode=\"indeterminate\"></md-progress-circular></div><div class=\"lister-table\"><div class=\"lister-head\"><div class=\"lister-row\"><div class=\"lister-col lister-col-header\" ng-if=\"options.sort\"></div><div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection.show\"><md-checkbox ng-click=\"selectionsToggle()\" ng-true-value=\"true\" ng-false-value=\"false\" ng-model=\"selection.all\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox><md-menu md-offset=\"6 32\"><md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\"><md-icon>arrow_drop_down</md-icon></md-button><md-menu-content><md-menu-item ng-repeat=\"action in options.selection.actions\" ng-if=\"action.show\"><md-button ng-click=\"selectionClick(action, $event)\"><md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>{{::action.label}}</md-button></md-menu-item></md-menu-content></md-menu></div><div class=\"lister-col lister-col-header {{::col.className}}\" ng-repeat=\"col in options.columns\" ng-style=\"styleCols[$index]\" ng-class=\"{ order: col.order, center: col.center, right: col.right  }\" ng-click=\"headerClick(col)\"><div class=\"wrap\"><span fs-lister-compile=\"col.title\" column=\"col\" locals=\"locals\" class=\"title\"></span><div class=\"direction\" ng-if=\"col.order\"><span ng-switch=\"order.direction\" ng-show=\"order.name==col.order.name\"><md-icon ng-switch-when=\"asc\">arrow_downward</md-icon><md-icon ng-switch-when=\"desc\">arrow_upward</md-icon></span></div></div></div><div class=\"lister-col lister-col-header\" ng-if=\"options.actions.length || options.action\"></div></div></div><div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"sortStop($item,$partTo,$indexFrom,$indexTo)\" sv-on-start=\"sortStart()\"><div class=\"lister-row {{rowClasses[rowIndex]}}\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\"><div class=\"lister-col lister-col-sort\" ng-if=\"options.sort\"><div class=\"sort-handle\" sv-handle><md-icon>drag_handle</md-icon></div></div><div class=\"lister-col\" ng-if=\"options.selection.show\"><md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" aria-label=\"Select\" class=\"select-checkbox\"></md-checkbox></div><div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" column=\"col\" data=\"item\" locals=\"locals\" ng-style=\"styleCols[$index]\" ng-class=\"{ center: col.center, right: col.right }\"></div><div class=\"lister-col lister-actions\" ng-if=\"options.action\"><md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\"><md-icon class=\"material-icons\">{{::options.action.icon}}</md-icon></md-button></div><div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\"><md-menu ng-if=\"actionCols[item.$$index].length\"><md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\"><md-icon class=\"md-default-theme material-icons\">more_vert</md-icon></md-button><md-menu-content><md-menu-item ng-if=\"actionCols[item.$$index][$index]\" ng-repeat=\"action in options.actions\"><md-button ng-click=\"actionClick(action,item,$event)\"><md-icon class=\"material-icons\" ng-if=\"action.icon\">{{::action.icon}}</md-icon>{{::action.label}}</md-button></md-menu-item></md-menu-content></md-menu></div></div></div><div class=\"lister-foot\"><div class=\"lister-row\"><div class=\"lister-col lister-col-footer\" ng-if=\"options.sort\"></div><div class=\"lister-col lister-col-footer lister-select-toogle\" ng-if=\"options.selection.show\"></div><div class=\"lister-col lister-col-footer {{::column.className}}\" ng-repeat=\"column in options.columns\" fs-lister-footer-compile locals=\"locals\" column=\"column\" style=\"footerStyle[$index]\" ng-style=\"footerStyle[$index]\"></div><div class=\"lister-col lister-col-footer\" ng-if=\"options.actions.length || options.action\"></div></div></div></div><div class=\"status\" ng-if=\"(options.paging.infinite && !data.length) || (!data.length && !paging.records)\"><div class=\"norecords ng-hide\" ng-show=\"!loading && options.norecords && !data.length\">{{::options.norecords}}</div><div class=\"progress-infinite ng-hide\" ng-show=\"options.paging.infinite && loading\"><md-progress-circular md-diameter=\"40\" md-mode=\"indeterminate\"></md-progress-circular></div></div></div><div class=\"paging\" ng-if=\"options.paging.enabled && !options.paging.infinite\" layout=\"row\"><div class=\"records\"></div><div flex><ul class=\"pages\" ng-if=\"paging.pages>1 && options.paging.pages\"><li ng-class=\"{ disabled : paging.page == 1 }\"><a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a></li><li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\"><a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a></li><li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\"><a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a></li><li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\"><a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a></li><li ng-class=\"{ disabled : paging.page == paging.pages }\"><a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a></li></ul></div><div class=\"limits\"><md-input-container><label>Show</label><md-select ng-model=\"options.paging.limit\" md-on-close=\"reload()\"><md-option ng-repeat=\"limit in options.paging.limits\" value=\"{{limit}}\">{{::limit}} records</md-option></md-select></md-input-container></div></div></div>"
+    "\t\t\t                    </md-menu-item> --><md-menu-item><md-button ng-click=\"savedFilterManage()\"><md-icon>settings</md-icon>Manage Saved Filters</md-button></md-menu-item></md-menu-content></md-menu></div></div><div class=\"backdrop\" ng-show=\"extended_search\" ng-click=\"toggleFilters()\"></div></div><div class=\"top-actions\" ng-if=\"options.topActions.length || options.savedFilter\"><span ng-repeat=\"action in options.topActions | filter\" ng-show=\"action.show\"><md-button ng-show=\"action.type=='button'\" ng-click=\"topActionsClick(action,$event)\" class=\"md-raised\" ng-class=\"{ 'md-accent': action.primary!==false }\"><md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon>{{action.label}}</md-button><md-button ng-show=\"action.type=='icon'\" ng-click=\"topActionsClick(action,$event)\" class=\"action-icon\"><md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip></md-button><md-menu ng-show=\"action.type=='menu'\"><md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button more\"><md-icon ng-show=\"action.icon\">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip></md-button><md-menu-content><md-menu-item ng-repeat=\"action in action.items\" ng-show=\"action.show\"><md-button ng-click=\"action.click($event)\"><md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>{{::action.label}}</md-button></md-menu-item></md-menu-content></md-menu><span ng-show=\"action.type=='template'\" fs-lister-topaction-compile=\"action.template\" scope=\"action.scope\"></span></span></div></div></div><div class=\"results\" ng-if=\"options.columns.length\"><div class=\"progress-paged ng-hide\" ng-show=\"loading && !options.paging.infinite\"><md-progress-circular md-diameter=\"40\" md-mode=\"indeterminate\"></md-progress-circular></div><div class=\"lister-table\"><div class=\"lister-head\"><div class=\"lister-row\"><div class=\"lister-col lister-col-header\" ng-if=\"options.sort\"></div><div class=\"lister-col lister-col-header lister-select-toogle\" ng-if=\"options.selection.show\"><md-checkbox ng-click=\"selectionsToggle()\" ng-true-value=\"true\" ng-false-value=\"false\" ng-model=\"selection.all\" aria-label=\"Toggle Selection\" class=\"select-checkbox\"></md-checkbox><md-menu md-offset=\"6 32\"><md-button aria-label=\"Select\" class=\"md-icon-button\" ng-click=\"$mdOpenMenu($event)\"><md-icon>arrow_drop_down</md-icon></md-button><md-menu-content><md-menu-item ng-repeat=\"action in options.selection.actions\" ng-if=\"action.show\"><md-button ng-click=\"selectionClick(action, $event)\"><md-icon ng-if=\"action.icon\">{{::action.icon}}</md-icon>{{::action.label}}</md-button></md-menu-item></md-menu-content></md-menu></div><div class=\"lister-col lister-col-header {{::col.className}}\" ng-repeat=\"col in options.columns\" ng-style=\"styleCols[$index]\" ng-class=\"{ order: col.order, center: col.center, right: col.right  }\" ng-click=\"headerClick(col)\"><div class=\"wrap\"><span fs-lister-compile=\"col.title\" column=\"col\" locals=\"locals\" class=\"title\"></span><div class=\"direction\" ng-if=\"col.order\"><span ng-switch=\"order.direction\" ng-show=\"order.name==col.order.name\"><md-icon ng-switch-when=\"asc\">arrow_downward</md-icon><md-icon ng-switch-when=\"desc\">arrow_upward</md-icon></span></div></div></div><div class=\"lister-col lister-col-header\" ng-if=\"options.actions.length || options.action\"></div></div></div><div class=\"lister-body\" sv-root sv-part=\"data\" sv-on-sort=\"sortStop($item,$partTo,$indexFrom,$indexTo)\" sv-on-start=\"sortStart()\"><div class=\"lister-row {{rowClasses[rowIndex]}}\" sv-element=\"{ containment:'.lister-body'}\" ng-class=\"{ selected: checked[rowIndex] }\" ng-repeat=\"item in data\" ng-click=\"options.rowClick(item,$event); $event.stopPropagation();\" ng-init=\"rowIndex = $index\"><div class=\"lister-col lister-col-sort\" ng-if=\"options.sort\"><div class=\"sort-handle\" sv-handle><md-icon>drag_handle</md-icon></div></div><div class=\"lister-col\" ng-if=\"options.selection.show\"><md-checkbox ng-model=\"checked[rowIndex]\" ng-true-value=\"1\" aria-label=\"Select\" class=\"select-checkbox\"></md-checkbox></div><div class=\"lister-col {{::col.className}}\" ng-repeat=\"col in options.columns\" fs-lister-compile=\"dataCols[item.$$index][$index]\" column=\"col\" data=\"item\" locals=\"locals\" ng-style=\"styleCols[$index]\" ng-class=\"{ center: col.center, right: col.right }\"></div><div class=\"lister-col lister-actions\" ng-if=\"options.action\"><md-button ng-click=\"actionClick(options.action,item,$event); $event.stopPropagation();\" class=\"md-icon-button\"><md-icon class=\"material-icons\">{{::options.action.icon}}</md-icon></md-button></div><div class=\"lister-col lister-actions\" ng-if=\"options.actions.length\"><md-menu ng-if=\"actionCols[item.$$index].length\"><md-button ng-click=\"$mdOpenMenu($event)\" class=\"md-icon-button\"><md-icon class=\"md-default-theme material-icons\">more_vert</md-icon></md-button><md-menu-content><md-menu-item ng-if=\"actionCols[item.$$index][$index]\" ng-repeat=\"action in options.actions\"><md-button ng-click=\"actionClick(action,item,$event)\"><md-icon class=\"material-icons\" ng-if=\"action.icon\">{{::action.icon}}</md-icon>{{::action.label}}</md-button></md-menu-item></md-menu-content></md-menu></div></div></div><div class=\"lister-foot\"><div class=\"lister-row\"><div class=\"lister-col lister-col-footer\" ng-if=\"options.sort\"></div><div class=\"lister-col lister-col-footer lister-select-toogle\" ng-if=\"options.selection.show\"></div><div class=\"lister-col lister-col-footer {{::column.className}}\" ng-repeat=\"column in options.columns\" fs-lister-footer-compile locals=\"locals\" column=\"column\" style=\"footerStyle[$index]\" ng-style=\"footerStyle[$index]\"></div><div class=\"lister-col lister-col-footer\" ng-if=\"options.actions.length || options.action\"></div></div></div></div><div class=\"status\"><div class=\"norecords ng-hide\" ng-show=\"!loading && options.norecords && !data.length\">{{::options.norecords}}</div><div class=\"progress-infinite ng-hide\" ng-show=\"options.paging.infinite && loading\"><md-progress-circular md-diameter=\"40\" md-mode=\"indeterminate\"></md-progress-circular></div></div></div><div class=\"paging\" ng-if=\"options.paging.enabled && !options.paging.infinite\" layout=\"row\"><div class=\"records\"></div><div flex><ul class=\"pages\" ng-if=\"paging.pages>1 && options.paging.pages\"><li ng-class=\"{ disabled : paging.page == 1 }\"><a href=\"javascript:;\" ng-click=\"page(1)\">&laquo;</a></li><li ng-class=\"{ disabled : paging.page == 1 }\" class=\"ng-scope\"><a href=\"\" ng-click=\"page(paging.page - 1)\" class=\"ng-binding\">‹</a></li><li ng-repeat=\"number in [] | listerRange:paging.pages:paging.page\" ng-class=\"{ active : paging.page == (number + 1), disabled : number == '...' }\"><a href=\"\" ng-click=\"page(number + 1)\">{{ number + 1}}</a></li><li ng-class=\"{ disabled : paging.page == paging.pages }\" class=\"ng-scope\"><a href=\"\" ng-click=\"page(paging.page + 1)\" class=\"ng-binding\">›</a></li><li ng-class=\"{ disabled : paging.page == paging.pages }\"><a href=\"\" ng-click=\"page(paging.pages)\">&raquo;</a></li></ul></div><div class=\"limits\"><md-input-container><label>Show</label><md-select ng-model=\"options.paging.limit\" md-on-close=\"reload()\"><md-option ng-repeat=\"limit in options.paging.limits\" value=\"{{limit}}\">{{::limit}} records</md-option></md-select></md-input-container></div></div></div>"
   );
 
 

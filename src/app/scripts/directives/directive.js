@@ -897,10 +897,6 @@
 					return styles;
 				}
 
-				function reload() {
-					return load({ page: 1, clear: true });
-				}
-
 				function sanitizeAction(action) {
 					action = action || {};
 
@@ -1105,94 +1101,112 @@
 					$scope.actionCols = [];
 				}
 
-				function load(opts) {
-
-					if($scope.loading)
-						return;
-
-					opts = opts || {};
-
-					if(opts.clear===true) {
-						$scope.paged = null;
-					}
-
-					if($scope.options.paging.infinite && $scope.paged) {
-						if($scope.paged.records <= ($scope.paged.limit * $scope.paged.page)) {
-							return;
-						}
-					}
-
-					if(opts.page) {
-
-						if(opts.clear) {
-							opts.page = 1;
-							if($scope.options.paging.infinite) {
-							   clearData();
-							}
-						}
-
-						$scope.paging.page = opts.page;
-					}
-
-					if(opts.clear) {
-						$scope.selectionsClear();
-					}
-
-					var query = filterValues({ flatten: true });
-
-					if(options.persist) {
-
-						var models = {};
-						angular.forEach(options.filters,function(filter) {
-							models[filter.name] = filter.model;
-						});
-
-						persists[options.persist.name] = { data: models, date: new Date() };
-					}
-
-					if($scope.options.paging.enabled) {
-						if($scope.paging.page!==undefined) {
-							query.page = $scope.paging.page;
-						}
-
-						if($scope.options.paging.limit!==undefined) {
-							query.limit = $scope.options.paging.limit;
-						}
-					}
-
-					if($scope.order) {
-						query.order = $scope.order.name + ',' + $scope.order.direction;
-					}
-
-					log("Calling data()", query);
-
-					try {
-
-						$scope.loading = true;
-
-						if(options.data) {
-
-							var response = options.data(query,angular.bind(this,dataCallback,opts));
-
-							if(response && response.then) {
-
-								response
-								.then(function(response) {
-									dataCallback(opts,response.data,response.paging,response.locals);
-								})
-								.catch(function(response) {
-									loadCleanup();
-								});
-							}
-						}
-
-				   } catch(e) {
-						loadCleanup();
-						throw e;
-					}
+				function reload() {
+					return load({ page: 1, clear: true })
+					.then(function() {
+						$scope.resize();
+					});
 				}
 
-				function dataCallback(opts, data, paging, locals) {
+				function load(opts) {
+
+					return $q(function(resolve, reject) {
+
+						if($scope.loading)
+							return resolve();
+
+						opts = opts || {};
+
+						if(opts.clear===true) {
+							$scope.paged = null;
+						}
+
+						if($scope.options.paging.infinite && $scope.paged) {
+							if($scope.paged.records <= ($scope.paged.limit * $scope.paged.page)) {
+								return resolve();
+							}
+						}
+
+						if(opts.page) {
+
+							if(opts.clear) {
+								opts.page = 1;
+								if($scope.options.paging.infinite) {
+								   clearData();
+								}
+							}
+
+							$scope.paging.page = opts.page;
+						}
+
+						if(opts.clear) {
+							$scope.selectionsClear();
+						}
+
+						var query = filterValues({ flatten: true });
+
+						if(options.persist) {
+
+							var models = {};
+							angular.forEach(options.filters,function(filter) {
+								models[filter.name] = filter.model;
+							});
+
+							persists[options.persist.name] = { data: models, date: new Date() };
+						}
+
+						if($scope.options.paging.enabled) {
+							if($scope.paging.page!==undefined) {
+								query.page = $scope.paging.page;
+							}
+
+							if($scope.options.paging.limit!==undefined) {
+								query.limit = $scope.options.paging.limit;
+							}
+						}
+
+						if($scope.order) {
+							query.order = $scope.order.name + ',' + $scope.order.direction;
+						}
+
+						log("Calling data()", query);
+
+						try {
+
+							$scope.loading = true;
+
+							if(options.data) {
+
+								var response = options.data(query,angular.bind(this,dataCallback,opts,resolve));
+
+								if(response && response.then) {
+
+									response
+									.then(function(response) {
+										dataCallback(opts,resolve,response.data,response.paging,response.locals);
+									})
+									.catch(function(e) {
+										reject();
+										throw e;
+									});
+								}
+							}
+
+					   	} catch(e) {
+							reject();
+							throw e;
+						}
+					})
+					.finally(function() {
+						$scope.loading = false;
+					});
+				}
+
+				function dataCallback(opts, resolve, data, paging, locals) {
+
+					if(!fsUtil.isArray(data)) {
+						throw 'Invalid callback data';
+					}
 
 					log("dataCallback()", data, paging, locals);
 
@@ -1201,11 +1215,7 @@
 						clearData();
 					}
 
-					return callback(data, paging, locals);
-				}
-
-				function loadCleanup() {
-					 $scope.loading = false;
+					return callback(data, paging, locals).then(resolve);
 				}
 
 				function page(page) {
@@ -1215,94 +1225,93 @@
 
 				function callback(data, paging, locals) {
 
-					if(!$scope.options.paging.infinite) {
-						clearData();
-					}
+					return $q(function(resolve) {
 
-					if(locals) {
-						angular.extend($scope.locals,locals);
-						$scope.locals = locals;
-					}
-
-					var ol = data.length;
-					for (var o = 0; o < ol; o++) {
-
-						var cl = options.columns.length;
-						var cols = [];
-
-						for (var c = 0; c < cl; c++) {
-
-							var col = options.columns[c];
-							var value = col.value;
-
-							if(typeof col.value =='function') {
-								value = col.value(data[o]);
-							}
-
-							cols[c] = value;
+						if(!$scope.options.paging.infinite) {
+							clearData();
 						}
 
-						$scope.dataCols[dataIndex] = cols;
+						if(locals) {
+							angular.extend($scope.locals,locals);
+							$scope.locals = locals;
+						}
 
-                        $scope.actionCols[dataIndex] = [];
-                        var showActions = false;
-                        angular.forEach(options.actions,function(action,aindex) {
-                        	$scope.actionCols[dataIndex][aindex] = true;
-                        	if(angular.isFunction(action.show)) {
-                        		if(!action.show(data[o])) {
-                        			$scope.actionCols[dataIndex][aindex] = false;
-                        		}
-                        	}
+						var ol = data.length;
+						for (var o = 0; o < ol; o++) {
 
-                        	showActions |= $scope.actionCols[dataIndex][aindex];
-                        });
+							var cl = options.columns.length;
+							var cols = [];
 
-                        if(!showActions) {
-                        	$scope.actionCols[dataIndex] = [];
-                        }
+							for (var c = 0; c < cl; c++) {
 
-						data[o].$$index = dataIndex;
+								var col = options.columns[c];
+								var value = col.value;
 
-						if($scope.options.rowClass)
-							$scope.rowClasses[dataIndex] = $scope.options.rowClass(data[o]);
+								if(typeof col.value =='function') {
+									value = col.value(data[o]);
+								}
 
-						$scope.data.push(data[o]);
+								cols[c] = value;
+							}
 
-						dataIndex++;
-					}
+							$scope.dataCols[dataIndex] = cols;
 
-					$scope.paging.records = null;
+	                        $scope.actionCols[dataIndex] = [];
+	                        var showActions = false;
+	                        angular.forEach(options.actions,function(action,aindex) {
+	                        	$scope.actionCols[dataIndex][aindex] = true;
+	                        	if(angular.isFunction(action.show)) {
+	                        		if(!action.show(data[o])) {
+	                        			$scope.actionCols[dataIndex][aindex] = false;
+	                        		}
+	                        	}
 
-					if(paging) {
+	                        	showActions |= $scope.actionCols[dataIndex][aindex];
+	                        });
 
-						if(paging.records===null) {
+	                        if(!showActions) {
+	                        	$scope.actionCols[dataIndex] = [];
+	                        }
+
+							data[o].$$index = dataIndex;
+
+							if($scope.options.rowClass)
+								$scope.rowClasses[dataIndex] = $scope.options.rowClass(data[o]);
+
+							$scope.data.push(data[o]);
+
+							dataIndex++;
+						}
+
+						$scope.paging.records = null;
+
+						if(paging) {
+
+							if(paging.records===null) {
+								$scope.options.paging.enabled = false;
+							}
+
+							$scope.paging.records = paging.records;
+							$scope.paging.pages = paging.pages;
+
+							if(paging.limit) {
+								$scope.options.paging.limit = paging.limit;
+							}
+
+						} else {
 							$scope.options.paging.enabled = false;
 						}
 
-						$scope.paging.records = paging.records;
-						$scope.paging.pages = paging.pages;
+						$scope.paged = paging;
 
-						if(paging.limit) {
-							$scope.options.paging.limit = paging.limit;
+						if($scope.options.paging.infinite) {
+							$scope.paging.page++;
+
+						} else if(paging) {
+							$scope.paging.page = paging.page;
 						}
 
-					} else {
-						$scope.options.paging.enabled = false;
-					}
-
-					$scope.paged = paging;
-
-					if($scope.options.paging.infinite) {
-						$scope.paging.page++;
-
-					} else if(paging) {
-						$scope.paging.page = paging.page;
-					}
-
-					loadCleanup();
-
-					//promise/timeout used to offset the timing for the template render time
-					return $q(function(resolve) {
+						//promise/timeout used to offset the timing for the template render time
 						setTimeout(function() {
 							resolve();
 						});
@@ -1554,28 +1563,27 @@
 			}],
 			link: function($scope, element, attr, ctrl) {
 
-				$scope.max_bottom = 0;
-				if($scope.options && $scope.options.paging && $scope.options.paging.infinite) {
-
+				var height,
+					el_bottom,
+					wn_bottom,
+					scrollTop,
+					condition,
+					threshhold = 200,
+					container = $scope.options.container ? document.querySelector($scope.options.container) : window,
 					element = angular.element(element[0].children[0]);
 
-					var height,
-						el_bottom,
-						wn_bottom,
-						scrollTop,
-						condition,
-						threshhold = 200,
-						container = $scope.options.container ? document.querySelector($scope.options.container) : window;
+				$scope.max_bottom = 0;
+				$scope.resize = function() {
 
-					function resize() {
+					if($scope.options && $scope.options.paging && $scope.options.paging.infinite) {
 
 						if(!$scope.loading && $scope.data.length) {
 
-							height = parseInt(container.innerHeight || container.clientHeight);
-							scrollTop = container.pageYOffset || parseInt(container.scrollTop);
-							el_bottom = parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop'));
-							wn_bottom = scrollTop + height;
-							condition = (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
+							height 		= parseInt(container.innerHeight || container.clientHeight);
+							el_bottom 	= parseInt(element.prop('offsetHeight')) + parseInt(element.prop('offsetTop'));
+							scrollTop 	= Math.max(container.scrollTop || 0,container.pageYOffset || 0);
+							wn_bottom 	= scrollTop + height;
+							condition 	= (el_bottom - threshhold) <= wn_bottom && (el_bottom > ($scope.max_bottom + threshhold));
 
 							/*
 							if($scope.options.debug) {
@@ -1601,19 +1609,20 @@
 
 							if(condition) {
 								$scope.max_bottom = el_bottom;
-								$scope.$apply(function() {
-									$scope.load();
-								});
+								$scope.load();
 							}
 						}
 					}
+				}
 
-					container.addEventListener('scroll', resize);
-					container.addEventListener('resize', resize);
+				if($scope.options && $scope.options.paging && $scope.options.paging.infinite) {
+
+					container.addEventListener('scroll', $scope.resize);
+					container.addEventListener('resize', $scope.resize);
 
 					$scope.$on('$destroy', function() {
-						container.removeEventListener('scroll', resize);
-						container.removeEventListener('resize', resize);
+						container.removeEventListener('scroll', $scope.resize);
+						container.removeEventListener('resize', $scope.resize);
 					});
 				}
 			}
