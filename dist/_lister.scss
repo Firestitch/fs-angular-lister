@@ -137,11 +137,14 @@ lister, fs-lister {
             .reload {
                 position: absolute;
                 right: 0;
+                top: 0;
+				line-height: 32px;
                 color: rgba(0,0,0,0.54);
                 z-index: 52;
 
                 i {
                     transform: scale(.9);
+                    vertical-align: middle;
                 }
 
                 &:hover {
