@@ -96,7 +96,7 @@ angular.module('app')
 
             //return setTimeout(function() { cb([]); }, 2000);
 
-            query.count = 5;
+            query.count = 15;
 
             return $q(function(resolve) {
 
@@ -124,7 +124,7 @@ angular.module('app')
 		                        debugger;
 		                    console.log(response);
 		                });*/
-		        },2000);
+		        },0);
 		    });
         },
 
@@ -406,8 +406,9 @@ console.log(text);
                 name: 'toggle',
                 type: 'checkbox',
                 label: 'Checkbox',
-                checked: 'active',
-                unchecked: 'delete'
+                default: 1,
+                checked: 1,
+                unchecked: 0
             },
           /*  {
                 name: 'state',
@@ -561,6 +562,13 @@ console.log(text);
                                 { name: 'Past year', value: 8760 }];
                     }
                 }*/
+
+            ,{
+                name: 'range',
+                type: 'range',
+                label: 'Numbered range',
+                placeholders: ['Min', 'Max']
+            },
         ]
     };
 });

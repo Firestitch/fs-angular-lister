@@ -12,7 +12,7 @@ angular
 .config(function ($stateProvider, $urlRouterProvider, fsListerProvider, $mdDateLocaleProvider,$compileProvider) {
 
 	$compileProvider.preAssignBindingsEnabled(true);
-    fsListerProvider.options({ paging: { infinite: true, limit: 10 }, inline: true });
+    fsListerProvider.options({ paging: { infinite: true, limit: 20 }, inline: true });
 
 	$mdDateLocaleProvider.formatDate = function(date) {
 		return moment(date).isValid() ? moment(date).format('MMM D, YYYY') : '';

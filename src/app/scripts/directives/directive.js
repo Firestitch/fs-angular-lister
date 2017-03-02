@@ -254,6 +254,37 @@
 						filter.primary = false;
 					}
 
+					if(filter.type=='select') {
+
+						if(filter.isolate) {
+
+							if(filter.wait===undefined) {
+								filter.wait = true;
+							}
+
+							if(filter.isolate.value==filter.model) {
+								filter.isolate.enabled = true;
+							}
+						}
+
+					} else if(filter.type=='checkbox') {
+						filter.checked = fsUtil.string(filter.checked);
+						filter.unchecked = fsUtil.string(filter.unchecked);
+						filter.default = fsUtil.string(filter.default);
+
+					} else if(filter.type=='text') {
+
+						if(!primary) {
+							filter.primary = primary = true;
+						}
+
+					} else if(filter.type=='range') {
+
+						if(!filter.placeholder) {
+							filter.placeholder = ['Min','Max'];
+						}
+					}
+
 					filter.model = filter.default;
 
 					if(options.persist) {
@@ -303,30 +334,9 @@
 						}
 					}
 
-					if(filter.type=='range' && !filter.placeholder) {
-						filter.placeholder = ['Min','Max'];
-					}
-
-					if(!primary && filter.type=='text') {
-						filter.primary = primary = true;
-					}
-
-					 if(filter.type=='select') {
-
-						if(filter.isolate) {
-
-							if(filter.wait===undefined) {
-								filter.wait = true;
-							}
-
-							if(filter.isolate.value==filter.model) {
-								filter.isolate.enabled = true;
-							}
-						}
-					}
-
-					if(filter.change)
+					if(filter.change) {
 						filter.change = angular.bind(filter,filter.change, options.instance);
+					}
 				});
 
 				angular.forEach(options.columns,function(col,index) {
@@ -959,7 +969,7 @@
 							}
 						}
 
-						if(fsUtil.isEmpty(value)) {
+						if(fsUtil.isEmpty(value,{ zero: true })) {
 							return;
 						}
 
@@ -978,6 +988,7 @@
 							} else {
 								value = 'Yes';
 							}
+
 						} else if(filter.type=='range') {
 
 							var min = value['min'];
@@ -1042,7 +1053,7 @@
 							}
 						}
 
-						if(fsUtil.isEmpty(value)) {
+						if(fsUtil.isEmpty(value,{ zero: true })) {
 							return;
 						}
 
@@ -1072,7 +1083,7 @@
 
 						} else if(filter.type=='autocomplete') {
 
-							if(fsUtil.isEmpty(filter.model.value)) {
+							if(fsUtil.isEmpty(filter.model.value,{ zero: true })) {
 								return;
 							}
 

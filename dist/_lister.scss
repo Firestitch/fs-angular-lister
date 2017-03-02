@@ -220,6 +220,10 @@ lister, fs-lister {
                                 margin: 8px 0  8px 2px;
                             }
                         }
+
+                        &.interface-range input {
+                        	text-align: center;
+                        }
                     }
 
                     .interface,
