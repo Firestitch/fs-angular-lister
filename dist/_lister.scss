@@ -402,7 +402,11 @@ lister, fs-lister {
                     background-image: none;
                 }
 
-                &.lister-select-toogle {
+                &.lister-col-sort {
+                	 width: 25px;
+                }
+
+                &.lister-col-select-toggle {
                     white-space: nowrap;
                     width: 1px;
                     md-checkbox {

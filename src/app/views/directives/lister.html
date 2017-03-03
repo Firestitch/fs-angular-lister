@@ -184,10 +184,7 @@
 			                	<md-menu-divider ng-show="options.savedFilter.filters.length"></md-menu-divider>
 			                    <md-menu-item ng-show="!options.savedFilter.active">
 			                        <md-button ng-click="savedFilterSave()"><md-icon>save</md-icon> Save Filter</md-button>
-			                    </md-menu-item><!--
-			                    <md-menu-item>
-			                        <md-button ng-click="savedFilterCreate()"><md-icon>add</md-icon> Create New Filter</md-button>
-			                    </md-menu-item> -->
+			                    </md-menu-item>
 			                    <md-menu-item>
 			                        <md-button ng-click="savedFilterManage()"><md-icon>settings</md-icon> Manage Saved Filters</md-button>
 			                    </md-menu-item>
@@ -229,8 +226,8 @@
         <div class="lister-table">
             <div class="lister-head">
                 <div class="lister-row">
-                    <div class="lister-col lister-col-header" ng-if="options.sort"></div>
-                    <div class="lister-col lister-col-header lister-select-toogle" ng-if="options.selection.show">
+                    <div class="lister-col lister-col-header lister-col-sort" ng-if="options.sort"></div>
+                    <div class="lister-col lister-col-header lister-col-select-toggle" ng-if="options.selection.show">
 
                         <md-checkbox ng-click="selectionsToggle()" ng-true-value="true" ng-false-value="false" ng-model="selection.all" aria-label="Toggle Selection" class="select-checkbox"></md-checkbox>
                         <md-menu md-offset="6 32">
@@ -295,7 +292,7 @@
 			<div class="lister-foot">
                 <div class="lister-row">
                     <div class="lister-col lister-col-footer" ng-if="options.sort"></div>
-                    <div class="lister-col lister-col-footer lister-select-toogle" ng-if="options.selection.show"></div>
+                    <div class="lister-col lister-col-footer lister-col-select-toggle" ng-if="options.selection.show"></div>
                     <div class="lister-col lister-col-footer {{::column.className}}" ng-repeat="column in options.columns" fs-lister-footer-compile locals="locals" column="column" style="footerStyle[$index]" ng-style="footerStyle[$index]"></div>
                     <div class="lister-col lister-col-footer" ng-if="options.actions.length || options.action">
                     </div>

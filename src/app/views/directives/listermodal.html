@@ -15,7 +15,7 @@
         </md-toolbar>
         <md-dialog-content>
             <div class="md-dialog-content">
-            	<div ng-show="mode=='save'">
+            	<div ng-show="mode=='save'" class="ng-hide">
 	                <form>
 	                    <md-input-container class="md-block">
 	                    	<label>Saved filter to update</label>
@@ -31,7 +31,7 @@
 	                    </md-input-container>
 	                </form>
 	            </div>
-	            <div ng-show="mode=='update'">
+	            <div ng-show="mode=='update'" class="ng-hide">
 	                <form>
 	                   	<md-input-container class="md-block" required>
 	                        <label>Filter Name</label>
@@ -39,7 +39,7 @@
 	                    </md-input-container>
 	                </form>
 	            </div>
-	            <div ng-show="mode=='listing'">
+	            <div ng-show="mode=='listing'" class="ng-hide">
                 	<fs-lister ls-options="lsOptions" ls-sort></fs-lister>
                 </div>
             </div>

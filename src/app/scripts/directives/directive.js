@@ -235,7 +235,6 @@
 				$scope.debug = false;
 				$scope.load = load;
 				$scope.reload = reload;
-				$scope.page = page;
 				$scope.numeric = numeric;
 				$scope.extended_search = false;
 				$scope.searchinput = { value: '' };
@@ -451,6 +450,218 @@
 					sanitizeAction(action);
 				});
 
+
+				var instance =
+				{
+					load: load,
+					page: {
+						set: function(page) {
+							$scope.paging.page = page;
+							load();
+						}
+					},
+					reload: reload,
+					local: {
+						get: function(name) {
+							return $scope.locals[name];
+						},
+						set: function(name, value) {
+							$scope.locals[name] = value;
+							$scope.locals = angular.copy($scope.locals);
+						},
+						locals: $scope.locals
+					},
+					data: {
+						get: function(filters) {
+							var flen = options.filters.length,
+								len = $scope.data.length,
+								items = [];
+							for(var i=0; i<len; i++) {
+
+								var valid = true;
+								angular.forEach(filters,function(value,name) {
+									if(!valid || $scope.data[i][name]!==value)
+										valid = false;
+								});
+
+								if(valid) {
+									items.push($scope.data[i]);
+								}
+							}
+
+							return items;
+						},
+						set: function(object, filters) {
+							angular.forEach(instance.data.get(filters),function(item) {
+								angular.extend(item,object);
+							});
+						},
+						remove: function(filters) {
+
+							var items = instance.data.get(filters);
+
+							angular.forEach(items,function(item) {
+
+								var index = $scope.data.indexOf(item);
+
+								if(index!==null) {
+									$scope.data.splice(index, 1);
+									if($scope.paging.records>0) {
+										$scope.paging.records--;
+									}
+								}
+							});
+
+						},
+						data: data
+					},
+					filter: {
+						saved: {
+							select: function(item) {
+
+								if(!options.savedFilter) {
+									options.savedFilter = {};
+								}
+
+								options.savedFilter.active = item;
+								angular.forEach(options.savedFilter.filters,function(value) {
+									value.active = false;
+								});
+
+								filtersClear();
+
+								if(item) {
+
+									item.active = true;
+									angular.forEach(item.values,function(value,name) {
+										var filter = fsArray.filter(options.filters,{ name: name })[0];
+										if(filter) {
+											filter.model = value;
+										}
+									});
+
+									reload();
+								}
+							}
+						},
+						get: function(name) {
+							return fsArray.filter(options.filters, {name:name})[0];
+						},
+						set: function(filter) {
+							var _filter = instance.get(name);
+							if(_filter) {
+								angular.extend(_filter,filter);
+							}
+						},
+						value: {
+							get: function(opts) {
+								var opts = opts || {};
+								var query = {};
+								angular.forEach(options.filters,function(filter) {
+
+									var value = angular.copy(filter.model);
+
+									if(filter.type=='select') {
+
+										if(filter.multiple) {
+
+											if(filter.isolate) {
+												if(!fsUtil.isArray(filter.model) || !filter.model.length) {
+													value = fsArray.list(filter.values,'value');
+												}
+											}
+
+										} else {
+
+											if(filter.isolate) {
+												if(filter.model=='__all') {
+													value = fsArray.list(filter.values,'value');
+												}
+											} else {
+												if(filter.model=='__all') {
+													value = null;
+												}
+											}
+										}
+									}
+
+									if(fsUtil.isEmpty(value,{ zero: true })) {
+										return;
+									}
+
+									if(filter.type=='date') {
+
+										if(date) {
+											value = moment(value).format();
+										}
+
+									} else if(filter.type=='range') {
+
+										if(filter.model) {
+											var min = filter.model['min'];
+											var max = filter.model['max'];
+
+											var parts = [];
+											if(min) {
+												parts.push(min);
+											}
+
+											if(max) {
+												parts.push(max);
+											}
+
+											value = parts;
+										}
+
+									} else if(filter.type=='autocomplete') {
+
+										if(fsUtil.isEmpty(filter.model.value,{ zero: true })) {
+											return;
+										}
+
+										value = filter.model.value;
+									}
+
+									query[filter.name] = value;
+								});
+
+								if(opts.flatten) {
+									angular.forEach(query,function(value,name) {
+										if(fsUtil.isArray(value)) {
+											query[name] = value.join(',');
+										}
+									});
+								}
+
+								return query;
+							},
+							set: function(name, value) {
+
+								var filter = instance.filter.get(name);
+								if(filter) {
+									filter.model = value;
+									if (moment.isMoment(filter.model)) {
+										filter.model = filter.model.toDate();
+									}
+									reload();
+								}
+							}
+						},
+						filters: options.filters
+					},
+					option: {
+						get: function(name) {
+							return options[name];
+						},
+						set: function(name,value) {
+							option[name] = value;
+						},
+						options: options
+					}
+				};
+
+				$scope.page = instance.page.set;
+
 				$scope.groupedFilters = function() {
 
 					var index = 0, filters = [];
@@ -468,11 +679,6 @@
 
 					return filters;
 				}();
-
-				$scope.savedFilterCreate = function() {
-					options.savedFilter.active = null;
-					$scope.savedFilterModal('update');
-				}
 
 				$scope.savedFilterSave = function() {
 					$scope.savedFilterModal('save');
@@ -495,7 +701,7 @@
 				}
 
 				$scope.savedFilterSelect = function(item) {
-					savedFilter(item);
+					instance.filter.saved.select(item);
 					if(options.savedFilter.change) {
 						options.savedFilter.change(item);
 					}
@@ -506,41 +712,12 @@
 
 						if(filter.type=='date' || filter.type=='autocomplete') {
 							filter.model = null;
-						} else{
+						} else {
 							filter.model = undefined;
 						}
 					});
 
-					$scope.searchInputUpdate();
-				}
-
-				function savedFilter(item) {
-
-					if(!options.savedFilter) {
-						options.savedFilter = {};
-					}
-
-					options.savedFilter.active = item;
-					angular.forEach(options.savedFilter.filters,function(value) {
-						value.active = false;
-					});
-
-					filtersClear();
-
-					if(item) {
-
-						item.active = true;
-						angular.forEach(item.values,function(value,name) {
-							var filter = fsArray.filter(options.filters,{ name: name })[0];
-							if(filter) {
-								filter.model = value;
-							}
-						});
-
-						$scope.searchInputUpdate();
-
-						reload();
-					}
+					searchUpdate();
 				}
 
 				$scope.headerClick = function(col) {
@@ -603,11 +780,11 @@
 
 													if(result && angular.isFunction(result.then)) {
 														result.then(function() {
-															$scope.options.instance.remove(item);
+															$scope.options.instance.data.remove(item);
 															$mdDialog.hide(true);
 														});
 													} else {
-														$scope.options.instance.remove(item);
+														$scope.options.instance.data.remove(item);
 														$mdDialog.hide(true);
 													}
 												}
@@ -699,7 +876,7 @@
 
 				$scope.topActionsClick = function(action,$event) {
 					if(action.click) {
-						action.click(filterValues(), $event, $scope.instance);
+						action.click(instance.filter.value.get(), $event, $scope.instance);
 					}
 				}
 
@@ -749,7 +926,6 @@
 						filter.change();
 					}
 
-					$scope.searchInputUpdate();
 					reload();
 				}
 
@@ -922,7 +1098,7 @@
 					return action;
 				}
 
-				$scope.searchInputUpdate = function() {
+				function searchUpdate() {
 
 					var searches = [];
 					angular.forEach(options.filters,function(filter) {
@@ -1022,89 +1198,6 @@
 					$scope.searchinput = { value: searches.join(' ') };
 				}
 
-				function filterValues(opts) {
-					var opts = opts || {};
-					var query = {};
-					angular.forEach(options.filters,function(filter) {
-
-						var value = angular.copy(filter.model);
-
-						if(filter.type=='select') {
-
-							if(filter.multiple) {
-
-								if(filter.isolate) {
-									if(!fsUtil.isArray(filter.model) || !filter.model.length) {
-										value = fsArray.list(filter.values,'value');
-									}
-								}
-
-							} else {
-
-								if(filter.isolate) {
-									if(filter.model=='__all') {
-										value = fsArray.list(filter.values,'value');
-									}
-								} else {
-									if(filter.model=='__all') {
-										value = null;
-									}
-								}
-							}
-						}
-
-						if(fsUtil.isEmpty(value,{ zero: true })) {
-							return;
-						}
-
-						if(filter.type=='date') {
-
-							if(date) {
-								value = moment(value).format();
-							}
-
-						} else if(filter.type=='range') {
-
-							if(filter.model) {
-								var min = filter.model['min'];
-								var max = filter.model['max'];
-
-								var parts = [];
-								if(min) {
-									parts.push(min);
-								}
-
-								if(max) {
-									parts.push(max);
-								}
-
-								value = parts;
-							}
-
-						} else if(filter.type=='autocomplete') {
-
-							if(fsUtil.isEmpty(filter.model.value,{ zero: true })) {
-								return;
-							}
-
-							value = filter.model.value;
-						}
-
-						query[filter.name] = value;
-					});
-
-					if(opts.flatten) {
-						angular.forEach(query,function(value,name) {
-							if(fsUtil.isArray(value)) {
-								query[name] = value.join(',');
-							}
-						});
-					}
-
-					return query;
-				}
-
-
 				function clearData() {
 					dataIndex = 0;
 					$scope.data = [];
@@ -1122,6 +1215,8 @@
 				function load(opts) {
 
 					return $q(function(resolve, reject) {
+
+						searchUpdate();
 
 						if($scope.loading)
 							return resolve();
@@ -1154,7 +1249,7 @@
 							$scope.selectionsClear();
 						}
 
-						var query = filterValues({ flatten: true });
+						var query = instance.filter.value.get({ flatten: true });
 
 						if(options.persist) {
 
@@ -1227,11 +1322,6 @@
 					}
 
 					return callback(data, paging, locals).then(resolve);
-				}
-
-				function page(page) {
-					$scope.paging.page = page;
-					load();
 				}
 
 				function callback(data, paging, locals) {
@@ -1422,9 +1512,9 @@
 					if(options.savedFilter) {
 						var item = fsArray.filter(options.savedFilter.filters,{ active: true })[0];
 						if(item) {
-							savedFilter(item);
 							//Avoids the search input populating with blank values. Have to wait for the promises to finish
 							$scope.searchinput = '';
+							instance.filter.saved.select(item);
 							options.load = false;
 						}
 					}
@@ -1445,8 +1535,6 @@
 					//have to be loaded to render the textual inputs
 					$q.all(promises)
 					.then(function() {
-						$scope.searchInputUpdate();
-
 						if(options.init) {
 							options.init();
 						}
@@ -1462,102 +1550,6 @@
 
 					return this;
 				}
-
-				function locals() {
-
-					if(!arguments.length)
-						return $scope.locals;
-
-					if(arguments.length==1)
-						return $scope.locals[arguments[0]];
-
-					if(arguments.length==2) {
-						$scope.locals[arguments[0]] = arguments[1];
-						$scope.locals = angular.copy($scope.locals);
-					}
-
-					return this;
-				}
-
-				var instance = {load: load,
-								page: page,
-								reload: reload,
-								filterValues: filterValues,
-								data: data,
-								locals: locals,
-								savedFilter: savedFilter,
-								remove: function(filters) {
-
-									var items = this.find(filters);
-
-									angular.forEach(items,function(item) {
-
-										var index = $scope.data.indexOf(item);
-
-										if(index!==null) {
-											$scope.data.splice(index, 1);
-											if($scope.paging.records>0) {
-												$scope.paging.records--;
-											}
-										}
-									});
-
-								},
-								find: function(filters) {
-									var flen = filters.length,
-										len = $scope.data.length,
-										items = [];
-									for(var i=0; i<len; i++) {
-
-										var valid = true;
-										angular.forEach(filters,function(value,name) {
-											if(!valid || $scope.data[i][name]!==value)
-												valid = false;
-										});
-
-										if(valid) {
-											items.push($scope.data[i]);
-										}
-									}
-
-									return items;
-								},
-								filter: function(name) {
-									return fsArray.filter(options.filters, {name:name})[0];
-								},
-								update: function(object, filters) {
-									angular.forEach(this.find(filters),function(item) {
-										angular.extend(item,object);
-									});
-								},
-								option: function(option,name,value) {
-									if(option=='filter') {
-										var filter = $filter('filter')(options.filters,{ name: name },true)[0];
-
-										if(2 in arguments && filter) {
-
-											filter.model = arguments[2];
-											if (moment.isMoment(filter.model)) {
-												filter.model = filter.model.toDate();
-											}
-
-											$scope.searchInputUpdate();
-										}
-
-										return filter;
-									}
-								},
-								options: function() {
-									if(arguments.length==1) {
-										return options[arguments[0]];
-									}
-
-									if(arguments.length==2) {
-										return options[arguments[0]] = arguments[1];
-									}
-
-									return options;
-								}};
 
 				if($scope.instance) {
 					angular.extend($scope.instance,instance);
@@ -1813,7 +1805,10 @@
 
 		$scope.mode = mode;
 		$scope.filter = {};
-		$scope.savedFilters = options.savedFilter.filters;
+
+		if(mode=='save') {
+			$scope.savedFilters = options.savedFilter.filters;
+		}
 
 		if(options.savedFilter.active) {
 			$scope.filter = options.savedFilter.active;
@@ -1829,11 +1824,7 @@
 					options.savedFilter.filters.push($scope.filter);
 				}
 
-				$scope.filter.values = options.instance.filterValues();
-
-			} else if($scope.mode=='update') {
-
-
+				$scope.filter.values = options.instance.filter.value.get();
 			}
 
 			options.savedFilter.active = $scope.filter;
@@ -1848,7 +1839,7 @@
 		}
 
 		$scope.lsOptions ={
-
+			paging: false,
 			data: function(query, cb) {
 				cb(options.savedFilter.filters);
 			},
@@ -1886,7 +1877,7 @@
 		                ok: function(data) {
 
 		                	if(options.savedFilter.active==data) {
-		                		options.instance.savedFilter(null);
+		                		options.instance.filter.saved.select(null);
 		                	}
 
 		                	fsArray.remove(options.savedFilter.filters,{ guid: data.guid });

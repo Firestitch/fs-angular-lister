@@ -12,15 +12,21 @@ angular.module('app')
     }
 
     $scope.$on("test",function() {
-    	debugger;
+
     });
 
     $scope.data = function() {
-        alert(JSON.stringify($scope.listerConf.instance.data()));
+        alert(JSON.stringify($scope.listerConf.instance.data.get()));
     }
 
     $scope.reload = function() {
-        $scope.listerConf.instance.reload();
+       $scope.listerConf.instance.reload();
+       debugger;
+       //$scope.listerConf.instance.search.update();
+    }
+
+    $scope.setFilter = function() {
+       $scope.listerConf.instance.filter.value.set('state','pending');
     }
 
     function modal() {
@@ -49,7 +55,7 @@ angular.module('app')
     $scope.listerConf = {
     	id: 'demo',
         debug: false,
-        /*savedFilter: {
+        savedFilter: {
     		filters: [
 	    		{
 	    			name: 'My Filter',
@@ -60,7 +66,7 @@ angular.module('app')
 	    			active: true
 	    		}
 	    	]
-        },*/
+        },
         //container: '#frame',
 
         /*paging: {
@@ -430,7 +436,7 @@ console.log(text);
                 type: 'text',
                 label: 'Search',
                 param: 'search'
-            },/*
+            },
             {
                 name: 'state',
                 type: 'select',
@@ -446,7 +452,7 @@ console.log(text);
                     deleted: 'Deleted'
                 }
             },
-
+/*
             {
                 name: 'state',
                 type: 'select',
