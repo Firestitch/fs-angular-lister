@@ -26,7 +26,8 @@ angular.module('app')
     }
 
     $scope.setFilter = function() {
-       $scope.listerConf.instance.filter.value.set('state','pending');
+       	$scope.listerConf.instance.filter.value.set('state','pending',{ reload: false});
+		$scope.listerConf.instance.search.update();
     }
 
     function modal() {

@@ -473,6 +473,11 @@
 					},
 					data: {
 						gets: function(filters) {
+
+							if(!filters || !filters.length) {
+								return $scope.data;
+							}
+
 							var flen = options.filters.length,
 								len = $scope.data.length,
 								items = [];
@@ -638,14 +643,27 @@
 
 								return query;
 							},
-							set: function(name, value) {
-
+							set: function(name, value, opts) {
+								opts = opts || {};
 								var filter = instance.filter.get(name);
 								if(filter) {
 									filter.model = value;
 									if (moment.isMoment(filter.model)) {
 										filter.model = filter.model.toDate();
 									}
+
+									if(opts.reload===undefined || opts.reload) {
+										reload();
+									}
+								}
+							},
+							sets: function(values, opts) {
+								opts = opts || {};
+								angular.forEach(values,function(value,name) {
+									instance.filter.value.set(name,value,{ reload: false });
+								});
+
+								if(opts.reload===undefined || opts.reload) {
 									reload();
 								}
 							}
@@ -657,9 +675,12 @@
 							return options[name];
 						},
 						set: function(name,value) {
-							option[name] = value;
+							options[name] = value;
 						},
 						options: options
+					},
+					search: {
+						update: searchUpdate
 					}
 				};
 
