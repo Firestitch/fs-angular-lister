@@ -472,7 +472,7 @@
 						locals: $scope.locals
 					},
 					data: {
-						get: function(filters) {
+						gets: function(filters) {
 							var flen = options.filters.length,
 								len = $scope.data.length,
 								items = [];
@@ -492,13 +492,13 @@
 							return items;
 						},
 						set: function(object, filters) {
-							angular.forEach(instance.data.get(filters),function(item) {
+							angular.forEach(instance.data.gets(filters),function(item) {
 								angular.extend(item,object);
 							});
 						},
 						remove: function(filters) {
 
-							var items = instance.data.get(filters);
+							var items = instance.data.gets(filters);
 
 							angular.forEach(items,function(item) {
 
@@ -545,7 +545,7 @@
 							}
 						},
 						get: function(name) {
-							return fsArray.filter(options.filters, {name:name})[0];
+							return fsArray.filter(options.filters, { name:name })[0];
 						},
 						set: function(filter) {
 							var _filter = instance.get(name);
@@ -554,7 +554,10 @@
 							}
 						},
 						value: {
-							get: function(opts) {
+							get: function(name, opts) {
+								return instance.filter.value.gets(opts)[name];
+							},
+							gets: function(opts) {
 								var opts = opts || {};
 								var query = {};
 								angular.forEach(options.filters,function(filter) {
@@ -876,7 +879,7 @@
 
 				$scope.topActionsClick = function(action,$event) {
 					if(action.click) {
-						action.click(instance.filter.value.get(), $event, $scope.instance);
+						action.click(instance.filter.value.gets(), $event, $scope.instance);
 					}
 				}
 
@@ -1249,7 +1252,7 @@
 							$scope.selectionsClear();
 						}
 
-						var query = instance.filter.value.get({ flatten: true });
+						var query = instance.filter.value.gets({ flatten: true });
 
 						if(options.persist) {
 
@@ -1824,7 +1827,7 @@
 					options.savedFilter.filters.push($scope.filter);
 				}
 
-				$scope.filter.values = options.instance.filter.value.get();
+				$scope.filter.values = options.instance.filter.value.gets();
 			}
 
 			options.savedFilter.active = $scope.filter;
