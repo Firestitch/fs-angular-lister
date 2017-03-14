@@ -969,6 +969,23 @@
 						$scope.options.savedFilter.active = null;
 					}
 
+					angular.forEach(options.filters,function(filter) {
+						if(filter.type=='text') {
+
+							//Remove Search:
+							var text = search.match(new RegExp('(' + filter.label + ':$)','i'));
+							if(text) {
+								search = search.replace(text[1],'');
+							}
+
+							//Wrap text with spaces in brackets
+							var text = search.match(new RegExp(filter.label + ':([^:\(\)]+)($|\s[\(\w\s]+:)','i'));
+							if(text) {
+								search = search.replace(text[1],'(' + text[1] + ')');
+							}
+						}
+					});
+
 					var matches = search.match(/(\([^\)]+\):\([^\)]+\)|\([^\)]+\):[^\s]+|[^:]+:\([^\)]+\)|[^\s]+)/g);
 					var values = {};
 					var textSearch = [];
@@ -982,6 +999,7 @@
 							textSearch.push(match);
 						}
 					});
+
 
 					angular.forEach(options.filters,function(filter) {
 						if (filter.type == 'checkbox') {
