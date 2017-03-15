@@ -450,7 +450,6 @@
 					sanitizeAction(action);
 				});
 
-
 				var instance =
 				{
 					load: load,
@@ -474,7 +473,7 @@
 					data: {
 						gets: function(filters) {
 
-							if(!filters || !filters.length) {
+							if(fsUtil.isEmpty(filters)) {
 								return $scope.data;
 							}
 
@@ -503,12 +502,13 @@
 						},
 						remove: function(filters) {
 
+							if(fsUtil.isInt(filters)) {
+								filters = { $$index: filters };
+							}
+
 							var items = instance.data.gets(filters);
-
 							angular.forEach(items,function(item) {
-
 								var index = $scope.data.indexOf(item);
-
 								if(index!==null) {
 									$scope.data.splice(index, 1);
 									if($scope.paging.records>0) {
@@ -516,9 +516,8 @@
 									}
 								}
 							});
-
 						},
-						data: data
+						data: $scope.data
 					},
 					filter: {
 						saved: {
@@ -801,16 +800,16 @@
 
 												if(action.delete.ok) {
 													var result = action.delete.ok(item, event);
-
-													if(result && angular.isFunction(result.then)) {
-														result.then(function() {
-															$scope.options.instance.data.remove(item);
-															$mdDialog.hide(true);
-														});
-													} else {
-														$scope.options.instance.data.remove(item);
+													$q(function(resolve) {
+														if(result && angular.isFunction(result.then)) {
+															result.then(resolve);
+														} else {
+															resolve();
+														}
+													}).then(function() {
+														$scope.options.instance.data.remove(item.$$index);
 														$mdDialog.hide(true);
-													}
+													});
 												}
 
 											};
@@ -1245,6 +1244,7 @@
 					$scope.data = [];
 					$scope.dataCols = [];
 					$scope.actionCols = [];
+					instance.data.data = [];
 				}
 
 				function reload() {
@@ -1426,6 +1426,7 @@
 							dataIndex++;
 						}
 
+						instance.data.data = $scope.data;
 						$scope.paging.records = null;
 
 						if(paging) {

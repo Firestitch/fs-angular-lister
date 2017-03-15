@@ -70,10 +70,10 @@ angular.module('app')
         },
         //container: '#frame',
 
-        /*paging: {
+        paging: {
         	limit: 5,
         	infinite: true
-        },*/
+        },
         //paging: false,
 
         qqqpersist: {
@@ -123,7 +123,7 @@ angular.module('app')
 		            DummyService
 		                .gets(query,{ url: url })
 		                .then(function(result) {
-		                    resolve({ data: result.objects });
+		                    resolve({ data: result.objects, paging: result.paging });
 		                    //cb(result.objects,result.paging,locals);
 		                })
 
@@ -251,7 +251,7 @@ angular.module('app')
                 delete:  {
                             content: 'Are you sure you would like to remove this?',
                             ok: function(data) {
-                                alert("Delete Action Click: " + JSON.stringify(data));
+                                //alert("Delete Action Click: " + JSON.stringify(data));
 
                                 var deferred = $q.defer();
                                 deferred.resolve();
