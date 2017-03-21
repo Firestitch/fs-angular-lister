@@ -1141,7 +1141,7 @@
 
 				function searchUpdate() {
 
-					var searches = [];
+					var label, formatted, searches = [];
 					angular.forEach(options.filters,function(filter) {
 
 						var value = angular.copy(filter.model);
@@ -1226,17 +1226,27 @@
 						value = String(value);
 
 						if (filter.alias) {
-							var label = filter.alias.match(/\s/) ? '(' + filter.alias + ')' : filter.alias;
+							label = filter.alias.match(/\s/) ? '(' + filter.alias + ')' : filter.alias;
 						} else {
-							var label = filter.label.match(/\s/) ? '(' + filter.label + ')' : filter.label;
+							label = filter.label.match(/\s/) ? '(' + filter.label + ')' : filter.label;
 						}
 
-						var value = value.match(/\s/) ? '(' + value + ')' : value;
-
-						searches.push(label + ':' + value);
+						formatted = label + ':' + (value.match(/\s/) ? '(' + value + ')' : value);
+						searches.push({	value: value,
+										type: filter.type,
+										formatted: formatted });
 					});
 
-					$scope.searchinput = { value: searches.join(' ') };
+					$scope.searchinput.value = '';
+					if(searches.length===1 && searches[0].type=='text') {
+						$scope.searchinput.value = searches[0].value;
+					} else {
+						angular.forEach(searches,function(search) {
+							$scope.searchinput.value += search.formatted + ' ';
+						});
+
+						$scope.searchinput.value = $scope.searchinput.value.trim();
+					}
 				}
 
 				function clearData() {
@@ -1556,7 +1566,7 @@
 						var item = fsArray.filter(options.savedFilter.filters,{ active: true })[0];
 						if(item) {
 							//Avoids the search input populating with blank values. Have to wait for the promises to finish
-							$scope.searchinput = '';
+							$scope.searchinput.value = '';
 							instance.filter.saved.select(item);
 							options.load = false;
 						}
