@@ -89,6 +89,18 @@
                                         </md-input-container>
                                     </div>
 
+									<div class="interface  interface-date" ng-if="filter.type == 'date'">
+                                        <fs-datetime fs-class="md-no-label md-no-message" fs-model="filter.model" fs-change="filterChange(filter)"></fs-datetime>
+                                    </div>
+
+                                    <div class="interface  interface-datetime" ng-if="filter.type == 'datetime'">
+                                        <fs-datetime fs-class="md-no-label md-no-message" fs-time="true" fs-model="filter.model" fs-change="filterChange(filter)"></fs-datetime>
+                                    </div>
+
+                                    <div class="interface interface-daterange" ng-if="filter.type == 'daterange'">
+                                        <fs-datetime-range fs-class="md-no-label md-no-message" fs-from="filter.model['from']" fs-to="filter.model['to']" fs-change="filterChange(filter)"></fs-datetime-range>
+                                    </div>
+
                                     <div class="interface interface-range" ng-if="filter.type == 'range'" >
 
                                         <span layout="row" class="md-block">
@@ -115,16 +127,6 @@
                                                     ng-model-options="{debounce: 400}"
                                                     ng-change="filterChange(filter)" />
                                              </md-input-container>
-                                        </span>
-                                    </div>
-
-                                    <div class="interface" ng-if="filter.type == 'date'" >
-
-                                        <span class="md-block">
-                                            <md-datepicker-container class="md-no-label md-no-message md-block">
-                                                <label>{{::filter.label}}</label>
-                                                <md-datepicker ng-model="filter.model" ng-change="dateSearch(filter)" md-open-on-focus></md-datepicker>
-                                            </md-datepicker-container>
                                         </span>
                                     </div>
 

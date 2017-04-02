@@ -433,6 +433,21 @@ console.log(text);
                 }
             },*/
            {
+                name: 'date',
+                type: 'date',
+                label: 'Date'
+            },
+            {
+                name: 'datetime',
+                type: 'datetime',
+                label: 'Date/Time'
+            },
+            {
+                name: 'daterange',
+                type: 'daterange',
+                label: 'Date Range'
+            },
+          /* {
                 name: 'search',
                 type: 'text',
                 label: 'Search',
@@ -452,7 +467,7 @@ console.log(text);
                     completed: 'Completed',
                     deleted: 'Deleted'
                 }
-            },
+            },*/
 /*
             {
                 name: 'state',

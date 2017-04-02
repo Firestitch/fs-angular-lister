@@ -596,9 +596,9 @@
 										return;
 									}
 
-									if(filter.type=='date') {
+									if(filter.type=='date' || filter.type=='datetime') {
 
-										if(date) {
+										if(value) {
 											value = moment(value).format();
 										}
 
@@ -618,6 +618,20 @@
 											}
 
 											value = parts;
+										}
+
+									} else if(filter.type=='daterange') {
+
+										var from 	= value['from'];
+										var to 		= value['to'];
+
+										value = {};
+										if(from) {
+											value.from = moment(from).format();
+										}
+
+										if(to) {
+											value.to = moment(to).format();
 										}
 
 									} else if(filter.type=='autocomplete') {
@@ -1194,9 +1208,34 @@
 
 							value = filter.model.name;
 
-						} else if(filter.type=='date') {
+						} else if(filter.type=='date' || filter.type=='datetime') {
 
-							value = moment(value).format('MMM D, YYYY');
+							var format = 'MMM D, YYYY';
+
+							if(filter.type=='datetime') {
+								format += ' h:mma';
+							}
+
+							value = value.format(format);
+
+						} else if(filter.type=='daterange') {
+
+							if(value) {
+								var from 	= value.from;
+								var to 		= value.to;
+
+								value = [];
+
+								if(from) {
+									value.push(from.format('MMM D, YYYY'));
+								}
+
+								if(to) {
+									value.push(to.format('MMM D, YYYY'));
+								}
+
+								value = value.join(' to ');
+							}
 
 						} else if(filter.type=='checkbox') {
 
@@ -1686,7 +1725,7 @@
 		}
 	}];
 
-	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array','fs-angular-util'])
+	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array','fs-angular-util','fs-angular-datetime'])
 	.directive('lister',ListerDirective)
 	.directive('fsLister',ListerDirective)
 	.directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',

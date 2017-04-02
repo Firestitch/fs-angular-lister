@@ -224,6 +224,10 @@ lister, fs-lister {
                         &.interface-range input {
                         	text-align: center;
                         }
+
+                        &.interface-datetime fs-datetime.has-time .md-input {
+                        	width: 100%;
+                        }
                     }
 
                     .interface,

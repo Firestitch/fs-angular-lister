@@ -14,6 +14,7 @@
     "fs-angular-store": "^1.0.0",
     "fs-angular-util": "^1.0.0",
     "fs-angular-array": "^1.0.0",
+    "fs-angular-datetime": "^1.0.0",
     "fs-boilerplate-styles": "^1.0.0",
     "angular-sortable-view": "0.0.15",
     "moment": "2.10.6"
