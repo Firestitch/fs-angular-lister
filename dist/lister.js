@@ -609,7 +609,7 @@
 											value = parts;
 										}
 
-									} else if(filter.type=='daterange') {
+									} else if(filter.type=='daterange' || filter.type=='datetimerange') {
 
 										var from 	= value['from'];
 										var to 		= value['to'];
@@ -1217,25 +1217,25 @@
 							var format = 'MMM D, YYYY';
 
 							if(filter.type=='datetime') {
-								format += ' h:mma';
+								format += ' h:mm a';
 							}
 
 							value = value.format(format);
 
-						} else if(filter.type=='daterange') {
+						} else if(filter.type=='daterange' || filter.type=='datetimerange') {
 
 							if(value) {
 								var from 	= value.from;
 								var to 		= value.to;
-
+								var format = filter.type=='datetimerange' ? 'MMM D, YYYY h:mm a' : 'MMM D, YYYY';
 								value = [];
 
 								if(from) {
-									value.push(from.format('MMM D, YYYY'));
+									value.push(from.format(format));
 								}
 
 								if(to) {
-									value.push(to.format('MMM D, YYYY'));
+									value.push(to.format(format));
 								}
 
 								value = value.join(' to ');
