@@ -101,6 +101,10 @@
                                         <fs-datetime-range fs-class="md-no-label md-no-message" fs-from="filter.model['from']" fs-to="filter.model['to']" fs-change="filterChange(filter)"></fs-datetime-range>
                                     </div>
 
+                                    <div class="interface interface-datetimerange" ng-if="filter.type == 'datetimerange'">
+                                        <fs-datetime-range fs-class="md-no-label md-no-message" fs-from="filter.model['from']" fs-to="filter.model['to']" fs-change="filterChange(filter)" fs-time="true"></fs-datetime-range>
+                                    </div>
+
                                     <div class="interface interface-range" ng-if="filter.type == 'range'" >
 
                                         <span layout="row" class="md-block">

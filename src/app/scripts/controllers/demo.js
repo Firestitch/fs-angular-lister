@@ -447,6 +447,11 @@ console.log(text);
                 type: 'daterange',
                 label: 'Date Range'
             },
+            {
+                name: 'datetimerange',
+                type: 'datetimerange',
+                label: 'Date Time Range'
+            },
           /* {
                 name: 'search',
                 type: 'text',
