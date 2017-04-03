@@ -137,9 +137,9 @@
 	* @param {function} ls-instance.options Set/Gets options. Zero arguments passed will return all options. One argument passed will return that option's value. Two arguments passed will set option with the value.
 	*/
 
-	var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', 'fsUtil', '$mdDialog',
+	var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', 'fsUtil', '$mdDialog', 'fsDatetime',
 							'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache', 'fsArray', 'fsModal',
-							function ($compile, $sce, $filter, $window, $log, $q, fsUtil, $mdDialog,
+							function ($compile, $sce, $filter, $window, $log, $q, fsUtil, $mdDialog, fsDatetime,
 									fsStore, $rootScope, fsLister, $location, $templateCache, fsArray, fsModal) {
 		return {
 			template: function(element, attr) {
@@ -295,7 +295,7 @@
 							filter.model = persisted[filter.name];
 
 							if(filter.type=='date') {
-								filter.model = new Date(filter.model);
+								filter.model = moment(filter.model);
 							}
 						}
 					}
@@ -311,10 +311,7 @@
 					if(!filter.model) {
 
 						if(filter.type=='date') {
-
-							if(typeof filter.model == 'string') {
-								filter.model = new Date(filter.model);
-							}
+							filter.model = moment(filter.model);
 
 						} else if(filter.type=='checkbox') {
 							filter.model = filter.unchecked;
@@ -1004,7 +1001,7 @@
 					var textSearch = [];
 					angular.forEach(matches, function(match) {
 
-						var filter_match = match.match(/\(?([^:\)]+)\)?:\(?([^)]+)/);
+						var filter_match = match.trim().match(/\(?([^:\)]+)\)?:\(?([^)]+)/);
 
 						if(filter_match) {
 							values[filter_match[1].trim()] = filter_match[2];
@@ -1012,7 +1009,6 @@
 							textSearch.push(match);
 						}
 					});
-
 
 					angular.forEach(options.filters,function(filter) {
 						if (filter.type == 'checkbox') {
@@ -1030,12 +1026,28 @@
 
 						if(filter) {
 
-							if(filter.type=='date') {
+							if(filter.type=='date' || filter.type=='datetime') {
 
-								filter.model = new Date(value);
+								var date = fsDatetime.parse(value);
 
-								if(value.match(/(\d{4}-\d{2}-\d{2})/)) {
-									filter.model = new Date(filter.model.getTime() + (filter.model.getTimezoneOffset() * 60000));
+								if(date) {
+									filter.model = moment(date);
+								}
+
+							} else if(filter.type=='daterange') {
+
+								var parts = value.split(/\s+to\s+/);
+								var from = fsDatetime.parse(parts[0]);
+								var to = fsDatetime.parse(parts[1]);
+
+								filter.model = {};
+
+								if(from) {
+									filter.model.from = from;
+								}
+
+								if(to) {
+									filter.model.to = to;
 								}
 
 							} else if(filter.type=='range') {
