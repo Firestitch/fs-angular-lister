@@ -291,12 +291,7 @@
 						var persisted = persists[options.persist.name]['data'];
 
 						if(persisted[filter.name]) {
-
 							filter.model = persisted[filter.name];
-
-							if(filter.type=='date') {
-								filter.model = moment(filter.model);
-							}
 						}
 					}
 
@@ -310,10 +305,7 @@
 
 					if(!filter.model) {
 
-						if(filter.type=='date') {
-							filter.model = moment(filter.model);
-
-						} else if(filter.type=='checkbox') {
+						if(filter.type=='checkbox') {
 							filter.model = filter.unchecked;
 
 						} else if(filter.type=='select') {
@@ -744,7 +736,7 @@
 				function filtersClear() {
 					angular.forEach(options.filters,function(filter) {
 
-						if(filter.type=='date' || filter.type=='autocomplete') {
+						if(filter.type=='autocomplete') {
 							filter.model = null;
 						} else {
 							filter.model = undefined;
