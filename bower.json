@@ -10,7 +10,7 @@
     "fs-angular-util": "^1.0.0",
     "fs-angular-store": "^1.0.0",
     "fs-angular-modal": "^1.0.0",
-    "fs-angular-datetime": "^1.0.0",
+    "fs-angular-datetime": ">=1.0.20",
     "angular-sortable-view": "0.0.15",
     "moment": ">= 2.10.0"
   },

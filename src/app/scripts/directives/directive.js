@@ -1213,11 +1213,17 @@
 							value = filter.model.name;
 
 						} else if(filter.type=='date' || filter.type=='datetime') {
-
+debugger;
 							var format = 'MMM D, YYYY';
 
 							if(filter.type=='datetime') {
 								format += ' h:mm a';
+							}
+
+							value = fsDatetime.moment(value);
+
+							if(!value) {
+								return;
 							}
 
 							value = value.format(format);
@@ -1225,8 +1231,8 @@
 						} else if(filter.type=='daterange' || filter.type=='datetimerange') {
 
 							if(value) {
-								var from 	= value.from;
-								var to 		= value.to;
+								var from 	= fsDatetime.moment(value.from);
+								var to 		= fsDatetime.moment(value.to);
 								var format = filter.type=='datetimerange' ? 'MMM D, YYYY h:mm a' : 'MMM D, YYYY';
 								value = [];
 

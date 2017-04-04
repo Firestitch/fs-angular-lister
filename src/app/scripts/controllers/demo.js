@@ -56,7 +56,7 @@ angular.module('app')
     $scope.listerConf = {
     	id: 'demo',
         debug: false,
-        savedFilter: {
+       /* savedFilter: {
     		filters: [
 	    		{
 	    			name: 'My Filter',
@@ -67,7 +67,7 @@ angular.module('app')
 	    			active: true
 	    		}
 	    	]
-        },
+        },*/
         //container: '#frame',
 
         paging: {
@@ -435,7 +435,8 @@ console.log(text);
            {
                 name: 'date',
                 type: 'date',
-                label: 'Date'
+                label: 'Date',
+                default: new Date()
             },
             {
                 name: 'datetime',
