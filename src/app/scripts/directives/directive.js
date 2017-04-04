@@ -1213,7 +1213,7 @@
 							value = filter.model.name;
 
 						} else if(filter.type=='date' || filter.type=='datetime') {
-debugger;
+
 							var format = 'MMM D, YYYY';
 
 							if(filter.type=='datetime') {
