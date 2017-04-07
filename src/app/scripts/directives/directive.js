@@ -293,17 +293,14 @@
 						if(persisted[filter.name]) {
 							var value = persisted[filter.name];
 
-							if(filter.type=='daterange' || filter.type=='datetimerange') {
+							if(value) {
+								if(filter.type=='daterange' || filter.type=='datetimerange') {
+									value.from = value.from ? moment.utc(value.from) : null;
+									value.to = value.to ? moment.utc(value.to) : null;
 
-								if(!fsUtil.isObject(value)) {
-									value = {};
+								} else if(filter.type.match(/^date/)) {
+									value = moment(value);
 								}
-
-								value.from = value.from ? moment.utc(value.from) : null;
-								value.to = value.to ? moment.utc(value.to) : null;
-
-							} else if(filter.type.match(/^date/)) {
-								value = moment.utc(value);
 							}
 
 							filter.model = value;
@@ -644,7 +641,7 @@
 											return;
 										}
 
-										value = filter.model.value;
+										value = opts.expand ? filter.model : filter.model.value;
 									}
 
 									query[filter.name] = value;
@@ -1368,13 +1365,7 @@
 						var query = instance.filter.value.gets({ flatten: true });
 
 						if(options.persist) {
-
-							var models = {};
-							angular.forEach(options.filters,function(filter) {
-								models[filter.name] = normalizePersist(filter.model);
-							});
-
-							persists[options.persist.name] = { data: models, date: new Date() };
+							persists[options.persist.name] = { data: instance.filter.value.gets({ expand: true }), date: new Date() };
 						}
 
 						if($scope.options.paging.enabled) {
@@ -1422,21 +1413,6 @@
 					.finally(function() {
 						$scope.loading = false;
 					});
-				}
-
-				function normalizePersist(value) {
-
-					var tmp = value;
-					if(moment.isMoment(tmp)) {
-						tmp = tmp.toISOString();
-					} else if(fsUtil.isObject(tmp)) {
-						tmp = angular.extend({},tmp);
-						angular.forEach(tmp,function(item,key) {
-							tmp[key] = normalizePersist(item);
-						});
-					}
-
-					return tmp;
 				}
 
 				function dataCallback(opts, resolve, data, paging, locals) {
