@@ -76,10 +76,7 @@ angular.module('app')
         },
         //paging: false,
 
-        qqqpersist: {
-             name: 'lister-test',
-        //     timeout: 60
-        },
+        persist: 'lister-test',
 
         //order: { name: 'date', direction: 'desc' },
         //order: 'date',

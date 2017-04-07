@@ -201,7 +201,7 @@
 				if(options.persist) {
 
 					if(!angular.isObject(options.persist)) {
-						options.persist = {};
+						options.persist = { name: options.persist };
 					}
 
 					if(!options.persist.name) {
@@ -291,7 +291,22 @@
 						var persisted = persists[options.persist.name]['data'];
 
 						if(persisted[filter.name]) {
-							filter.model = persisted[filter.name];
+							var value = persisted[filter.name];
+
+							if(filter.type=='daterange' || filter.type=='datetimerange') {
+
+								if(!fsUtil.isObject(value)) {
+									value = {};
+								}
+
+								value.from = value.from ? moment.utc(value.from) : null;
+								value.to = value.to ? moment.utc(value.to) : null;
+
+							} else if(filter.type.match(/^date/)) {
+								value = moment.utc(value);
+							}
+
+							filter.model = value;
 						}
 					}
 
@@ -1356,7 +1371,7 @@
 
 							var models = {};
 							angular.forEach(options.filters,function(filter) {
-								models[filter.name] = filter.model;
+								models[filter.name] = normalizePersist(filter.model);
 							});
 
 							persists[options.persist.name] = { data: models, date: new Date() };
@@ -1407,6 +1422,21 @@
 					.finally(function() {
 						$scope.loading = false;
 					});
+				}
+
+				function normalizePersist(value) {
+
+					var tmp = value;
+					if(moment.isMoment(tmp)) {
+						tmp = tmp.toISOString();
+					} else if(fsUtil.isObject(tmp)) {
+						tmp = angular.extend({},tmp);
+						angular.forEach(tmp,function(item,key) {
+							tmp[key] = normalizePersist(item);
+						});
+					}
+
+					return tmp;
 				}
 
 				function dataCallback(opts, resolve, data, paging, locals) {
