@@ -100,6 +100,7 @@
 					<li><label>order</label>Enables the column to be orderable. The value is used as the order value in the http request. ie: order=name,asc</li>
 					<li><label>center</label>Align center</li>
 					<li><label>right</label>Align the right</li>
+					<li><label>show</label>Show or hide the column</li>
 					<li><label>footer</label>Configuration for the column footer</li>
 					<ul>
 						<li><label>center</label>Align center</li>
@@ -340,7 +341,7 @@
 				});
 
 				angular.forEach(options.columns,function(col,index) {
-
+					col.show = col.show===undefined ? true : col.show;
 					$scope.styleCols[index] = columnStyle(col);
 
 					if(col.order) {

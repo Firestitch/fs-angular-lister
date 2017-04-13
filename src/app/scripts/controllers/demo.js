@@ -76,7 +76,7 @@ angular.module('app')
         },
         //paging: false,
 
-        persist: 'lister-test',
+        //persist: 'lister-test',
 
         //order: { name: 'date', direction: 'desc' },
         //order: 'date',
@@ -265,7 +265,8 @@ angular.module('app')
                 value: function(data) {
                     return "<b>" + data['name'] + "</b>";
                 },
-                width: '20%'
+                width: '20%',
+                show: true
             },
             {   title: 'GUID' ,
                 right: true,
@@ -429,7 +430,7 @@ console.log(text);
                     deleted: 'Deleted'
                 }
             },*/
-           {
+           /*{
                 name: 'date',
                 type: 'date',
                 label: 'Date',
@@ -449,7 +450,7 @@ console.log(text);
                 name: 'datetimerange',
                 type: 'datetimerange',
                 label: 'Date Time Range'
-            },
+            },*/
           /* {
                 name: 'search',
                 type: 'text',
