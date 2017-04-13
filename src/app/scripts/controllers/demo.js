@@ -266,7 +266,7 @@ angular.module('app')
                     return "<b>" + data['name'] + "</b>";
                 },
                 width: '20%',
-                show: true
+                show: false
             },
             {   title: 'GUID' ,
                 right: true,
