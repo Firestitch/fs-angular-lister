@@ -2,7 +2,7 @@
 
 
 angular.module('app')
-  .controller('DemoCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog, $q, $filter, fsLister) {
+  .controller('DemoCtrl', function ($scope, DummyService, fsModal, $timeout, $mdDialog, $q, $filter, fsLister, fsArray) {
 
     $scope.modal = modal;
 
@@ -420,13 +420,17 @@ console.log(text);
                 	console.log('state filter changed', this, instance);
                 },
                 default: 'active',
-                values: {
+                /*values: function() {
+                            return [{ value: 'active', name: 'Active' },
+                                    { value: 'deleted', name: 'Deleted' } ];
+                }*/
+                values: fsArray.nameValue({
                     __all: 'All',
                     active: 'Active',
                     pending: 'Pending',
                     completed: 'Completed',
                     deleted: 'Deleted'
-                }
+                })
             },
            /*{
                 name: 'date',

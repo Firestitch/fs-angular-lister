@@ -256,8 +256,6 @@
 
 					if(filter.type=='select') {
 
-						sanitizeSelectFilter(filter);
-
 						if(filter.isolate) {
 
 							if(filter.wait===undefined) {
@@ -1079,10 +1077,10 @@
 					reload();
 				}
 
-				function walkSelectValues(filter, values) {
-					var prepped_values = [];
+				function walkSelectValues(filter, filterValues) {
 
-					angular.forEach(values, function(obj,key) {
+					var values = [];
+					angular.forEach(filterValues, function(obj,key) {
 						var value = { value: key, name: obj };
 
 						if(typeof obj=='object') {
@@ -1093,10 +1091,10 @@
 							value.value = 'null';
 						}
 
-						prepped_values.push(value);
+						values.push(value);
 					});
 
-					return prepped_values;
+					return values;
 				}
 
 				function walkSelectNestedValues(filter, parent_id, values, depth) {
@@ -1524,21 +1522,6 @@
 					return !isNaN(parseFloat(n)) && isFinite(n);
 				}
 
-				function sanitizeSelectFilter(filter) {
-					var values = [];
-					if(filter.nested) {
-						//generate a list of values from objects that have not been nested.
-						if(!filter.multiple)
-							values.push({ value:'__all', name:'All', depth: 0 });
-
-						Array.prototype.push.apply(values, walkSelectNestedValues(filter, null, filter.values));
-					} else {
-						values = walkSelectValues(filter, filter.values);
-					}
-
-					filter.values = values;
-				}
-
 				function sanitizeFilter(filter) {
 
 					if(typeof filter.values=='function' && filter.type!='autocomplete') {
@@ -1592,6 +1575,22 @@
 					});
 
 					return promise;
+				}
+
+				function sanitizeSelectFilter(filter) {
+					var values = [];
+
+					if(filter.nested) {
+						//generate a list of values from objects that have not been nested.
+						if(!filter.multiple)
+							values.push({ value:'__all', name:'All', depth: 0 });
+
+						Array.prototype.push.apply(values, walkSelectNestedValues(filter, null, filter.values));
+					} else {
+						values = walkSelectValues(filter, filter.values);
+					}
+
+					filter.values = values;
 				}
 
 				//preload any filters which have filter.wait.  Once they are all loaded then proceed to load main data & rest of filters.
