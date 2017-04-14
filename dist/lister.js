@@ -1524,10 +1524,6 @@
 
 				function sanitizeFilter(filter) {
 
-					if(typeof filter.values=='function' && filter.type!='autocomplete') {
-						filter.values = filter.values();
-					}
-
 					var promise = $q(function(resolve,reject) {
 
 						if(angular.isObject(filter.values) && filter.values.then) {
@@ -1577,13 +1573,36 @@
 					return promise;
 				}
 
+				function sanitizeSelectFilter(filter) {
+					var values = [];
+
+					if(filter.nested) {
+						//generate a list of values from objects that have not been nested.
+						if(!filter.multiple)
+							values.push({ value:'__all', name:'All', depth: 0 });
+
+						Array.prototype.push.apply(values, walkSelectNestedValues(filter, null, filter.values));
+					} else {
+						values = walkSelectValues(filter, filter.values);
+					}
+
+					filter.values = values;
+				}
+
 				//preload any filters which have filter.wait.  Once they are all loaded then proceed to load main data & rest of filters.
 				var preload_promises = [];
-				angular.forEach($scope.options.filters,function(filter, index) {
-					if(typeof filter.values=='function' && filter.wait) {
-						preload_promises.push(sanitizeFilter(filter));
+				angular.forEach($scope.options.filters,function(filter) {
+
+					if(typeof filter.values=='function' && filter.type!='autocomplete') {
+
+						if(filter.wait) {
+							preload_promises.push(sanitizeFilter(filter));
+						} else {
+							filter.values = filter.values();
+						}
 					}
 				});
+
 
 				$q.all(preload_promises)
 				.then(function() {

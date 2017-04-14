@@ -1524,10 +1524,6 @@
 
 				function sanitizeFilter(filter) {
 
-					if(typeof filter.values=='function' && filter.type!='autocomplete') {
-						filter.values = filter.values();
-					}
-
 					var promise = $q(function(resolve,reject) {
 
 						if(angular.isObject(filter.values) && filter.values.then) {
@@ -1595,11 +1591,18 @@
 
 				//preload any filters which have filter.wait.  Once they are all loaded then proceed to load main data & rest of filters.
 				var preload_promises = [];
-				angular.forEach($scope.options.filters,function(filter, index) {
-					if(typeof filter.values=='function' && filter.wait) {
-						preload_promises.push(sanitizeFilter(filter));
+				angular.forEach($scope.options.filters,function(filter) {
+
+					if(typeof filter.values=='function' && filter.type!='autocomplete') {
+
+						if(filter.wait) {
+							preload_promises.push(sanitizeFilter(filter));
+						} else {
+							filter.values = filter.values();
+						}
 					}
 				});
+
 
 				$q.all(preload_promises)
 				.then(function() {
