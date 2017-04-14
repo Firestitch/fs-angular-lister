@@ -606,24 +606,6 @@
 											value = moment(value).format();
 										}
 
-									} else if(filter.type=='range') {
-
-										if(filter.model) {
-											var min = filter.model['min'];
-											var max = filter.model['max'];
-
-											var parts = [];
-											if(min) {
-												parts.push(min);
-											}
-
-											if(max) {
-												parts.push(max);
-											}
-
-											value = parts;
-										}
-
 									} else if(filter.type=='daterange' || filter.type=='datetimerange') {
 
 										var from 	= value['from'];

@@ -114,7 +114,7 @@
                                                 <label>{{::filter.label}}</label>
                                                 <input
                                                     placeholder="{{::filter.placeholder[0]}}"
-                                                    ng-model="filter.model['min']"
+                                                    ng-model="filter.model.min"
                                                     aria-label="{{::filter.label}}"
                                                     ng-model-options="{debounce: 400}"
                                                     ng-change="filterChange(filter)" />
@@ -126,7 +126,7 @@
                                                 <label>{{::filter.label}}</label>
                                                 <input
                                                     placeholder="{{::filter.placeholder[1]}}"
-                                                    ng-model="filter.model['max']"
+                                                    ng-model="filter.model.max"
                                                     aria-label="{{::filter.label}}"
                                                     ng-model-options="{debounce: 400}"
                                                     ng-change="filterChange(filter)" />
