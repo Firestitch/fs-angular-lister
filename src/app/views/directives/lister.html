@@ -136,8 +136,6 @@
 
                                     <div class="interface interface-checkbox" ng-if="filter.type == 'checkbox'">
                                         <md-checkbox ng-change="filterChange(filter)" ng-model="filter.model" ng-true-value="'{{filter.checked}}'" ng-false-value="'{{filter.unchecked}}'" aria-label="Checkbox filter"></md-checkbox>
-
-                                        {{filter}}
                                     </div>
 
                                 </div>
@@ -269,12 +267,12 @@
                 </div>
             </div>
             <div class="lister-body" sv-root sv-part="data" sv-on-sort="sortStop($item,$partTo,$indexFrom,$indexTo)" sv-on-start="sortStart()">
-                <div class="lister-row {{rowClasses[rowIndex]}}" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: checked[rowIndex] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event);" ng-init="rowIndex = $index">
+                <div class="lister-row {{rowClasses[$index]}}" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: checked[$index] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event);">
                     <div class="lister-col lister-col-sort" ng-if="options.sort"><div class="sort-handle" sv-handle><md-icon>drag_handle</md-icon></div></div>
                     <div class="lister-col" ng-if="options.selection.show">
-                        <md-checkbox ng-model="checked[rowIndex]" ng-true-value="1" aria-label="Select" class="select-checkbox"></md-checkbox>
+                        <md-checkbox ng-model="checked[$parent.$index]" ng-true-value="1" aria-label="Select" class="select-checkbox"></md-checkbox>
                     </div>
-                    <div class="lister-col {{::col.className}}" ng-repeat="col in options.columns" ng-if="col.show" fs-lister-compile="dataCols[item.$$index][$index]" column="col" data="item" locals="locals" ng-style="styleCols[$index]" ng-class="{ center: col.center, right: col.right }"></div>
+                    <div class="lister-col {{::col.className}}" ng-repeat="col in options.columns" ng-if="col.show" fs-lister-compile="dataCols[item.$$index][$index]" index="item.$$index" column="col" data="item" locals="locals" ng-style="styleCols[$index]" ng-class="{ center: col.center, right: col.right }"></div>
                     <div class="lister-col lister-actions" ng-if="options.action">
                         <md-button ng-click="actionClick(options.action,item,$event); $event.stopPropagation();" class="md-icon-button">
                             <md-icon class="material-icons">{{::options.action.icon}}</md-icon>

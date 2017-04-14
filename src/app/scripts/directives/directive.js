@@ -256,6 +256,8 @@
 
 					if(filter.type=='select') {
 
+						sanitizeSelectFilter(filter);
+
 						if(filter.isolate) {
 
 							if(filter.wait===undefined) {
@@ -1540,7 +1542,22 @@
 					return !isNaN(parseFloat(n)) && isFinite(n);
 				}
 
-				function prep_filter(filter) {
+				function sanitizeSelectFilter(filter) {
+					var values = [];
+					if(filter.nested) {
+						//generate a list of values from objects that have not been nested.
+						if(!filter.multiple)
+							values.push({ value:'__all', name:'All', depth: 0 });
+
+						Array.prototype.push.apply(values, walkSelectNestedValues(filter, null, filter.values));
+					} else {
+						values = walkSelectValues(filter, filter.values);
+					}
+
+					filter.values = values;
+				}
+
+				function sanitizeFilter(filter) {
 
 					if(typeof filter.values=='function' && filter.type!='autocomplete') {
 						filter.values = filter.values();
@@ -1565,19 +1582,7 @@
 						filter.groups = null;
 
 						if(filter.type=='select') {
-
-							var values = [];
-							if(filter.nested) {
-								//generate a list of values from objects that have not been nested.
-								if(!filter.multiple)
-									values.push({ value:'__all', name:'All', depth: 0 });
-
-								Array.prototype.push.apply(values, walkSelectNestedValues(filter, null, filter.values));
-							} else {
-								values = walkSelectValues(filter, filter.values);
-							}
-
-							filter.values = values;
+							sanitizeSelectFilter(filter);
 						}
 
 						angular.forEach(filter.values,function(value) {
@@ -1611,7 +1616,7 @@
 				var preload_promises = [];
 				angular.forEach($scope.options.filters,function(filter, index) {
 					if(typeof filter.values=='function' && filter.wait) {
-						preload_promises.push(prep_filter(filter));
+						preload_promises.push(sanitizeFilter(filter));
 					}
 				});
 
@@ -1636,7 +1641,7 @@
 					//load rest of filters
 					var promises = [];
 					angular.forEach($scope.options.filters,function(filter, index) {
-						promises.push(prep_filter(filter));
+						promises.push(sanitizeFilter(filter));
 					});
 
 
@@ -1751,7 +1756,8 @@
 						column: '=',
 						data: '=',
 						locals: '=',
-						value: '=fsListerCompile'
+						value: '=fsListerCompile',
+						$index: '=?index'
 					},
 					link: function($scope, element, attrs, ctrl) {
 

@@ -76,7 +76,7 @@ angular.module('app')
         },
         //paging: false,
 
-        //persist: 'lister-test',
+        persist: 'lister-test',
 
         //order: { name: 'date', direction: 'desc' },
         //order: 'date',
@@ -100,7 +100,7 @@ angular.module('app')
 
             //return setTimeout(function() { cb([]); }, 2000);
 
-            query.count = 15;
+            query.count = 10;
 
             return $q(function(resolve) {
 
@@ -262,11 +262,8 @@ angular.module('app')
         columns: [
             {   title: 'Name' ,
                 order: { name: 'name', default: true, label: 'Name!!' },
-                value: function(data) {
-                    return "<b>" + data['name'] + "</b>";
-                },
-                width: '20%',
-                show: false
+                value: "<b>{{data.name}}</b> - {{$index}}",
+                width: '20%'
             },
             {   title: 'GUID' ,
                 right: true,
@@ -407,21 +404,22 @@ console.log(text);
                 	});
                 }
             },*/
-            {
+           /* {
                 name: 'toggle',
                 type: 'checkbox',
                 label: 'Checkbox',
                 default: 1,
                 checked: 1,
                 unchecked: 0
-            },
-          /*  {
+            },*/
+            {
                 name: 'state',
                 type: 'select',
                 label: 'State',
                 change: function(instance) {
                 	console.log('state filter changed', this, instance);
                 },
+                default: 'active',
                 values: {
                     __all: 'All',
                     active: 'Active',
@@ -429,7 +427,7 @@ console.log(text);
                     completed: 'Completed',
                     deleted: 'Deleted'
                 }
-            },*/
+            },
            /*{
                 name: 'date',
                 type: 'date',
