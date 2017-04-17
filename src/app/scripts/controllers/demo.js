@@ -362,7 +362,7 @@ angular.module('app')
         },
 
         filters: [
-           /* {
+           {
                 name: 'date',
                 type: 'date',
                 label: 'Date',
@@ -389,7 +389,7 @@ angular.module('app')
                 },
                 isolate: { label: 'Show Deleted', value: 'deleted' }
             },
-
+/*
             {
                 name: 'autocomplete',
                 type: 'autocomplete',

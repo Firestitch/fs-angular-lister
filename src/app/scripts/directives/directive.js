@@ -1594,11 +1594,10 @@
 				angular.forEach($scope.options.filters,function(filter) {
 
 					if(typeof filter.values=='function' && filter.type!='autocomplete') {
+						filter.values = filter.values();
 
-						if(filter.wait) {
+						if(filter.wait || (filter.type=='select' && filter.isolate)) {
 							preload_promises.push(sanitizeFilter(filter));
-						} else {
-							filter.values = filter.values();
 						}
 					}
 				});
