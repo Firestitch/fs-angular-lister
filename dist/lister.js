@@ -1592,7 +1592,7 @@
 				//preload any filters which have filter.wait.  Once they are all loaded then proceed to load main data & rest of filters.
 				var preload_promises = [];
 				angular.forEach($scope.options.filters,function(filter) {
-debugger;
+
 					if(typeof filter.values=='function' && filter.type!='autocomplete') {
 						filter.values = filter.values();
 
