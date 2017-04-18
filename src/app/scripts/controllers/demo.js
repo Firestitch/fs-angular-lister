@@ -76,7 +76,7 @@ angular.module('app')
         },
         //paging: false,
 
-        //persist: 'lister-test',
+        persist: 'lister-test',
 
         //order: { name: 'date', direction: 'desc' },
         //order: 'date',
