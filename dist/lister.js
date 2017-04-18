@@ -785,17 +785,18 @@
 										' </md-dialog-content>',
 										' <md-dialog-actions>',
 										'   <md-button ng-click="dialog.cancel($event)">',
-										'     Cancel',
+										'     {{dialog.cancelLabel}}',
 										'   </md-button>',
 										'   <md-button ng-click="dialog.ok($event)" class="md-accent" md-autofocus="dialog.$type!=\'confirm\'">',
-										'     Yes',
+										'     {{dialog.okLabel}}',
 										'   </md-button>',
 										' </md-dialog-actions>',
 										'</md-dialog>'
 										].join(''),
 										controller: function () {
+											this.okLabel = action.delete.okLabel || 'Yes';
+											this.cancelLabel = action.delete.cancelLabel || 'Cancel';
 											this.ok = function() {
-
 												if(action.delete.ok) {
 													var result = action.delete.ok(item, event);
 													$q(function(resolve) {
