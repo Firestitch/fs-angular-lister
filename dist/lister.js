@@ -1161,13 +1161,6 @@
 
 						if(filter.type=='select') {
 
-							if(filter.isolate) {
-
-								if(filter.isolate.enabled) {
-									value = filter.isolate.label;
-								}
-							}
-
 							if(filter.multiple) {
 
 								if(!fsUtil.isArray(value) || !value.length) {
@@ -1196,6 +1189,13 @@
 										value = filter_item.name;
 									}
 								});
+							}
+
+							if(filter.isolate) {
+
+								if(filter.isolate.enabled) {
+									value = filter.isolate.label;
+								}
 							}
 						}
 

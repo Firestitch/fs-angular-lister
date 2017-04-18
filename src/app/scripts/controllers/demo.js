@@ -76,7 +76,7 @@ angular.module('app')
         },
         //paging: false,
 
-        persist: 'lister-test',
+        //persist: 'lister-test',
 
         //order: { name: 'date', direction: 'desc' },
         //order: 'date',
@@ -374,12 +374,10 @@ angular.module('app')
                 name: 'isolate',
                 type: 'select',
                 label: 'Isolate',
+                multiple: true,
                 values: function() {
-
-                    return $q(function(resolve,reject) {
-
+                    return $q(function(resolve) {
                            resolve({
-                                __all: 'All',
                                 active: 'Active',
                                 pending: 'Pending',
                                 completed: 'Completed',
