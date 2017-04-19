@@ -245,101 +245,6 @@
 				$scope.id = options.id ? options.namespace + '-' + options.id : '';
 				$scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
 
-				var primary = false;
-				angular.forEach(options.filters,function(filter, index) {
-
-					if(filter.primary) {
-						primary = true;
-					} else {
-						filter.primary = false;
-					}
-
-					if(filter.type=='select') {
-
-						if(filter.isolate) {
-
-							if(filter.wait===undefined) {
-								filter.wait = true;
-							}
-
-							if(filter.isolate.value==filter.model) {
-								filter.isolate.enabled = true;
-							}
-						}
-
-					} else if(filter.type=='checkbox') {
-						filter.checked = fsUtil.string(filter.checked);
-						filter.unchecked = fsUtil.string(filter.unchecked);
-						filter.default = fsUtil.string(filter.default);
-
-					} else if(filter.type=='text') {
-
-						if(!primary) {
-							filter.primary = primary = true;
-						}
-
-					} else if(filter.type=='range') {
-
-						if(!filter.placeholder) {
-							filter.placeholder = ['Min','Max'];
-						}
-					}
-
-					filter.model = filter.default;
-
-					if(options.persist) {
-
-						var persisted = persists[options.persist.name]['data'];
-
-						if(persisted[filter.name]) {
-							var value = persisted[filter.name];
-
-							if(value) {
-								if(filter.type=='daterange' || filter.type=='datetimerange') {
-									value.from = value.from ? moment.utc(value.from) : null;
-									value.to = value.to ? moment.utc(value.to) : null;
-
-								} else if(filter.type.match(/^date/)) {
-									value = moment(value);
-								}
-							}
-
-							filter.model = value;
-						}
-					}
-
-					if(filter.param) {
-						var search = $location.search();
-
-						if(search[filter.param]) {
-							filter.model = search[filter.param];
-						}
-					}
-
-					if(!filter.model) {
-
-						if(filter.type=='checkbox') {
-							filter.model = filter.unchecked;
-
-						} else if(filter.type=='select') {
-
-							if(filter.multiple) {
-								if(!angular.isArray(filter.default)) {
-									filter.model = [];
-								}
-							} else {
-								if(filter.default==undefined) {
-									filter.model = '__all';
-								}
-							}
-						}
-					}
-
-					if(filter.change) {
-						filter.change = angular.bind(filter,filter.change, options.instance);
-					}
-				});
-
 				angular.forEach(options.columns,function(col,index) {
 					col.show = col.show===undefined ? true : col.show;
 					$scope.styleCols[index] = columnStyle(col);
@@ -441,7 +346,6 @@
 				}
 
 				angular.forEach(options.columns,function(col) {
-
 					if(!$scope.order && col.order) {
 						$scope.order = angular.copy(col.order);
 					}
@@ -726,19 +630,6 @@
 					if(options.savedFilter.change) {
 						options.savedFilter.change(item);
 					}
-				}
-
-				function filtersClear() {
-					angular.forEach(options.filters,function(filter) {
-
-						if(filter.type=='autocomplete') {
-							filter.model = null;
-						} else {
-							filter.model = undefined;
-						}
-					});
-
-					searchUpdate();
 				}
 
 				$scope.headerClick = function(col) {
@@ -1078,6 +969,19 @@
 					reload();
 				}
 
+				function filtersClear() {
+					angular.forEach(options.filters,function(filter) {
+
+						if(filter.type=='autocomplete') {
+							filter.model = null;
+						} else {
+							filter.model = undefined;
+						}
+					});
+
+					searchUpdate();
+				}
+
 				function walkSelectValues(filter, filterValues) {
 
 					var values = [];
@@ -1302,18 +1206,20 @@
 					instance.data.data = [];
 				}
 
-				function reload() {
-					return load({ page: 1, clear: true })
+				function reload(opts) {
+					return load(angular.extend({},{ page: 1, clear: true },opts))
 					.then(function() {
-						$scope.resize();
+						$scope.resize(opts);
 					});
 				}
 
 				function load(opts) {
-
+					opts = opts || {};
 					return $q(function(resolve, reject) {
 
-						searchUpdate();
+						if(opts.searchUpdate!==false) {
+							searchUpdate();
+						}
 
 						if($scope.loading)
 							return resolve();
@@ -1434,7 +1340,7 @@
 							var cl = options.columns.length;
 							var cols = [];
 
-							for (var c = 0; c < cl; c++) {
+							for (var c=0; c<cl; c++) {
 
 								var col = options.columns[c];
 								var value = col.value;
@@ -1523,6 +1429,7 @@
 					return !isNaN(parseFloat(n)) && isFinite(n);
 				}
 
+				var primary = false;
 				function sanitizeFilter(filter) {
 
 					var promise = $q(function(resolve,reject) {
@@ -1540,12 +1447,35 @@
 
 					}).then(function(values) {
 
-						filter.values = values;
-						filter.groups = null;
+						if(filter.primary) {
+							primary = true;
+						} else {
+							filter.primary = false;
+						}
 
-						if(filter.type=='select') {
+						if(filter.type=='checkbox') {
+							filter.checked = fsUtil.string(filter.checked);
+							filter.unchecked = fsUtil.string(filter.unchecked);
+							filter.default = fsUtil.string(filter.default);
+
+						} else if(filter.type=='text') {
+
+							if(!primary) {
+								filter.primary = primary = true;
+							}
+
+						} else if(filter.type=='range') {
+
+							if(!filter.placeholder) {
+								filter.placeholder = ['Min','Max'];
+							}
+
+						} else if(filter.type=='select') {
+
+							filter.values = values;
+							filter.groups = null;
+
 							var values = [];
-
 							if(filter.nested) {
 								//generate a list of values from objects that have not been nested.
 								if(!filter.multiple)
@@ -1559,32 +1489,72 @@
 							filter.values = values;
 
 							if(filter.isolate) {
-								var value = fsUtil.isArray(filter.model) ? filter.model[0] : filter.model;
-								filter.isolate.enabled = filter.isolate.value==value;
+
+								angular.forEach(filter.values,function(item, index) {
+									if(item.value==filter.isolate.value) {
+										filter.values.splice(index,1);
+									}
+								});
+
+								if(fsUtil.isArray(filter.model)) {
+									if(filter.model.length==filter.values.length) {
+										filter.model = null;
+										filter.isolate.enabled = false;
+									} else if(filter.model[0]==filter.isolate.value) {
+										filter.isolate.enabled = true;
+									}
+								}
+							}
+
+							angular.forEach(filter.values,function(value) {
+								if(value.group) {
+
+									if(!filter.groups) {
+										filter.groups = {};
+									}
+
+									if(!filter.groups[value.group]) {
+										filter.groups[value.group] = [];
+									}
+
+									filter.groups[value.group].push(value);
+								}
+							});
+						}
+
+						if(filter.model===undefined) {
+							filter.model = filter.default;
+						}
+
+						if(filter.param) {
+							var search = $location.search();
+
+							if(search[filter.param]) {
+								filter.model = search[filter.param];
 							}
 						}
 
-						angular.forEach(filter.values,function(value) {
-							if(value.group) {
+						if(!filter.model) {
 
-								if(!filter.groups) {
-									filter.groups = {};
+							if(filter.type=='checkbox') {
+								filter.model = filter.unchecked;
+
+							} else if(filter.type=='select') {
+
+								if(filter.multiple) {
+									if(!angular.isArray(filter.default)) {
+										filter.model = [];
+									}
+								} else {
+									if(filter.default==undefined) {
+										filter.model = '__all';
+									}
 								}
-
-								if(!filter.groups[value.group]) {
-									filter.groups[value.group] = [];
-								}
-
-								filter.groups[value.group].push(value);
 							}
-						});
+						}
 
-						if(filter.isolate) {
-							angular.forEach(filter.values,function(item, index) {
-								if(item.value==filter.isolate.value) {
-									filter.values.splice(index,1);
-								}
-							});
+						if(filter.change) {
+							filter.change = angular.bind(filter,filter.change, options.instance);
 						}
 					});
 
@@ -1592,20 +1562,40 @@
 				}
 
 				//preload any filters which have filter.wait.  Once they are all loaded then proceed to load main data & rest of filters.
-				var preload_promises = [];
+				var wait_promises = [];
 				angular.forEach($scope.options.filters,function(filter) {
+
+					if(options.persist) {
+
+						var persisted = persists[options.persist.name]['data'];
+
+						if(persisted[filter.name]) {
+							var value = persisted[filter.name];
+
+							if(value) {
+								if(filter.type=='daterange' || filter.type=='datetimerange') {
+									value.from = value.from ? moment.utc(value.from) : null;
+									value.to = value.to ? moment.utc(value.to) : null;
+
+								} else if(filter.type.match(/^date/)) {
+									value = moment(value);
+								}
+							}
+
+							filter.model = value;
+						}
+					}
 
 					if(typeof filter.values=='function' && filter.type!='autocomplete') {
 						filter.values = filter.values();
+					}
 
-						if(filter.wait || (filter.type=='select' && filter.isolate)) {
-							preload_promises.push(sanitizeFilter(filter));
-						}
+					if(filter.wait || (filter.type=='select' && filter.isolate && filter.wait===undefined)) {
+						wait_promises.push(filter.values);
 					}
 				});
 
-
-				$q.all(preload_promises)
+				$q.all(wait_promises)
 				.then(function() {
 
 					if(options.savedFilter) {
@@ -1620,7 +1610,7 @@
 
 					//load main data
 					if(options.load) {
-						reload();
+						reload({ searchUpdate: false });
 					}
 
 					//load rest of filters
@@ -1637,6 +1627,7 @@
 						if(options.init) {
 							options.init();
 						}
+						searchUpdate();
 					});
 				});
 
@@ -1675,7 +1666,7 @@
 					element = angular.element(element[0].children[0]);
 
 				$scope.max_bottom = 0;
-				$scope.resize = function() {
+				$scope.resize = function(opts) {
 
 					if($scope.options && $scope.options.paging && $scope.options.paging.infinite) {
 
@@ -1711,7 +1702,7 @@
 
 							if(condition) {
 								$scope.max_bottom = el_bottom;
-								$scope.load();
+								$scope.load(opts);
 							}
 						}
 					}
