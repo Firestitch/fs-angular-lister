@@ -430,6 +430,11 @@ console.log(text);
                     deleted: 'Deleted'
                 })
             },
+            {
+                name: { from: 'daterange_from', to: 'daterange_to' },
+                type: 'daterange',
+                label: 'Date Range'
+            },
            /*{
                 name: 'date',
                 type: 'date',
@@ -590,6 +595,7 @@ console.log(text);
                 }*/
 
             ,{
+                //name: { min: 'range_min', max: 'range_max' },
                 name: 'range',
                 type: 'range',
                 label: 'Numbered range',

@@ -531,7 +531,15 @@
 										value = opts.expand ? filter.model : filter.model.value;
 									}
 
-									query[filter.name] = value;
+									if(fsUtil.isObject(filter.names) && opts.names!==false) {
+										angular.forEach(filter.names,function(key,name) {
+											if(value[name]) {
+												query[key] = value[name];
+											}
+										});
+									} else {
+										query[filter.name] = value;
+									}
 								});
 
 								if(opts.flatten) {
@@ -1255,7 +1263,7 @@
 						var query = instance.filter.value.gets({ flatten: true });
 
 						if(options.persist) {
-							persists[options.persist.name] = { data: instance.filter.value.gets({ expand: true }), date: new Date() };
+							persists[options.persist.name] = { data: instance.filter.value.gets({ expand: true, names: false }), date: new Date() };
 						}
 
 						if($scope.options.paging.enabled) {
@@ -1565,11 +1573,17 @@
 				var wait_promises = [];
 				angular.forEach($scope.options.filters,function(filter) {
 
+					if(filter.name && fsUtil.isObject(filter.name)) {
+						filter.names = filter.name;
+						filter.name = Object.keys(filter.names).join('-');
+					}
+
 					if(options.persist) {
 
 						var persisted = persists[options.persist.name]['data'];
 
 						if(persisted[filter.name]) {
+
 							var value = persisted[filter.name];
 
 							if(value) {
