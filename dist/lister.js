@@ -122,6 +122,7 @@
 					<li><label>wait</label>When set to true the filters values will be prepared before the lister data is fetched</li>
 					<li><label>change</label>Callback function which fires when the filter values changes. change: function(instance) {...}</li>
 					<li><label>nested</label>An key/value paired object with options related to showing nested select options</li>
+					<li><label>query</label>Sets the value of the filter from the current url query parameter. Overrides default and persistence.</li>
 					<ul>
 						<li><label>parent_field</label>name of field used to link to parent row. typically 'parent_id' or similar</li>
 						<li><label>label_field</label>name of field to use as rows label</li>
@@ -1534,14 +1535,6 @@
 							filter.model = filter.default;
 						}
 
-						if(filter.param) {
-							var search = $location.search();
-
-							if(search[filter.param]) {
-								filter.model = search[filter.param];
-							}
-						}
-
 						if(!filter.model) {
 
 							if(filter.type=='checkbox') {
@@ -1564,13 +1557,23 @@
 						if(filter.change) {
 							filter.change = angular.bind(filter,filter.change, options.instance);
 						}
+
+						if(filter.query) {
+							var query = $location.search()[filter.query];
+							if(query!==undefined) {
+								filter.model = query;
+								if(filter.type=='select' && filter.multiple) {
+									filter.model = filter.model.split(',');
+								}
+							}
+						}
 					});
 
 					return promise;
 				}
 
 				//preload any filters which have filter.wait.  Once they are all loaded then proceed to load main data & rest of filters.
-				var wait_promises = [];
+				var wait_promises = [], update_promises = [];
 				angular.forEach($scope.options.filters,function(filter) {
 
 					if(filter.name && fsUtil.isObject(filter.name)) {
@@ -1604,8 +1607,11 @@
 						filter.values = filter.values();
 					}
 
+					var promise = sanitizeFilter(filter);
 					if(filter.wait || (filter.type=='select' && filter.isolate && filter.wait===undefined)) {
-						wait_promises.push(filter.values);
+						wait_promises.push(promise);
+					} else {
+						update_promises.push(promise);
 					}
 				});
 
@@ -1627,16 +1633,9 @@
 						reload({ searchUpdate: false });
 					}
 
-					//load rest of filters
-					var promises = [];
-					angular.forEach($scope.options.filters,function(filter, index) {
-						promises.push(sanitizeFilter(filter));
-					});
-
-
 					//This promise is needed because the all the select filter values
 					//have to be loaded to render the textual inputs
-					$q.all(promises)
+					$q.all(update_promises)
 					.then(function() {
 						if(options.init) {
 							options.init();
