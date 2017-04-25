@@ -142,12 +142,10 @@
 
                                 <div ng-if="filter.isolate" class="filter isolate">
 
-                                    <div class="filter-label"></div>
+                                    <div class="filter-label">{{filter.isolate.label}}</div>
 
                                     <div class="interface">
-                                        <md-checkbox ng-change="isolateSearch(filter)" ng-model="filter.isolate.enabled" ng-true-value="true" ng-false-value="false" aria-label="Checkbox filter">
-                                        	{{filter.isolate.label}}
-                                        </md-checkbox>
+                                        <md-checkbox ng-change="isolateSearch(filter)" ng-model="filter.isolate.enabled" ng-true-value="true" ng-false-value="false" aria-label="Checkbox filter"></md-checkbox>
                                     </div>
                                 </div>
                             </div>
