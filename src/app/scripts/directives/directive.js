@@ -1562,8 +1562,17 @@
 							var query = $location.search()[filter.query];
 							if(query!==undefined) {
 								filter.model = query;
-								if(filter.type=='select' && filter.multiple) {
+
+								if(!query.length) {
+									filter.model = undefined;
+								} else if(filter.type=='select' && filter.multiple) {
 									filter.model = filter.model.split(',');
+								} else if(filter.type=='daterange' || filter.type=='datetimerange') {
+									var parts = filter.model.split(',');
+									filter.model = { from: moment(parts[0]), to: moment(parts[1]) };
+								} else if(filter.type=='range') {
+									var parts = filter.model.split(',');
+									filter.model = { min: parts[0], max: parts[1] };
 								}
 							}
 						}
