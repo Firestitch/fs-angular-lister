@@ -1465,7 +1465,7 @@
 						if(filter.type=='checkbox') {
 							filter.checked = fsUtil.string(filter.checked);
 							filter.unchecked = fsUtil.string(filter.unchecked);
-							filter.default = fsUtil.string(filter.default);
+							filter.default = filter.default===undefined ? filter.unchecked : fsUtil.string(filter.default);
 
 						} else if(filter.type=='text') {
 
