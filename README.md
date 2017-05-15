@@ -1,1 +1,1 @@
-Demo http://boilerplate.firestitch.com/patterns/lister
+Demo http://boilerplate.firestitch.com/patterns/listerfilter
