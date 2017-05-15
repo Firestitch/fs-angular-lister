@@ -1,1 +1,1 @@
-Documentation http://firestitch.github.io/fs-angular-lister/#/api
+Demo http://boilerplate.firestitch.com/patterns/lister
