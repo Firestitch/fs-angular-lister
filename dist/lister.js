@@ -1465,7 +1465,7 @@
 						if(filter.type=='checkbox') {
 							filter.checked = fsUtil.string(filter.checked);
 							filter.unchecked = fsUtil.string(filter.unchecked);
-							filter.default = fsUtil.string(filter.default);
+							filter.default = filter.default===undefined ? filter.unchecked : fsUtil.string(filter.default);
 
 						} else if(filter.type=='text') {
 
@@ -1535,7 +1535,7 @@
 							filter.model = filter.default;
 						}
 
-						if(!filter.model) {
+						if(filter.model===undefined) {
 
 							if(filter.type=='checkbox') {
 								filter.model = filter.unchecked;
@@ -1547,7 +1547,7 @@
 										filter.model = [];
 									}
 								} else {
-									if(filter.default==undefined) {
+									if(filter.default===undefined) {
 										filter.model = '__all';
 									}
 								}
@@ -1558,24 +1558,6 @@
 							filter.change = angular.bind(filter,filter.change, options.instance);
 						}
 
-						if(filter.query) {
-							var query = $location.search()[filter.query];
-							if(query!==undefined) {
-								filter.model = query;
-
-								if(!query.length) {
-									filter.model = undefined;
-								} else if(filter.type=='select' && filter.multiple) {
-									filter.model = filter.model.split(',');
-								} else if(filter.type=='daterange' || filter.type=='datetimerange') {
-									var parts = filter.model.split(',');
-									filter.model = { from: moment(parts[0]), to: moment(parts[1]) };
-								} else if(filter.type=='range') {
-									var parts = filter.model.split(',');
-									filter.model = { min: parts[0], max: parts[1] };
-								}
-							}
-						}
 					});
 
 					return promise;
@@ -1611,6 +1593,27 @@
 							filter.model = value;
 						}
 					}
+
+
+					if(filter.query) {
+						var query = $location.search()[filter.query];
+						if(query!==undefined) {
+							filter.model = query;
+
+							if(!query.length) {
+								filter.model = undefined;
+							} else if(filter.type=='select' && filter.multiple) {
+								filter.model = filter.model.split(',');
+							} else if(filter.type=='daterange' || filter.type=='datetimerange') {
+								var parts = filter.model.split(',');
+								filter.model = { from: moment(parts[0]), to: moment(parts[1]) };
+							} else if(filter.type=='range') {
+								var parts = filter.model.split(',');
+								filter.model = { min: parts[0], max: parts[1] };
+							}
+						}
+					}
+
 
 					if(typeof filter.values=='function' && filter.type!='autocomplete') {
 						filter.values = filter.values();
