@@ -402,10 +402,13 @@
 
 							return items;
 						},
-						set: function(object, filters) {
+						extend: function(object, filters) {
 							angular.forEach(instance.data.gets(filters),function(item) {
 								angular.extend(item,object);
 							});
+						},
+						set: function(data) {
+							callback(data);
 						},
 						remove: function(filters) {
 
@@ -1285,10 +1288,9 @@
 
 						try {
 
-							$scope.loading = true;
-
 							if(options.data) {
 
+								$scope.loading = true;
 								var response = options.data(query,angular.bind(this,dataCallback,opts,resolve));
 
 								if(response && response.then) {
