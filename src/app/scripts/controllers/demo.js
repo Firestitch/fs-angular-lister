@@ -21,8 +21,7 @@ angular.module('app')
 
     $scope.reload = function() {
        $scope.listerConf.instance.reload();
-       debugger;
-       //$scope.listerConf.instance.search.update();
+       console.log($scope.listerConf.instance.filter.value.gets());
     }
 
     $scope.setFilter = function() {
@@ -367,7 +366,8 @@ angular.module('app')
                 type: 'date',
                 label: 'Date',
                 time: false,
-                default: null
+                default: null,
+                query: 'date'
             },
 
          {

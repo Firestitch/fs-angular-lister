@@ -140,9 +140,9 @@
 	*/
 
 	var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', 'fsUtil', '$mdDialog', 'fsDatetime',
-							'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache', 'fsArray', 'fsModal',
+							'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache', 'fsArray', 'fsModal', 'fsAlert',
 							function ($compile, $sce, $filter, $window, $log, $q, fsUtil, $mdDialog, fsDatetime,
-									fsStore, $rootScope, fsLister, $location, $templateCache, fsArray, fsModal) {
+									fsStore, $rootScope, fsLister, $location, $templateCache, fsArray, fsModal, fsAlert) {
 		return {
 			template: function(element, attr) {
 				var template = $templateCache.get('views/directives/lister.html');
@@ -472,8 +472,11 @@
 								return instance.filter.value.gets(opts)[name];
 							},
 							gets: function(opts) {
+
+								var order = $scope.order.name + ',' + $scope.order.direction;
 								var opts = opts || {};
-								var query = {};
+								var query = { order: order };
+
 								angular.forEach(options.filters,function(filter) {
 
 									var value = angular.copy(filter.model);
@@ -746,6 +749,8 @@
 						for(var i=0;i<$scope.data.length;i++) {
 							$scope.checked.push(1);
 						}
+						var records = $scope.paging && $scope.paging.records ? $scope.paging.records : 0;
+						fsAlert.info('Selected ' + $scope.checked.length + ' of ' + records + ' results');
 					}
 				}
 
