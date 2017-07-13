@@ -1755,7 +1755,7 @@
 		}
 	}];
 
-	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array','fs-angular-util','fs-angular-datetime','fs-angular-modal'])
+	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array','fs-angular-util','fs-angular-datetime','fs-angular-modal','fs-angular-alert'])
 	.directive('lister',ListerDirective)
 	.directive('fsLister',ListerDirective)
 	.directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',
