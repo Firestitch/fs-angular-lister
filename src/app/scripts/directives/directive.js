@@ -1605,6 +1605,7 @@
 					if(filter.query) {
 						var query = $location.search()[filter.query];
 						if(query!==undefined) {
+                            query += '';
 							filter.model = query;
 
 							if(!query.length) {
