@@ -473,9 +473,12 @@
 							},
 							gets: function(opts) {
 
-								var order = $scope.order.name + ',' + $scope.order.direction;
 								var opts = opts || {};
-								var query = { order: order };
+								var query = {};
+
+								if($scope.order) {
+									query.order = $scope.order.name + ',' + $scope.order.direction;
+								}
 
 								angular.forEach(options.filters,function(filter) {
 
