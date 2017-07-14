@@ -70,7 +70,7 @@ angular.module('app')
         //container: '#frame',
 
         paging: {
-        	limit: 5,
+        	limit: 10,
         	infinite: true
         },
         //paging: false,
@@ -99,7 +99,7 @@ angular.module('app')
 
             //return setTimeout(function() { cb([]); }, 2000);
 
-            query.count = 10;
+            query.count = 30;
 
             return $q(function(resolve) {
 
@@ -322,10 +322,12 @@ angular.module('app')
         ],
 
         selection: {
+        	all: true,
             actions: [{
                 icon: 'delete',
                 label: 'Delete',
                 click: function(selected, $event, helper) {
+                	debugger;
                     //alert("delete");
                 },
                 show: function() {

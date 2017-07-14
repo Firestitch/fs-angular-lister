@@ -232,8 +232,7 @@
 				$scope.options.orders = $scope.options.orders || [];
 				$scope.paging = { records: 0, page: 1, pages: 0 };
 				$scope.loading = false;
-				$scope.checked = [];
-				$scope.selection = { all: false };
+				$scope.selection = { all: false, selected: [] };
 				$scope.debug = false;
 				$scope.load = load;
 				$scope.reload = reload;
@@ -747,13 +746,36 @@
 
 				$scope.selectionsToggle = function() {
 
-					$scope.checked = [];
-					if(!$scope.selection.all) {
+					$scope.selection.selected = [];
+					if($scope.selection.checked) {
+						$scope.selection.all = false;
+					} else {
+
 						for(var i=0;i<$scope.data.length;i++) {
-							$scope.checked.push(1);
+							$scope.selection.selected.push(1);
 						}
+
 						var records = $scope.paging && $scope.paging.records ? $scope.paging.records : 0;
-						fsAlert.info('Selected ' + $scope.checked.length + ' of ' + records + ' results');
+						var msg = 'Selected ' + $scope.selection.selected.length + ' of ' + records + ' results';
+
+						if($scope.options.selection.all && records>$scope.selection.selected.length) {
+							msg += ' <a href ng-click="click()" class="selection-all">Select all ' + records + ' records</a>';
+						}
+
+						fsAlert.info(msg,{
+							toastClass: 'fs-lister-selection',
+							locals: {
+								click: function() {
+									$scope.selection.all = true;
+									setTimeout(function() {
+										fsAlert.info('Selected all ' + records + ' records');
+									},100);
+								}
+							},
+							controller: ['$scope', 'click', function($scope, click) {
+								$scope.click = click;
+							}]
+						});
 					}
 				}
 
@@ -771,19 +793,23 @@
 				$scope.selectionClick = function(action, $event) {
 
 					var selected = [];
-					angular.forEach($scope.checked,function(value, index) {
+					angular.forEach($scope.selection.selected,function(value, index) {
 						if(value) {
 							selected.push($scope.data[index]);
 						}
 					});
 
-					action.click(selected, $event, $scope.instance);
+					if($scope.selection.all) {
+						selected = 'all';
+					}
 
+					action.click(selected, $event, $scope.instance);
 					$scope.selectionsClear();
 				}
 
 				$scope.selectionsClear = function() {
-					$scope.checked = [];
+					$scope.selection.selected = [];
+					$scope.selection.checked = false;
 					$scope.selection.all = false;
 				}
 
