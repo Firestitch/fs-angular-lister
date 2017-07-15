@@ -326,6 +326,9 @@ lister, fs-lister {
         margin-left: 4px;
         padding-top: 2px;
         white-space: nowrap;
+    	overflow: hidden;
+    	text-overflow: ellipsis;
+    	display: block;
 
         .order-toggle {
             cursor: pointer;
