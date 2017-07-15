@@ -262,11 +262,11 @@ angular.module('app')
             {   title: 'Name' ,
                 order: { name: 'name', default: true, label: 'Name!!' },
                 value: "<b>{{data.name}}</b> - {{$index}}",
-                width: '20%'
             },
             {   title: 'GUID' ,
                 right: true,
                 order: 'guid',
+                className: 'hide-xs',
                 value: function(data) {
                     return '<a href ng-click="test(data)">{{data.guid}}</a>';
                 },
@@ -290,6 +290,7 @@ angular.module('app')
             {   title: 'Date',
                 center: true,
                 order: { name: 'date' },
+                className: 'hide-xs',
                 value: function(data, $scope, myresolve) {
                     return data["date"];
                 },

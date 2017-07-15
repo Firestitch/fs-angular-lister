@@ -813,16 +813,18 @@
 					$scope.selection.all = false;
 				}
 
-				$scope.toggleFilters = function() {
-					$scope.extended_search = !$scope.extended_search;
+				$scope.searchShow = function(event) {
+					$scope.searchToggle(true);
 				}
 
-				$scope.openFilters = function(event) {
-					$scope.extended_search = true;
+				$scope.searchHide = function() {
+					$scope.searchToggle(false);
 				}
 
-				$scope.done = function() {
-					$scope.extended_search = false;
+				$scope.searchToggle = function(value) {
+					$scope.extended_search = value;
+					var body = angular.element(document.body);
+					value ? body.addClass('fs-lister-filters-open') : body.removeClass('fs-lister-filters-open');
 				}
 
 				$scope.selectOpen = function(filter) {
@@ -892,9 +894,10 @@
 					var operation = operation || 'open';
 
 					if (operation=='open') {
-						$scope.extended_search = (event.keyCode==40) ? true : false;
+						$scope.searchToggle(event.keyCode==40);
+
 					} else if(operation=='closePopupOnEnter') {
-						$scope.extended_search = (event.keyCode==13) ? false : true;
+						$scope.searchToggle(event.keyCode!=13);
 					}
 				};
 
