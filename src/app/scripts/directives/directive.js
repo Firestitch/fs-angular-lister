@@ -139,9 +139,9 @@
 	* @param {function} ls-instance.options Set/Gets options. Zero arguments passed will return all options. One argument passed will return that option's value. Two arguments passed will set option with the value.
 	*/
 
-	var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', 'fsUtil', '$mdDialog', 'fsDatetime',
+	var ListerDirective = [ '$compile', '$sce', '$filter', '$window', '$log', '$q', 'fsUtil', '$mdDialog', 'fsDatetime', '$mdMedia',
 							'fsStore', '$rootScope', 'fsLister', '$location', '$templateCache', 'fsArray', 'fsModal', 'fsAlert',
-							function ($compile, $sce, $filter, $window, $log, $q, fsUtil, $mdDialog, fsDatetime,
+							function ($compile, $sce, $filter, $window, $log, $q, fsUtil, $mdDialog, fsDatetime, $mdMedia,
 									fsStore, $rootScope, fsLister, $location, $templateCache, fsArray, fsModal, fsAlert) {
 		return {
 			template: function(element, attr) {
@@ -811,6 +811,11 @@
 					$scope.selection.selected = [];
 					$scope.selection.checked = false;
 					$scope.selection.all = false;
+				}
+
+				$scope.searchInputClick = function() {
+					if($mdMedia('gt-xs'))
+						$scope.searchShow();
 				}
 
 				$scope.searchShow = function(event) {

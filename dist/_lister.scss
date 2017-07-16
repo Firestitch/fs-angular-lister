@@ -86,6 +86,9 @@ lister, fs-lister {
         }
     }
 
+    .filter-by {
+    	display: none;
+    }
 
     .inline-search {
 
@@ -109,35 +112,21 @@ lister, fs-lister {
             outline: none;
         }
 
-        .md-icon-button-reload {
-            .material-icons {
-                font-size: 22px;
-            }
-        }
-
-        .md-icon-button-filters,
-        .md-icon-button-reload {
-            position: relative;
-            z-index: 51;
-
-            margin: 0;
-            padding: 0;
-            width: 32px;
-            .material-icons {
-                display: block;
-                color: #757575;
-            }
-        }
-
         .inline-search-input {
 
             position: relative;
 
-            .reload {
-                position: absolute;
-                right: 0;
-                top: 0;
-				line-height: 32px;
+            .inline-actions {
+            	white-space: nowrap;
+            }
+
+            .action-filter {
+            	display: none;
+            }
+
+            .action-reload,
+            .action-filter {
+                line-height: 32px;
                 color: rgba(0,0,0,0.54);
                 z-index: 52;
 
@@ -243,9 +232,6 @@ lister, fs-lister {
                         white-space: nowrap;
                         vertical-align: middle;
                         padding-right: 15px;
-                    }
-
-                    .filter-label-content {
                     }
                 }
 
@@ -610,6 +596,7 @@ lister, fs-lister {
 
 		.lister-search {
 		    flex-direction: column;
+		    margin-top: 0;
 		}
 
 		.top-actions {
@@ -621,6 +608,11 @@ lister, fs-lister {
 		.lister-table .lister-col.lister-col-sort {
 			display: none;
 		}
+
+	    .filter-by {
+			display: block;
+			margin: 10px 0;
+	    }
 
     	.inline-search {
 
@@ -647,8 +639,12 @@ lister, fs-lister {
 			    	}
 			    }
 
-			    .reload {
+			    .action-reload {
 			    	display: none;
+			    }
+
+			    .action-filter {
+			    	display: inline-block;
 			    }
 
 			    .filter-group {

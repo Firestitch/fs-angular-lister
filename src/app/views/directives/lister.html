@@ -5,12 +5,16 @@
                 <div class="main-search-bar" layout="row" layout-align="start center">
                     <div class="search"><i class="material-icons">search</i></div>
                     <md-input-container class="md-no-label md-no-message">
-                        <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="searchShow()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />
+                        <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="searchInputClick()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />
                     </md-input-container>
-                    <a href ng-click="reload()" class="reload"><i class="material-icons">refresh</i></a>
+                    <div class="inline-actions">
+                    	<a href ng-click="searchShow()" class="action-filter"><i class="material-icons">filter_list</i></a>
+                    	<a href ng-click="reload()" class="action-reload"><i class="material-icons">refresh</i></a>
+                   	</div>
                 </div>
                 <div class="ng-hide filters" layout="column" ng-show="extended_search">
                     <div class="wrap">
+                    	<fs-heading class="filter-by">Filter by</fs-heading>
                         <div ng-repeat="filter in options.filters" class="filter-group" ng-if="!filter.disabled">
 
                             <div class="filter filter-{{filter.type}}">
