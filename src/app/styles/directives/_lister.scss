@@ -58,6 +58,7 @@ lister, fs-lister {
     .results {
         min-height: 90px;
         position: relative;
+        overflow-x: auto;
     }
 
     .status {
