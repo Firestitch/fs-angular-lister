@@ -625,6 +625,9 @@ lister, fs-lister {
 
 		.responsive-top-actions {
 			display: block;
+			.md-button {
+				text-transform: uppercase;
+			}
 		}
 
 		.nonresponsive-top-actions {
