@@ -55,7 +55,7 @@ angular.module('app')
     $scope.listerConf = {
     	id: 'demo',
         debug: false,
-        title: 'Lister Title',
+        //title: 'Lister Title',
        /* savedFilter: {
     		filters: [
 	    		{
@@ -166,6 +166,7 @@ angular.module('app')
         topActions: [
             {
                 label: 'Export',
+                icon: 'settings',
                 click: function(data,event) {
                 	//...
                 },

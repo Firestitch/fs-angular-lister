@@ -1,30 +1,5 @@
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite, sorting: sorting, data: data.length }" id="{{id}}">
-    <div class="lister-search" layout="row" layout-align="start" ng-if="options.filters.length || options.topActions">
-    	<div class="title" flex><fs-heading ng-if="options.title">{{options.title}}</fs-heading></div>
-
-        <div class="top-actions" ng-if="options.topActions.length || options.savedFilter">
-            <span ng-repeat="action in options.topActions | filter" ng-show="action.show">
-            	<md-button ng-show="action.type=='button'" ng-click="topActionsClick(action,$event)" class="md-raised" ng-class="{ 'md-accent': action.primary!==false }"><md-icon ng-show="action.icon">{{action.icon}}</md-icon>{{action.label}}</md-button>
-
-            	<md-button ng-show="action.type=='icon'" ng-click="topActionsClick(action,$event)" class="action-icon"><md-icon ng-show="action.icon">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip></md-button>
-            	<md-menu ng-show="action.type=='menu'">
-                    <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
-                        <md-icon ng-show="action.icon">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip>
-                    </md-button>
-                    <md-menu-content>
-                        <md-menu-item ng-repeat="action in action.items" ng-show="action.show">
-                            <md-button ng-click="action.click($event)">
-                                <md-icon ng-if="action.icon">{{::action.icon}}</md-icon>
-                                {{::action.label}}
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-
-            	<span ng-show="action.type=='template'" fs-lister-topaction-compile="action.template" scope="action.scope"></span>
-            </span>
-        </div>
-
+    <div class="lister-search" layout="row" layout-align="start start" ng-if="options.filters.length || options.topActions">
         <div layout="row" layout-align="start center" class="inline-search" flex>
             <div class="inline-search-input" flex="grow">
                 <div class="main-search-bar" layout="row" layout-align="start center">
@@ -227,6 +202,45 @@
             </div>
             <div class="backdrop" ng-show="extended_search" ng-click="searchToggle(!extended_search)"></div>
         </div>
+
+        <div class="top-actions" ng-if="options.topActions.length">
+	        <div class="wrap">
+        		<md-menu class="responsive-top-actions">
+	                <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
+	                    <md-icon>more_vert</md-tooltip>
+	                </md-button>
+	                <md-menu-content>
+	                    <md-menu-item ng-repeat="action in options.topActions|filter:{ type: 'button'}" ng-show="action.show">
+	                        <md-button ng-click="action.click($event)">
+	                            <md-icon ng-if="action.icon">{{::action.icon}}</md-icon>
+	                            {{::action.label}}
+	                        </md-button>
+	                    </md-menu-item>
+	                </md-menu-content>
+	            </md-menu>
+
+	            <span ng-repeat="action in options.topActions" ng-if="action.show" class="nonresponsive-top-actions">
+	            	<md-button ng-show="action.type=='button'" ng-click="topActionsClick(action,$event)" class="md-raised action-button" ng-class="{ 'md-accent': action.primary!==false }"><md-icon ng-show="action.icon">{{action.icon}}</md-icon>{{action.label}}</md-button>
+
+	            	<md-button ng-show="action.type=='icon'" ng-click="topActionsClick(action,$event)" class="action-icon"><md-icon ng-show="action.icon">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip></md-button>
+	            	<md-menu ng-if="action.type=='menu'">
+	                    <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
+	                        <md-icon ng-show="action.icon">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip>
+	                    </md-button>
+	                    <md-menu-content>
+	                        <md-menu-item ng-repeat="action in action.items" ng-show="action.show">
+	                            <md-button ng-click="action.click($event)">
+	                                <md-icon ng-if="action.icon">{{::action.icon}}</md-icon>
+	                                {{::action.label}}
+	                            </md-button>
+	                        </md-menu-item>
+	                    </md-menu-content>
+	                </md-menu>
+	            	<span ng-if="action.type=='template'" fs-lister-topaction-compile="action.template" scope="action.scope"></span>
+	            </span>
+	        </div>
+        </div>
+        <!-- <div class="title"><fs-heading ng-if="options.title">{{options.title}}</fs-heading></div> -->
     </div>
     <div class="results" ng-if="options.columns.length">
         <div class="progress-paged ng-hide" ng-if="loading && !options.paging.infinite">
