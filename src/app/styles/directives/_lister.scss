@@ -53,6 +53,10 @@ lister, fs-lister {
 
     .lister-search {
         margin: 25px 0 20px 0;
+
+		.title {
+			display: none;
+		}
     }
 
     .results {
@@ -93,6 +97,8 @@ lister, fs-lister {
 
     .inline-search {
 
+    	order: -1;
+
         .search {
             top: 5px;
             position: absolute;
@@ -121,6 +127,7 @@ lister, fs-lister {
             	white-space: nowrap;
             	position: absolute;
     			right: 0;
+    			z-index: 52;
             }
 
             .action-filter {
@@ -131,8 +138,6 @@ lister, fs-lister {
             .action-filter {
                 line-height: 32px;
                 color: rgba(0,0,0,0.54);
-                z-index: 52;
-                cursor: pointer;
 
                 i {
                     transform: scale(.9);
@@ -594,19 +599,28 @@ lister, fs-lister {
 
 	body.fs-lister-filters-open {
 		overflow: hidden !important;
+
+		.inline-actions {
+			display: none;
+		}
 	}
 
     .lister {
 
 		.lister-search {
-		    flex-direction: column;
+		    flex-wrap: wrap;
+		    align-items: center;
 		    margin-top: 0;
-		}
 
-		.top-actions {
-			display: flex;
-		    justify-content: flex-end;
-		    margin: 0 0 10px 0;
+			.title {
+				display: flex;
+				fs-heading {
+					margin: 0;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
+				}
+			}
 		}
 
 		.lister-table .lister-col.lister-col-sort {
@@ -620,8 +634,9 @@ lister, fs-lister {
 
     	.inline-search {
 
-			display: flex;
-			order: 2;
+    		flex-basis: 100%;
+    		order: 1;
+		    padding-top: 10px;
 
 	    	.inline-search-input {
 		    	.filters {

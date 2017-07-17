@@ -55,6 +55,7 @@ angular.module('app')
     $scope.listerConf = {
     	id: 'demo',
         debug: false,
+        title: 'Lister Title',
        /* savedFilter: {
     		filters: [
 	    		{
