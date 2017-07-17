@@ -593,6 +593,11 @@ lister, fs-lister {
 }
 
 
+.fs-lister-actions-menu {
+	display: flex;
+	flex-direction: column-reverse;
+}
+
 @media screen and (max-width: 599px) {
 
 	body.fs-lister-filters-open {
@@ -625,9 +630,6 @@ lister, fs-lister {
 
 		.responsive-top-actions {
 			display: block;
-			.md-button {
-				text-transform: uppercase;
-			}
 		}
 
 		.nonresponsive-top-actions {
