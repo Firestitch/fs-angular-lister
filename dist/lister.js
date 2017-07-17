@@ -683,7 +683,31 @@
 
 				$scope.actionClick = function(action, item, event) {
 
-					if(action.delete) {
+					if(action.delete && action.delete.ok) {
+
+						fsModal.confirm({
+							title: action.delete.title || 'Confirm',
+						    content: action.delete.content
+						}).then(function() {
+
+							var result = action.delete.ok(item, event);
+							return $q(function(resolve) {
+								if(result && angular.isFunction(result.then)) {
+									result.then(resolve);
+								} else {
+									resolve();
+								}
+							}).then(function() {
+								$scope.options.instance.data.remove(item.$$index);
+							});
+
+						},function() {
+							if(action.delete.cancel) {
+								action.delete.cancel(item, event);
+							}
+						});
+
+						return;
 
 						var confirm = { template: [
 										'<md-dialog md-theme="{{ dialog.theme }}" aria-label="{{ dialog.ariaLabel }}" class="{{ dialog.css }}">',
@@ -1793,7 +1817,8 @@
 		}
 	}];
 
-	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array','fs-angular-util','fs-angular-datetime','fs-angular-modal','fs-angular-alert'])
+	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array',
+										'fs-angular-util','fs-angular-datetime','fs-angular-modal','fs-angular-alert'])
 	.directive('lister',ListerDirective)
 	.directive('fsLister',ListerDirective)
 	.directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',

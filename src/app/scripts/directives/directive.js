@@ -683,61 +683,29 @@
 
 				$scope.actionClick = function(action, item, event) {
 
-					if(action.delete) {
+					if(action.delete && action.delete.ok) {
 
-						var confirm = { template: [
-										'<md-dialog md-theme="{{ dialog.theme }}" aria-label="{{ dialog.ariaLabel }}" class="{{ dialog.css }}">',
-										' <md-dialog-content class="md-dialog-content" tabIndex="-1">',
-										'   <h2 class="md-title">{{ dialog.title }}</h2>',
-										'   {{dialog.mdTextContent}}',
-										' </md-dialog-content>',
-										' <md-dialog-actions>',
-										'   <md-button ng-click="dialog.cancel($event)">',
-										'     {{dialog.cancelLabel}}',
-										'   </md-button>',
-										'   <md-button ng-click="dialog.ok($event)" class="md-accent" md-autofocus="dialog.$type!=\'confirm\'">',
-										'     {{dialog.okLabel}}',
-										'   </md-button>',
-										' </md-dialog-actions>',
-										'</md-dialog>'
-										].join(''),
-										controller: function () {
-											this.okLabel = action.delete.okLabel || 'Yes';
-											this.cancelLabel = action.delete.cancelLabel || 'Cancel';
-											this.ok = function() {
-												if(action.delete.ok) {
-													var result = action.delete.ok(item, event);
-													$q(function(resolve) {
-														if(result && angular.isFunction(result.then)) {
-															result.then(resolve);
-														} else {
-															resolve();
-														}
-													}).then(function() {
-														$scope.options.instance.data.remove(item.$$index);
-														$mdDialog.hide(true);
-													});
-												}
+						fsModal.confirm({
+							title: action.delete.title || 'Confirm',
+						    content: action.delete.content
+						}).then(function() {
 
-											};
-											this.cancel = function($event) {
+							var result = action.delete.ok(item, event);
+							return $q(function(resolve) {
+								if(result && angular.isFunction(result.then)) {
+									result.then(resolve);
+								} else {
+									resolve();
+								}
+							}).then(function() {
+								$scope.options.instance.data.remove(item.$$index);
+							});
 
-												if(action.delete.cancel) {
-													action.delete.cancel(item, event);
-												}
-												$mdDialog.hide();
-											};
-										},
-										preserveScope: true,
-										controllerAs: 'dialog',
-										bindToController: true,
-										title: action.delete.title || 'Confirm',
-										content: action.delete.content,
-										targetEvent: event,
-										ariaLabel: 'Confirm',
-										skipHide: true };
-
-						$mdDialog.show(confirm);
+						},function() {
+							if(action.delete.cancel) {
+								action.delete.cancel(item, event);
+							}
+						});
 
 					} else if(action.click) {
 						action.click(item, event);
@@ -1793,7 +1761,8 @@
 		}
 	}];
 
-	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array','fs-angular-util','fs-angular-datetime','fs-angular-modal','fs-angular-alert'])
+	angular.module('fs-angular-lister',['fs-angular-store','angular-sortable-view','fs-angular-array',
+										'fs-angular-util','fs-angular-datetime','fs-angular-modal','fs-angular-alert'])
 	.directive('lister',ListerDirective)
 	.directive('fsLister',ListerDirective)
 	.directive('fsListerCompile', ['$compile', '$injector', '$location', '$timeout', '$rootScope',

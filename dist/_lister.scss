@@ -119,6 +119,8 @@ lister, fs-lister {
 
             .inline-actions {
             	white-space: nowrap;
+            	position: absolute;
+    			right: 0;
             }
 
             .action-filter {
@@ -130,6 +132,7 @@ lister, fs-lister {
                 line-height: 32px;
                 color: rgba(0,0,0,0.54);
                 z-index: 52;
+                cursor: pointer;
 
                 i {
                     transform: scale(.9);
