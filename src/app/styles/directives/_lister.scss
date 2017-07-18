@@ -126,6 +126,7 @@ lister, fs-lister {
             	position: absolute;
     			right: 0;
     			z-index: 52;
+    			top: 8px;
             }
 
             .action-filter {
@@ -317,7 +318,6 @@ lister, fs-lister {
         color: #999;
         font-size: 13px;
         margin-left: 4px;
-        padding-top: 2px;
         white-space: nowrap;
     	overflow: hidden;
     	text-overflow: ellipsis;
@@ -326,6 +326,10 @@ lister, fs-lister {
         .order-toggle {
             cursor: pointer;
             padding-left: 4px;
+        }
+
+        .saved-filters {
+        	float: right;
         }
     }
 
@@ -596,6 +600,18 @@ lister, fs-lister {
 .fs-lister-actions-menu {
 	display: flex;
 	flex-direction: column-reverse;
+}
+
+
+@media screen and (max-width: 750px) {
+
+	.lister {
+	    .infinite-records {
+	        .saved-filters {
+	        	float: left;
+	        }
+	    }
+	}
 }
 
 @media screen and (max-width: 599px) {
