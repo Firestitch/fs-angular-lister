@@ -330,6 +330,7 @@ lister, fs-lister {
 
         .saved-filters {
         	float: right;
+        	display: flex;
         }
     }
 
@@ -608,7 +609,7 @@ lister, fs-lister {
 	.lister {
 	    .infinite-records {
 	        .saved-filters {
-	        	float: left;
+	        	float: none;
 	        }
 	    }
 	}
