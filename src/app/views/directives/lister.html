@@ -170,7 +170,7 @@
 		                </md-menu-content>
 		            </md-menu>
 		            <a href ng-show="order.name" ng-click="orderDirectionToggle($event)" class="order-toggle"> {{orderDirections[order.direction]}}</a>
-		            <md-menu class="saved-filters">
+		            <md-menu class="saved-filters" ng-if="options.savedFilter">
 		                <a href ng-click="$mdOpenMenu($event)">
 		                	Saved Filters<span ng-show="options.savedFilter.active">: {{options.savedFilter.active.name}}</span>
 		                </a>

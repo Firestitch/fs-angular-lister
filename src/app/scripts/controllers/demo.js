@@ -56,7 +56,7 @@ angular.module('app')
     	id: 'demo',
         debug: false,
         //title: 'Lister Title',
-       /* savedFilter: {
+        savedFilter: {
     		filters: [
 	    		{
 	    			name: 'My Filter',
@@ -67,7 +67,7 @@ angular.module('app')
 	    			active: true
 	    		}
 	    	]
-        },*/
+        },
         //container: '#frame',
 
         paging: {
