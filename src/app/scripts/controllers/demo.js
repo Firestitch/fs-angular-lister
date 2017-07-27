@@ -52,6 +52,35 @@ angular.module('app')
         }
     }
 
+    var x = fsLister.create({
+    			filters: [
+                    {
+                        name: 'keyword',
+                        type: 'text',
+                        label: 'Search'
+                    },
+                    {
+                        name: { from: 'create_date_from', to: 'create_date_to' },
+                        type: 'daterange',
+                        label: 'Invoice Date'
+                    },
+                    {
+                        name: { from: 'payment_due_date_from', to: 'payment_due_date_to' },
+                        type: 'daterange',
+                        label: 'Invoice Due Date'
+                    }
+                ]
+            })
+    .apply({
+    		filters: [
+                {
+                    name: 'keyword',
+                    label: 'Search!!!!!!!!!!!!!!'
+                }
+            ]
+        })
+    .options();
+
     $scope.listerConf = {
     	id: 'demo',
         debug: false,
@@ -262,12 +291,12 @@ angular.module('app')
 
         columns: [
             {   title: 'Name' ,
-                order: { name: 'name', default: true, label: 'Name!!' },
+                //order: { name: 'name', default: true, label: 'Name!!' },
                 value: "<b>{{data.name}}</b> - {{$index}}",
             },
             {   title: 'GUID' ,
                 right: true,
-                order: 'guid',
+               // order: 'guid',
                 className: 'hide-xs',
                 value: function(data) {
                     return '<a href ng-click="test(data)">{{data.guid}}</a>';
@@ -291,7 +320,7 @@ angular.module('app')
             },
             {   title: 'Date',
                 center: true,
-                order: { name: 'date' },
+                //order: { name: 'date' },
                 className: 'hide-xs',
                 value: function(data, $scope, myresolve) {
                     return data["date"];
@@ -320,8 +349,8 @@ angular.module('app')
         ],
 
         orders: [
-            {   label: 'Custom Order By',
-                name: 'custom_order' }
+            {   label: 'Something', name: 'custom_order' },
+            {   label: 'Something Else', name: 'custom_order' }
         ],
 
         selection: {
@@ -365,7 +394,7 @@ angular.module('app')
             }]
         },
 
-        filters: [
+        sfilters: [
            {
                 name: 'date',
                 type: 'date',

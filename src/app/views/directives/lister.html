@@ -1,8 +1,8 @@
 <div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite, sorting: sorting, data: data.length }" id="{{id}}">
-    <div class="lister-search" layout="row" layout-align="start start" ng-if="options.filters.length || options.topActions">
+    <div class="lister-search" layout="row" layout-align="start stretch" ng-if="options.filters.length || options.topActions">
         <div layout="row" layout-align="start center" class="inline-search" flex>
             <div class="inline-search-input" flex="grow">
-                <div class="main-search-bar" layout="row" layout-align="start center">
+                <div class="main-search-bar" layout="row" layout-align="start center" ng-if="options.filters.length">
                     <div class="search"><i class="material-icons">search</i></div>
                     <md-input-container class="md-no-label md-no-message">
                         <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="searchInputClick()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />

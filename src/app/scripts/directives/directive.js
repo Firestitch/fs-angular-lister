@@ -197,6 +197,10 @@
 						if(data.action=='reload') {
 							options.instance.reload();
 						}
+
+						if(data.action=='extend') {
+							options.instance.data.extend(data.object, data.filters);
+						}
 					});
 				}
 
@@ -323,14 +327,23 @@
 					});
 				}
 
-				if(options.order) {
+				if(!$scope.order) {
+					var order = $filter('filter')($scope.options.orders,{ column: true, default: true },true)[0];
+					$scope.order = angular.copy(order);
+				}
 
-					var orderName = options.order;
+				if(!$scope.order && $scope.options.orders.length) {
+					$scope.order = angular.copy($scope.options.orders[0]);
+				}
+
+				if($scope.order) {
+
+					var orderName = $scope.order;
 					var orderDirection = 'asc';
 
-					if(angular.isObject(options.order)) {
-						orderName = options.order.name;
-						orderDirection = options.order.direction || 'asc';
+					if(angular.isObject($scope.order)) {
+						orderName = $scope.order.name;
+						orderDirection = $scope.order.direction || 'asc';
 					}
 
 					var order = $filter('filter')($scope.options.orders,{ name: orderName },true)[0];
@@ -338,11 +351,6 @@
 						$scope.order = angular.copy(order);
 						$scope.order.direction = orderDirection;
 					}
-				}
-
-				if(!$scope.order) {
-					var order = $filter('filter')($scope.options.orders,{ column: true, default: true },true)[0];
-					$scope.order = angular.copy(order);
 				}
 
 				angular.forEach(options.columns,function(col) {

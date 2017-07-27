@@ -94,7 +94,6 @@ lister, fs-lister {
 
     .inline-search {
 
-    	order: -1;
 
         .search {
             top: 8px;
@@ -190,7 +189,7 @@ lister, fs-lister {
                 position: absolute;
                 width: 100%;
                 z-index: 51;
-                display: table;
+                margin-top: -4px;
 
                 label {
                     display: none;
