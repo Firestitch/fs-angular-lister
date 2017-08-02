@@ -337,8 +337,8 @@ lister, fs-lister {
         border-top: 0px;
     }
 
-    &.data .lister-foot .lister-col {
-        border-top: 2px solid #ddd;
+    .lister-body .lister-row:last-child .lister-col {
+        border-bottom: 2px solid #ddd;
     }
 
     .lister-table {

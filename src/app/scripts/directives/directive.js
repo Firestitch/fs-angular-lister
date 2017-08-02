@@ -254,7 +254,7 @@
 					$scope.styleCols[index] = columnStyle(col);
 
 					if(col.footer) {
-						//$scope.footer = true;
+						$scope.footer = true;
 					}
 
 					if(col.order) {
