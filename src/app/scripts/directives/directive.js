@@ -253,6 +253,10 @@
 					col.show = col.show===undefined ? true : col.show;
 					$scope.styleCols[index] = columnStyle(col);
 
+					if(col.footer) {
+						//$scope.footer = true;
+					}
+
 					if(col.order) {
 						if(angular.isString(col.order)) {
 							col.order = { name: col.order };

@@ -394,8 +394,8 @@ angular.module('app')
             }]
         },
 
-        sfilters: [
-           {
+        filters: [
+/*           {
                 name: 'date',
                 type: 'date',
                 label: 'Date',
@@ -420,7 +420,7 @@ angular.module('app')
                     });
                 },
                 isolate: { label: 'Show Deleted', value: 'deleted' }
-            },
+            },*/
 /*
             {
                 name: 'autocomplete',
@@ -444,26 +444,26 @@ console.log(text);
                 checked: 1,
                 unchecked: 0
             },*/
-            {
+/*            {
                 name: 'state',
                 type: 'select',
                 label: 'State',
                 change: function(instance) {
                 	console.log('state filter changed', this, instance);
                 },
-                default: 'active',
+                default: 'active',*/
                 /*values: function() {
                             return [{ value: 'active', name: 'Active' },
                                     { value: 'deleted', name: 'Deleted' } ];
                 }*/
-                values: fsArray.nameValue({
+/*                values: fsArray.nameValue({
                     __all: 'All',
                     active: 'Active',
                     pending: 'Pending',
                     completed: 'Completed',
                     deleted: 'Deleted'
                 })
-            },
+            },*/
             {
                 name: { from: 'daterange_from', to: 'daterange_to' },
                 type: 'daterange',
