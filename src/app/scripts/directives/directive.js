@@ -453,7 +453,7 @@
 									value.active = false;
 								});
 
-								filtersClear();
+								$scope.filtersClear();
 
 								if(item) {
 
@@ -516,6 +516,10 @@
 													value = null;
 												}
 											}
+										}
+									} else if(filter.type=='autocompletechips') {
+										if(fsUtil.isArray(filter.model) && filter.model.length) {
+											value = fsArray.list(filter.model,'value');
 										}
 									}
 
@@ -724,6 +728,21 @@
 					}
 				}
 
+				$scope.filtersClear = function() {
+					angular.forEach(options.filters,function(filter) {
+
+						if(filter.type=='autocomplete') {
+							filter.model = null;
+						} else if(filter.type=='autocompletechips') {
+							filter.model = [];
+						} else {
+							filter.model = undefined;
+						}
+					});
+
+					searchUpdate();
+				}
+
 				$scope.selectionsToggle = function() {
 
 					$scope.selection.selected = [];
@@ -802,11 +821,11 @@
 					$scope.searchToggle(true);
 				}
 
-				$scope.searchHide = function() {
-					$scope.searchToggle(false);
-				}
-
 				$scope.searchToggle = function(value) {
+					if(!value) {
+						reload();
+					}
+
 					$scope.extended_search = value;
 					var body = angular.element(document.body);
 					value ? body.addClass('fs-lister-filters-open') : body.removeClass('fs-lister-filters-open');
@@ -817,7 +836,7 @@
 				}
 
 				$scope.dateSearch = function(filter) {
-					$scope.search(filter);
+					$scope.filterChange(filter);
 				}
 
 				$scope.topActionsClick = function(action,$event) {
@@ -834,7 +853,7 @@
 						filter.model = null;
 					}
 
-					$scope.search(filter);
+					$scope.filterChange(filter);
 				}
 
 				$scope.filterChange = function(filter) {
@@ -854,8 +873,6 @@
 									}
 								}
 							}
-
-							$scope.search(filter);
 						}
 					}
 
@@ -863,16 +880,9 @@
 						$scope.options.savedFilter.active = null;
 					}
 
-					$scope.search(filter);
-				}
-
-				$scope.search = function(filter) {
-
 					if(filter.change) {
 						filter.change();
 					}
-
-					reload();
 				}
 
 				$scope.searchKeydown = function(event, operation)  {
@@ -1001,19 +1011,6 @@
 					});
 
 					reload();
-				}
-
-				function filtersClear() {
-					angular.forEach(options.filters,function(filter) {
-
-						if(filter.type=='autocomplete') {
-							filter.model = null;
-						} else {
-							filter.model = undefined;
-						}
-					});
-
-					searchUpdate();
 				}
 
 				function walkSelectValues(filter, filterValues) {
@@ -1145,6 +1142,19 @@
 						if(filter.type=='autocomplete') {
 
 							value = filter.model.name;
+
+						} else if(filter.type=='autocompletechips') {
+
+							if(!fsUtil.isArray(filter.model) || !filter.model.length) {
+								return;
+							}
+
+							var values = [];
+							angular.forEach(filter.model,function(item) {
+								values.push(item.name);
+							});
+
+							value = values.join(',');
 
 						} else if(filter.type=='date' || filter.type=='datetime') {
 
@@ -1639,8 +1649,7 @@
 						}
 					}
 
-
-					if(typeof filter.values=='function' && filter.type!='autocomplete') {
+					if(typeof filter.values=='function' && !filter.type.match(/^autocomplete/)) {
 						filter.values = filter.values();
 					}
 

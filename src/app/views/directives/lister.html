@@ -85,6 +85,31 @@
 									</md-autocomplete-container>
                                 </div>
 
+                                <div class="interface" ng-if="filter.type == 'autocompletechips'">
+
+									<md-chips-autocomplete-container class="md-block">
+									    <md-chips 	ng-model="filter.model"
+									    			md-autocomplete-snap
+									    			md-require-match="false"
+									    			md-on-remove="filterChange(filter)"
+									    			md-on-add="filterChange(filter)">
+									        <md-autocomplete
+													md-no-cache="true"
+													md-items="item in filter.values(filter.search, filter)"
+													md-search-text="filter.search"
+													md-item-text=""
+													md-min-length="1"
+													md-require-match>
+									            <span md-highlight-text="filter.search">{{item.name}}</span>
+									        </md-autocomplete>
+									        <md-chip-template>
+									            <span>
+									              {{$chip.name}}
+									            </span>
+									        </md-chip-template>
+									    </md-chips>
+									</md-chips-autocomplete-container>
+                                </div>
 
                                 <div class="interface" ng-if="filter.type == 'text'">
                                     <md-input-container class="md-no-float md-no-label md-no-message">
@@ -152,8 +177,10 @@
                                 </div>
                             </div>
                         </div>
-
-                        <md-button class="md-button md-raised md-accent search-button" ng-click="searchHide()">Done</md-button>
+                        <div class="buttons">
+	                        <md-button class="md-button md-accent reset-button" ng-click="filtersClear()">Reset</md-button>
+	                        <md-button class="md-button md-raised md-accent search-button" ng-click="searchToggle(false)">Search</md-button>
+	                    </div>
                     </div>
                 </div>
 		        <div class="infinite-records" layout="row" layout-align="start center">

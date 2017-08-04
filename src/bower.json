@@ -8,7 +8,7 @@
   "dependencies": {
     "angular": "1.6.3",
     "angular-animate": "1.6.3",
-    "angular-material": "1.1.1",
+    "angular-material": "1.1.2",
     "angular-ui-router": "0.3.2",
     "fs-angular-modal": "^1.0.0",
     "fs-angular-api": "^1.0.0",

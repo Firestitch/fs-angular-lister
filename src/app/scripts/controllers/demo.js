@@ -395,6 +395,17 @@ angular.module('app')
         },
 
         filters: [
+            {
+                name: 'autocompletechips',
+                type: 'autocompletechips',
+                label: 'Autocomplete Chips',
+                values: function(text,filter) {
+                	return $q(function(resolve) {
+                		resolve([	{ name: 'ssss', value: 'SSSSS' },
+                					{ name: 'ddddd', value: 'DDDDD' }]);
+                	});
+                }
+            },
 /*           {
                 name: 'date',
                 type: 'date',
