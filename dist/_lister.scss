@@ -124,7 +124,7 @@ lister, fs-lister {
             	white-space: nowrap;
             	position: absolute;
     			right: 0;
-    			z-index: 52;
+    			z-index: 71;
     			top: 8px;
             }
 
@@ -179,7 +179,7 @@ lister, fs-lister {
                     input {
                         padding-right: 25px;
                         padding-left: 26px;
-                        z-index: 51;
+                        z-index: 70;
                         position: relative;
                     }
                 }
@@ -188,7 +188,7 @@ lister, fs-lister {
             .filters {
                 position: absolute;
                 width: 100%;
-                z-index: 51;
+                z-index: 70;
                 margin-top: -4px;
 
                 label {
