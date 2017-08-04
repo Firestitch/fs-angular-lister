@@ -1574,7 +1574,6 @@
 						if(filter.model===undefined) {
 							filter.model = filter.default;
 						}
-						debugger;
 
 						if(filter.model===undefined) {
 
