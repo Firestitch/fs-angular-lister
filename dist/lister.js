@@ -2050,7 +2050,8 @@
 				add: add,
 				get: get,
 				extend: extend,
-				create: create
+				create: create,
+				filter: filter
 			 };
 
 			return service;
@@ -2069,6 +2070,10 @@
 
 			function get(id) {
 				return _instances[id];
+			}
+
+			function filter(id, filters) {
+				return get(id).data.gets(filters);
 			}
 
 			function extend(name, object, filters) {
