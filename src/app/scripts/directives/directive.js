@@ -803,15 +803,16 @@
 				}
 
 				$scope.searchInputClick = function() {
-					if($mdMedia('gt-xs'))
+					if($mdMedia('gt-xs')) {
 						$scope.searchShow();
+					}
 				}
 
 				$scope.searchShow = function(event) {
 					$scope.searchToggle(true);
 				}
 
-				$scope.searchToggle = function(value) {
+				$scope.searchToggle = function(value, search) {
 
 					if(value) {
 						hasFilterChange = false;
@@ -821,7 +822,7 @@
 					var body = angular.element(document.body);
 					value ? body.addClass('fs-lister-filters-open') : body.removeClass('fs-lister-filters-open');
 
-					if(!value && hasFilterChange) {
+					if(search && !value && hasFilterChange) {
 						reload();
 					}
 				}

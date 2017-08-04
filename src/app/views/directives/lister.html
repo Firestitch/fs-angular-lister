@@ -180,7 +180,7 @@
                         </div>
 
                 		<div class="buttons">
-	                        <md-button class="md-button md-raised md-accent search-button" ng-click="searchToggle(false)">Search</md-button>
+	                        <md-button class="md-button md-raised md-accent search-button" ng-click="searchToggle(false,true)">Search</md-button>
 	                        <md-button class="md-button md-accent reset-button" ng-click="reset()">Reset</md-button>
 	                    </div>
                     </div>
@@ -228,7 +228,7 @@
 		            </md-menu>
 		        </div>
             </div>
-            <div class="backdrop" ng-show="extended_search" ng-click="searchToggle(!extended_search)"></div>
+            <div class="backdrop" ng-show="extended_search" ng-click="searchToggle(false,true)"></div>
         </div>
 
         <div class="top-actions" ng-if="options.topActions.length">
