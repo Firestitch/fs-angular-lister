@@ -99,7 +99,8 @@
 													md-search-text="filter.search"
 													md-item-text=""
 													md-min-length="1"
-													md-require-match>
+													md-require-match
+													md-autoselect>
 									            <span md-highlight-text="filter.search">{{item.name}}</span>
 									        </md-autocomplete>
 									        <md-chip-template>
@@ -177,9 +178,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="buttons">
-	                        <md-button class="md-button md-accent reset-button" ng-click="filtersClear()">Reset</md-button>
+
+                		<div class="buttons">
 	                        <md-button class="md-button md-raised md-accent search-button" ng-click="searchToggle(false)">Search</md-button>
+	                        <md-button class="md-button md-accent reset-button" ng-click="filtersClear()">Reset</md-button>
 	                    </div>
                     </div>
                 </div>

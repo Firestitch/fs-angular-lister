@@ -259,15 +259,14 @@ lister, fs-lister {
                 }
 
                 .buttons {
-                	float: right;
-                	padding-top: 6px;
+                	padding-top: 15px;
 	                .search-button,
 	                .reset-button {
 	                    margin: 0;
 	                }
 
 	                .reset-button {
-	                	margin-right: 8px;
+	                	margin-left: 8px;
 	                }
 	            }
             }
@@ -722,46 +721,3 @@ lister, fs-lister {
 		}
 	}
 }
-
-
-
-
-
-
-md-chips-autocomplete-container {
-	.md-chips {
-		padding: 0 0 0 3px;
-		font-size: inherit;
-		md-chip-wrap {
-			font-size: inherit;
-		}
-
-		md-chip {
-			border-radius: 5px;
-			margin-top: 3px;
-			margin-bottom: 0;
-			font-size: inherit;
-			height: 26px;
-			line-height: 26px;
-			padding-left: 7px;
-			.md-chip-remove {
-				width: 26px;
-    			height: 26px;
-				md-icon {
-					min-height: auto;
-    				min-width: auto;
-				}
-			}
-
-			.md-chip-content {
-				padding-right: 5px;
-			}
-		}
-
-		.md-chip-input-container:not(:first-child),
-		.md-chip-input-container {
-			margin: 0;
-		}
-	}
-}
-

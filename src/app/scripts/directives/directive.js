@@ -1585,6 +1585,8 @@
 										filter.model = '__all';
 									}
 								}
+							} else if(filter.type=='autocompletechips') {
+								filter.model = [];
 							}
 						}
 
