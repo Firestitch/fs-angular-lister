@@ -454,7 +454,7 @@
 									value.active = false;
 								});
 
-								$scope.filtersClear();
+								filtersClear();
 
 								if(item) {
 
@@ -729,19 +729,8 @@
 					}
 				}
 
-				$scope.filtersClear = function() {
-					angular.forEach(options.filters,function(filter) {
-
-						if(filter.type=='autocomplete') {
-							filter.model = null;
-						} else if(filter.type=='autocompletechips') {
-							filter.model = [];
-						} else {
-							filter.model = undefined;
-						}
-					});
-
-					searchUpdate();
+				$scope.reset = function() {
+					hasChange = true;
 				}
 
 				$scope.selectionsToggle = function() {
@@ -1077,6 +1066,21 @@
 					}
 
 					return styles;
+				}
+
+				function filtersClear() {
+					angular.forEach(options.filters,function(filter) {
+
+						if(filter.type=='autocomplete') {
+							filter.model = null;
+						} else if(filter.type=='autocompletechips') {
+							filter.model = [];
+						} else {
+							filter.model = undefined;
+						}
+					});
+
+					searchUpdate();
 				}
 
 				function sanitizeAction(action) {
