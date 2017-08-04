@@ -189,7 +189,7 @@
 				options.filters = options.filters || [];
 
 				var dataIndex = 0,
-					hasChange = false,
+					hasFilterChange = false,
 					persists = fsStore.get(options.namespace + '-persist',{});
 
 				if(options.id) {
@@ -730,7 +730,7 @@
 				}
 
 				$scope.reset = function() {
-					hasChange = true;
+					hasFilterChange = true;
 				}
 
 				$scope.selectionsToggle = function() {
@@ -814,16 +814,16 @@
 				$scope.searchToggle = function(value) {
 
 					if(value) {
-						hasChange = false;
-					}
-
-					if(!value && hasChange) {
-						reload();
+						hasFilterChange = false;
 					}
 
 					$scope.extended_search = value;
 					var body = angular.element(document.body);
 					value ? body.addClass('fs-lister-filters-open') : body.removeClass('fs-lister-filters-open');
+
+					if(!value && hasFilterChange) {
+						reload();
+					}
 				}
 
 				$scope.selectOpen = function(filter) {
@@ -852,7 +852,7 @@
 				}
 
 				$scope.filterChange = function(filter) {
-					hasChange = true;
+					hasFilterChange = true;
 					if(filter.type=='select') {
 
 						if(!angular.equals(filter.model,filter.oldModel)) {

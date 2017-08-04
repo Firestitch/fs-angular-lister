@@ -817,13 +817,15 @@
 						hasChange = false;
 					}
 
-					if(!value && hasChange) {
-						reload();
-					}
-
 					$scope.extended_search = value;
 					var body = angular.element(document.body);
 					value ? body.addClass('fs-lister-filters-open') : body.removeClass('fs-lister-filters-open');
+
+
+
+					if(!value && hasChange) {
+						reload();
+					}
 				}
 
 				$scope.selectOpen = function(filter) {
