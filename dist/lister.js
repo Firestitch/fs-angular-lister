@@ -188,8 +188,9 @@
 				options.actions = options.actions || [];
 				options.filters = options.filters || [];
 
-				var dataIndex   = 0;
-				var persists    = fsStore.get(options.namespace + '-persist',{});
+				var dataIndex = 0,
+					hasChange = false,
+					persists = fsStore.get(options.namespace + '-persist',{});
 
 				if(options.id) {
 
@@ -822,7 +823,12 @@
 				}
 
 				$scope.searchToggle = function(value) {
-					if(!value) {
+
+					if(value) {
+						hasChange = false;
+					}
+
+					if(!value && hasChange) {
 						reload();
 					}
 
@@ -857,7 +863,7 @@
 				}
 
 				$scope.filterChange = function(filter) {
-
+					hasChange = true;
 					if(filter.type=='select') {
 
 						if(!angular.equals(filter.model,filter.oldModel)) {
@@ -1568,6 +1574,7 @@
 						if(filter.model===undefined) {
 							filter.model = filter.default;
 						}
+						debugger;
 
 						if(filter.model===undefined) {
 
