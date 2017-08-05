@@ -730,6 +730,7 @@
 				}
 
 				$scope.reset = function() {
+					filtersClear();
 					hasFilterChange = true;
 				}
 
@@ -822,7 +823,7 @@
 					var body = angular.element(document.body);
 					value ? body.addClass('fs-lister-filters-open') : body.removeClass('fs-lister-filters-open');
 
-					if(!value && hasFilterChange) {
+					if(search && !value && hasFilterChange) {
 						reload();
 					}
 				}

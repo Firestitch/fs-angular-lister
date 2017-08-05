@@ -730,6 +730,7 @@
 				}
 
 				$scope.reset = function() {
+					filtersClear();
 					hasFilterChange = true;
 				}
 
