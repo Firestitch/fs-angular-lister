@@ -249,6 +249,7 @@
 				$scope.rowClasses = [];
 				$scope.id = options.id ? options.namespace + '-' + options.id : '';
 				$scope.orderDirections = { 'asc': 'ascending', 'desc': 'descending' };
+				$scope.order = options.order;
 
 				angular.forEach(options.columns,function(col,index) {
 					col.show = col.show===undefined ? true : col.show;

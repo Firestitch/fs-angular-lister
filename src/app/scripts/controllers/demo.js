@@ -107,7 +107,7 @@ angular.module('app')
 
         persist: 'lister-test',
 
-        //order: { name: 'date', direction: 'desc' },
+        order: { name: 'date', direction: 'desc' },
         //order: 'date',
 
         //inline: true,
