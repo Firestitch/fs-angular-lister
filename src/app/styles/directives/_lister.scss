@@ -190,6 +190,7 @@ lister, fs-lister {
                 position: absolute;
                 width: 100%;
                 margin-top: -4px;
+                display: none;
 
                 label {
                     display: none;
@@ -584,6 +585,17 @@ lister, fs-lister {
         margin: 0;
     }
 
+	&.filters-open {
+		.inline-actions {
+	    	z-index: 71;
+	    }
+
+	    .main-search-bar md-input-container input,
+	    .inline-search-input .filters {
+	        z-index: 70;
+	        display: block;
+	    }
+	}
 }
 
 
@@ -610,18 +622,6 @@ lister, fs-lister {
 	display: flex;
 	flex-direction: column-reverse;
 }
-
-body.fs-lister-filters-open {
-	.inline-actions {
-    	z-index: 71;
-    }
-
-    .main-search-bar md-input-container input,
-    .inline-search-input .filters {
-        z-index: 70;
-    }
-}
-
 
 @media screen and (max-width: 750px) {
 

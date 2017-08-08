@@ -1,4 +1,4 @@
-<div class="lister" ng-class="{ loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite, sorting: sorting, data: data.length }" id="{{id}}">
+<div class="lister" ng-class="{ 'filters-open': extended_search, loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite, sorting: sorting, data: data.length }" id="{{id}}">
     <div class="lister-search" layout="row" layout-align="start stretch" ng-if="options.filters.length || options.topActions">
         <div layout="row" layout-align="start center" class="inline-search" flex>
             <div class="inline-search-input" flex="grow">
@@ -13,7 +13,7 @@
                     	<a href ng-click="reload()" class="action-reload"><i class="material-icons">refresh</i></a>
                    	</div>
                 </div>
-                <div class="ng-hide filters" layout="column" ng-show="extended_search">
+                <div class="filters">
                     <div class="wrap">
                     	<fs-heading class="filter-by">Filter by</fs-heading>
                         <div ng-repeat="filter in options.filters" class="filter-group" ng-if="!filter.disabled">

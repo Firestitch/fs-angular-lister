@@ -826,8 +826,10 @@
 					}
 
 					$scope.extended_search = value;
-					var body = angular.element(document.body);
-					value ? body.addClass('fs-lister-filters-open') : body.removeClass('fs-lister-filters-open');
+					setTimeout(function() {
+						var body = angular.element(document.body);
+						value ? body.addClass('fs-lister-filters-open') : body.removeClass('fs-lister-filters-open');
+					});
 
 					if(search && !value && hasFilterChange) {
 						reload();
