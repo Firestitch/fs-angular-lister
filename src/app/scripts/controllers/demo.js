@@ -349,7 +349,7 @@ angular.module('app')
         ],
 
         orders: [
-            {   label: 'Something', name: 'custom_order' },
+            {   label: 'Something', name: 'date' },
             {   label: 'Something Else', name: 'custom_order' }
         ],
 

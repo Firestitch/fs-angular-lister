@@ -735,6 +735,11 @@
 					hasFilterChange = true;
 				}
 
+				$scope.clear = function() {
+					filtersClear();
+					reload();
+				}
+
 				$scope.selectionsToggle = function() {
 
 					$scope.selection.selected = [];

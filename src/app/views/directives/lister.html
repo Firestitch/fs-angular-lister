@@ -7,8 +7,9 @@
                     <md-input-container class="md-no-label md-no-message">
                         <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="searchInputClick()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />
                     </md-input-container>
-                    <div class="inline-actions">
+                    <div class="inline-actions" layout="row" layout-align="start center">
                     	<a href ng-click="searchShow()" class="action-filter"><i class="material-icons">filter_list</i></a>
+                    	<a href ng-click="clear()" ng-show="searchinput.value"><i class="material-icons">clear</i></a>
                     	<a href ng-click="reload()" class="action-reload"><i class="material-icons">refresh</i></a>
                    	</div>
                 </div>

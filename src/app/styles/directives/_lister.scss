@@ -124,26 +124,28 @@ lister, fs-lister {
             	white-space: nowrap;
             	position: absolute;
     			right: 0;
-    			z-index: 71;
     			top: 8px;
+
+	            a {
+	                color: rgba(0,0,0,0.54);
+
+	                i {
+	                    transform: scale(.9);
+	                    vertical-align: middle;
+	                }
+
+	                &:hover {
+	                    color: inherit;
+	                }
+	            }
             }
 
             .action-filter {
             	display: none;
-            }
 
-            .action-reload,
-            .action-filter {
-                color: rgba(0,0,0,0.54);
-
-                i {
-                    transform: scale(.9);
-                    vertical-align: middle;
-                }
-
-                &:hover {
-                    color: inherit;
-                }
+            	&.action-filter-show {
+            		display: block;
+            	}
             }
 
             md-input-container {
@@ -179,7 +181,6 @@ lister, fs-lister {
                     input {
                         padding-right: 25px;
                         padding-left: 26px;
-                        z-index: 70;
                         position: relative;
                     }
                 }
@@ -188,7 +189,6 @@ lister, fs-lister {
             .filters {
                 position: absolute;
                 width: 100%;
-                z-index: 70;
                 margin-top: -4px;
 
                 label {
@@ -611,6 +611,17 @@ lister, fs-lister {
 	flex-direction: column-reverse;
 }
 
+body.fs-lister-filters-open {
+	.inline-actions {
+    	z-index: 71;
+    }
+
+    .main-search-bar md-input-container input,
+    .inline-search-input .filters {
+        z-index: 70;
+    }
+}
+
 
 @media screen and (max-width: 750px) {
 
@@ -690,10 +701,6 @@ lister, fs-lister {
 
 			    .action-reload {
 			    	display: none;
-			    }
-
-			    .action-filter {
-			    	display: inline-block;
 			    }
 
 			    .filter-group {
