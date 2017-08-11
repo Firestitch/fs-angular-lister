@@ -15,7 +15,13 @@
                 </div>
                 <div class="filters">
                     <div class="wrap">
-                    	<fs-heading class="filter-by">Filter by</fs-heading>
+
+                    	<fs-heading class="filter-by">
+                    		Filter by
+                    		<fs-heading-actions>
+                    			<a href ng-click="searchToggle(false,true)"><md-icon class="action-clear">clear</md-icon></a>
+                    		</fs-heading-actions>
+                    	</fs-heading>
                         <div ng-repeat="filter in options.filters" class="filter-group" ng-if="!filter.disabled">
 
                             <div class="filter filter-{{filter.type}}">

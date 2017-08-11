@@ -406,7 +406,7 @@ angular.module('app')
                 	});
                 }
             },
-/*           {
+           {
                 name: 'date',
                 type: 'date',
                 label: 'Date',
@@ -414,7 +414,7 @@ angular.module('app')
                 default: null,
                 query: 'date'
             },
-
+/*
          {
                 name: 'isolate',
                 type: 'select',

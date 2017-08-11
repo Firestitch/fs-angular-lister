@@ -128,6 +128,7 @@ lister, fs-lister {
 
 	            a {
 	                color: rgba(0,0,0,0.54);
+	                background: #fff;
 
 	                i {
 	                    transform: scale(.9);
@@ -698,6 +699,10 @@ lister, fs-lister {
 			    		display: block;
 			    	}
 			    }
+
+				.action-filter {
+				    display: block;
+				}
 
 			    .action-reload {
 			    	display: none;
