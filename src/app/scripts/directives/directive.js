@@ -1079,6 +1079,9 @@
 							filter.model = null;
 						} else if(filter.type=='autocompletechips') {
 							filter.model = [];
+						} else if(filter.type=='select' && filter.isolate) {
+							filter.model = null;
+							filter.isolate.enabled = false;
 						} else {
 							filter.model = undefined;
 						}
