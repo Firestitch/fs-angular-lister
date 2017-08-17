@@ -414,7 +414,7 @@ angular.module('app')
                 default: null,
                 query: 'date'
             },
-/*
+
          {
                 name: 'isolate',
                 type: 'select',
@@ -431,7 +431,7 @@ angular.module('app')
                     });
                 },
                 isolate: { label: 'Show Deleted', value: 'deleted' }
-            },*/
+            },
 /*
             {
                 name: 'autocomplete',

@@ -836,10 +836,6 @@
 					}
 				}
 
-				$scope.selectOpen = function(filter) {
-					filter.oldModel = angular.copy(filter.model);
-				}
-
 				$scope.dateSearch = function(filter) {
 					$scope.filterChange(filter);
 				}
@@ -850,7 +846,7 @@
 					}
 				}
 
-				$scope.isolateSearch = function(filter) {
+				$scope.isolateChange = function(filter) {
 
 					if(filter.isolate.enabled) {
 						filter.model = filter.multiple ? [filter.isolate.value] : filter.isolate.value;
@@ -861,26 +857,24 @@
 					$scope.filterChange(filter);
 				}
 
-				$scope.filterChange = function(filter) {
-					hasFilterChange = true;
-					if(filter.type=='select') {
+				$scope.selectChange = function(filter) {
+					if(filter.isolate) {
+						filter.isolate.enabled = false;
 
-						if(!angular.equals(filter.model,filter.oldModel)) {
+						if(filter.multiple) {
+							var index = filter.model.indexOf(filter.isolate.value);
 
-							if(filter.isolate) {
-								filter.isolate.enabled = false;
-
-								if(filter.multiple) {
-									var index = filter.model.indexOf(filter.isolate.value);
-
-									if(index > -1) {
-										filter.model.splice(index,1);
-									}
-								}
+							if(index > -1) {
+								filter.model.splice(index,1);
 							}
 						}
 					}
 
+					$scope.filterChange(filter);
+				}
+
+				$scope.filterChange = function(filter) {
+					hasFilterChange = true;
 					if($scope.options.savedFilter) {
 						$scope.options.savedFilter.active = null;
 					}
