@@ -74,6 +74,16 @@
 					return this;
 				}
 
+				this.option = function(name, value) {
+					options[name] = value;
+					return this;
+				}
+
+				this.prepend = function(name, value) {
+					options[name].unshift(value);
+					return this;
+				}
+
 				this.filter = function(name, value) {
 					extend('filters',name,value);
 					return this;
