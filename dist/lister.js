@@ -520,7 +520,7 @@
 											}
 										}
 									} else if(filter.type=='autocompletechips') {
-										if(fsUtil.isArray(filter.model) && filter.model.length) {
+										if(fsUtil.isArray(filter.model) && filter.model.length && !opts.expand) {
 											value = fsArray.list(filter.model,'value');
 										}
 									}
@@ -861,7 +861,7 @@
 					if(filter.isolate) {
 						filter.isolate.enabled = false;
 
-						if(filter.multiple) {
+						if(filter.multiple && fsUtil.isArray(filter.model)) {
 							var index = filter.model.indexOf(filter.isolate.value);
 
 							if(index > -1) {
@@ -1074,16 +1074,17 @@
 
 				function filtersClear() {
 					angular.forEach(options.filters,function(filter) {
+						filter.model = undefined;
 
 						if(filter.type=='autocomplete') {
 							filter.model = null;
+							filter.search = '';
 						} else if(filter.type=='autocompletechips') {
 							filter.model = [];
+							filter.search = '';
 						} else if(filter.type=='select' && filter.isolate) {
 							filter.model = null;
 							filter.isolate.enabled = false;
-						} else {
-							filter.model = undefined;
 						}
 					});
 
@@ -1157,7 +1158,6 @@
 						}
 
 						if(filter.type=='autocomplete') {
-
 							value = filter.model.name;
 
 						} else if(filter.type=='autocompletechips') {

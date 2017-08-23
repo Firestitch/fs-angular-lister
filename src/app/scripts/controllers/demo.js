@@ -85,7 +85,7 @@ angular.module('app')
     	id: 'demo',
         debug: false,
         //title: 'Lister Title',
-        savedFilter: {
+        /*savedFilter: {
     		filters: [
 	    		{
 	    			name: 'My Filter',
@@ -96,12 +96,12 @@ angular.module('app')
 	    			active: true
 	    		}
 	    	]
-        },
+        },*/
         //container: '#frame',
 
         paging: {
         	limit: 10,
-        	infinite: true
+        	infinite: false
         },
         //paging: false,
 
@@ -432,21 +432,19 @@ angular.module('app')
                 },
                 isolate: { label: 'Show Deleted', value: 'deleted' }
             },
-/*
+
             {
                 name: 'autocomplete',
                 type: 'autocomplete',
                 label: 'Autocomplete',
                 values: function(text) {
-
+                	console.log(text);
                 	return $q(function(resolve) {
-
-console.log(text);
                 		resolve([	{ name: 'ssss', value: 'SSSSS' },
                 					{ name: 'ddddd', value: 'DDDDD' }]);
                 	});
                 }
-            },*/
+            },
            /* {
                 name: 'toggle',
                 type: 'checkbox',
@@ -455,26 +453,26 @@ console.log(text);
                 checked: 1,
                 unchecked: 0
             },*/
-/*            {
+           {
                 name: 'state',
                 type: 'select',
                 label: 'State',
                 change: function(instance) {
                 	console.log('state filter changed', this, instance);
                 },
-                default: 'active',*/
-                /*values: function() {
+                default: 'active',
+               	values: function() {
                             return [{ value: 'active', name: 'Active' },
                                     { value: 'deleted', name: 'Deleted' } ];
-                }*/
+                }
 /*                values: fsArray.nameValue({
                     __all: 'All',
                     active: 'Active',
                     pending: 'Pending',
                     completed: 'Completed',
                     deleted: 'Deleted'
-                })
-            },*/
+                })*/
+            },
             {
                 name: { from: 'daterange_from', to: 'daterange_to' },
                 type: 'daterange',
