@@ -189,7 +189,7 @@
 				options.filters = options.filters || [];
 
 				var dataIndex = 0,
-					hasFilterChange = false,
+					filterChange = false,
 					persists = fsStore.get(options.namespace + '-persist',{});
 
 				if(options.id) {
@@ -732,7 +732,7 @@
 
 				$scope.reset = function() {
 					filtersClear();
-					hasFilterChange = true;
+					filterChange = true;
 				}
 
 				$scope.clear = function() {
@@ -809,7 +809,7 @@
 					$scope.selection.all = false;
 				}
 
-				$scope.searchInputClick = function() {
+				$scope.searchClick = function() {
 					if($mdMedia('gt-xs')) {
 						$scope.searchShow();
 					}
@@ -821,18 +821,18 @@
 
 				$scope.searchToggle = function(value, search) {
 
-					if(value) {
-						hasFilterChange = false;
-					}
-
 					$scope.extended_search = value;
 					setTimeout(function() {
 						var body = angular.element(document.body);
 						value ? body.addClass('fs-lister-filters-open') : body.removeClass('fs-lister-filters-open');
 					});
 
-					if(search && !value && hasFilterChange) {
+					if(search && !value && filterChange) {
 						reload();
+					}
+
+					if(value) {
+						filterChange = false;
 					}
 				}
 
@@ -857,6 +857,14 @@
 					$scope.filterChange(filter);
 				}
 
+				$scope.filterKeyup = function(filter,$event) {
+					if(filter.type=='text') {
+						if($event.keyCode==13) {
+							filter.autoSearch = true;
+						}
+					}
+				}
+
 				$scope.selectChange = function(filter) {
 					if(filter.isolate) {
 						filter.isolate.enabled = false;
@@ -874,7 +882,7 @@
 				}
 
 				$scope.filterChange = function(filter) {
-					hasFilterChange = true;
+					filterChange = true;
 					if($scope.options.savedFilter) {
 						$scope.options.savedFilter.active = null;
 					}
@@ -882,17 +890,15 @@
 					if(filter.change) {
 						filter.change();
 					}
+
+					if(filter.autoSearch) {
+						$scope.searchToggle(false,true);
+						filter.autoSearch = false;
+					}
 				}
 
 				$scope.searchKeydown = function(event, operation)  {
-					var operation = operation || 'open';
-
-					if (operation=='open') {
-						$scope.searchToggle(event.keyCode==40);
-
-					} else if(operation=='closePopupOnEnter') {
-						$scope.searchToggle(event.keyCode!=13);
-					}
+					$scope.searchToggle(event.keyCode!=13);
 				};
 
 				$scope.searchChange = function(search) {

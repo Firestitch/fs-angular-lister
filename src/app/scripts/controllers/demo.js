@@ -499,12 +499,13 @@ angular.module('app')
                 type: 'datetimerange',
                 label: 'Date Time Range'
             },*/
-          /* {
+           {
                 name: 'search',
                 type: 'text',
                 label: 'Search',
                 param: 'search'
             },
+            /*
             {
                 name: 'state',
                 type: 'select',
