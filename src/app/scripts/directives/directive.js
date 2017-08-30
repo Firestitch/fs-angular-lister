@@ -180,7 +180,7 @@
 				options.paging = options.paging || {};
 				options.paging.enabled = options.paging.enabled===undefined ? true : options.paging.enabled;
 				options.paging.pages = options.paging.pages===undefined ? true : options.paging.pages;
-				options.paging.limits = options.paging.limits ? options.paging.limits : [5, 10, 25, 50, 100];
+				options.paging.limits = options.paging.limits ? options.paging.limits : [10, 25, 50, 100, 200, 'all'];
 				options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
 				options.norecords = options.norecords===undefined ? 'No records found' : options.norecords;
 				options.namespace = options.namespace ? options.namespace : 'lister';
@@ -775,6 +775,11 @@
 					}
 				}
 
+				$scope.limitSelect = function(limit) {
+					options.paging.limit = limit;
+					reload();
+				}
+
 				$scope.orderNameSelect = function(order) {
 					$scope.order.name = order.name;
 					$scope.order.label = order.label;
@@ -858,9 +863,12 @@
 				}
 
 				$scope.filterKeyup = function(filter,$event) {
-					if(filter.type=='text') {
+					if(filter.type=='text' || filter.type=='select') {
 						if($event.keyCode==13) {
-							filter.autoSearch = true;
+							setTimeout(function() {
+								$scope.filterChange(filter);
+								$scope.searchToggle(false,true);
+							});
 						}
 					}
 				}
@@ -882,6 +890,7 @@
 				}
 
 				$scope.filterChange = function(filter) {
+
 					filterChange = true;
 					if($scope.options.savedFilter) {
 						$scope.options.savedFilter.active = null;
@@ -889,11 +898,6 @@
 
 					if(filter.change) {
 						filter.change();
-					}
-
-					if(filter.autoSearch) {
-						$scope.searchToggle(false,true);
-						filter.autoSearch = false;
 					}
 				}
 
@@ -1325,14 +1329,12 @@
 							persists[options.persist.name] = { data: instance.filter.value.gets({ expand: true, names: false }), date: new Date() };
 						}
 
-						if($scope.options.paging.enabled) {
+						if($scope.options.paging.enabled && fsUtil.isNumeric($scope.options.paging.limit)) {
 							if($scope.paging.page!==undefined) {
 								query.page = $scope.paging.page;
 							}
 
-							if($scope.options.paging.limit!==undefined) {
-								query.limit = $scope.options.paging.limit;
-							}
+							query.limit = $scope.options.paging.limit;
 						}
 
 						if($scope.order) {

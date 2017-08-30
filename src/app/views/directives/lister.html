@@ -34,7 +34,7 @@
 
                                 <div class="interface" ng-if="filter.type == 'select'">
                                     <md-input-container class="md-no-float md-no-label md-no-message" ng-show="filter.multiple && !filter.groups">
-                                        <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectChange(filter)">
+                                        <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectChange(filter)" ng-keyup="filterKeyup(filter,$event)">
                                             <md-option ng-repeat="item in filter.values" value="{{::item.value}}" ng-style="item.style">
                                                 {{::item.name}}
                                             </md-option>
@@ -42,7 +42,7 @@
                                     </md-input-container>
 
                                     <md-input-container class="md-no-float md-no-label md-no-message" ng-show="!filter.multiple && !filter.groups">
-                                        <md-select ng-model="filter.model" aria-label="select" ng-change="selectChange(filter)">
+                                        <md-select ng-model="filter.model" aria-label="select" ng-change="selectChange(filter)" ng-keyup="filterKeyup(filter,$event)">
                                             <md-option ng-repeat="item in filter.values" value="{{::item.value}}" ng-style="item.style">
                                                 {{::item.name}}
                                             </md-option>
@@ -50,7 +50,7 @@
                                     </md-input-container>
 
                                     <md-input-container class="md-no-float md-no-label md-no-message" ng-show="!filter.multiple && filter.groups">
-                                        <md-select ng-model="filter.model" aria-label="select" ng-change="selectChange(filter)">
+                                        <md-select ng-model="filter.model" aria-label="select" ng-change="selectChange(filter)" ng-keyup="filterKeyup(filter,$event)">
                                             <md-optgroup label="{{group}}" ng-repeat="(group, values) in filter.groups">
                                                 <md-option ng-repeat="item in values" value="{{::item.value}}" ng-style="item.style">
                                                     {{::item.name}}
@@ -60,7 +60,7 @@
                                     </md-input-container>
 
                                     <md-input-container class="md-no-float md-no-label md-no-message" ng-show="filter.multiple && filter.groups">
-                                        <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectChange(filter)">
+                                        <md-select ng-model="filter.model" aria-label="select" multiple="filter.multiple" md-on-close="selectChange(filter)" ng-keyup="filterKeyup(filter,$event)">
                                             <md-optgroup label="{{group}}" ng-repeat="(group, values) in filter.groups">
                                                 <md-option ng-repeat="item in values" value="{{::item.value}}" ng-style="item.style">
                                                     {{::item.name}}
@@ -191,19 +191,35 @@
                     </div>
                 </div>
 		        <div class="infinite-records" layout="row" layout-align="start center">
-		            <span ng-if="numeric(paging.records) && paging.records>=0">{{paging.records}} results<span ng-show="order.name">&nbsp;ordered by</span></span>
-		            <span ng-if="(!numeric(paging.records) || paging.records<0) && order.name">Ordered by&nbsp;</span>
-		            <md-menu ng-show="order.name">
-		                <a href ng-click="$mdOpenMenu($event)" class="order-toggle">{{order.label}}</a>,
-		                <md-menu-content>
-		                    <md-menu-item ng-repeat="order in options.orders">
-		                        <md-button ng-click="orderNameSelect(order)">
-		                            {{order.label}}
-		                        </md-button>
-		                    </md-menu-item>
-		                </md-menu-content>
-		            </md-menu>
-		            <a href ng-show="order.name" ng-click="orderDirectionToggle($event)" class="order-toggle"> {{orderDirections[order.direction]}}</a>
+
+		            <span ng-if="numeric(paging.records) && paging.records>=0">
+		            	Showing&nbsp;
+		            	<md-menu>
+			                <a href ng-click="$mdOpenMenu($event)">{{options.paging.limit}}</a>
+			                <md-menu-content>
+			                    <md-menu-item ng-repeat="limit in options.paging.limits">
+			                        <md-button ng-click="limitSelect(limit)">
+			                            {{limit}}
+			                        </md-button>
+			                    </md-menu-item>
+			                </md-menu-content>
+			            </md-menu>
+		            	&nbsp;of {{paging.records}} results
+		            </span>
+		            <span ng-show="order.name">ordered by&nbsp;
+			            <!-- <span ng-if="(!numeric(paging.records) || paging.records<0) && order.name">Ordered by&nbsp;</span> -->
+			            <md-menu>
+			                <a href ng-click="$mdOpenMenu($event)">{{order.label}}</a>,
+			                <md-menu-content>
+			                    <md-menu-item ng-repeat="order in options.orders">
+			                        <md-button ng-click="orderNameSelect(order)">
+			                            {{order.label}}
+			                        </md-button>
+			                    </md-menu-item>
+			                </md-menu-content>
+			            </md-menu>
+			            <a href ng-show="order.name" ng-click="orderDirectionToggle($event)" class="order-toggle"> {{orderDirections[order.direction]}}</a>
+			        </span>
 		            <md-menu class="saved-filters" ng-if="options.savedFilter">
 		                <a href ng-click="$mdOpenMenu($event)">
 		                	Saved Filters<span ng-show="options.savedFilter.active">: {{options.savedFilter.active.name}}</span>
@@ -382,16 +398,6 @@
                     <a href="" ng-click="page(paging.pages)">&raquo;</a>
                 </li>
             </ul>
-        </div>
-        <div class="limits">
-            <md-input-container>
-                <label>Show</label>
-                <md-select ng-model="options.paging.limit" md-on-close="reload()">
-                    <md-option ng-repeat="limit in options.paging.limits" value="{{limit}}">
-                        {{::limit}} records
-                    </md-option>
-                </md-select>
-            </md-input-container>
         </div>
     </div>
 </div>
