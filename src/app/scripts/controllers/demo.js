@@ -129,7 +129,7 @@ angular.module('app')
 
             //return setTimeout(function() { cb([]); }, 2000);
 
-            query.count = 30;
+            query.count = 12;
 
             return $q(function(resolve) {
 

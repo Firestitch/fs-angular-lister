@@ -194,17 +194,20 @@
 
 		            <span ng-if="numeric(paging.records) && paging.records>=0">
 		            	Showing&nbsp;
-		            	<md-menu>
-			                <a href ng-click="$mdOpenMenu($event)">{{options.paging.limit}}</a>
-			                <md-menu-content>
-			                    <md-menu-item ng-repeat="limit in options.paging.limits">
-			                        <md-button ng-click="limitSelect(limit)">
-			                            {{limit}}
-			                        </md-button>
-			                    </md-menu-item>
-			                </md-menu-content>
-			            </md-menu>
-		            	&nbsp;of {{paging.records}} results
+		            	<span ng-show="paging.records>=options.paging.limits[0]">
+			            	<md-menu>
+				                <a href ng-click="$mdOpenMenu($event)">{{options.paging.limit}}</a>
+				                <md-menu-content>
+				                    <md-menu-item ng-repeat="limit in options.paging.limits">
+				                        <md-button ng-click="limitSelect(limit)">
+				                            {{limit}}
+				                        </md-button>
+				                    </md-menu-item>
+				                </md-menu-content>
+				            </md-menu>
+			            	&nbsp;of&nbsp;
+			            </span>
+			            {{paging.records}}&nbsp;results
 		            </span>
 		            <span ng-show="order.name">ordered by&nbsp;
 			            <!-- <span ng-if="(!numeric(paging.records) || paging.records<0) && order.name">Ordered by&nbsp;</span> -->
