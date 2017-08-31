@@ -16,12 +16,24 @@ angular.module('app')
     });
 
     $scope.data = function() {
-        alert(JSON.stringify($scope.listerConf.instance.data.get()));
+        alert(JSON.stringify($scope.listerConf.instance.data.gets()));
     }
 
     $scope.reload = function() {
        $scope.listerConf.instance.reload();
        console.log($scope.listerConf.instance.filter.value.gets());
+    }
+
+    $scope.clearData = function() {
+       $scope.listerConf.instance.data.clear();
+    }
+
+    $scope.clearFilters = function() {
+       $scope.listerConf.instance.filter.clear();
+    }
+
+    $scope.clear = function() {
+       $scope.listerConf.instance.clear();
     }
 
     $scope.setFilter = function() {
@@ -129,7 +141,7 @@ angular.module('app')
 
             //return setTimeout(function() { cb([]); }, 2000);
 
-            query.count = 12;
+            query.count = 22;
 
             return $q(function(resolve) {
 
@@ -292,7 +304,7 @@ angular.module('app')
         columns: [
             {   title: 'Name' ,
                 //order: { name: 'name', default: true, label: 'Name!!' },
-                value: "<b>{{data.name}}</b> - {{$index}}",
+                value: "<b>{{data.name}}</b>",
             },
             {   title: 'GUID' ,
                 right: true,
@@ -309,7 +321,7 @@ angular.module('app')
                 footer: {
                 	right: true,
                 	value: function() {
-                		return '<a href ng-click="click()">fffffffff</a>';
+                		return '<a href ng-click="click()">Footer</a>';
                 	},
                 	scope: {
 	                	click: function() {

@@ -1,13 +1,16 @@
-<div><a href ng-click="load()">Load()</a></div>
-<div><a href ng-click="reload()">Re-Load()</a></div>
-<div><a href ng-click="modal()">Open Modal()</a></div>
-<div><a href ng-click="data()">Data()</a></div>
-<div><a href ng-click="setFilter()">setFilter()</a></div>
-<div><a href ng-click="newFilters()">New Filters()</a></div>
-<div><a href="#/page">Another Page</a></div>
-<div><a href ng-click="broadcastReload()">Broadcast Reload</a></div>
-<div><a href ng-click="getInstance()">Get Instance</a></div>
-
+<a href class="md-button md-raised md-accent" ng-click="load()">Load()</a>
+<a href class="md-button md-raised md-accent" ng-click="reload()">Re-Load()</a>
+<a href class="md-button md-raised md-accent" ng-click="modal()">Open Modal()</a>
+<a href class="md-button md-raised md-accent" ng-click="data()">Data()</a>
+<a href class="md-button md-raised md-accent" ng-click="setFilter()">setFilter()</a>
+<a href class="md-button md-raised md-accent" ng-click="newFilters()">New Filters()</a>
+<a href class="md-button md-raised md-accent" ng-click="clear()">Clear()</a>
+<a href class="md-button md-raised md-accent" ng-click="clearData()">Clear Data()</a>
+<a href class="md-button md-raised md-accent" ng-click="clearFilters()">Clear Filters()</a>
+<a href="#/page" class="md-button md-raised md-accent">Another Page</a>
+<a href class="md-button md-raised md-accent" ng-click="broadcastReload()">Broadcast Reload</a>
+<a href class="md-button md-raised md-accent" ng-click="getInstance()">Get Instance</a>
+<br><br>
 <pre ng-show="getInstanceObject">{{getInstanceObject}}</pre>
 
 
@@ -15,7 +18,7 @@
 
 <!-- <div id="frame" style="height:600px; overflow-y:auto">
 	<fs-lister ls-options="listerConf" ls-instance="listerInstance"></fs-lister>
-</div> -->
+ -->
 
 <fs-lister ls-options="listerConf" ls-sort></fs-lister>
 

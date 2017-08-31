@@ -440,6 +440,10 @@
 								}
 							});
 						},
+						clear: function() {
+							$scope.data = [];
+							$scope.paging = { records: 0, page: 1, pages: 0 };
+						},
 						data: $scope.data
 					},
 					filter: {
@@ -471,6 +475,7 @@
 								}
 							}
 						},
+						clear: filtersClear,
 						get: function(name) {
 							return fsArray.filter(options.filters, { name:name })[0];
 						},
@@ -617,6 +622,10 @@
 					},
 					search: {
 						update: searchUpdate
+					},
+					clear: function() {
+						instance.data.clear();
+						instance.filter.clear();
 					}
 				};
 

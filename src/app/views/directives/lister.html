@@ -192,25 +192,23 @@
                 </div>
 		        <div class="infinite-records" layout="row" layout-align="start center">
 
-		            <span ng-if="numeric(paging.records) && paging.records>=0">
-		            	Showing&nbsp;
-		            	<span ng-show="paging.records>=options.paging.limits[0]">
-			            	<md-menu>
-				                <a href ng-click="$mdOpenMenu($event)">{{options.paging.limit}}</a>
-				                <md-menu-content>
-				                    <md-menu-item ng-repeat="limit in options.paging.limits">
-				                        <md-button ng-click="limitSelect(limit)">
-				                            {{limit}}
-				                        </md-button>
-				                    </md-menu-item>
-				                </md-menu-content>
-				            </md-menu>
-			            	&nbsp;of&nbsp;
-			            </span>
-			            {{paging.records}}&nbsp;results
+		            <span ng-if="!options.paging.infinite && numeric(paging.records) && paging.records>=0">
+		            	Showing&nbsp;<span ng-show="paging.records>=options.paging.limits[0]">
+		            	<md-menu>
+
+			                <a href ng-click="$mdOpenMenu($event)">{{paging.records}}</a>
+			                <md-menu-content>
+			                    <md-menu-item ng-repeat="limit in options.paging.limits">
+			                        <md-button ng-click="limitSelect(limit)">{{limit}}</md-button>
+			                    </md-menu-item>
+			                </md-menu-content>
+			            </md-menu>&nbsp;of&nbsp;
+			            </span>{{paging.records}}&nbsp;{{paging.records==1 ? 'result' : 'results'}}
+		            </span>
+		            <span ng-if="options.paging.infinite && numeric(paging.records) && paging.records>=0">
+		            	{{paging.records}}&nbsp;{{paging.records==1 ? 'result' : 'results'}}
 		            </span>
 		            <span ng-show="order.name">ordered by&nbsp;
-			            <!-- <span ng-if="(!numeric(paging.records) || paging.records<0) && order.name">Ordered by&nbsp;</span> -->
 			            <md-menu>
 			                <a href ng-click="$mdOpenMenu($event)">{{order.label}}</a>,
 			                <md-menu-content>
