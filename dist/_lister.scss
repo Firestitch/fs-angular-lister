@@ -154,6 +154,7 @@ lister, fs-lister {
 
                 &:not(.md-input-focused):not(.md-input-has-value) label:not(.md-no-float):not(.md-container-ignore) {
                     padding-left: 25px;
+                    width: auto;
                 }
 
                 md-select-value {

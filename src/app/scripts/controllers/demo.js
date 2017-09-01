@@ -41,6 +41,10 @@ angular.module('app')
 		$scope.listerConf.instance.search.update();
     }
 
+    $scope.toggleAction = function() {
+    	$scope.listerConf.topActions[0].show = !$scope.listerConf.topActions[0].show;
+    }
+
     function modal() {
         fsModal.show('DemoCtrl',
                     'views/listermodal.html'
@@ -212,7 +216,7 @@ angular.module('app')
                 	//...
                 },
                 show: function() {
-                	return true;
+                	return false;
                 	//return aclService.read(ACL.PERMISSION_PROJECT_EXPORT);
                 }
             },
@@ -222,12 +226,14 @@ angular.module('app')
                    //...
                 },
                 show: function() {
+                	return false;
                 	//return aclService.(ACL.PERMISSION_PROJECT);
                 }
             },
             {
                 type: 'template',
                 template: '<md-button ng-click="click()">Upload</md-button>',
+                show: false,
                 scope: {
                 	click: function() {
                 		alert('asdasdasd');
@@ -243,7 +249,7 @@ angular.module('app')
                 type: 'icon'
             },*/
 
-            {
+           /* {
             	type: 'menu',
             	icon: 'settings',
 	            items: [
@@ -265,7 +271,7 @@ angular.module('app')
 		                }
 		            }
 		        ]
-	        }
+	        }*/
         ],
 
         actions: [
