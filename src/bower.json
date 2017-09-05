@@ -14,7 +14,7 @@
         "fs-angular-api": "^1.0.0",
         "fs-angular-store": "^1.0.0",
         "fs-angular-util": "^1.0.0",
-        "fs-angular-array": "^1.0.0",
+        "fs-angular-array": "^1.1.0",
         "fs-angular-datetime": "^1.0.0",
         "fs-angular-alert": "^1.0.0",
         "fs-boilerplate-styles": "1.1.8",
