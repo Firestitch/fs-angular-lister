@@ -60,6 +60,7 @@ lister, fs-lister {
         min-height: 90px;
         position: relative;
         overflow-x: auto;
+        overflow-y: hidden;
     }
 
     .status {
