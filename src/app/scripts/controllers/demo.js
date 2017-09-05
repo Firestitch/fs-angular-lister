@@ -6,6 +6,9 @@ angular.module('app')
 
     $scope.modal = modal;
 
+	$scope.selectionGets = function() {
+        alert($scope.listerConf.instance.selection.gets());
+    }
 
     $scope.load = function() {
         $scope.listerConf.instance.load();
@@ -315,7 +318,7 @@ angular.module('app')
             {   title: 'GUID' ,
                 right: true,
                // order: 'guid',
-                className: 'hide-xs',
+                //className: 'hide-xs',
                 value: function(data) {
                     return '<a href ng-click="test(data)">{{data.guid}}</a>';
                 },
@@ -373,6 +376,7 @@ angular.module('app')
 
         selection: {
         	all: true,
+        	show: true,
             actions: [{
                 icon: 'delete',
                 label: 'Delete',

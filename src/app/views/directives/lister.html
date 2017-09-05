@@ -195,8 +195,7 @@
 		            <span ng-if="!options.paging.infinite && numeric(paging.records) && paging.records>=0">
 		            	Showing&nbsp;<span ng-show="paging.records>=options.paging.limits[0]">
 		            	<md-menu>
-
-			                <a href ng-click="$mdOpenMenu($event)">{{paging.records}}</a>
+			                <a href ng-click="$mdMenu.open($event)">{{(options.paging.limit>paging.records ? paging.records : options.paging.limit)}}</a>
 			                <md-menu-content>
 			                    <md-menu-item ng-repeat="limit in options.paging.limits">
 			                        <md-button ng-click="limitSelect(limit)">{{limit}}</md-button>
@@ -210,7 +209,7 @@
 		            </span>
 		            <span ng-show="order.name">ordered by&nbsp;
 			            <md-menu>
-			                <a href ng-click="$mdOpenMenu($event)">{{order.label}}</a>,
+			                <a href ng-click="$mdMenu.open($event)">{{order.label}}</a>,
 			                <md-menu-content>
 			                    <md-menu-item ng-repeat="order in options.orders">
 			                        <md-button ng-click="orderNameSelect(order)">
@@ -222,7 +221,7 @@
 			            <a href ng-show="order.name" ng-click="orderDirectionToggle($event)" class="order-toggle"> {{orderDirections[order.direction]}}</a>
 			        </span>
 		            <md-menu class="saved-filters" ng-if="options.savedFilter">
-		                <a href ng-click="$mdOpenMenu($event)">
+		                <a href ng-click="$mdMenu.open($event)">
 		                	Saved Filters<span ng-show="options.savedFilter.active">: {{options.savedFilter.active.name}}</span>
 		                </a>
 		                <md-menu-content class="saved-filter-menu">
@@ -256,7 +255,7 @@
         <div class="top-actions" ng-if="options.topActions|fsArrayLength:{ show: true }">
 	        <div class="wrap">
         		<md-menu class="responsive-top-actions">
-	                <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
+	                <md-button ng-click="$mdMenu.open($event)" class="md-icon-button more">
 	                    <md-icon>more_vert</md-tooltip>
 	                </md-button>
 	                <md-menu-content class="fs-lister-actions-menu">
@@ -274,7 +273,7 @@
 
 	            	<md-button ng-show="action.type=='icon'" ng-click="topActionsClick(action,$event)" class="action-icon"><md-icon ng-show="action.icon">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip></md-button>
 	            	<md-menu ng-if="action.type=='menu'">
-	                    <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button more">
+	                    <md-button ng-click="$mdMenu.open($event)" class="md-icon-button more">
 	                        <md-icon ng-show="action.icon">{{action.icon}}</md-icon><md-tooltip>{{action.label}}</md-tooltip>
 	                    </md-button>
 	                    <md-menu-content>
@@ -303,8 +302,8 @@
                     <div class="lister-col lister-col-header lister-col-select-toggle" ng-if="options.selection.show">
 
                         <md-checkbox ng-click="selectionsToggle()" ng-true-value="true" ng-false-value="false" ng-model="selection.checked" aria-label="Toggle Selection" class="select-checkbox"></md-checkbox>
-                        <md-menu md-offset="6 32">
-                            <md-button aria-label="Select" class="md-icon-button" ng-click="$mdOpenMenu($event)">
+                        <md-menu md-offset="6 32" ng-if="options.selection.actions">
+                            <md-button aria-label="Select" class="md-icon-button" ng-click="$mdMenu.open($event)">
                                 <md-icon>arrow_drop_down</md-icon>
                             </md-button>
                             <md-menu-content>
@@ -347,7 +346,7 @@
                     </div>
                     <div class="lister-col lister-actions" ng-if="options.actions.length">
                         <md-menu ng-if="actionCols[item.$$index].length">
-                            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
+                            <md-button ng-click="$mdMenu.open($event)" class="md-icon-button">
                                 <md-icon class="md-default-theme material-icons">more_vert</md-icon>
                             </md-button>
                             <md-menu-content>
@@ -383,20 +382,20 @@
         <div class="records"></div>
         <div flex>
             <ul class="pages" ng-if="paging.pages>1 && options.paging.pages">
-                <li ng-class="{ disabled : paging.page == 1 }">
+                <li ng-class="{ disabled : paging.page == 1 }" class="first">
                     <a href="javascript:;" ng-click="page(1)">&laquo;</a>
                 </li>
-                <li ng-class="{ disabled : paging.page == 1 }" class="ng-scope">
-                    <a href="" ng-click="page(paging.page - 1)" class="ng-binding">‹</a>
+                <li ng-class="{ disabled : paging.page == 1 }" class="previous">
+                    <a href ng-click="page(paging.page - 1)">‹</a>
                 </li>
-                <li ng-repeat="number in [] | listerRange:paging.pages:paging.page" ng-class="{ active : paging.page == (number + 1), disabled : number == '...' }">
-                    <a href="" ng-click="page(number + 1)">{{ number + 1}}</a>
+                <li ng-repeat="number in [] | listerRange:paging.pages:paging.page" ng-class="{ active : paging.page == (number + 1), disabled : number == '...' }" class="page">
+                    <a href ng-click="page(number + 1)">{{ number + 1}}</a>
                 </li>
-                <li ng-class="{ disabled : paging.page == paging.pages }" class="ng-scope">
-                    <a href="" ng-click="page(paging.page + 1)" class="ng-binding">›</a>
+                <li ng-class="{ disabled : paging.page == paging.pages }" class="next">
+                    <a href ng-click="page(paging.page + 1)">›</a>
                 </li>
-                <li ng-class="{ disabled : paging.page == paging.pages }">
-                    <a href="" ng-click="page(paging.pages)">&raquo;</a>
+                <li ng-class="{ disabled : paging.page == paging.pages }" class="last">
+                    <a href ng-click="page(paging.pages)">&raquo;</a>
                 </li>
             </ul>
         </div>

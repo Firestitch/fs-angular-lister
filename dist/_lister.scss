@@ -181,7 +181,7 @@ lister, fs-lister {
                 md-input-container {
                     width: 100%;
                     input {
-                        padding-right: 25px;
+                        padding-right: 26px;
                         padding-left: 26px;
                         position: relative;
                     }
@@ -520,38 +520,25 @@ lister, fs-lister {
 
     .paging {
 
-        label {
-            /* HACK: because there is no native solution from material design */
-            -webkit-transform: translate3d(0, 6px, 0) scale(0.75);
-            transform: translate3d(0, 6px, 0) scale(0.75);
-            transition: transform cubic-bezier(0.25, 0.8, 0.25, 1) 0.25s;
-            -webkit-transform-origin: left top;
-            transform-origin: left top;
-            display: block;
-            color: rgba(0,0,0,0.54);
-        }
-
-
         .pages {
             text-align: center;
+            padding: 0;
+    		margin: 0;
 
             li {
                 display: inline-block;
 
                 a {
-                    box-sizing: border-box;
-                    display: inline-block;
-                    min-width: 1.5em;
-                    padding: 0.5em 1em;
-                    margin-left: 2px;
-                    text-align: center;
-                    cursor: pointer;
-                    color: #333;
-                    border: 1px solid transparent;
-                    border-radius: 2px;
-                    list-style: none;
-                    text-decoration: none;
+				    display: inline-block;
+				    padding: 16px;
+				    text-align: center;
+				    color: #333;
+				    text-decoration: none;
+				    font-size: 15px;
+                }
 
+                &:not(.page) a {
+                    font-size: 19px;
                 }
 
                 &.disabled a {
@@ -559,7 +546,6 @@ lister, fs-lister {
                     cursor: default;
                     color: #ccc;
                 }
-
 
                 &.active a {
                     font-weight: bold;

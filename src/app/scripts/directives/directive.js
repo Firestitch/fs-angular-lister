@@ -284,7 +284,7 @@
 
 				if(options.selection) {
 
-					options.selection.show = false;
+					options.selection.show = options.selection.show===undefined ? false : options.selection.show;
 					angular.forEach(options.selection.actions,function(action) {
 						if(action.show===undefined) {
 							action.show = true;
@@ -626,6 +626,22 @@
 					clear: function() {
 						instance.data.clear();
 						instance.filter.clear();
+					},
+					selection: {
+						gets: function() {
+							var selected = [];
+							angular.forEach($scope.selection.selected,function(value, index) {
+								if(value) {
+									selected.push($scope.data[index]);
+								}
+							});
+
+							if($scope.selection.all) {
+								selected = 'all';
+							}
+
+							return selected;
+						}
 					}
 				};
 
@@ -801,18 +817,7 @@
 				}
 
 				$scope.selectionClick = function(action, $event) {
-
-					var selected = [];
-					angular.forEach($scope.selection.selected,function(value, index) {
-						if(value) {
-							selected.push($scope.data[index]);
-						}
-					});
-
-					if($scope.selection.all) {
-						selected = 'all';
-					}
-
+					var selected = instance.selection.gets();
 					action.click(selected, $event, $scope.instance);
 					$scope.selectionsClear();
 				}
