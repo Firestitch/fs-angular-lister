@@ -1109,6 +1109,8 @@
 						} else if(filter.type=='select' && filter.isolate) {
 							filter.model = null;
 							filter.isolate.enabled = false;
+						} else if(filter.type=='checkbox') {
+							filter.model = filter.default || filter.unchecked;
 						}
 					});
 

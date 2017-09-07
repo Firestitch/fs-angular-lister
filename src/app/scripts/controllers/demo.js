@@ -467,14 +467,14 @@ angular.module('app')
                 	});
                 }
             },
-           /* {
+           {
                 name: 'toggle',
                 type: 'checkbox',
                 label: 'Checkbox',
-                default: 1,
-                checked: 1,
-                unchecked: 0
-            },*/
+                default: 'checked',
+                checked: 'checked',
+                unchecked: 'unchecked'
+            },
            {
                 name: 'state',
                 type: 'select',
