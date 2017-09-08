@@ -459,7 +459,7 @@
 									value.active = false;
 								});
 
-								filtersClear();
+								clear();
 
 								if(item) {
 
@@ -475,7 +475,7 @@
 								}
 							}
 						},
-						clear: filtersClear,
+						clear: clear,
 						get: function(name) {
 							return fsArray.filter(options.filters, { name:name })[0];
 						},
@@ -756,12 +756,12 @@
 				}
 
 				$scope.reset = function() {
-					filtersClear();
+					clear();
 					filterChange = true;
 				}
 
 				$scope.clear = function() {
-					filtersClear();
+					clear();
 					reload();
 				}
 
@@ -956,13 +956,10 @@
 						}
 					});
 
+					filtersClear();
 					angular.forEach(options.filters,function(filter) {
-						if (filter.type == 'checkbox') {
-							filter.model = filter.unchecked;
-						} else if(filter.type=='text' && filter.primary) {
+						if(filter.type=='text' && filter.primary) {
 							filter.model = textSearch.join(' ');
-						} else {
-							filter.model = null;
 						}
 					});
 
@@ -1095,11 +1092,14 @@
 
 					return styles;
 				}
+				function clear() {
+					filtersClear();
+					searchUpdate();
+				}
 
 				function filtersClear() {
 					angular.forEach(options.filters,function(filter) {
 						filter.model = undefined;
-
 						if(filter.type=='autocomplete') {
 							filter.model = null;
 							filter.search = '';
@@ -1110,11 +1110,9 @@
 							filter.model = null;
 							filter.isolate.enabled = false;
 						} else if(filter.type=='checkbox') {
-							filter.model = filter.default || filter.unchecked;
+							filter.model = filter.unchecked;
 						}
 					});
-
-					searchUpdate();
 				}
 
 				function sanitizeAction(action) {
