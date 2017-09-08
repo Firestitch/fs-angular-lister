@@ -180,7 +180,7 @@
 				options.paging = options.paging || {};
 				options.paging.enabled = options.paging.enabled===undefined ? true : options.paging.enabled;
 				options.paging.pages = options.paging.pages===undefined ? true : options.paging.pages;
-				options.paging.limits = options.paging.limits ? options.paging.limits : [10, 25, 50, 100, 200, 'all'];
+				options.paging.limits = options.paging.limits ? options.paging.limits : [10, 25, 50, 100, 200];
 				options.paging.limit = options.paging.limit ? options.paging.limit : options.paging.limits[0];
 				options.norecords = options.norecords===undefined ? 'No records found' : options.norecords;
 				options.namespace = options.namespace ? options.namespace : 'lister';
