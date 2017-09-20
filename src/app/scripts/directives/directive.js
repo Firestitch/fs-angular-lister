@@ -828,8 +828,23 @@
 					$scope.selection.all = false;
 				}
 
-				$scope.searchClick = function() {
+				$scope.searchClick = function(e) {
 					if($mdMedia('gt-xs')) {
+
+						searchUpdate();
+
+						if(window.getSelection && window.getSelection().toString()) {
+							var selected = window.getSelection().toString();
+							if(selected) {
+								setTimeout(function() {
+									var index = e.target.value.indexOf(selected);
+									if(index>=0) {
+										e.target.setSelectionRange(index,index + selected.length);
+									}
+								});
+							}
+						}
+
 						$scope.searchShow();
 					}
 				}
@@ -1030,7 +1045,7 @@
 						}
 					});
 
-					reload();
+					reload({ searchUpdate: false });
 				}
 
 				function walkSelectValues(filter, filterValues) {

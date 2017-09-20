@@ -5,7 +5,7 @@
                 <div class="main-search-bar" layout="row" layout-align="start center" ng-if="options.filters.length">
                     <div class="search"><i class="material-icons">search</i></div>
                     <md-input-container class="md-no-label md-no-message">
-                        <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="searchClick()" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />
+                        <input ng-model="searchinput.value" ng-model-options="{debounce: 400}" ng-change="searchChange(searchinput.value)" ng-click="searchClick($event)" ng-keydown="searchKeydown($event)" aria-label="Search" placeholder="Search" autocomplete="off" />
                     </md-input-container>
                     <div class="inline-actions" layout="row" layout-align="start center">
                     	<a href ng-click="searchShow()" class="action-filter"><i class="material-icons">filter_list</i></a>

@@ -149,11 +149,12 @@ angular.module('app')
             //return setTimeout(function() { cb([]); }, 2000);
 
             query.count = 22;
+            //query.sleep = 2;
 
             return $q(function(resolve) {
 
 	            setTimeout(function() {
-		            var url = 'https://service.firestitch.com/api/';
+		            var url = 'https://boilerplate.firestitch.com/api/';
 
 		            //url = 'http://spec.local.firestitch.com/api/uuuu';
 
@@ -482,7 +483,7 @@ angular.module('app')
                 change: function(instance) {
                 	console.log('state filter changed', this, instance);
                 },
-                default: 'active',
+                //default: 'active',
                	values: function() {
                             return [{ value: 'active', name: 'Active' },
                                     { value: 'deleted', name: 'Deleted' } ];
