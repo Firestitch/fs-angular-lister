@@ -169,8 +169,8 @@ angular.module('app')
 		            DummyService
 		                .gets(query,{ url: url })
 		                .then(function(result) {
-		                    resolve({ data: result.objects, paging: result.paging });
-		                    //cb(result.objects,result.paging,locals);
+		                    //resolve({ data: result.objects, paging: result.paging });
+		                    cb(result.objects,result.paging,locals);
 		                })
 
 		                /*.catch(function (response) {

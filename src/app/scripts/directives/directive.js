@@ -1377,7 +1377,7 @@
 							if(options.data) {
 
 								$scope.loading = true;
-								var response = options.data(query,angular.bind(this,dataCallback,opts,resolve));
+								var response = options.data(query,angular.bind(this,deprecatedDataCallback,opts,resolve));
 
 								if(response && response.then) {
 
@@ -1400,6 +1400,11 @@
 					.finally(function() {
 						$scope.loading = false;
 					});
+				}
+
+				function deprecatedDataCallback(opts, resolve, data, paging, locals) {
+					console.warn('fs-angular-lister data cb() function has been deprecated. Please return promises with the data() function.');
+					dataCallback(opts, resolve, data, paging, locals);
 				}
 
 				function dataCallback(opts, resolve, data, paging, locals) {
