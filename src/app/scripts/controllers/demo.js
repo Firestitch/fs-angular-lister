@@ -169,8 +169,8 @@ angular.module('app')
 		            DummyService
 		                .gets(query,{ url: url })
 		                .then(function(result) {
-		                    //resolve({ data: result.objects, paging: result.paging });
-		                    cb(result.objects,result.paging,locals);
+		                    resolve({ data: result.objects, paging: result.paging });
+		                    //cb(result.objects,result.paging,locals);
 		                })
 
 		                /*.catch(function (response) {
@@ -461,7 +461,6 @@ angular.module('app')
                 type: 'autocomplete',
                 label: 'Autocomplete',
                 values: function(text) {
-                	console.log(text);
                 	return $q(function(resolve) {
                 		resolve([	{ name: 'ssss', value: 'SSSSS' },
                 					{ name: 'ddddd', value: 'DDDDD' }]);

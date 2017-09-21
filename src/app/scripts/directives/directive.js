@@ -868,6 +868,8 @@
 					if(value) {
 						filterChange = false;
 					}
+
+					searchUpdate();
 				}
 
 				$scope.dateSearch = function(filter) {

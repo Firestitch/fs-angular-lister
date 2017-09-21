@@ -868,6 +868,8 @@
 					if(value) {
 						filterChange = false;
 					}
+
+					searchUpdate();
 				}
 
 				$scope.dateSearch = function(filter) {
@@ -1403,7 +1405,7 @@
 				}
 
 				function deprecatedDataCallback(opts, resolve, data, paging, locals) {
-					console.warn('fs-lister data cb() function has been deprecated. Please return promises with the data() function.');
+					console.warn('fs-angular-lister data cb() function has been deprecated. Please return promises with the data() function.');
 					dataCallback(opts, resolve, data, paging, locals);
 				}
 
