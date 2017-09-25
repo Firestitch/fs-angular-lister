@@ -90,6 +90,14 @@
 						<li><label>show</label>A boolean or function which when resolved will show/hide the menu item. Defaults to true</li>
 					</ul>
 				</ul>
+	* @param {array} ls-options.headers Defines the headers for the lister
+				<ul>
+					<li><label>title</label>Specifies the column tile</li>
+					<li><label>className</label>A css class name that is appened to the column element</li>
+					<li><label>center</label>Align center</li>
+					<li><label>right</label>Align the right</li>
+					<li><label>styles</label>Configuration for the column header</li>
+				</ul>
 	* @param {array} ls-options.columns Defines the columns for the lister
 				<ul>
 					<li><label>title</label>Specifies the column tile</li>
@@ -101,6 +109,10 @@
 					<li><label>center</label>Align center</li>
 					<li><label>right</label>Align the right</li>
 					<li><label>show</label>Show or hide the column</li>
+					<li><label>header</label>Configuration for the column header</li>
+					<ul>
+						<li><label>styles</label>Object of styles</li>
+					</ul>
 					<li><label>footer</label>Configuration for the column footer</li>
 					<ul>
 						<li><label>center</label>Align center</li>
@@ -231,7 +243,6 @@
 
 				$scope.data = [];
 				$scope.dataCols = [];
-				$scope.styleCols = [];
 				$scope.actionCols = [];
 				$scope.options = options;
 				$scope.options.orders = $scope.options.orders || [];
@@ -253,7 +264,6 @@
 
 				angular.forEach(options.columns,function(col,index) {
 					col.show = col.show===undefined ? true : col.show;
-					$scope.styleCols[index] = columnStyle(col);
 
 					if(col.footer) {
 						$scope.footer = true;
@@ -1100,15 +1110,6 @@
 					return prepped_values;
 				}
 
-				function columnStyle(col) {
-					var styles = {};
-
-					if(col.width) {
-						styles.width = col.width;
-					}
-
-					return styles;
-				}
 				function clear() {
 					filtersClear();
 					searchUpdate();
@@ -1957,6 +1958,12 @@
 					}
 		}
 	}])
+	.filter('fsListerHeaderStyles',function() {
+		return function(col) {
+			var styles = col.header ? col.header.styles : {};
+			return angular.extend({ width: col.width }, styles || {});
+		};
+	})
 	.directive('fsListerTopactionCompile', ['$compile','$rootScope',function ($compile, $rootScope) {
 		return {    scope: {
 						scope: '=?',
@@ -1974,24 +1981,24 @@
 		}
 	}])
 	.filter('filteri', function() {
-	  return function(list, filters) {
+	 	return function(list, filters) {
 
-		var result = [];
-		angular.forEach(list,function(value,key) {
+			var result = [];
+			angular.forEach(list,function(value,key) {
 
-			var valid = true;
-			angular.forEach(filters,function(fvalue,fkey) {
-				if (value['alias']) {
-					valid = String(fvalue).toLowerCase()===String(value['alias']).toLowerCase();
-				} else {
-					valid = String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
+				var valid = true;
+				angular.forEach(filters,function(fvalue,fkey) {
+					if (value['alias']) {
+						valid = String(fvalue).toLowerCase()===String(value['alias']).toLowerCase();
+					} else {
+						valid = String(fvalue).toLowerCase()===String(value[fkey]).toLowerCase();
+					}
+				});
+
+				if(valid) {
+					result.push(value);
 				}
 			});
-
-			if(valid) {
-				result.push(value);
-			}
-		});
 		return result;
 	  };
 	})

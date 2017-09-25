@@ -295,11 +295,16 @@
         <div class="progress-paged ng-hide" ng-if="loading && !options.paging.infinite">
             <md-progress-circular md-diameter="40" md-mode="indeterminate"></md-progress-circular>
         </div>
-        <div class="lister-table">
-            <div class="lister-head">
-                <div class="lister-row">
-                    <div class="lister-col lister-col-header lister-col-sort" ng-if="options.sort"></div>
-                    <div class="lister-col lister-col-header lister-col-select-toggle" ng-if="options.selection.show">
+        <table class="lister-table">
+            <thead class="lister-head">
+            	<tr class="lister-row" ng-repeat="header in options.headers">
+            		<th class="lister-col lister-col-header lister-col-topheader" ng-if="options.sort"></th>
+                    <th class="lister-col lister-col-header lister-col-topheader" ng-if="options.selection.show"></th>
+            		<th class="lister-col lister-col-header lister-col-topheader {{::col.className}}" ng-class="{ order: col.order, center: col.center, right: col.right  }" ng-style="col.styles" colspan="{{col.span}}" ng-repeat="col in header">{{col.title}}</th>
+            	</tr>
+                <tr class="lister-row">
+                    <th class="lister-col lister-col-header lister-col-sort" ng-if="options.sort"></th>
+                    <th class="lister-col lister-col-header lister-col-select-toggle" ng-if="options.selection.show">
 
                         <md-checkbox ng-click="selectionsToggle()" ng-true-value="true" ng-false-value="false" ng-model="selection.checked" aria-label="Toggle Selection" class="select-checkbox"></md-checkbox>
                         <md-menu md-offset="6 32" ng-if="options.selection.actions">
@@ -315,8 +320,8 @@
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
-                    </div>
-                    <div class="lister-col lister-col-header {{::col.className}}" ng-repeat="col in options.columns" ng-if="col.show" ng-style="styleCols[$index]" ng-class="{ order: col.order, center: col.center, right: col.right  }" ng-click="headerClick(col)">
+                    </th>
+                    <th class="lister-col lister-col-header {{::col.className}}" ng-repeat="col in options.columns" ng-if="col.show" ng-class="{ order: col.order, center: col.center, right: col.right  }" ng-style="col|fsListerHeaderStyles" ng-click="headerClick(col)">
                         <div class="wrap">
                             <span fs-lister-compile="col.title" column="col" locals="locals" class="title"></span>
 
@@ -327,24 +332,23 @@
                                 </span>
                             </div>
                         </div>
-                    </div>
-                    <div class="lister-col lister-col-header" ng-if="options.actions.length || options.action">
-                    </div>
-                </div>
-            </div>
-            <div class="lister-body" sv-root sv-part="data" sv-on-sort="sortStop($item,$partTo,$indexFrom,$indexTo)" sv-on-start="sortStart()">
-                <div class="lister-row {{rowClasses[$index]}}" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: selection.selected[$index] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event);">
-                    <div class="lister-col lister-col-sort" ng-if="options.sort"><div class="sort-handle" sv-handle><md-icon>drag_handle</md-icon></div></div>
-                    <div class="lister-col" ng-if="options.selection.show">
+                    </th>
+                    <th class="lister-col lister-col-header" ng-if="options.actions.length || options.action"></th>
+                </tr>
+            </thead>
+            <tbody class="lister-body" sv-root sv-part="data" sv-on-sort="sortStop($item,$partTo,$indexFrom,$indexTo)" sv-on-start="sortStart()">
+                <tr class="lister-row {{rowClasses[$index]}}" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: selection.selected[$index] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event);">
+                    <td class="lister-col lister-col-sort" ng-if="options.sort"><div class="sort-handle" sv-handle><md-icon>drag_handle</md-icon></div></td>
+                    <td class="lister-col" ng-if="options.selection.show">
                         <md-checkbox ng-model="selection.selected[$parent.$index]" ng-true-value="1" aria-label="Select" class="select-checkbox"></md-checkbox>
-                    </div>
-                    <div class="lister-col {{::col.className}}" ng-repeat="col in options.columns" ng-if="col.show" fs-lister-compile="dataCols[item.$$index][$index]" index="item.$$index" column="col" data="item" locals="locals" ng-style="styleCols[$index]" ng-class="{ center: col.center, right: col.right }"></div>
-                    <div class="lister-col lister-actions" ng-if="options.action">
+                    </td>
+                    <td class="lister-col {{::col.className}}" ng-repeat="col in options.columns" ng-if="col.show" fs-lister-compile="dataCols[item.$$index][$index]" index="item.$$index" column="col" data="item" locals="locals" ng-style="col.styles" ng-class="{ center: col.center, right: col.right }"></td>
+                    <td class="lister-col lister-actions" ng-if="options.action">
                         <md-button ng-click="actionClick(options.action,item,$event); $event.stopPropagation();" class="md-icon-button">
                             <md-icon class="material-icons">{{::options.action.icon}}</md-icon>
                         </md-button>
-                    </div>
-                    <div class="lister-col lister-actions" ng-if="options.actions.length">
+                    </td>
+                    <td class="lister-col lister-actions" ng-if="options.actions.length">
                         <md-menu ng-if="actionCols[item.$$index].length">
                             <md-button ng-click="$mdMenu.open($event)" class="md-icon-button">
                                 <md-icon class="md-default-theme material-icons">more_vert</md-icon>
@@ -358,19 +362,18 @@
                                 </md-menu-item>
                             </md-menu-content>
                         </md-menu>
-                    </div>
-                </div>
-            </div>
-			<div class="lister-foot" ng-if="footer">
-                <div class="lister-row">
-                    <div class="lister-col lister-col-footer lister-col-sort" ng-if="options.sort"></div>
-                    <div class="lister-col lister-col-footer lister-col-select-toggle" ng-if="options.selection.show"></div>
-                    <div class="lister-col lister-col-footer {{::column.className}}" ng-repeat="column in options.columns" ng-if="column.show" fs-lister-footer-compile locals="locals" column="column" style="footerStyle[$index]" ng-style="footerStyle[$index]"></div>
-                    <div class="lister-col lister-col-footer" ng-if="options.actions.length || options.action">
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </td>
+                </tr>
+            </tbody>
+			<tfoot class="lister-foot" ng-if="footer">
+                <tr class="lister-row">
+                    <td class="lister-col lister-col-footer lister-col-sort" ng-if="options.sort"></td>
+                    <td class="lister-col lister-col-footer lister-col-select-toggle" ng-if="options.selection.show"></td>
+                    <td class="lister-col lister-col-footer {{::column.className}}" ng-repeat="column in options.columns" ng-if="column.show" fs-lister-footer-compile locals="locals" column="column" style="footerStyle[$index]" ng-style="footerStyle[$index]"></td>
+                    <td class="lister-col lister-col-footer" ng-if="options.actions.length || options.action"></td>
+                </tr>
+            </tfoot>
+        </table>
         <div class="status">
             <div class="norecords ng-hide" ng-show="!loading && options.norecords && !data.length">{{::options.norecords}}</div>
             <div class="progress-infinite ng-hide" ng-if="options.paging.infinite && loading">

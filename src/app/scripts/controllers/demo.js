@@ -310,16 +310,36 @@ angular.module('app')
             }
 
         ],
-
+        headers: [
+           	[
+           		{
+           			title: '2 colspan left',
+           			span: 2,
+           			styles: { background: 'red', color: 'white' }
+           		},
+           		{
+           			title: '1 colspan right',
+           			span: 1,
+           			right: true,
+           			styles: { background: 'blue', color: 'white' }
+           		}
+           	]
+        ],
         columns: [
             {   title: 'Name' ,
                 //order: { name: 'name', default: true, label: 'Name!!' },
                 value: "<b>{{data.name}}</b>",
+                width: '100px',
+                header: {
+                	styles: { background: 'red', color: 'white' },
+                }
             },
             {   title: 'GUID' ,
-                right: true,
+                header: {
+                	styles: { background: 'red', color: 'white' },
+                },
                // order: 'guid',
-                //className: 'hide-xs',
+                className: 'hide-xs',
                 value: function(data) {
                     return '<a href ng-click="test(data)">{{data.guid}}</a>';
                 },
@@ -347,6 +367,7 @@ angular.module('app')
                 value: function(data, $scope, myresolve) {
                     return data["date"];
                 },
+                styles: { background: 'blue', color: 'white' },
                 footer: {
                 	center: true,
                 	value: "{{total}}"

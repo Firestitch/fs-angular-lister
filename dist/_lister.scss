@@ -355,8 +355,8 @@ lister, fs-lister {
     }
 
     .lister-table {
-
         display: table;
+        border-collapse: collapse;
         width: 100%;
     }
 
@@ -371,16 +371,6 @@ lister, fs-lister {
             &:hover {
                 background-color: #F6F6F6;
             }
-        }
-
-        &.center,
-        &.center * {
-        	text-align: center;
-        }
-
-        &.right,
-        &.right * {
-        	text-align: right;
         }
     }
 
@@ -400,12 +390,15 @@ lister, fs-lister {
 
         display: table-header-group;
 
-        .lister-col {
+        .lister-col,
+        th {
 
         	border-bottom: 2px solid #ddd;
             color: #999;
             font-size: 14px;
             padding: 8px;
+            font-weight: normal;
+    		text-align: initial;
 
             .wrap {
                 white-space: nowrap;
@@ -457,6 +450,11 @@ lister, fs-lister {
                 line-height: normal;
                 height: auto;
             }
+        }
+
+        .lister-col-topheader {
+        	border-bottom: none;
+        	text-align: center;
         }
     }
 
@@ -562,6 +560,30 @@ lister, fs-lister {
 
         .limits {
 
+        }
+    }
+
+    .lister-col {
+        display: table-cell;
+        vertical-align: middle;
+        outline: none;
+
+        &.order {
+
+            cursor: pointer;
+            &:hover {
+                background-color: #F6F6F6;
+            }
+        }
+
+        &.center,
+        &.center * {
+        	text-align: center;
+        }
+
+        &.right,
+        &.right * {
+        	text-align: right;
         }
     }
 
