@@ -195,10 +195,13 @@
 		            <span ng-if="!options.paging.infinite && numeric(paging.records) && paging.records>=0">
 		            	Showing&nbsp;<span ng-show="paging.records>=options.paging.limits[0]">
 		            	<md-menu>
-			                <a href ng-click="$mdMenu.open($event)">{{(options.paging.limit>paging.records ? paging.records : options.paging.limit)}}</a>
+			                <a href ng-click="$mdMenu.open($event)">{{options.paging.limit>paging.records ? paging.records : (options.paging.limit || 'All')}}</a>
 			                <md-menu-content>
 			                    <md-menu-item ng-repeat="limit in options.paging.limits">
 			                        <md-button ng-click="limitSelect(limit)">{{limit}}</md-button>
+			                    </md-menu-item>
+			                    <md-menu-item ng-if="options.paging.all">
+			                        <md-button ng-click="limitSelect(null)">All</md-button>
 			                    </md-menu-item>
 			                </md-menu-content>
 			            </md-menu>&nbsp;of&nbsp;

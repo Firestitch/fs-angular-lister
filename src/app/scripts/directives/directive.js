@@ -1713,7 +1713,7 @@
 						}
 					}
 
-					if(filter.value) {
+					if(filter.value!==undefined) {
 						filter.model = filter.value;
 					}
 

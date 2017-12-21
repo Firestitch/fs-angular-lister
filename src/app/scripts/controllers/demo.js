@@ -120,7 +120,8 @@ angular.module('app')
 
         paging: {
         	limit: 10,
-        	infinite: false
+        	infinite: false,
+        	all: true
         },
         //paging: false,
 
