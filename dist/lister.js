@@ -1713,6 +1713,10 @@
 						}
 					}
 
+					if(filter.value) {
+						filter.model = filter.value;
+					}
+
 					if(typeof filter.values=='function' && !filter.type.match(/^autocomplete/)) {
 						filter.values = filter.values();
 					}
