@@ -298,8 +298,8 @@
         <table class="lister-table">
             <thead class="lister-head">
             	<tr class="lister-row" ng-repeat="header in options.headers">
-            		<th class="lister-col lister-col-header lister-col-topheader" ng-if="options.sort"></th>
-                    <th class="lister-col lister-col-header lister-col-topheader" ng-if="options.selection.show"></th>
+            		<th class="lister-col lister-col-header lister-col-sort lister-col-topheader" ng-if="options.sort"></th>
+                    <th class="lister-col lister-col-header lister-col-select-toggle lister-col-topheader" ng-if="options.selection.show"></th>
             		<th class="lister-col lister-col-header lister-col-topheader {{::col.className}}" ng-class="{ order: col.order, center: col.center, right: col.right  }" ng-style="col.styles" colspan="{{col.span}}" ng-repeat="col in header">{{col.title}}</th>
             	</tr>
                 <tr class="lister-row">
@@ -333,13 +333,13 @@
                             </div>
                         </div>
                     </th>
-                    <th class="lister-col lister-col-header" ng-if="options.actions.length || options.action"></th>
+                    <th class="lister-col lister-actions lister-col-header" ng-if="options.actions.length || options.action"></th>
                 </tr>
             </thead>
             <tbody class="lister-body" sv-root sv-part="data" sv-on-sort="sortStop($item,$partTo,$indexFrom,$indexTo)" sv-on-start="sortStart()">
                 <tr class="lister-row {{rowClasses[$index]}}" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: selection.selected[$index] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event);">
                     <td class="lister-col lister-col-sort" ng-if="options.sort"><div class="sort-handle" sv-handle><md-icon>drag_handle</md-icon></div></td>
-                    <td class="lister-col" ng-if="options.selection.show">
+                    <td class="lister-col lister-col-select-toggle" ng-if="options.selection.show">
                         <md-checkbox ng-model="selection.selected[$parent.$index]" ng-true-value="1" aria-label="Select" class="select-checkbox"></md-checkbox>
                     </td>
                     <td class="lister-col {{::col.className}}" ng-repeat="col in options.columns" ng-if="col.show" fs-lister-compile="dataCols[item.$$index][$index]" index="item.$$index" column="col" data="item" locals="locals" ng-style="col.styles" ng-class="{ center: col.center, right: col.right }"></td>
@@ -370,7 +370,7 @@
                     <td class="lister-col lister-col-footer lister-col-sort" ng-if="options.sort"></td>
                     <td class="lister-col lister-col-footer lister-col-select-toggle" ng-if="options.selection.show"></td>
                     <td class="lister-col lister-col-footer {{::column.className}}" ng-repeat="column in options.columns" ng-if="column.show" fs-lister-footer-compile locals="locals" column="column" style="footerStyle[$index]" ng-style="footerStyle[$index]"></td>
-                    <td class="lister-col lister-col-footer" ng-if="options.actions.length || options.action"></td>
+                    <td class="lister-col lister-actions lister-col-footer" ng-if="options.actions.length || options.action"></td>
                 </tr>
             </tfoot>
         </table>

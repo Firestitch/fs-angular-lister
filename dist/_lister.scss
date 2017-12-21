@@ -743,3 +743,25 @@ lister, fs-lister {
 		}
 	}
 }
+
+@media only print {
+
+    .lister {
+
+    	.inline-search md-input-container input {
+    		padding: 0 !important;
+    		border: none !important;
+    	}
+
+    	.inline-actions,
+    	.inline-search .search,
+    	.md-menu,
+    	.infinite-records,
+    	.paging,
+    	.lister-col-sort,
+    	.lister-actions,
+    	.lister-col-select-toggle {
+    		display: none !important;
+    	}
+    }
+}
