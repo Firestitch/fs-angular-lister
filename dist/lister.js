@@ -1693,17 +1693,36 @@
 					}
 
 
-					if(filter.query) {
-						var query = $location.search()[filter.query];
-						if(query!==undefined) {
-                            query += '';
-							filter.model = query;
+					if(filter.query || filter.value) {
 
-							if(!query.length) {
-								filter.model = undefined;
-							} else if(filter.type=='select' && filter.multiple) {
+						if(filter.value!==undefined) {
+							filter.model = filter.value;
+						} else {
+
+							if(fsArray.keyExists($location.search(),filter.query)) {
+
+								var query = fsUtil.string($location.search()[filter.query]);
+
+								if(query.length) {
+									filter.model = query;
+								} else {
+									filter.model = undefined;
+								}
+							}
+						}
+
+						if(filter.type=='select' && filter.multiple) {
+
+							if(fsUtil.isString(filter.model)) {
 								filter.model = filter.model.split(',');
-							} else if(filter.type=='daterange' || filter.type=='datetimerange') {
+							}
+
+							if(filter.model!==undefined && !fsUtil.isArray(filter.model)) {
+								filter.model = [filter.model];
+							}
+
+						} else if(fsUtil.isString(filter.model)) {
+							if(filter.type=='daterange' || filter.type=='datetimerange') {
 								var parts = filter.model.split(',');
 								filter.model = { from: moment(parts[0]), to: moment(parts[1]) };
 							} else if(filter.type=='range') {
@@ -1714,7 +1733,7 @@
 					}
 
 					if(filter.value!==undefined) {
-						filter.model = filter.value;
+
 					}
 
 					if(typeof filter.values=='function' && !filter.type.match(/^autocomplete/)) {
