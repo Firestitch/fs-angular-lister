@@ -1539,18 +1539,50 @@
 
 					var promise = $q(function(resolve,reject) {
 
-						if(angular.isObject(filter.values) && filter.values.then) {
+						var values = filter.values;
+						if(typeof filter.values=='function' && !filter.type.match(/^autocomplete/)) {
+							values = values();
+						}
 
-							filter.values
+						if(angular.isObject(values) && values.then) {
+
+							values
 							.then(function(values) {
 								resolve(values);
 							});
 
 						} else {
-							resolve(filter.values);
+							resolve(values);
 						}
 
 					}).then(function(values) {
+
+						if(filter.name && fsUtil.isObject(filter.name)) {
+							filter.names = filter.name;
+							filter.name = Object.keys(filter.names).join('-');
+						}
+
+						if(options.persist) {
+
+							var persisted = persists[options.persist.name]['data'];
+
+							if(persisted[filter.name]) {
+
+								var value = persisted[filter.name];
+
+								if(value) {
+									if(filter.type=='daterange' || filter.type=='datetimerange') {
+										value.from = value.from ? moment.utc(value.from) : null;
+										value.to = value.to ? moment.utc(value.to) : null;
+
+									} else if(filter.type.match(/^date/)) {
+										value = moment(value);
+									}
+								}
+
+								filter.model = value;
+							}
+						}
 
 						if(filter.primary) {
 							primary = true;
@@ -1631,6 +1663,45 @@
 							filter.model = filter.default;
 						}
 
+						if(filter.query || filter.value) {
+
+							if(filter.value!==undefined) {
+								filter.model = filter.value;
+							} else {
+
+								if(fsArray.keyExists($location.search(),filter.query)) {
+
+									var query = fsUtil.string($location.search()[filter.query]);
+
+									if(query.length) {
+										filter.model = query;
+									} else {
+										filter.model = undefined;
+									}
+								}
+							}
+
+							if(filter.type=='select' && filter.multiple) {
+
+								if(fsUtil.isString(filter.model)) {
+									filter.model = filter.model.split(',');
+								}
+
+								if(filter.model!==undefined && !fsUtil.isArray(filter.model)) {
+									filter.model = [filter.model];
+								}
+
+							} else if(fsUtil.isString(filter.model)) {
+								if(filter.type=='daterange' || filter.type=='datetimerange') {
+									var parts = filter.model.split(',');
+									filter.model = { from: moment(parts[0]), to: moment(parts[1]) };
+								} else if(filter.type=='range') {
+									var parts = filter.model.split(',');
+									filter.model = { min: parts[0], max: parts[1] };
+								}
+							}
+						}
+
 						if(filter.model===undefined) {
 
 							if(filter.type=='checkbox') {
@@ -1663,82 +1734,7 @@
 
 				//preload any filters which have filter.wait.  Once they are all loaded then proceed to load main data & rest of filters.
 				var wait_promises = [], update_promises = [];
-				angular.forEach($scope.options.filters,function(filter) {
-
-					if(filter.name && fsUtil.isObject(filter.name)) {
-						filter.names = filter.name;
-						filter.name = Object.keys(filter.names).join('-');
-					}
-
-					if(options.persist) {
-
-						var persisted = persists[options.persist.name]['data'];
-
-						if(persisted[filter.name]) {
-
-							var value = persisted[filter.name];
-
-							if(value) {
-								if(filter.type=='daterange' || filter.type=='datetimerange') {
-									value.from = value.from ? moment.utc(value.from) : null;
-									value.to = value.to ? moment.utc(value.to) : null;
-
-								} else if(filter.type.match(/^date/)) {
-									value = moment(value);
-								}
-							}
-
-							filter.model = value;
-						}
-					}
-
-
-					if(filter.query || filter.value) {
-
-						if(filter.value!==undefined) {
-							filter.model = filter.value;
-						} else {
-
-							if(fsArray.keyExists($location.search(),filter.query)) {
-
-								var query = fsUtil.string($location.search()[filter.query]);
-
-								if(query.length) {
-									filter.model = query;
-								} else {
-									filter.model = undefined;
-								}
-							}
-						}
-
-						if(filter.type=='select' && filter.multiple) {
-
-							if(fsUtil.isString(filter.model)) {
-								filter.model = filter.model.split(',');
-							}
-
-							if(filter.model!==undefined && !fsUtil.isArray(filter.model)) {
-								filter.model = [filter.model];
-							}
-
-						} else if(fsUtil.isString(filter.model)) {
-							if(filter.type=='daterange' || filter.type=='datetimerange') {
-								var parts = filter.model.split(',');
-								filter.model = { from: moment(parts[0]), to: moment(parts[1]) };
-							} else if(filter.type=='range') {
-								var parts = filter.model.split(',');
-								filter.model = { min: parts[0], max: parts[1] };
-							}
-						}
-					}
-
-					if(filter.value!==undefined) {
-
-					}
-
-					if(typeof filter.values=='function' && !filter.type.match(/^autocomplete/)) {
-						filter.values = filter.values();
-					}
+				angular.forEach(options.filters,function(filter) {
 
 					var promise = sanitizeFilter(filter);
 					if(filter.wait || (filter.type=='select' && filter.isolate && filter.wait===undefined)) {
