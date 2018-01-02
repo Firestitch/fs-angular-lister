@@ -340,7 +340,7 @@
                 </tr>
             </thead>
             <tbody class="lister-body" sv-root sv-part="data" sv-on-sort="sortStop($item,$partTo,$indexFrom,$indexTo)" sv-on-start="sortStart()">
-                <tr class="lister-row {{rowClasses[$index]}}" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: selection.selected[$index] }" ng-repeat="item in data" ng-click="options.rowClick(item,$event);">
+                <tr class="lister-row {{rowClasses[$index]}}" sv-element="{ containment:'.lister-body'}" ng-class="{ selected: selection.selected[$index] }" ng-repeat-start="item in data" ng-click="options.rowClick(item,$event);" ng-if="!item.listerGroup">
                     <td class="lister-col lister-col-sort" ng-if="options.sort"><div class="sort-handle" sv-handle><md-icon>drag_handle</md-icon></div></td>
                     <td class="lister-col lister-col-select-toggle" ng-if="options.selection.show">
                         <md-checkbox ng-model="selection.selected[$parent.$index]" ng-true-value="1" aria-label="Select" class="select-checkbox"></md-checkbox>
@@ -366,6 +366,9 @@
                             </md-menu-content>
                         </md-menu>
                     </td>
+                </tr>
+                <tr ng-repeat-end class="lister-row-group" ng-if="item.listerGroup">
+                	<td colspan="99" fs-lister-group-compile="options.group" data="item.listerGroup" group="options.group">{{item.listerGroup}}</td>
                 </tr>
             </tbody>
 			<tfoot class="lister-foot" ng-if="footer">

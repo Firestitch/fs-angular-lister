@@ -567,6 +567,7 @@ lister, fs-lister {
         display: table-cell;
         vertical-align: middle;
         outline: none;
+        background-clip: padding-box;
 
         &.order {
 
@@ -585,6 +586,14 @@ lister, fs-lister {
         &.right * {
         	text-align: right;
         }
+    }
+
+    .lister-row-group td {
+    	font-weight: bold;
+    	font-size: 16px;
+    	padding: 14px;
+    	border-top: 1px solid #ddd;
+    	/* background-color: #ddd; */
     }
 
     .lister-actions {

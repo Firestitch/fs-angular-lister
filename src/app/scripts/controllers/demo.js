@@ -131,11 +131,11 @@ angular.module('app')
         //order: 'date',
 
         //inline: true,
-        sort: {
-            stop: function(item,list,$indexFrom,$indexTo) {
-                //debugger;
-            }
-        },
+        // sort: {
+        //     stop: function(item,list,$indexFrom,$indexTo) {
+        //         //debugger;
+        //     }
+        // },
 
         rowClick: function(data) {
            // alert("Row Click: " + JSON.stringify(data));
@@ -170,6 +170,10 @@ angular.module('app')
 		            DummyService
 		                .gets(query,{ url: url })
 		                .then(function(result) {
+
+		                	result.objects = [{ name: 'Group Bob1', data: [{ name: 'Bob1' }]},
+		                		{ name: 'Group Bob2', data: [{ name: 'Bob2' },{ name: 'Bob2' },{ name: 'Bob2' },{ name: 'Bob2' },{ name: 'Bob2' }]}];
+
 		                    resolve({ data: result.objects, paging: result.paging });
 		                    //cb(result.objects,result.paging,locals);
 		                })
@@ -180,6 +184,11 @@ angular.module('app')
 		                });*/
 		        },0);
 		    });
+        },
+
+        group: {
+        	template: '{{data.name}}',
+        	children: 'data'
         },
 
         load: true,
@@ -329,7 +338,7 @@ angular.module('app')
         columns: [
             {   title: 'Name' ,
                 //order: { name: 'name', default: true, label: 'Name!!' },
-                value: "<b>{{data.name}}</b>",
+                value: "{{data.name}}",
                 width: '100px',
                 header: {
                 	styles: { background: 'red', color: 'white' },

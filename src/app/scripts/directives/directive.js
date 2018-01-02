@@ -1439,6 +1439,15 @@
 							$scope.locals = locals;
 						}
 
+						if(options.group) {
+							var ol = data.length, groupData = [];
+							for (var o = 0; o < ol; o++) {
+								groupData.push({ listerGroup: data[o] });
+								groupData = groupData.concat(data[o][options.group.children]);
+							}
+							data = groupData;
+						}
+
 						var ol = data.length;
 						for (var o = 0; o < ol; o++) {
 
@@ -1940,7 +1949,26 @@
 					}
 		}
 	}])
-	.directive('fsListerFooterCompile', ['$compile','$rootScope',function ($compile, $rootScope) {
+	.directive('fsListerGroupCompile', ['$compile',function ($compile) {
+		return {    scope: {
+						group: '=',
+						data: '='
+					},
+					link: function($scope, element) {
+
+						if($scope.group) {
+
+							if($scope.group.scope) {
+								angular.extend($scope,$scope.group.scope);
+							}
+
+							element.html($scope.group.template);
+							$compile(element.contents())($scope);
+						}
+					}
+		}
+	}])
+	.directive('fsListerFooterCompile', ['$compile',function ($compile) {
 		return {    scope: {
 						column: '=',
 						style: '=',
