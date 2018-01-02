@@ -1,4 +1,4 @@
-<div class="lister" ng-class="{ 'filters-open': extended_search, loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite, sorting: sorting, data: data.length }" id="{{id}}">
+<div class="lister" ng-class="{ 'filters-open': extended_search, loading: loading, infinite: options.paging.infinite, paged: !options.paging.infinite, sorting: sorting, data: data.length, group: options.group }" id="{{id}}">
     <div class="lister-search" layout="row" layout-align="start stretch" ng-if="options.filters.length || options.topActions">
         <div layout="row" layout-align="start center" class="inline-search" flex>
             <div class="inline-search-input" flex="grow">
@@ -368,7 +368,7 @@
                     </td>
                 </tr>
                 <tr ng-repeat-end class="lister-row-group" ng-if="item.listerGroup">
-                	<td colspan="99" fs-lister-group-compile="options.group" data="item.listerGroup" group="options.group">{{item.listerGroup}}</td>
+                	<td colspan="{{col.span || 99}}" ng-repeat="col in options.group.columns" fs-lister-group-compile="options.group" data="item.listerGroup" col="col.template" group="options.group">{{item.listerGroup}}</td>
                 </tr>
             </tbody>
 			<tfoot class="lister-foot" ng-if="footer">

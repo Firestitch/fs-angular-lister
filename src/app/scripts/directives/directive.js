@@ -1952,19 +1952,17 @@
 	.directive('fsListerGroupCompile', ['$compile',function ($compile) {
 		return {    scope: {
 						group: '=',
-						data: '='
+						data: '=',
+						col: '='
 					},
 					link: function($scope, element) {
 
-						if($scope.group) {
-
-							if($scope.group.scope) {
-								angular.extend($scope,$scope.group.scope);
-							}
-
-							element.html($scope.group.template);
-							$compile(element.contents())($scope);
+						if($scope.group.scope) {
+							$scope = angular.extend({},$scope,$scope.group.scope);
 						}
+
+						element.html($scope.col);
+						$compile(element.contents())($scope);
 					}
 		}
 	}])
