@@ -187,7 +187,7 @@ angular.module('app')
         },
 
         group: {
-        	columns: [ { template: '{{data.name}}', span: 2 }, { template: 'Something' }],
+        	columns: [ { template: '{{data.name}}', span: 2, styles: { background: 'pink' } }, { template: 'Something' }],
         	children: 'data'
         },
 

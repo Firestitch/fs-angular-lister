@@ -368,7 +368,7 @@
                     </td>
                 </tr>
                 <tr ng-repeat-end class="lister-row-group" ng-if="item.listerGroup">
-                	<td colspan="{{col.span || 99}}" ng-repeat="col in options.group.columns" fs-lister-group-compile="options.group" data="item.listerGroup" col="col.template" group="options.group">{{item.listerGroup}}</td>
+                	<td class="lister-col-group" colspan="{{col.span || 99}}" ng-repeat="col in options.group.columns" ng-class="col.className" ng-style="col.styles" fs-lister-group-compile="options.group" data="item.listerGroup" col="col.template" group="options.group">{{item.listerGroup}}</td>
                 </tr>
             </tbody>
 			<tfoot class="lister-foot" ng-if="footer">
