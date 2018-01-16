@@ -1351,9 +1351,7 @@
 							$scope.paging.page = opts.page;
 						}
 
-						if(opts.clear) {
-							$scope.selectionsClear();
-						}
+						$scope.selectionsClear();
 
 						var query = instance.filter.value.gets({ flatten: true });
 
