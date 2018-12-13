@@ -2,6 +2,7 @@
   "name": "angularboilerplate",
   "version": "0.0.0",
   "dependencies": {
+    "bower": "^1.8.4",
     "md-color-picker": "^0.1.0"
   },
   "repository": {

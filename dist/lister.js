@@ -573,7 +573,21 @@
 										value = opts.expand ? filter.model : filter.model.value;
 									}
 
-									if(fsUtil.isObject(filter.names) && opts.names!==false) {
+									if(filter.type=='daterange' || filter.type=='datetimerange') {
+										
+										if(opts.nested) {
+											query[filter.name.from + '-' + filter.name.to] = value;
+
+										} else {
+											angular.forEach(filter.name,function(key,name) {
+												if(value[name]) {
+													query[key] = value[name];
+												}
+											});
+										}
+
+									} else if(fsUtil.isObject(filter.names) && opts.names!==false) {
+										
 										angular.forEach(filter.names,function(key,name) {
 											if(value[name]) {
 												query[key] = value[name];
@@ -1356,7 +1370,7 @@
 						var query = instance.filter.value.gets({ flatten: true });
 
 						if(options.persist) {
-							persists[options.persist.name] = { data: instance.filter.value.gets({ expand: true, names: false }), date: new Date() };
+							persists[options.persist.name] = { data: instance.filter.value.gets({ expand: true, names: false, nested: true }), date: new Date() };
 						}
 
 						if($scope.options.paging.enabled && fsUtil.isNumeric($scope.options.paging.limit)) {
@@ -1564,18 +1578,21 @@
 
 					}).then(function(values) {
 
-						if(filter.name && fsUtil.isObject(filter.name)) {
-							filter.names = filter.name;
-							filter.name = Object.keys(filter.names).join('-');
+						var name = filter.name;
+
+						if(filter.type=='daterange' || filter.type=='datetimerange') {
+							name = filter.name.from + '-' + filter.name.to;
+						} else if(filter.name && fsUtil.isObject(filter.name)) {
+							name = Object.keys(filter.names).join('-');
 						}
 
 						if(options.persist) {
 
 							var persisted = persists[options.persist.name]['data'];
 
-							if(persisted[filter.name]) {
+							if(persisted[name]) {
 
-								var value = persisted[filter.name];
+								var value = persisted[name];
 
 								if(value) {
 									if(filter.type=='daterange' || filter.type=='datetimerange') {

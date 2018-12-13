@@ -84,6 +84,11 @@ angular.module('app')
                         label: 'Invoice Date'
                     },
                     {
+                        name: { from: 'create_date_from1', to: 'create_date_to2' },
+                        type: 'daterange',
+                        label: 'Invoice Date'
+                    },
+                    {
                         name: { from: 'payment_due_date_from', to: 'payment_due_date_to' },
                         type: 'daterange',
                         label: 'Invoice Due Date'
@@ -531,6 +536,11 @@ angular.module('app')
                 type: 'daterange',
                 label: 'Date Range'
             },
+            {
+                name: { from: 'daterange_from2', to: 'daterange_to2' },
+                type: 'daterange',
+                label: 'Date Range'
+            },            
            /*{
                 name: 'date',
                 type: 'date',
