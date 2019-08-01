@@ -60,7 +60,6 @@ angular.module('app')
 
     $scope.getInstance = function() {
     	$scope.getInstanceObject = fsLister.get('demo');
-    	debugger;
     }
 
     $scope.newFilters = function() {
@@ -515,13 +514,22 @@ angular.module('app')
                 name: 'state',
                 type: 'select',
                 label: 'State',
+                multiple: true,
                 change: function(instance) {
                 	console.log('state filter changed', this, instance);
                 },
                 //default: 'active',
                	values: function() {
-                            return [{ value: 'active', name: 'Active' },
+                    var values = [{ value: 'active', name: 'Active' },
+                                    { value: 'pending', name: 'Pending' },
                                     { value: 'deleted', name: 'Deleted' } ];
+
+                    return new Promise(function(resolve, reject) {
+
+                        setTimeout(() => {
+                            resolve(values);
+                        });
+                    });
                 }
 /*                values: fsArray.nameValue({
                     __all: 'All',

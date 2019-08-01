@@ -576,7 +576,7 @@
 									if(filter.type=='daterange' || filter.type=='datetimerange') {
 										
 										if(opts.nested) {
-											query[filter.name.from + '-' + filter.name.to] = value;
+											query[getFilterName(filter)] = value;
 
 										} else {
 											angular.forEach(filter.name,function(key,name) {
@@ -1555,8 +1555,44 @@
 					return !isNaN(parseFloat(n)) && isFinite(n);
 				}
 
+				function getFilterName(filter) {
+					if(filter.type=='daterange' || filter.type=='datetimerange') {
+						return filter.name.from + '-' + filter.name.to;
+					}
+
+					return filter.name;
+				}
+
 				var primary = false;
 				function sanitizeFilter(filter) {
+
+					var name = getFilterName(filter);
+
+					if(options.persist) {
+
+						var persisted = persists[options.persist.name]['data'];
+
+						if(persisted[name]) {
+
+							var value = persisted[name];
+
+							if(value) {
+
+								if(filter.type=='daterange' || filter.type=='datetimerange') {
+								
+									value.from = value.from ? moment(value.from) : null;
+									value.to = value.to ? moment(value.to) : null;
+
+								} else if(filter.type.match(/^date/)) {
+									value = moment(value);
+								}
+							}
+
+							// If there are any values then wait for any possible async values 
+							filter.wait = true;
+							filter.model = value;
+						}
+					}
 
 					var promise = $q(function(resolve,reject) {
 
@@ -1578,34 +1614,10 @@
 
 					}).then(function(values) {
 
-						var name = filter.name;
-
 						if(filter.type=='daterange' || filter.type=='datetimerange') {
-							name = filter.name.from + '-' + filter.name.to;
+							name = getFilterName(filter);
 						} else if(filter.name && fsUtil.isObject(filter.name)) {
 							name = Object.keys(filter.names).join('-');
-						}
-
-						if(options.persist) {
-
-							var persisted = persists[options.persist.name]['data'];
-
-							if(persisted[name]) {
-
-								var value = persisted[name];
-
-								if(value) {
-									if(filter.type=='daterange' || filter.type=='datetimerange') {
-										value.from = value.from ? moment.utc(value.from) : null;
-										value.to = value.to ? moment.utc(value.to) : null;
-
-									} else if(filter.type.match(/^date/)) {
-										value = moment(value);
-									}
-								}
-
-								filter.model = value;
-							}
 						}
 
 						if(filter.primary) {
