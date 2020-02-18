@@ -574,7 +574,7 @@
 									}
 
 									if(filter.type=='daterange' || filter.type=='datetimerange') {
-										
+
 										if(opts.nested) {
 											query[getFilterName(filter)] = value;
 
@@ -587,7 +587,7 @@
 										}
 
 									} else if(fsUtil.isObject(filter.names) && opts.names!==false) {
-										
+
 										angular.forEach(filter.names,function(key,name) {
 											if(value[name]) {
 												query[key] = value[name];
@@ -1579,7 +1579,7 @@
 							if(value) {
 
 								if(filter.type=='daterange' || filter.type=='datetimerange') {
-								
+
 									value.from = value.from ? moment(value.from) : null;
 									value.to = value.to ? moment(value.to) : null;
 
@@ -1588,7 +1588,7 @@
 								}
 							}
 
-							// If there are any values then wait for any possible async values 
+							// If there are any values then wait for any possible async values
 							filter.wait = true;
 							filter.model = value;
 						}
@@ -1730,8 +1730,10 @@
 							} else if(fsUtil.isString(filter.model)) {
 								if(filter.type=='daterange' || filter.type=='datetimerange') {
 									var parts = filter.model.split(',');
-									filter.model = { from: moment(parts[0]), to: moment(parts[1]) };
-								} else if(filter.type=='range') {
+                  filter.model = { from: moment(parts[0]), to: moment(parts[1]) };
+                } else if(filter.type=='date') {
+                  filter.model = moment(filter.model);
+                } else if(filter.type=='range') {
 									var parts = filter.model.split(',');
 									filter.model = { min: parts[0], max: parts[1] };
 								}
@@ -2183,6 +2185,7 @@
 		}
 	});
 })();
+
 (function () {
 
     angular.module('fs-angular-lister')
