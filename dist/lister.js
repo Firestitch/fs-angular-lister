@@ -1404,7 +1404,9 @@
 										reject();
 										throw e;
 									});
-								}
+                } else {
+                  $scope.loading = false;
+                }
 							}
 
 					   	} catch(e) {
